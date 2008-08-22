@@ -74,6 +74,7 @@
     <string id="312">Tolkar ...</string>
     <string id="313">Stänger ...</string>
     <string id="314">Försöker igen ...</string>
+    <string id="315">Packar upp</string>
 
     <string id="320">Måndag</string>
     <string id="321">Tisdag</string>
@@ -221,6 +222,7 @@
     <string id="614">Skippa logga</string>
     <string id="615">Välj logga: </string>
     <string id="616">Välj språk: </string>
+    <string id="617">Aktiverad? (A)</string>
 
 
     <!-- Datasource Common -->
