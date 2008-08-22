@@ -23,6 +23,7 @@
                 New: WebScheduler supports Old, Pro and OpenSource versions (Thanks ozNick for major contribution to this).
                 New: datasource pl_Teleman (polish)
                 New: datasource pc_XMLTV - requires a remote PC to fetch data using xmltv.exe <grabber>
+                New: dataSource de_XMLTV (german)
                 New: Logos downloadable, no longer included with installation package.
                 New: Setting option: Wake On Lan (Sent on myTV startup and before any SaveProgramme calls)
                 New: All icons shrink according to programme width (not just timer icon)

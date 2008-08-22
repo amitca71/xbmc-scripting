@@ -2480,15 +2480,10 @@ class TVChannels:
 						# LOAD FROM DATASOURCE
 						if not showingDialog:
 							try:
-								print "loadChannels current dialogProgress=", dialogProgress
 								dsName = dataSource.getName()
-								print "%s, %s, %s, %s" % (dsName, displayDate, chName, fetchStr)
 								dialogProgress.create(dsName, displayDate, chName, fetchStr)
-								print "loadChannels create() done OK"
 								showingDialog = True
-							except:
-								print "loadChannels failed to create dialogProgress"
-								handleException()
+							except: pass
 						else:
 							dialogProgress.update(0, displayDate, chName, fetchStr)
 

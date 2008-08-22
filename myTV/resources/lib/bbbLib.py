@@ -14,11 +14,12 @@ import sgmllib
 from xml.dom.minidom import parse, parseString
 from shutil import rmtree
 import cookielib
+import zipstream
 
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '13-08-2008'
+__date__ = '22-08-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -175,7 +176,6 @@ REGEX_URL_PREFIX = '^((?:http://|www).+?)[/?]'
 
 global dialogProgress
 dialogProgress = xbmcgui.DialogProgress()
-print "bbbLib dialogProgress=", dialogProgress
 REZ_W = 720
 REZ_H = 576
 
@@ -1659,3 +1659,64 @@ def getLanguagePath():
 		language = 'English'
 	debug("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
 	return base_path, language
+
+#################################################################################################################
+def unzip(extract_path, filename, silent=False, msg=""):
+	""" unzip an archive, using ChunkingZipFile to write large files as chunks if necessery """
+	debug("> unzip() extract_path=%s fn=%s" % (extract_path, filename))
+	success = False
+	cancelled = False
+	installed_path = ""
+
+	zip=zipstream.ChunkingZipFile(filename, 'r')
+	namelist = zip.namelist()
+	infos=zip.infolist()
+	max_files = len(namelist)
+	debug("max_files=%s" % max_files)
+
+	for file_count, entry in enumerate(namelist):
+		debug("%i entry=%s" % (file_count, entry))
+		info = infos[file_count]
+
+		if not silent:
+			percent = int( file_count * 100.0 / max_files )
+			root, name = os.path.split(entry)
+			dialogProgress.update( percent, msg, root, name)
+			if ( dialogProgress.iscanceled() ):
+				cancelled = True
+				break
+
+		filePath = os.path.join(extract_path, entry)
+		if filePath.endswith('/'):
+			if not os.path.isdir(filePath):
+				os.makedirs(filePath)
+		elif (info.file_size + info.compress_size) > 25000000:
+			debug( "LARGE FILE: f sz=%s  c sz=%s  reqd sz=%s %s" % (info.file_size, info.compress_size, (info.file_size + info.compress_size), entry ))
+			outfile=file(filePath, 'wb')
+			fp=zip.readfile(entry)
+			fread=fp.read
+			ftell=fp.tell
+			owrite=outfile.write
+			size=info.file_size
+
+			# write out in chunks
+			while ftell() < size:
+				hunk=fread(4096)
+				owrite(hunk)
+
+			outfile.flush()
+			outfile.close()
+		else:
+			file(filePath, 'wb').write(zip.read(entry))
+
+	if not cancelled:
+		success = True
+		if namelist[0][-1] in ('\\/'):
+			namelist[0] = namelist[0][-1]
+		installed_path = os.path.join(extract_path, namelist[0])
+	
+	zip.close()
+	del zip
+	debug("< unzip() success=%s installed_path=%s" % (success, installed_path))
+	return success, installed_path
+

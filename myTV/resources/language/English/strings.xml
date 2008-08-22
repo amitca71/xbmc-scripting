@@ -74,6 +74,7 @@
     <string id="312">Parsing ...</string>
     <string id="313">Closing ...</string>
     <string id="314">Retrying ...</string>
+    <string id="315">Unzipping ...</string>
 
     <string id="320">Monday</string>
     <string id="321">Tuesday</string>
@@ -221,6 +222,7 @@
     <string id="614">Skip Logo</string>
     <string id="615">Select Logo: </string>
     <string id="616">Select Language: </string>
+    <string id="617">Enabled? (A)</string>
 
 
     <!-- Datasource Common -->

@@ -1,11 +1,12 @@
 ############################################################################################################
-# TV Data source: au_XMLTV
+# TV Data source: au_OzTivo
 #
 # Notes:
-# Provides Australia XML tv data from http://xmltv.locost7.info
+# Provides Australia tv data from http://xmltv.locost7.info in XMLTV format
 #
 # CHANGELOG
 # 29-07-08 Created
+# 22-08-08 unzip moved into bbbLib.py
 ############################################################################################################
 
 from mytvLib import *
@@ -14,7 +15,6 @@ from bbbGUILib import *
 import xbmcgui, re, time
 from string import split, replace, find, rfind, atoi, zfill
 from os import path
-import zipstream
 import gc	# garbage collection
 
 __language__ = sys.modules["__main__"].__language__
@@ -49,13 +49,10 @@ class ListingData:
 
 		self.cache = cache
 		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
-		self.CHANNELS_FILENAME = os.path.join(cache,"Channels_"+ self.name + ".dat")
+		self.CHANNELS_FN= os.path.join(cache,"Channels_"+ self.name + ".dat")
 		self.BASE_URL = 'http://xmltv.locost7.info/'
 		self.isConfigured = False
 		self.lastUpdate = 0
-
-		self.rssparser = None
-		rssItems = []
 
 		debug("< __init__")
 
@@ -64,10 +61,10 @@ class ListingData:
 
 	def setup(self):
 		debug("ListingData.setup()")
-		self.channelURL = self.BASE_URL + '%s/Oztivo%s.zip' % (self.region,self.region)
-		self.archiveFN = os.path.join(self.cache, os.path.basename(self.channelURL))
+		self.CHANNEL_URL = self.BASE_URL + '%s/Oztivo%s.zip' % (self.region,self.region)
+		self.ZIP_FN = os.path.join(self.cache, os.path.basename(self.CHANNEL_URL))
 		self.xmlFN = ""
-		debug("channelURL=%s\narchiveFN=%s" % ( self.channelURL, self.archiveFN) )
+		debug("CHANNEL_URL=%s\ZIP_FN=%s" % ( self.CHANNEL_URL, self.ZIP_FN) )
 
 	# download or load if exists, a list of all available channels.
 	# return: list [chID, chName]
@@ -75,53 +72,53 @@ class ListingData:
 		debug("> ListingData.getChannels()")
 
 		channels = []
-		if not fileExist(self.CHANNELS_FILENAME):
+		if not fileExist(self.CHANNELS_FN):
 			# get todays data file and extract channels from that
 			dialogProgress.create(self.name, __language__(212))
 			self.lastUpdate = self.getLastUpdate()
 			if self.lastUpdate:
 				self.xmlFN = os.path.join(self.cache, "%s_%s.xml" % (self.region, self.lastUpdate))
-				if self.getArchive():
-					# not real XML parsing, just use regex, its quicker !
-					# chID, chName
+				if self.downloadZip():
+					# use regex, its quicker !
 					doc = readFile(self.xmlFN)
-					matches = findAllRegEx(doc, 'Channel id="(.*?)".*?name>(.*?)<')
+					matches = findAllRegEx(doc, 'Channel id="(.*?)".*?name>(.*?)<')	# chID, chName
 					if matches:
 						for chID, chName in matches:
 							channels.append([chID, chName])
-						channels = writeChannelsList(self.CHANNELS_FILENAME, channels)
+						channels = writeChannelsList(self.CHANNELS_FN, channels)
 
 				self.xmlFN = "" # cancel xml filename will cause it to process it
 			dialogProgress.close()
 		else:
-			channels = readChannelsList(self.CHANNELS_FILENAME)
+			channels = readChannelsList(self.CHANNELS_FN)
 
 		debug("< ListingData.getChannels() ch count=%s" % len(channels))
 		return channels
 
 	# get current region archive, unpack and rename using todays date
-	def getArchive(self):
-		debug("> ListingData.getArchive() archiveFN=%s" % self.archiveFN)
+	def downloadZip(self):
+		debug("> ListingData.downloadZip()")
 		success = False
-		dialogProgress.update(0, "Downloading Zip file ...", self.channelURL, self.archiveFN, )
-#		if fileExist(self.archiveFN) or fetchURL(self.channelURL, self.archiveFN, isBinary=True):
-		if fetchURL(self.channelURL, self.archiveFN, isBinary=True):
+		zipBasename = os.path.basename(self.ZIP_FN)
+		dialogProgress.update(0, __language__(303), self.CHANNEL_URL, zipBasename )
+#		if fileExist(self.ZIP_FN) or fetchURL(self.CHANNEL_URL, self.ZIP_FN, isBinary=True):
+		if fetchURL(self.CHANNEL_URL, self.ZIP_FN, isBinary=True):
 			# unpack archive
-			success, installed_path = unzip(self.cache, self.archiveFN, False, "Unzipping file...")
+			success, installed_path = unzip(self.cache, self.ZIP_FN, False, __language__(315))
 			if success:
 				try:
 					fromFN = os.path.join(self.cache, self.region + '.xml')
 					deleteFile(self.xmlFN)
+					debug("XML rename %s to %s" % (fromFN, self.xmlFN))
 					os.rename(fromFN, self.xmlFN)
-					debug("XML renamed to %s" % self.xmlFN)
 					success = fileExist(self.xmlFN)
 				except:
-					handleException("getArchive()")
+					handleException("downloadZip() rename file")
 
 		if not success:
-			messageOK("Download File Failed!", self.channelURL, os.path.basename(self.archiveFN))
+			messageOK("Download File Failed!", self.CHANNEL_URL, zipBasename)
 			
-		debug("< ListingData.getArchive() success=%s" % success)
+		debug("< ListingData.downloadZip() success=%s" % success)
 		return success
 
 	# download the lastUpdate file which contains a date eg. Mon 29/7/08
@@ -185,7 +182,7 @@ class ListingData:
 		if not self.xmlFN:
 			debug("no XML newer than %s, download latest ZIP" % self.lastUpdate)
 			self.xmlFN = os.path.join(self.cache, "%s_%s.xml" % (self.region, self.lastUpdate))
-			if not self.getArchive():	# DL , unzip , rename to todays xml
+			if not self.downloadZip():	# DL , unzip , rename to todays xml
 				return None	# error
 
 		dialogProgress.update(0, "Parsing XML file:", self.xmlFN )
@@ -198,7 +195,7 @@ class ListingData:
 		# process all channels all dates in XML, so we don't have to do it again
 		saveChannels = {}
 		CHANNEL_RE = 'programme start="(\d\d\d\d\d\d\d\d\d\d\d\d).*?stop="(\d\d\d\d\d\d\d\d\d\d\d\d).*?channel="(.*?)".*?title>(.*?)</title>(.*?)</programme'
-		channelList = readChannelsList(self.CHANNELS_FILENAME)
+		channelList = readChannelsList(self.CHANNELS_FN)
 		matches = findAllRegEx(xml, CHANNEL_RE)
 		if matches:
 			debug("programme matches=%s" % len(matches) )
@@ -294,7 +291,7 @@ class ListingData:
 			if selectedPos >= 0:
 				self.region = REGIONS[selectedPos]
 				config.action(CONFIG_SECTION, CONFIG_KEY_REGION, self.region, mode=ConfigHelper.MODE_WRITE)
-				deleteFile(self.CHANNELS_FILENAME)
+				deleteFile(self.CHANNELS_FN)
 
 		if self.region:
 			self.isConfigured = True
@@ -304,64 +301,4 @@ class ListingData:
 		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
 		return self.isConfigured
 
-
-#################################################################################################################
-def unzip(extract_path, filename, silent=False, msg=""):
-	""" unzip an archive, using ChunkingZipFile to write large files as chunks if necessery """
-	debug("> unzip() extract_path=%s fn=%s" % (extract_path, filename))
-	success = False
-	cancelled = False
-	installed_path = ""
-
-	zip=zipstream.ChunkingZipFile(filename, 'r')
-	namelist = zip.namelist()
-	names=zip.namelist()
-	infos=zip.infolist()
-	max_files = len(namelist)
-	debug("max_files=%s" % max_files)
-
-	for file_count, entry in enumerate(namelist):
-		info = infos[file_count]
-
-		if not silent:
-			percent = int( file_count * 100.0 / max_files )
-			root, name = os.path.split(entry)
-			dialogProgress.update( percent, msg, root, name)
-			if ( dialogProgress.iscanceled() ):
-				cancelled = True
-				break
-
-		filePath = os.path.join(extract_path, entry)
-		if filePath.endswith('/'):
-			if not os.path.isdir(filePath):
-				os.makedirs(filePath)
-		elif (info.file_size + info.compress_size) > 25000000:
-			debug( "LARGE FILE: f sz=%s  c sz=%s  reqd sz=%s %s" % (info.file_size, info.compress_size, (info.file_size + info.compress_size), entry ))
-			outfile=file(filePath, 'wb')
-			fp=zip.readfile(entry)
-			fread=fp.read
-			ftell=fp.tell
-			owrite=outfile.write
-			size=info.file_size
-
-			# write out in chunks
-			while ftell() < size:
-				hunk=fread(4096)
-				owrite(hunk)
-
-			outfile.flush()
-			outfile.close()
-		else:
-			file(filePath, 'wb').write(zip.read(entry))
-
-	if not cancelled:
-		success = True
-		if namelist[0][-1] in ('\\/'):
-			namelist[0] = namelist[0][-1]
-		installed_path = os.path.join(extract_path, namelist[0])
-	
-	zip.close()
-	del zip
-	debug("< unzip() success=%s installed_path=%s" % (success, installed_path))
-	return success, installed_path
 

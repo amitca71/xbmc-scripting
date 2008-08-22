@@ -8,7 +8,7 @@ import xbmc, xbmcgui
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbGUILib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '09-06-2008'
+__date__ = '22-08-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 from bbbLib import *
@@ -66,6 +66,8 @@ class DialogSelect(xbmcgui.WindowDialog):
 		self.useY = False
 		self.reorder = False
 		self.isMoving = False
+		self.toggleWithX = False
+		self.toggleWithA = False
 
 	#############################################################################################################
 	def setup(self, title='',width=430, height=490, xpos=-1, ypos=-1, textColor='0xFFFFFFFF', \
@@ -83,7 +85,12 @@ class DialogSelect(xbmcgui.WindowDialog):
 		self.reorder = reorder					# used to indicate List Re-ordering
 		self.title = title
 		self.movingTitle = movingTitle
-		self.useXOptions = useXOptions
+		self.useXOptions = useXOptions			# items to toggle between with X (and / or A)
+		# determine which button to use to toggle col2 options
+		if useXOptions:
+			self.toggleWithX = True
+			if not reorder:
+				self.toggleWithA = True
 
 		if width < 150:
 			width = 150
@@ -186,7 +193,6 @@ class DialogSelect(xbmcgui.WindowDialog):
 
 	#############################################################################################################
 	def exit(self):
-		debug("dialogSelect.close()")
 		self.removeControl(self.menuCL)
 		self.close()
 
@@ -212,15 +218,20 @@ class DialogSelect(xbmcgui.WindowDialog):
 				self.isMoving = False
 				self.setMenu()
 			self.exit()
-			
-		elif (self.useXOptions and (actionID in CLICK_X or buttonCode in CLICK_X)):
+
+		elif (self.toggleWithX and (actionID in CLICK_X or buttonCode in CLICK_X)) or \
+			 (self.toggleWithA and (actionID in CLICK_A or buttonCode in CLICK_A)):
+			# toggle col2
 			self.selectedPos = self.menuCL.getSelectedPosition()
-			# toggle option value
-			if self.menu[self.selectedPos][1] == self.useXOptions[0]:
-				self.menu[self.selectedPos][1] = self.useXOptions[1]
+			if self.selectedPos == 0:							# exit
+				self.exit()
 			else:
-				self.menu[self.selectedPos][1] = self.useXOptions[0]
-			self.setMenu()
+				# toggle option value
+				if self.menu[self.selectedPos][1] == self.useXOptions[0]:
+					self.menu[self.selectedPos][1] = self.useXOptions[1]
+				else:
+					self.menu[self.selectedPos][1] = self.useXOptions[0]
+				self.setMenu()
 
 		elif self.reorder:
 			if (actionID in CLICK_A or buttonCode in CLICK_A):
@@ -259,7 +270,7 @@ class DialogSelect(xbmcgui.WindowDialog):
 			return
 		self.selectedPos = self.menuCL.getSelectedPosition()
 		debug("DialogSelect onControl() self.selectedPos=%s" % self.selectedPos)
-		if not self.reorder:
+		if not self.reorder and not self.toggleWithA:
 			self.exit()
 
 	#############################################################################################################

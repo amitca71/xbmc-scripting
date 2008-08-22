@@ -29,7 +29,7 @@ import gc
 __scriptname__ = "myTV"
 __version__ = '1.18'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '20-08-2008'
+__date__ = '22-08-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -1305,8 +1305,8 @@ class myTV(xbmcgui.WindowXML):
 				btnEnd = self.tvChannels.getProgAttr(prog, TVData.PROG_ENDTIME)
 
 			debug("0) progIDX=%s btnStart=%s btnEnd=%s" % (progIDX,btnStart,btnEnd))
-#			if DEBUG and prog:
-#				print self.tvChannels.getProgAttr(prog, TVData.PROG_TITLE)
+			if DEBUG and prog:
+				print self.tvChannels.getProgAttr(prog, TVData.PROG_TITLE)
 
 			# TRIM BTN LEN TO THAT OF EPG START/END
 			if btnStart < firstTimeBarIntervalSecs:
@@ -3225,7 +3225,6 @@ class ConfigGenreIcons:
 					changed = True
 				except: pass
 		except: pass
-		debug("ConfigGenreIcons().setState() key=%s changed=%s" % (key,changed))
 		return changed
 	
 	def ask(self):
@@ -3247,7 +3246,7 @@ class ConfigGenreIcons:
 		useXOptions = [ __language__(350), __language__(351) ]			# YES , NO
 		selectDialog = DialogSelect()
 		selectDialog.setup(__language__(542), rows=len(menu), width=330, imageWidth=30, \
-						   title2="(X)",useXOptions=useXOptions, panel=DIALOG_PANEL)
+						   title2=__language__(617),useXOptions=useXOptions, panel=DIALOG_PANEL)
 		selectedPos, action = selectDialog.ask(menu, 0, imageList)
 
 		# rename genre files if changed
@@ -4426,7 +4425,6 @@ class LiveSportOnTV:
 			else:
 				ID = str(self.MAIN_MENU_DATA[title])
 			iconFN = self.ICON_FN.replace('$ID', ID)
-			print title, ID, iconFN
 			menuIcons.append(iconFN)
 
 		menu.insert(0, __language__(500))	# exit
