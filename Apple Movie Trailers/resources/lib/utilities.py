@@ -17,7 +17,7 @@ __version__ = sys.modules[ "__main__" ].__version__
 __svn_revision__ = sys.modules[ "__main__" ].__svn_revision__
 
 # comapatble versions
-DATABASE_VERSIONS = ( "pre-0.99.6", "pre-0.99.7", )
+DATABASE_VERSIONS = ( "pre-0.99.7.1", )
 SETTINGS_VERSIONS = DATABASE_VERSIONS
 # special categories
 GENRES = -1

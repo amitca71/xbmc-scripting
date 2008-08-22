@@ -222,13 +222,14 @@ class Database:
                 xbmcgui.Dialog().ok( __scriptname__, msg[ 1 ], msg[ 2 ] )
         else:
         """
-        if 1:
+        if ( version not in ( "pre-0.99.5a", "pre-0.99.5b", "pre-0.99.5c", "pre-0.99.6", "pre-0.99.7", "pre-0.99.7.1" ) ):
             xbmcgui.Dialog().ok( __scriptname__, msg[ 1 ] )
-            if ( version not in ( "pre-0.99.5a", "pre-0.99.5b", "pre-0.99.5c", ) ):
-                _remove_xmls()
+            _remove_xmls()
             os.remove( BASE_DATABASE_PATH )
             version, complete = self._create_database()
-            return ( __version__, complete )
+        else:
+            ok = _update_version()
+        return ( __version__, complete )
 
 
 class Tables( dict ):

@@ -483,17 +483,16 @@ class Trailers:
                     self.saved = eval( movie[ 13 ] )
                 else:
                     self.saved = []
-                self.date_added = movie[ 14 ]
-                if ( self.date_added is not None ):
-                    self.date_added = self.date_added.replace( "u", "" )
+                if ( movie[ 14 ] is not None ):
+                    self.date_added = movie[ 14 ].replace( "u", "" )
                 else:
-                    self.date_added = datetime.date.today()
+                    self.date_added = str( datetime.date.today() )
                 self.actors = []
                 self.studio = ""
 
             try:
                 _set_default_movie_info( movie )
-                date_added = datetime.date.today()
+                date_added = str( datetime.date.today() )
                 
                 # get the main index xml file
                 for url in self.urls:
