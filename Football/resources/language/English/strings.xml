@@ -90,7 +90,7 @@
     <string id="551">Five Live</string>
     <string id="552">Five Live Xtra</string>
     <string id="553">606 Debates</string>
-    <string id="554">Live Sport On TV Schedule</string>
+    <string id="554">LiveSportOnTV.com</string>
     <string id="555">606 Debates Thread</string>
     <string id="556">Gossip and Transfers</string>
     <string id="557">Premier League</string>
@@ -126,6 +126,8 @@
     <string id="587">Turkey</string>
     <string id="588">African</string>   
     
+	<!-- LiveSportOn TV -->
+
 
     <!-- Update messages -->
     <string id="1000">Your version is up to date.</string>

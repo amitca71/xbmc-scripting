@@ -22,9 +22,9 @@ from threading import Thread
 
 # Script doc constants
 __scriptname__ = "Football"
-__version__ = '1.5'
+__version__ = '1.5.1'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '20-04-2008'
+__date__ = '22-08-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -37,17 +37,18 @@ DIR_GFX = os.path.join(DIR_RESOURCES,'gfx')
 DIR_TEAM_GFX = os.path.join(DIR_RESOURCES,'team_gfx')
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
-# Custom libs
-import language
-mylanguage = language.Language()
-__language__ = mylanguage.localized
+# Load Language using xbmc builtin
+try:
+    # 'resources' now auto appended onto path
+    __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
+    if not __language__( 0 ): raise
+except:
+	print "failed to get builtin xbmc.Language() or strings not parsed from path - upgrade XBMC"
 
 import update                                       # script update module
 from bbbLib import *								# requires __language__ to be defined
 from bbbGUILib import *
 
-# dialog object for the whole app
-dialogProgress = xbmcgui.DialogProgress()
 INIT_NONE = 0
 INIT_DISPLAY = 1
 INIT_PART = 2
@@ -63,8 +64,8 @@ timerthread = None
 # MAIN
 #################################################################################################################
 class Football(xbmcgui.Window):
-	def __init__(self):
-		debug("> Football()")
+	def __init__(self, *args, **kwargs):
+		debug("> Football()__init__")
 
 		setResolution(self)
 
@@ -100,7 +101,6 @@ class Football(xbmcgui.Window):
 		self.DATASOURCE_BBC = __language__(330)
 		self.DATASOURCE_SOCSTND = __language__(331)
 
-		# used to calc string width based on each char width
 		self.liveTextUpdateURL = ''		# saved (fully formed) url for livetext updates
 
 		# EXTRA URL INFOS
@@ -232,7 +232,7 @@ class Football(xbmcgui.Window):
 		else:
 			self.ready = False
 
-		debug("< Football()")
+		debug("< Football()__init__")
 
 	##############################################################################################
 	def isReady(self):
@@ -685,13 +685,13 @@ class Football(xbmcgui.Window):
 
 		# TEAMS
 		self.TEAMS_DATA = {
-					self.NAV_LIST_ATTRIBS : [0, 0, 125, 120,''] # x,y,w,h,selectedItem
+					self.NAV_LIST_ATTRIBS : [0, 0, 150, 120,''] # x,y,w,h,selectedItem
 					}
 
 		self.TEAM_VIEWS_MENU = [self.TEAM_VIEW_NEWS,self.TEAM_VIEW_FIX,self.TEAM_VIEW_RES,
 						   self.TEAM_VIEW_LIVE_TEXT,self.TEAM_VIEW_SQUAD]
 		self.TEAM_VIEW_DATA = {
-			self.NAV_LIST_ATTRIBS : [0, 0, 140, 120,''], # x,y,w,h,selectedItem
+			self.NAV_LIST_ATTRIBS : [0, 0, 150, 120,''], # x,y,w,h,selectedItem
 			self.NAV_LIST_MENU : [],
 			self.TEAM_VIEW_NEWS : 'http://newsrss.bbc.co.uk/rss/sportonline_uk_edition/football/teams/$AZ/$TEAM/rss.xml',
 			self.TEAM_VIEW_FIX : 'http://news.bbc.co.uk/sport1/hi/football/teams/$AZ/$TEAM/fixtures/default.stm',
@@ -915,7 +915,7 @@ class Football(xbmcgui.Window):
 
 			# nav list TEAM_VIEWS
 			elif self.selectedNavListKey == self.TEAM_VIEW_KEY:
-				debug("TEAM_VIEWS_KEY")
+				debug("TEAM_VIEWS_KEY navListSelectedID=%s" % navListSelectedID)
 				if navListSelectedID == self.TEAM_VIEW_NEWS:
 					debug("TEAM_VIEW_NEWS")
 					# extract data associated with this selected item
@@ -937,6 +937,8 @@ class Football(xbmcgui.Window):
 					try:
 						self.setFocus(self.contentControls[self.contentFocusIdx][self.CONTENT_REC_CONTROL])
 					except: pass
+				else:
+					debug("unknown TEAM_VIEWS option")
 
 		debug("< contentSelected()")
 
@@ -964,7 +966,7 @@ class Football(xbmcgui.Window):
 				debug("actual selectedPos=%s" % selectedPos)
 			if selectedPos >= 0:
 				menu = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_DATA)[self.NAV_LIST_MENU]
-				debug("menu=%s" % menu)
+#				debug("menu=%s" % menu)
 				id = menu[selectedPos]
 				if isinstance(id, int):
 					name = __language__(id)
@@ -2131,10 +2133,10 @@ class Football(xbmcgui.Window):
 
 			# split into sections
 			debug("LIVE TEXT - get section")
-			splits = parseDocList(html, '<b>(\d+:\d+.*?br /><br />)', 'noshade', '</td>')
+			splits = parseDocList(html, '<b>(\d+.*?br /><br />)', 'noshade', '</td>')
 
 			# regexTimeEventText, regexTimeText
-			reList = ('(\d+:\d+.*?)(?:<b>|</b>)(.*?)<br /><br />', '(\d+:\d+.*?)(?:<b>|</b>)(.*?)<')
+			reList = ('(\d+.*?)(?:<b>|</b>)(.*?)<br /><br />', '(\d+.*?)(?:<b>|</b>)(.*?)<')
 			for split in splits:
 				for regex in reList:
 					matches = re.search(regex, split, re.DOTALL+re.MULTILINE+re.IGNORECASE)
@@ -2179,7 +2181,7 @@ class Football(xbmcgui.Window):
 
 					# SCORE
 					self.contentData.append(['',''])
-					matches = parseDocList(tableRows[0], '>(.*?)<')
+					matches = parseDocList(tableRows[0], 'c\d">(.*?)</b')
 					score = ' '
 					for match in matches:
 						score += decodeEntities(cleanHTML(match)) + ' '
@@ -2695,38 +2697,38 @@ class Football(xbmcgui.Window):
 		id, title2 = self.getNavListSelectedItem(self.TEAM_VIEW_KEY)
 		dialogProgress.create(__language__(302), title, title2)
 		html = fetchURL(url)
-		dialogProgress.close()
 		if validWebPage(html):
 
 			if find(html, "Team Lineup") != -1:	# found
 				# DATA SECTION
 				regex = 'Team Lineup(.*?)</table'
+				dialogProgress.update(0, __language__(304), title, title2)
 				section = searchRegEx(html, regex, re.MULTILINE+re.IGNORECASE+re.DOTALL)
 				if section:
 					# [squad number, link, name]
-					reList = ('c1\".*?>(.+?)<.*?c2\">.*?href=\"(.*?)\".*?>(.*?)</a', 'c1\".*?>(.+?)<.*?c2\">(.*?)<')
+					reList = ('c1".*?>(.+?)<.*?c2">.*?href="(.*?)".*?>(.*?)</a', 'c1".*?>(.+?)<.*?c2">(.*?)<')
 					for regex in reList:
 						matches = parseDocList(section, regex)
-						if matches:
-							for match in matches:
-								if len(match) == 2:
-									squadno = decodeEntities(match[0]).strip()
-									name = decodeEntities(match[1]).strip()
-									link = ''
-								else:
-									squadno = decodeEntities(match[0]).strip()
-									link = match[1]
-									name = decodeEntities(match[2]).strip() + " " + __language__(368)
+						for match in matches:
+							if len(match) == 2:
+								squadno = decodeEntities(match[0]).strip()
+								name = decodeEntities(match[1]).strip()
+								link = ''
+							else:
+								squadno = decodeEntities(match[0]).strip()
+								link = match[1]
+								name = decodeEntities(match[2]).strip() + " " + __language__(368)
 
-								if not name:
-									continue
-								if not squadno:
-									squadno = '?'
+							if not name:
+								continue
+							if not squadno:
+								squadno = '?'
 
-								self.contentData.append([squadno + '. ' + name,'',link])
+							self.contentData.append([squadno + '. ' + name,'',link])
 
-						self.contentData.sort()
+					self.contentData.sort()
 
+		dialogProgress.close()
 		if not self.contentData:
 			self.contentData.append([__language__(353),""])
 
@@ -3047,13 +3049,9 @@ class Football(xbmcgui.Window):
 				if self.resetNavListTeams():
 					optReInit = INIT_FULL
 			elif selectedItem == OPT_VIEW_README:
-				fn = getReadmeFilename(mylanguage)
-				textBoxDialog = TextBoxDialog()
-				textBoxDialog.ask(title=OPT_VIEW_README, file=fn, panel=DIALOG_PANEL)
+				viewReadme()
 			elif selectedItem == OPT_VIEW_CHANGELOG:
-				fn = os.path.join(DIR_HOME, "Changelog.txt")
-				textBoxDialog = TextBoxDialog()
-				textBoxDialog.ask(title=OPT_VIEW_CHANGELOG, file=fn, panel=DIALOG_PANEL)
+				viewChangelog()
 			elif selectedItem == OPT_DATASOURCE:
 				dataSource = self.startupMenu()
 				if dataSource:
@@ -3107,7 +3105,12 @@ class Timer(Thread):
 				format = "%H:%M:%S"
 			else:
 				format = "%I:%M:%S %p"
-			self.mother.clockLbl.setLabel(time.strftime(format,time.localtime()))
+			text = time.strftime(format, time.localtime())
+			# strip leading 0 in 12hr mode
+			if not self.use24HourClock:
+				if text[0] == '0': text = text[1:]
+
+			self.mother.clockLbl.setLabel(text)
 
 			# delay timer
 			if self.countDownRunning:
@@ -3157,8 +3160,10 @@ def validWebPage(html):
 	debug("validWebPage() %s" % success)
 	return success
 
-###################################################################################################################
-# this version just for Football script as it doesnt use __language__
+######################################################################################
+def messageNoInfo(msg=''):
+	messageOK(__language__(100), __language__(102), msg)
+
 ###################################################################################################################
 class LiveSportOnTV:
 	def __init__(self):
@@ -3167,30 +3172,47 @@ class LiveSportOnTV:
 		self.URL_BASE = 'http://www.livesportontv.com/'
 		self.URL_FULLLISTING = self.URL_BASE + 'search3.php?id='
 		self.URL_RSS = self.URL_BASE + 'rss.php?p=/search3.php&id='
-		self.ICON_FN = os.path.join(DIR_GFX, "lsotv_$ID.png")
+		self.ICON_FN = os.path.join(DIR_GFX, "lsotv_$ID.gif")
 
 		self.MAIN_MENU_DATA = {
+			'All Sports' : 'index.php?show=all', 
 			'HDTV' : 'hdfull.php',
-			'American Football' : 11,
-			'Baseball' : 13,
-			'Basketball' : 10,
-			'Boxing' : 12,
-			'Cricket' : 4,
-			'Darts' : 2,
+			'Olympics' : 'olympics.php',
 			'Football' : 1,
-			'Golf' : 6,
-			'Hockey' : 14,
-			'Motor Sports' : 5,
-			'Rugby League' : 8,
-			'Rugby Union' : 7,
+			'Darts' : 2,
 			'Snooker' : 3,
-			'Tennis' : 9
+			'Cricket' : 4,
+			'Motor Sports' : 5,
+			'Golf' : 6,
+			'Rugby Union' : 7,
+			'Rugby League' : 8,
+			'Tennis' : 9,
+			'Basketball' : 10,
+			'American Football' : 11,
+			'Boxing' : 12,
+			'Baseball' : 13,
+			'Hockey' : 14,
+			'Winter Sports' : 20,
+			'Athletics' : 21,
+			'Cycling' : 22,
+			'Martial Arts' : 23,
+			'Bowls' : 27,
+			'Wrestling' : 28,
+			'Gymnastics' : 29,
+			'Water Sports' : 30,
+			'Vollyball' : 32,
+			'Pool' : 33
 			}
 		debug("< LiveSportOnTV() init()")
 
 	###################################################################################################################
 	def onAction(self, action):
-		if action in [ACTION_BACK, ACTION_B]:
+		try:
+			actionID = action.getId()
+			if not actionID:
+				actionID = action.getButtonCode()
+		except: return
+		if actionID in CANCEL_DIALOG + EXIT_SCRIPT:
 			self.close()
 
 	###################################################################################################################
@@ -3199,9 +3221,11 @@ class LiveSportOnTV:
 
 	###################################################################################################################
 	def getSportDataRSS(self, html, ID):
-		debug("> LiveSportOnTV.getSportDataRSS() ID="+str(ID))
+		debug("> LiveSportOnTV.getSportDataRSS() ID=%s" % ID)
 
 		menu = []
+		menuIcons = []
+
 		# split into rss items
 		items = html.split("</item>")
 		for item in items:
@@ -3210,9 +3234,11 @@ class LiveSportOnTV:
 				title = cleanHTML(decodeEntities(match))
 				if title:
 					menu.append(xbmcgui.ListItem(title))
+					iconFN = self.ICON_FN.replace('$ID', str(ID))
+					menuIcons.append(iconFN)
 
 		debug("< LiveSportOnTV.getSportDataRSS()")
-		return menu, []
+		return menu, menuIcons
 
 	###################################################################################################################
 	def getSportData(self, html, ID):
@@ -3220,16 +3246,23 @@ class LiveSportOnTV:
 
 		menu = []
 		menuIcons = []
-		iconFN = self.ICON_FN.replace('$ID', str(ID))
 
-		regex = 'dt">(.*?)<.*?fx">(.*?)<.*?tt">(.*?)<.*?ch">(.*?)</td'
-		matches = parseDocList(html, regex, '>FIXTURE DATE','</table>' )
+#		regex = '(?:tm\d*|dt)">(.*?)<.*?fx\d*">(.*?)<.*?tt\d*">(.*?)<.*?ch\d*">(.*?)</td' # w/o icon
+		regex = '_images/(\d+).*?(?:tm\d*|dt)">(.*?)<.*?fx\d*">(.*?)<.*?tt\d*">(.*?)<.*?ch\d*">(.*?)</td' # w/icon
+		matches = parseDocList(html, regex, 'class="theader"','id="footer"' )
 		for match in matches:
-			date = cleanHTML(decodeEntities(match[0]))
-			fixture = cleanHTML(decodeEntities(match[1]))
-			tourn = cleanHTML(decodeEntities(match[2]))
-			channel = cleanHTML(decodeEntities(match[3]))
-			menu.append(xbmcgui.ListItem(date+', '+fixture+', '+tourn ,channel))
+			iconID = match[0]
+			if iconID:
+				iconFN = self.ICON_FN.replace('$ID', str(iconID))
+			else:
+				iconFN = self.ICON_FN.replace('$ID', str(ID))
+			date = cleanHTML(decodeEntities(match[1]))
+			fixture = cleanHTML(decodeEntities(match[2]))
+			tourn = cleanHTML(decodeEntities(match[3]))
+			channel = cleanHTML(decodeEntities(match[4]))
+			channel = re.sub(r'(document.write.*?;)', ' ', channel)
+			label = "%s, %s, %s" % (date,fixture,tourn)
+			menu.append(xbmcgui.ListItem(label, channel))
 			menuIcons.append(iconFN)
 
 		debug("< LiveSportOnTV.getSportData()")
@@ -3241,19 +3274,19 @@ class LiveSportOnTV:
 	# or uses the web page, from which it can also get sport image icon.
 	###################################################################################################################
 	def displaySport(self, title, ID):
-		debug("> LiveSportOnTV.displaySport title=%s ID=%s" % (title, ID))
+		debug("> LiveSportOnTV.displaySport ID=%s" % ID)
 
 		# ID string is a url otherwise a number
 		if isinstance(ID, int):
 			urlList = [self.URL_FULLLISTING + str(ID), self.URL_RSS + str(ID)]
 		else:
-			urlList = [self.URL_BASE + ID]
+			urlList = [self.URL_BASE + ID]		# eg BASE + hdfull.php
 
-		listTitle = "LiveSportOnTV.com"
+		listTitle = __language__(519)
 		menu = []
 		menuIcons = []
 		for url in urlList:
-			dialogProgress.create(listTitle, "Downloading ...", title)
+			dialogProgress.create(listTitle, __language__(300), title)
 			html = fetchURL(url)
 			dialogProgress.close()
 			if html:
@@ -3264,8 +3297,10 @@ class LiveSportOnTV:
 				if menu:
 					break
 
+		menu.insert(0, xbmcgui.ListItem(__language__(500), ''))	# exit
+		menuIcons.insert(0,'')									# exit icon
 		selectDialog = DialogSelect()
-		selectDialog.setup(listTitle, imageWidth=24,width=710, rows=len(menu), itemHeight=24, panel=DIALOG_PANEL)
+		selectDialog.setup(listTitle, imageWidth=25,width=720, rows=len(menu), itemHeight=24, font=FONT10, panel=DIALOG_PANEL)
 		selectedPos,action = selectDialog.ask(menu, icons=menuIcons)
 		debug("< LiveSportOnTV.displaySport")
 
@@ -3278,21 +3313,23 @@ class LiveSportOnTV:
 		menu.sort()
 		menuIcons = []
 		for title in menu:
-			ID = str(self.MAIN_MENU_DATA[title])
+			if title[:3] == 'All':
+				ID = 'all'
+			else:
+				ID = str(self.MAIN_MENU_DATA[title])
 			iconFN = self.ICON_FN.replace('$ID', ID)
 			menuIcons.append(iconFN)
 
+		menu.insert(0, __language__(500))	# exit
+		menuIcons.insert(0, '')				# exit has no icon
 		selectedPos = 0
 		while menu:
-			try:
-				selectDialog = DialogSelect()
-				selectDialog.setup(imageWidth=25, width=300, rows=len(menu), itemHeight=25,
-								   banner=os.path.join(DIR_GFX, 'livesportontv_logo.gif'), panel=DIALOG_PANEL)
-				selectedPos,action = selectDialog.ask(menu, selectedPos,icons=menuIcons)
-				if selectedPos < 0:				# exit selected
-					break
-			except:
-				handleException()
+			selectDialog = DialogSelect()
+			selectDialog.setup(imageWidth=25, width=300, rows=len(menu), itemHeight=25,
+							   banner=os.path.join(DIR_GFX, 'livesportontv_logo.gif'), panel=DIALOG_PANEL)
+			selectedPos,action = selectDialog.ask(menu, selectedPos,icons=menuIcons)
+			if selectedPos <= 0:				# exit selected
+				break
 
 			title = menu[selectedPos]
 			id = self.MAIN_MENU_DATA[title]
@@ -3300,50 +3337,57 @@ class LiveSportOnTV:
 
 		debug("< LiveSportOnTV.ask()")
 
-##############################################################################################################    
-def playMedia(filename):
-	success = True
-	try:
-		xbmc.Player().play(filename)
-	except:
-		debug('xbmc.Player().play() failed trying xbmc.PlayMedia() ')
-		try:
-			cmd = 'xbmc.PlayMedia(%s)' % filename
-			xbmc.executebuiltin(cmd)
-		except:
-			handleException('xbmc.PlayMedia()')
-			success = False
-	return success
 
 ######################################################################################
-def messageNoInfo(msg=''):
-	messageOK(__language__(100), __language__(102), msg)
-
-######################################################################################
-def updateScript(quite=False, notifyNotFound=False):
-	xbmc.output( "> updateScript() quite=%s" %quite)
+def updateScript(silent=False):
+	xbmc.output( "> updateScript() silent=%s" % silent)
 
 	updated = False
 	up = update.Update(__language__, __scriptname__)
-	version = up.getLatestVersion(quite)
+	version = up.getLatestVersion(silent)
 	xbmc.output("Current Version: " + __version__ + " Tag Version: " + version)
 	if version != "-1":
 		if __version__ < version:
-			# do update ?
-			if xbmcgui.Dialog().yesno( __language__(0), 
+			if xbmcgui.Dialog().yesno( __language__(0), \
 								"%s %s %s." % ( __language__(1006), version, __language__(1002) ), \
-								__language__(1003)):
+								__language__(1003 )):
 				updated = True
 				up.makeBackup()
 				up.issueUpdate(version)
-		elif notifyNotFound:
-			dialogOK(__language__(0), __language__(1000))           # upto date
-#	elif not quite:
+		elif not silent:
+			dialogOK(__language__(0), __language__(1000))
+#	elif not silent:
 #		dialogOK(__language__(0), __language__(1030))				# no tagged ver found
 
 	del up
-	xbmc.output( "< _updateScript() updated=%s" % updated)
+	xbmc.output( "< updateScript() updated=%s" % updated)
 	return updated
+
+#################################################################################################################
+def viewReadme():
+	debug("> viewReadme()")
+	fn = getReadmeFilename()
+	doc = readFile(fn)
+	if not doc:
+		doc = "Readme not found: " + fn
+	tbd = TextBoxDialogXML("script-bbb-textbox.xml", DIR_HOME, "Default")
+	tbd.ask(__language__(521), doc)
+	del tbd
+	debug("< viewReadme()")
+
+#################################################################################################################
+def viewChangelog():
+	debug("> viewChangelog()")
+	fn = os.path.join(DIR_HOME, "Changelog.txt")
+	doc = readFile(fn)
+	if not doc:
+		doc = "Changelog not found: " + fn
+
+	tbd = TextBoxDialogXML("script-bbb-textbox.xml", DIR_HOME, "Default")
+	tbd.ask(__language__(522), doc)
+	del tbd
+	debug("< viewChangelog()")
+
 
 #######################################################################################################################    
 # BEGIN !
@@ -3361,6 +3405,7 @@ removeDir(DIR_CACHE, force=True)
 deleteFile(os.path.join(DIR_HOME, "temp.xml"))
 deleteFile(os.path.join(DIR_HOME, "temp.html"))
 
+debug("exiting script ...")
 moduleList = ['bbbLib', 'bbbGUILib']
 for m in moduleList:
 	try:
@@ -3373,7 +3418,7 @@ try:
 except: pass
 
 # goto xbmc home window
-#try:
-#	xbmc.executebuiltin('XBMC.ReplaceWindow(0)')
-#except: pass
+try:
+	xbmc.executebuiltin('XBMC.ReplaceWindow(0)')
+except: pass
 
