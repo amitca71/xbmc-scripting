@@ -31,14 +31,15 @@ ECHO .svn>"BUILD\exclude.txt"
 ECHO Thumbs.db>>"BUILD\exclude.txt"
 ECHO Desktop.ini>>"BUILD\exclude.txt"
 
-
 Echo ------------------------------
 Echo Copying required files to \Build\%ScriptName%\ folder . . .
 xcopy resources "BUILD\%ScriptName%\resources" /E /Q /I /Y /EXCLUDE:BUILD\exclude.txt
 copy default.* "BUILD\%ScriptName%\"
 copy autoexec.* "BUILD\%ScriptName%\"
+copy AlarmClock.* "BUILD\%ScriptName%\"
+copy FavShows.* "BUILD\%ScriptName%\"
+copy Changelog.* "BUILD\%ScriptName%\"
 Echo.
-
 
 
 :Cleanup
