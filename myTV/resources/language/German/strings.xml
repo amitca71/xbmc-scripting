@@ -86,7 +86,7 @@
     <string id="326">Sonntag</string>
     <string id="327">Heute</string>
     <string id="328">Morgen</string>
-    <string id="329">Zurücksetzen</string>
+    <string id="329">Zurücks.</string>
 
     <!-- Yes/No buttons -->
     <string id="350">Ja</string>
@@ -141,8 +141,8 @@
     <string id="530">Entferne Listencache</string>
     <string id="531">Datenquelle auswählen</string>
     <string id="532">Datenquelle einstellen</string>
-    <string id="533">TV Karte auswählen</string>
-    <string id="534">TV Karte einstellen</string>
+    <string id="533">TV-Karte auswählen</string>
+    <string id="534">TV-Karte einstellen</string>
     <string id="535">Remote Timer beim Starten abrufen?</string>
     <string id="536">24 Std. Zeitformat?</string>
     <string id="537"></string>
@@ -214,7 +214,7 @@
     <string id="605">Vorheriger Text</string>
     <string id="606">Ausschalten</string>
     <string id="607">Wake On LAN</string>
-    <string id="608">Bevorzugte TV Karte verwenden ?</string>
+    <string id="608">Bevorzugte TV-Karte verwenden ?</string>
     <string id="609">Versteckt? (X)</string>
     <string id="610">Abruf der Ländercodes ...</string>
     <string id="611">Land auwählen</string>
@@ -228,7 +228,7 @@
 
     <!-- Datasource Common -->
     <string id="700">Kartentyp auswählen</string>
-    <string id="701">Ausführbarer PFAD der TV Karte</string>
+    <string id="701">Ausführbarer PFAD der TV-Karte</string>
 
     <!-- Saveprogrammes Common -->
     <string id="800">Aufnehmen?</string>
@@ -249,7 +249,7 @@
     <string id="815">Live TV Wiedergabe-Verzögerung (in Sek):</string>
     <string id="816">Live TV Dateinamenmarkierung:</string>
     <string id="817">Live TV SMB Pfad:</string>
-    <string id="818">Keine TV Karte</string>
+    <string id="818">Keine TV-Karte</string>
     <string id="819">Setze Timer ...</string>
     <string id="820">Starte Wiedergabe ...</string>
     <string id="821">Lösche Timer ...</string>
