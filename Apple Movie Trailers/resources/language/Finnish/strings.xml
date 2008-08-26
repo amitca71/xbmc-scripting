@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-   <!--  Finnish 31.7.2008 -->
+   <!--  Finnish 26.8.2008 -->
   <string id="0">Apple Movie Trailers</string>
   <string id="1">xbmc media center</string>
   <string id="2">Mikko 70</string>
@@ -98,10 +98,13 @@
   <string id="159">Minimi</string>
   <string id="160">HD-esittelyt</string>
   <string id="161">Ei esittelyn osoitetta</string>
-  <string id="162">Määriteltyhaku</string>
+  <string id="162">Määritelty haku</string>
   <string id="163">Katsotut</string>
   <string id="164">Viimeksi lisätyt</string>
   <string id="165">Usea esittely</string>
+  <string id="166">Elokuvan tiedot</string>
+  <string id="167">Teattereissa</string>
+  <string id="168">Lisäyspäivä</string>
 
   <!-- Settings labels -->
   <string id="200">Valitse:</string>
