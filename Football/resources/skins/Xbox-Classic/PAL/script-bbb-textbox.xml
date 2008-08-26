@@ -1,0 +1,93 @@
+<window id="3000">
+	<defaultcontrol>90</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="visualisation">
+			<description>visualisation</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<visible>Skin.HasSetting(VisBackground)</visible>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>background.png</texture>
+		</control>
+		<include>Controller_Image</include>
+		<include>XBMC_Logo_Image</include>
+		<control type="label" id="3">
+			<description>Window Heading</description>
+			<posx>240</posx>
+			<posy>70</posy>
+			<width>450</width>
+			<label>Changelog</label>
+			<font>font14</font>
+			<include>textcolor-yellow</include>
+			<include>shadow-black</include>
+			<include>Slide_From_Right_Animation</include>
+		</control>
+		<control type="image">
+			<description>text background image</description>
+			<posx>40</posx>
+			<posy>150</posy>
+			<width>615</width>
+			<height>385</height>
+			<colordiffuse>55FFFFFF</colordiffuse>
+			<texture border="5">dialog_middle.png</texture>
+			<include>Slide_From_Left_Animation</include>
+		</control>
+		<control type="textbox" id="5">
+			<description>textarea</description>
+			<posx>50</posx>
+			<posy>155</posy>
+			<width>590</width>
+			<height>375</height>
+			<pagecontrol>90</pagecontrol>
+			<include>textcolor-white</include>
+			<font>font12</font>
+			<include>Slide_From_Left_Animation</include>
+		</control>
+		<control type="group">
+			<include>Slide_From_Right_Animation</include>
+			<control type="image">
+				<posx>660</posx>
+				<posy>150</posy>
+				<include>Scrollbar_Width</include>
+				<height>20</height>
+				<texture>scrollbar_uparrow.png</texture>
+				<visible>Control.IsVisible(90)</visible>
+			</control>
+			<control type="image">
+				<posx>660</posx>
+				<posy>514</posy>
+				<include>Scrollbar_Width</include>
+				<height>20</height>
+				<texture>scrollbar_downarrow.png</texture>
+				<visible>Control.IsVisible(90)</visible>
+			</control>
+			<control type="scrollbar" id="90">
+				<posx>660</posx>
+				<posy>170</posy>
+				<include>Scrollbar_Width</include>
+				<height>344</height>
+				<texturesliderbackground border="2,0,2,0">scrollbar_background.png</texturesliderbackground>
+				<texturesliderbar border="2,6,2,6">scrollbar_nofocus.png</texturesliderbar>
+				<texturesliderbarfocus border="2,5,2,5">scrollbar_focus.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<onleft>50</onleft>
+				<onright>9000</onright>
+				<onup>90</onup>
+				<ondown>90</ondown>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>![Window.IsVisible(501) + Control.IsVisible(54)] + ![Window.IsVisible(myvideofiles) + Control.IsVisible(55)] + ![Window.IsVisible(myvideolibrary) + Control.IsVisible(55)] + ![Window.IsVisible(myvideolibrary) + Control.IsVisible(56)]</visible>
+			</control>
+		</control>
+	</controls>
+</window>

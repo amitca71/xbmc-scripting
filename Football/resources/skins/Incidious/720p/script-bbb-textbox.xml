@@ -1,0 +1,167 @@
+<window id="3000">
+	<defaultcontrol>5</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+
+	<controls>
+		<control type="group">
+			<visible>System.Time(05:00,17:00)</visible>
+			<control type="group">
+				<visible>Skin.String(CustomBackPathDay)</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>720</height>
+					<info>Skin.String(CustomBackPathDay)</info>
+				</control>
+			</control>
+
+			<control type="group">
+				<visible>!Skin.String(CustomBackPathDay)</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>720</height>
+					<texture>DayTime.png</texture>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<visible>System.Time(17:00,05:00)</visible>
+			<control type="group">
+				<visible>Skin.String(CustomBackPathNight)</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>720</height>
+					<info>Skin.String(CustomBackPathNight)</info>
+				</control>
+			</control>
+
+			<control type="group">
+				<visible>!Skin.String(CustomBackPathNight)</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>720</height>
+					<texture>NightTime.png</texture>
+				</control>
+			</control>
+		</control>
+		<control type="label">
+			<description>Clock</description>
+			<posx>1270</posx>
+			<posy>5</posy>
+			<height>30</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<scroll>false</scroll>
+			<info>System.Time(HH:MM XX)</info>
+			<font>WindowTextFont</font>
+			<textcolor>WindowInfoText</textcolor>
+		</control>
+
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture>BackgroundOverlay.png</texture>
+			<colordiffuse>BackgroundOverlay</colordiffuse>
+		<animation effect="fade" time="200" end="100">WindowOpen</animation>
+		<animation effect="fade" time="200" end="0">WindowClose</animation>
+		</control>
+
+		<control type="group">
+		<animation type="WindowOpen">
+			<effect type="fade" start="0" end="95" time="0"/>
+			<effect type="zoom" start="0" center="640,360" end="100" time="300"/>
+		</animation>        
+		<control type="group">
+		<posx>39</posx>
+		<posy>59</posy>
+			<control type="image">
+				<posx>1</posx>
+				<posy>1</posy>
+				<width>1200</width>
+				<height>600</height>
+				<texture>DialogBack.png</texture>
+				<colordiffuse>DialogBack</colordiffuse>
+			</control>
+			<control type="image">
+				<description>Top Border</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1202</width>
+				<height>1</height>
+				<texture>DialogFrame.png</texture>
+				<colordiffuse>DialogFrame</colordiffuse>
+			</control>
+			<control type="image">
+				<description>Bottom Border</description>
+				<posx>0</posx>
+				<posy>601</posy>
+				<width>1202</width>
+				<height>1</height>
+				<texture>DialogFrame.png</texture>
+				<colordiffuse>DialogFrame</colordiffuse>
+			</control>
+			<control type="image">
+				<description>Left Border</description>
+				<posx>0</posx>
+				<posy>1</posy>
+				<width>1</width>
+				<height>600</height>
+				<texture>DialogFrame.png</texture>
+				<colordiffuse>DialogFrame</colordiffuse>
+			</control>
+			<control type="image">
+				<description>Right Border</description>
+				<posx>1201</posx>
+				<posy>1</posy>
+				<width>1</width>
+				<height>600</height>
+				<texture>DialogFrame.png</texture>
+				<colordiffuse>DialogFrame</colordiffuse>
+			</control>
+		</control>
+		<control type="label" id="3">
+	  <description>Title</description>
+	  <posx>50</posx>
+	  <posy>65</posy>
+	  <width>1040</width>
+	  <label>XBMC Changelog</label>
+	  <scroll>true</scroll>
+	  <align>left</align>
+	  <font>WindowTitleTextFont</font>
+	  <textcolor>WindowTitleText</textcolor>
+	</control>        
+
+		<control type="textbox" id="5">
+			<description>text</description>
+			<posx>50</posx>
+			<posy>175</posy>
+			<width>1180</width>
+			<height>460</height>
+			<spinposx>500</spinposx>
+			<spinposy>-30</spinposy>
+			<spinwidth>20</spinwidth>
+			<spinheight>11</spinheight>
+			<font>WindowTextFont</font>
+			<textcolor>WindowText</textcolor>
+			<textureup>-</textureup>
+			<texturedown flipy="true">-</texturedown>
+			<textureupfocus>-</textureupfocus>
+			<texturedownfocus flipy="true">-</texturedownfocus>
+			<autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>
+
+		</control>
+		<animation type="WindowClose">
+			<effect type="zoom" start="100" center="640,360" end="0" time="300"/>
+		</animation>
+		</control>
+	</controls>
+</window>
