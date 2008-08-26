@@ -182,7 +182,7 @@ REZ_H = 576
 #######################################################################################################################    
 # DEBUG - display indented information
 #######################################################################################################################    
-DEBUG = True
+DEBUG = False
 debugIndentLvl = 0	# current indentation level
 def debug( value ):
 	global debugIndentLvl

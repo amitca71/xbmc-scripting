@@ -1305,8 +1305,8 @@ class myTV(xbmcgui.WindowXML):
 				btnEnd = self.tvChannels.getProgAttr(prog, TVData.PROG_ENDTIME)
 
 			debug("0) progIDX=%s btnStart=%s btnEnd=%s" % (progIDX,btnStart,btnEnd))
-			if DEBUG and prog:
-				print self.tvChannels.getProgAttr(prog, TVData.PROG_TITLE)
+#			if DEBUG and prog:
+#				print self.tvChannels.getProgAttr(prog, TVData.PROG_TITLE)
 
 			# TRIM BTN LEN TO THAT OF EPG START/END
 			if btnStart < firstTimeBarIntervalSecs:
