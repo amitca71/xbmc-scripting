@@ -31,8 +31,8 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '18-08-2008'
-__version__ = "1.7.1"
+__date__ = '26-08-2008'
+__version__ = "1.7.2"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
 # Shared resources
@@ -69,6 +69,7 @@ class Parser( SGMLParser ):
 #############################################################################################################
 class Main:
 	def __init__( self, runMode ):
+		xbmc.output("> __init__()")
 
 		self.runMode = runMode
 		xbmc.output("runMode=" + str(runMode))
@@ -123,7 +124,7 @@ class Main:
 			if self.runMode == RUNMODE_NORMAL or (remote_short_build_name and self.runMode == RUNMODE_SILENT):
 				self._menu( url, remote_archive_name, remote_short_build_name )
 
-		xbmc.output("__init__() done")
+		xbmc.output("< __init__() done")
 
 
 	######################################################################################
@@ -209,7 +210,7 @@ class Main:
 
 	######################################################################################
 	def _browse_dashname(self, dash_name=''):
-		xbmc.output( "_browse_dashname() curr dash_name="+dash_name)
+		xbmc.output( "> _browse_dashname() curr dash_name="+dash_name)
 		try:
 			xbeFiles = [__language__(650), __language__(652)]
 
@@ -253,7 +254,7 @@ class Main:
 
 		except:
 			handleException("_browse_dashname()")
-		xbmc.output( "_browse_dashname() final dash_name="+dash_name)
+		xbmc.output( "< _browse_dashname() final dash_name="+dash_name)
 		return dash_name
 
 
@@ -471,6 +472,7 @@ class Main:
 	######################################################################################
 	def _get_local_archive(self):
 		""" return latest T3CH archive found in install dir. Matches filenames of XBMC*YYYY-DD-MM*.<zip|rar> """
+		xbmc.output("> _get_local_archive()")
 		archive_file = ""
 		flist = []
 		try:
@@ -486,7 +488,7 @@ class Main:
 				archive_file = flist[0]
 		except:
 			traceback.print_exc()
-		xbmc.output("> _get_local_archive() archive_file=" + archive_file)
+		xbmc.output("< _get_local_archive() archive_file=" + archive_file)
 		return archive_file
 
 
@@ -773,6 +775,7 @@ class Main:
 			# ask to overwrite 
 			if not dialogYesNo(__language__( 0 ), __language__( 314 ), extract_path, \
 							yesButton=__language__( 402 ), noButton=__language__( 403 )):
+				xbmc.output( "< _extract() no overwrite. False")
 				return False
 
 		# use a new dialog cos an update shows an empty bar that ppl expect to move
@@ -818,7 +821,7 @@ class Main:
 				except: pass
 				dialogOK( __language__( 0 ), __language__( 312 ), extract_path )
 
-		xbmc.output( "< _extract() success=" + str(success) )
+		xbmc.output( "< _extract() success=%s" % success )
 		return success
 
 	######################################################################################
@@ -867,7 +870,7 @@ class Main:
 				break
 
 		dialogProgress.close()
-		xbmc.output( "< _check_extract() success=" + str(success) )
+		xbmc.output( "< _check_extract() success=%s" % success )
 		return success
 
 	######################################################################################
@@ -931,7 +934,7 @@ class Main:
 
 	######################################################################################
 	def _copy_user_data(self, extract_path):
-		xbmc.output( "_copy_user_data() " + extract_path )
+		xbmc.output( "> _copy_user_data() " + extract_path )
 		success = False
 
 		try:
@@ -954,18 +957,18 @@ class Main:
 				xbmc.output("copytree UserData %s -> %s" % (curr_build_userdata_path,new_build_userdata_path) )
 				self._dialog_update( __language__(0), __language__( 511 ), time=2) 
 				copytree( curr_build_userdata_path, new_build_userdata_path )
-				xbmc.output("copytree UserData done")
 				success = True
 			except:
 				dialogOK("Copy UserData Error","Failed to copytree:", curr_build_userdata_path, new_build_userdata_path)
 		except:
 			handleException("_copy_user_data()", __language__( 306 ))
+		xbmc.output( "< _copy_user_data() success=%s" % success )
 		return success
 
 
 	######################################################################################
 	def _update_shortcut(self, extract_path):
-		xbmc.output( "_update_shortcut() " +extract_path )
+		xbmc.output( "> _update_shortcut() " +extract_path )
 
 		success = False
 		# get users prefered booting dash name eg. XBMC.xbe
@@ -994,8 +997,8 @@ class Main:
 		if fileExist( shortcut_xbe_file ):
 			# DOES EXIST, check if diff
 			if not filecmp.cmp( src_xbe_file, shortcut_xbe_file ):
+				xbmc.output( "Shortcuts differ. Backup shortcut XBE: copy %s -> %s" % (shortcut_xbe_file, shortcut_xbe_file + "_old"))
 				copy( shortcut_xbe_file, shortcut_xbe_file + "_old" )
-				xbmc.output( "backup of XBE made to _old" )
 			else:
 				copy_xbe = False		# same file, no copy reqd
 
@@ -1003,26 +1006,32 @@ class Main:
 			# create new shortcut cfg path - this points to the new T3CH XBMC build xbe
 			boot_path = os.path.join( extract_path, "XBMC", "default.xbe" )
 			xbmc.output( "new cfg boot_path= " + boot_path )
-			# write new cfg to CFG_NEW
-			shortcut_cfg_file_new = shortcut_cfg_file + "_new" 
+			# write new cfg to .CFG_NEW
+			shortcut_cfg_file_new = shortcut_cfg_file + "_new"
+			xbmc.output( "shortcut_cfg_file_new= " + shortcut_cfg_file_new )
+			# delete any existing .CFG_NEW
+			deleteFile(shortcut_cfg_file_new)
+			xbmc.output( "write '%s' into file %s" % (boot_path, shortcut_cfg_file_new) )
 			file(shortcut_cfg_file_new,'w').write(boot_path)
-			xbmc.output( "new cfg created= " + shortcut_cfg_file_new )
 
 			# switch to new cfg now ?
+			xbmc.output( "Copy TEAM XBMC xbe required? %s" % copy_xbe)
 			if self.isSilent or dialogYesNo( __language__( 0 ), __language__( 519 ), __language__( 520 ),__language__( 521  ),yesButton=__language__( 404 ), noButton=__language__(405) ):
-				# copy TEAM XBMC shorcut xbe into place (if reqd)
+				# copy TEAM XBMC shortcut xbe into place (if reqd)
 				if copy_xbe:
+					xbmc.output( "TEAM XBMC xbe: copy %s -> %s" % (src_xbe_file, shortcut_xbe_file))
 					copy(src_xbe_file, shortcut_xbe_file)
-					xbmc.output( "TEAM XBMC xbe copied" )
 
+				xbmc.output( "AUTO cfg copies: copy %s -> %s" % (shortcut_cfg_file_new, shortcut_cfg_file) )
 				copy(shortcut_cfg_file_new, shortcut_cfg_file)
-				xbmc.output( "new cfg copied live" )
 				time.sleep(1)
 				success = True
+			else:
+				xbmc.output( "MANUAL cfg copies" )
 		except:
 			handleException("_update_shortcut()", __language__( 307 ))
 
-		xbmc.output( "_update_shortcut() success=" + str(success) )
+		xbmc.output( "< _update_shortcut() success=%s" % success )
 		return success
 
 	######################################################################################
@@ -1084,7 +1093,7 @@ class Main:
 				dest_path = os.path.join( extract_path, self.short_build_name, "XBMC", path )
 				if not self.isSilent:
 					percent = int( count * 100.0 / TOTAL )
-					self._dialog_update( __language__(0), __language__( 515 ), src_path, pct=percent )
+					self._dialog_update( __language__(0), __language__( 515 ), src_path, dest_path, pct=percent )
 					if dialogProgress.iscanceled(): break
 				localCopy(src_path, dest_path, self.isSilent)
 				count += 1
@@ -1291,7 +1300,7 @@ class Main:
 
 	#####################################################################################
 	def _select_file_folder(self, path=""):
-		xbmc.output( "_select_file_folder() path="+path)
+		xbmc.output( "> _select_file_folder() path="+path)
 		FILE = 1
 		FOLDER = 0
 		if not path:
@@ -1327,7 +1336,7 @@ class Main:
 		except:
 			path = ''
 
-		xbmc.output("_select_file_folder() final path=" + path + " type=" +str(type))
+		xbmc.output("< _select_file_folder() final path=" + path + " type=" +str(type))
 		return path, type
 
 	#####################################################################################
@@ -1450,17 +1459,16 @@ class Main:
 
 	#####################################################################################
 	def _get_current_build_info(self):
-		xbmc.output( "_get_current_build_info() ")
 		buildDate = xbmc.getInfoLabel( "System.BuildDate" )
 		curr_build_date_fmt = time.strptime(buildDate,"%b %d %Y")
 		curr_build_date_secs = time.mktime(curr_build_date_fmt)
 		curr_build_date = time.strftime("T3CH_%Y-%m-%d", curr_build_date_fmt)
-		xbmc.output( "curr_build_date="+curr_build_date + " curr_build_date_secs= " + str(curr_build_date_secs ))
+		xbmc.output( "_get_current_build_info() curr_build_date="+curr_build_date + " curr_build_date_secs= " + str(curr_build_date_secs ))
 		return (curr_build_date_secs, curr_build_date)
 
 	######################################################################################
 	def _update_script( self, isSilent=False):
-		xbmc.output( "> _update_script() isSilent="+str(isSilent))
+		xbmc.output( "> _update_script() isSilent=%s" % isSilent)
 
 		updated = False
 		up = update.Update(__language__, __scriptname__)
@@ -1481,7 +1489,7 @@ class Main:
 			dialogOK(__language__(0), __language__(1030))
 
 		del up
-		xbmc.output( "< _update_script() updated="+str(updated))
+		xbmc.output( "< _update_script() updated=%s" % updated)
 		return updated
 
 	#####################################################################################
@@ -1584,8 +1592,9 @@ def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
 			xbmc.output("src_path not exist, stop")
 			return
 
-		# make dest root dir
-		makeDir( dest_path )
+		# if source is a path, ensure dest_path root exists
+		if os.path.isdir( src_path ):
+			makeDir( os.path.dirname(dest_path) )
 
 		if os.path.isfile(src_path):
 			# FILE
@@ -1601,8 +1610,8 @@ def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
 			files = os.listdir(src_path)
 			xbmc.output("isdir; file count=%s" % len(files))
 			for f in files:
-				src_file = xbmc.makeLegalFilename(os.path.join( src_path, f ))
-				dest_file = xbmc.makeLegalFilename(os.path.join( dest_path, f ))
+				src_file = os.path.join( src_path, f )
+				dest_file = os.path.join( dest_path, f )
 
 				try:
 					if os.path.isdir( src_file ):
@@ -1618,6 +1627,7 @@ def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
 						if do_copy:
 							# copy directory
 							xbmc.output("isDir; copytree dir: %s -> %s" % (src_file, dest_file))
+							makeDir( os.path.dirname(dest_file) )
 							copytree( src_file, dest_file )
 						else:
 							xbmc.output("isDir; dest dir exists, ignored: " + dest_file)
@@ -1732,12 +1742,10 @@ def readURL( url, msg='', isSilent=False):
 
 #################################################################################################################
 def fileExist(filename):
-	exist = False
 	try:
-		if os.path.exists(filename) and os.path.getsize(filename) > 0:
-			exist = True
-	except: pass
-	return exist
+		return os.path.exists(filename)
+	except:
+		return False
 
 #################################################################################################################
 class TextBoxDialogXML( xbmcgui.WindowXML ):

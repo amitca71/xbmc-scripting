@@ -1,5 +1,9 @@
 T3CH Upgrader Changelog:
 ========================
+v1.7.2 26/08/08
+  Change: Delete, if exists, .cfg_new before file writting out new build path.
+  Change: Copying of subfolders root checked before copytree.
+  Change: Tidied up some debug logging.
 v1.7.1 18/08/08
   Fix: Potential copytree failure due to dest root not existing.
 v1.7 13/08/08
