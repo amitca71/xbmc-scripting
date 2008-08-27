@@ -1,6 +1,6 @@
 __scriptname__ = 'EvoxT-Trainers'
 __author__ = 'bootsy'
-__version__ = '0.96a'
+__version__ = '0.97'
 import xbmc, xbmcgui
 
 dia = xbmcgui.Dialog()
@@ -26,7 +26,8 @@ Section7_URL = Main_URL + '/t-browse.php?section=7'
 Section8_URL = Main_URL + '/t-browse.php?section=8'
 
 SCRIPTDIR = os.getcwd().replace(';','')+'\\'
-TEMPDIR = os.path.join(SCRIPTDIR,'temp')
+RESOURCESDIR = os.path.join(SCRIPTDIR,'resources')
+CACHEDIR = os.path.join(RESOURCESDIR,'cache')
 DEFAULTTRAINERDIR = os.path.join(SCRIPTDIR,'trainers')
 SETTINGSDIR = 'P:\\script_data\\'
 SCRIPTSETDIR = SETTINGSDIR + __scriptname__ + '\\'
@@ -93,7 +94,7 @@ class EvoxTGUI( xbmcgui.WindowXML ):
 
     def unzip(self, filename):
     #Unzips files to path
-        file_ = os.path.join(TEMPDIR,filename + '.zip')
+        file_ = os.path.join(CACHEDIR,filename + '.zip')
         tpath = self.TRAINERPATH
         dialog.update(75,'Unzipping file ...', filename + '.zip')
         try:
@@ -208,7 +209,7 @@ class EvoxTGUI( xbmcgui.WindowXML ):
         return file
 
     def dl_trainer(self, url, filename):
-        dest = os.path.join(TEMPDIR,filename + '.zip')
+        dest = os.path.join(CACHEDIR,filename + '.zip')
         dialog.update(55,'Downloading Trainer...', 'File: ' + filename + '.zip', 'from: ' + url)
         try:
             urllib.urlretrieve(url,dest)
@@ -290,8 +291,8 @@ class EvoxTGUI( xbmcgui.WindowXML ):
             os.mkdir(SCRIPTSETDIR)
         if not os.path.exists(DEFAULTTRAINERDIR):
             os.mkdir(DEFAULTTRAINERDIR)
-        if not os.path.exists(TEMPDIR):
-            os.mkdir(TEMPDIR)
+        if not os.path.exists(CACHEDIR):
+            os.mkdir(CACHEDIR)
         return
 
     def getmycontrols(self):
