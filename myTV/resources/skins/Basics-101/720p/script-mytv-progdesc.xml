@@ -12,13 +12,13 @@
 	<control type="group" id="2000">
 		<width>640</width>
 		<height>460</height>
-	<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(2000)">conditional</animation>
+		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(2000)">conditional</animation>
 
 		<control type="image">
 			<description>background image</description>
-			<texture>dialog-panel.png</texture>
-			<width>640</width>
-			<height>460</height>
+			<width>1195</width>
+			<height>570</height>
+			<texture border="6">menu_back.png</texture>
 		</control>
 
 		<control type="label" id="1">
@@ -65,28 +65,28 @@
 			<description>textarea</description>
 			<posx>30</posx>
 			<posy>100</posy>
-			<width>600</width>
-			<height>290</height>
+			<width>1150</width>
+			<height>540</height>
 			<font>special12</font>
 			<textcolor>FFFFFFCC</textcolor>
-			<spinposx>560</spinposx>
-			<spinposy>300</spinposy>
+			<spinposx>1100</spinposx>
+			<spinposy>445</spinposy>
 			<autoscroll time="3000" delay="4000" repeat="5000">!Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
 
 		<control type="image">
 			<description>B button image</description>
 			<posx>30</posx>
-			<posy>400</posy>
+			<posy>540</posy>
 			<width>20</width>
 			<height>20</height>
 			<texture>bbutton.png</texture>
-		<visible>Control.IsVisible(7)</visible>
+			<visible>Control.IsVisible(7)</visible>
 		</control>
 		<control type="label" id="7">
 			<description>B button label</description>
-			<posx>55</posx>
-			<posy>402</posy>
+			<posx>65</posx>
+			<posy>540</posy>
 			<label></label>
 			<font>font10</font>
 			<textcolor>FF99FFFF</textcolor>
@@ -94,16 +94,16 @@
 
 		<control type="image">
 			<description>X button image</description>
-			<posx>155</posx>
-			<posy>400</posy>
+			<posx>185</posx>
+			<posy>540</posy>
 			<width>20</width>
 			<height>20</height>
 			<texture>xbutton.png</texture>
 		</control>
 		<control type="label" id="8">
 			<description>X button label</description>
-			<posx>180</posx>
-			<posy>402</posy>
+			<posx>220</posx>
+			<posy>540</posy>
 			<label></label>
 			<font>font10</font>
 			<textcolor>FF99FFFF</textcolor>
@@ -111,16 +111,16 @@
 
 		<control type="image">
 			<description>Y button image</description>
-			<posx>280</posx>
-			<posy>400</posy>
+			<posx>370</posx>
+			<posy>540</posy>
 			<width>20</width>
 			<height>20</height>
 			<texture>ybutton.png</texture>
 		</control>
 		<control type="label" id="9">
 			<description>Y button label</description>
-			<posx>305</posx>
-			<posy>402</posy>
+			<posx>405</posx>
+			<posy>540</posy>
 			<label></label>
 			<font>font10</font>
 			<textcolor>FF99FFFF</textcolor>
@@ -128,16 +128,16 @@
 
 		<control type="image">
 			<description>BACK button image</description>
-			<posx>405</posx>
-			<posy>400</posy>
+			<posx>555</posx>
+			<posy>540</posy>
 			<width>20</width>
 			<height>20</height>
 			<texture>backbutton.png</texture>
 		</control>
 		<control type="label" id="10">
 			<description>BACK button label</description>
-			<posx>430</posx>
-			<posy>402</posy>
+			<posx>575</posx>
+			<posy>540</posy>
 			<label></label>
 			<font>font10</font>
 			<textcolor>FF99FFFF</textcolor>

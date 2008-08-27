@@ -59,7 +59,7 @@ class ListingData:
 		if not fileExist(dataFilename):
 			year = fileDate[:4]
 			month = fileDate[2:4]
-			day = fileDate[-2:]
+			day = str(int(fileDate[-2:]) +1)	# +1 to day. 31st Aug is 32 08
 			url = self.CHANNEL_URL.replace('$CHID',chID).replace('$DAY',day).replace('$MONTH',month).replace('$YEAR',year)
 			doc = fetchURL(url, dataFilename)
 		else:
@@ -72,14 +72,16 @@ class ListingData:
 		doc = doc.decode('latin-1','replace')
 		debug("process data ...")
 		# HH:MM, data -  which may/not contain href and name
-		regex = "(\d+:\d+).*?href=(exe.php3.*?)>(.*?)</a>(.*?)</td"
+		#regex = "(\d+:\d+).*?href=(exe.php3.*?)>(.*?)</a>(.*?)</td"
+		regex = "(\d+:\d+).*?href=(exe.php3.*?)>(.*?)</a>(.*?)</td.*?spalte.*?>(.*?)</td"	# w/genre
 		matches = parseDocList(doc, regex, 'output starts')
 		if matches:
 			for match in matches:
 				startTime = match[0]
 				link = match[1]
-				title = match[2]
-				desc = match[3]
+				title = cleanHTML(decodeEntities(unicodeToAscii(match[2])))
+				desc = cleanHTML(unicodeToAscii(decodeEntities(match[3])))
+				genre = cleanHTML(decodeEntities(unicodeToAscii(match[4])))
 				if not startTime or not title:
 					continue
 
@@ -87,6 +89,8 @@ class ListingData:
 					descLink = self.BASE_URL + link
 				else:
 					descLink = ''
+				if genre:
+					genre = self.translateGenre(genre)
 
 				# convert starttime to secs since epoch
 				secsEpoch = startTimeToSecs(lastStartTime, startTime, fileDate)
@@ -94,9 +98,11 @@ class ListingData:
 				progList.append( {
 						TVData.PROG_STARTTIME : float(secsEpoch),
 						TVData.PROG_ENDTIME : 0,
-						TVData.PROG_TITLE : cleanHTML(decodeEntities(unicodeToAscii(title))),
-						TVData.PROG_DESC : cleanHTML(unicodeToAscii(decodeEntities(desc))),
-						TVData.PROG_DESCLINK : descLink
+						TVData.PROG_TITLE : title,
+						TVData.PROG_DESC : desc,
+						TVData.PROG_SUBTITLE : desc,
+						TVData.PROG_DESCLINK : descLink,
+						TVData.PROG_GENRE : genre
 					} )
 
 				if DEBUG:
@@ -111,4 +117,33 @@ class ListingData:
 	#
 	def getLink(self, link, title=""):
 		debug("ListingData.getLink()")
-		return getDescriptionLink(link, 'HL1">(.*?)</td')
+		desc = getDescriptionLink(link, 'END PARTNER PROGRAM -->(.*?)</table')		# main desc
+		if not desc:
+			desc = getDescriptionLink(link, 'HL1">(.*?)</td')						# title short desc
+		return desc
+
+	# translate into english genre filenames
+	def translateGenre(self, genre):
+		# 'find' is to better identify the subgenre eg. 'Show/Musik'
+		# startswith identify main genre
+		if find(genre, "Musik") != -1:
+			genre = 'Music'
+		elif find(genre, "Soap") != -1:
+			genre = 'Soap'
+		elif genre.startswith('Sport'):
+			genre = 'Sport'
+		elif genre.startswith('Magazin'):
+			genre = 'Magazine'
+		elif genre.startswith('Serie'):
+			genre = 'Series'
+		elif genre.startswith('Spielfilm'):
+			genre = 'Film'
+		elif genre.startswith('Kinder'):
+			genre = 'Children'
+		elif genre.startswith('Dokumentation'):
+			genre = 'Documentary'
+		elif genre.startswith('Erotik'):
+			genre = 'Adult'
+		elif genre.startswith('Show'):
+			genre = 'Drama'
+		return genre

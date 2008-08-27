@@ -166,7 +166,7 @@ class myTV(xbmcgui.WindowXML):
 			self.updateEPG(redrawBtns=True, updateLogo=True, updateChNames=True, forceLoadChannels=True)
 
 			# footer
-			self.setupFooterNavLists()
+#			self.setupFooterNavLists()
 
 			# start clock
 			if timerthread:
@@ -184,34 +184,39 @@ class myTV(xbmcgui.WindowXML):
 
 		# CHANNELS
 		ctrl = self.getControl(self.CLST_CHANNEL)
-		ctrl.reset()
-		for channel in self.tvChannels.getChannelNames():	# [chID, name, chIDAlt]
-			ctrl.addItem( xbmcgui.ListItem(channel[TVChannels.CHAN_NAME]) )
-		ctrl.selectItem(0)
+		if ctrl.getSelectedPosition() == -1:        # empty
+			dialogProgress.create(__language__(618), __language__(300))
+			ctrl.reset()
+			for channel in self.tvChannels.getChannelNames():	# [chID, name, chIDAlt]
+				ctrl.addItem( channel[TVChannels.CHAN_NAME] )
+			ctrl.selectItem(0)
 
-		# DAY
-		days = WEEKDAYS[:]
-		dow = date.today().weekday()
-		days[dow] = __language__(327)		# today
-		# check for end of week, set tomorrow to week start day
-		if dow==6:
-			days[0] = __language__(328)		# tomorrow
-		else:
-			days[dow+1] = __language__(328)
-		ctrl = self.getControl(self.CLST_DAY)
-		ctrl.reset()
-		for day in days:
-			ctrl.addItem(day)
-		ctrl.selectItem(dow)
-		
-		# HOURS
-		ctrl = self.getControl(self.CLST_HOUR)
-		ctrl.reset()
-		for hour in range(0, 24):
-			hourStr = zfill(hour,2)
-			ctrl.addItem( "%s:00" % hourStr )
-			ctrl.addItem( "%s:30" % hourStr )
-
+			# DAY
+			dialogProgress.update(33)
+			days = WEEKDAYS[:]
+			dow = date.today().weekday()
+			days[dow] = __language__(327)		# today
+			# check for end of week, set tomorrow to week start day
+			if dow==6:
+				days[0] = __language__(328)		# tomorrow
+			else:
+				days[dow+1] = __language__(328)
+			ctrl = self.getControl(self.CLST_DAY)
+			ctrl.reset()
+			for day in days:
+				ctrl.addItem(day)
+			ctrl.selectItem(dow)
+			
+			# HOURS
+			dialogProgress.update(66)
+			ctrl = self.getControl(self.CLST_HOUR)
+			ctrl.reset()
+			for hour in range(0, 24):
+				hourStr = zfill(hour,2)
+				ctrl.addItem( "%s:00" % hourStr )
+				ctrl.addItem( "%s:30" % hourStr )
+			dialogProgress.update(100, __language__(304))
+			dialogProgress.close()
 
 		# reset time button
 		self.getControl(self.CBTN_TIME_RESET).setLabel(__language__(329))
@@ -595,9 +600,8 @@ class myTV(xbmcgui.WindowXML):
 	def onAction(self, action):
 		try:
 			actionID = action.getId()
-			buttonID = action.getButtonCode()
 			if not actionID:
-				actionID = buttonID
+				actionID = action.getButtonCode()
 		except: return
 
 		if actionID in EXIT_SCRIPT:
@@ -645,6 +649,7 @@ class myTV(xbmcgui.WindowXML):
 		elif self.isFooterBtns:										# currently NAVIGATING USING EPG
 			if actionID in CLICK_X:									# toggle footer display
 				debug("CLICK_X")
+				self.setupFooterNavLists()
 				self.toogleFooter()
 			elif actionID in CLICK_Y:								# IMDb
 				debug("CLICK_Y")

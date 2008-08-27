@@ -3286,3 +3286,6 @@ config = MYTVConfig()
 skinName = config.getDisplay(config.KEY_DISPLAY_SKIN)
 global DIALOG_PANEL
 DIALOG_PANEL = os.path.join(DIR_EPG, skinName, DIALOG_PANEL_NAME)
+if not os.path.isfile(DIALOG_PANEL):
+	debug("DIALOG_PANEL for skin missing using PMIII")
+	DIALOG_PANEL = os.path.join(DIR_GFX, DIALOG_PANEL_NAME)
