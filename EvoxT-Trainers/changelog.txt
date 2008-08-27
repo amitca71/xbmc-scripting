@@ -1,3 +1,7 @@
+version 0.97:
+- added: 'resources' folder to get the script working again
+- changed: renamed 'temp' to 'cache' and placed it into 'resources'
+
 version 0.96a:
 - added: MC360 skin support
 
