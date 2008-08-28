@@ -148,7 +148,7 @@
     <string id="537"></string>
     <string id="538">Nach Timerkonflikten suchen?</string>
     <string id="539">Sendername/ID?</string>
-    <string id="540">Sender erneut sortieren</string>
+    <string id="540">Senderliste neu sortieren</string>
     <string id="541">Farben</string>
     <string id="542">Genre Symbole</string>
     <string id="543">Genre Farben</string>
@@ -203,7 +203,7 @@
     <string id="594">Programmbeschreibung: </string>
     <string id="595">Sendername: </string>
     <string id="596">EPG Text: </string>
-    <string id="597">Zu verschiebenden Sender (A) auswählen</string>
+    <string id="597">Zu verschiebenden Sender auswählen (A)</string>
     <string id="598">Verschiebe Sender (Markiert mit A)</string>
     <string id="599">Hintergrund- und Textfarbe auswählen:</string>
     <string id="600">Hintergrundfarbe auswählen:</string>
@@ -224,6 +224,7 @@
     <string id="615">Logo auswählen: </string>
     <string id="616">Sprache auswählen: </string>
     <string id="617">Aktiviert? (A)</string>
+    <string id="618">Initialisiere Navigationslisten ...</string>
 
 
     <!-- Datasource Common -->
