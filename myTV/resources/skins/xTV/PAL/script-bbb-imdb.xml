@@ -5,9 +5,9 @@
 	<animation effect="fade" time="300">WindowOpen</animation>
 	<animation effect="slide" end="0,576" time="200">WindowClose</animation>
 	<coordinates>
-	<system>1</system>
-	<posx>25</posx>
-	<posy>30</posy>
+		<system>1</system>
+		<posx>25</posx>
+		<posy>30</posy>
 	</coordinates>
 	<controls>
 
@@ -31,7 +31,7 @@
 			<posy>0</posy>
 			<width>47</width>
 			<height>23</height>
-			<texture>imdb-logo.png</texture>
+			<texture>..\..\Default\media\imdb-logo.png</texture>
 		</control>
 		<control type="label" id="101">
 			<description>title</description>
@@ -74,7 +74,7 @@
 			<posy>50</posy>
 			<width>200</width>
 			<height>200</height>
-			<texture>imdb-noimage.png</texture>
+			<texture>..\..\Default\media\imdb-noimage.png</texture>
 		</control>
 		<control type="button" id="106">
 			<description>photos right nav</description>

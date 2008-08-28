@@ -596,10 +596,10 @@
 
 	<!-- EPG OUTER GROUP HOLDING CHANNEL NAMES GROUP, CHANNEL PROGRAMMES GROUP-->
 	<control type="group" id="1300">
-		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 		<posx>0</posx>
 		<posy>65</posy>
 		<height>470</height>
+		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
 		<control type="label" id="1310">
 			<description>channel name control</description>

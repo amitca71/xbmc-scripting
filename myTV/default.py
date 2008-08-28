@@ -111,7 +111,7 @@ class myTV(xbmcgui.WindowXML):
 	def __init__(self, *args, **kwargs):
 		debug("> myTV()__init__")
 
-		setResolution(self)
+#		setResolution(self)
 
 		# used to calc string width based on each char width
 		self.fontAttr = FontAttr()
@@ -161,6 +161,7 @@ class myTV(xbmcgui.WindowXML):
 
 			self.isFooterBtns = True
 			self.rez = self.getResolution()
+			debug("onInit() resolution=%s" % self.rez)
 
 			self.epgSetup()		
 			self.updateEPG(redrawBtns=True, updateLogo=True, updateChNames=True, forceLoadChannels=True)
@@ -1252,7 +1253,6 @@ class myTV(xbmcgui.WindowXML):
 			  (actualChIDX, epgChIDX, self.epgBtnIDX, dayDelta))
 #		startSecs = time.clock()
 #		print "startSecs=%s" % startSecs
-#		logFreeMem("drawChannel start")
 
 		channelData = []
 		btnStart = 0
@@ -1456,8 +1456,6 @@ class myTV(xbmcgui.WindowXML):
 			self.epgButtons.append(channelData)
 
 #		endSecs = time.clock()
-#		print "endSecs=%s" % endSecs
-#		print "process secs=%s" % (endSecs - startSecs)
 		debug("< drawChannel() No. btns on channel=%i" % len(channelData))
 
 	###############################################################################################
@@ -1581,12 +1579,12 @@ class myTV(xbmcgui.WindowXML):
 
 	###############################################################################################
 	def setLogo(self, chIDX=0, reset=False):
-		debug("setLogo() chIDX=%s" % chIDX)
 		if not reset:
 			filename = self.tvChannels.getLogo(chIDX)
 		else:
 			filename = LOGO_FILENAME
 		self.getControl(self.CI_CHANNEL_LOGO).setImage(filename)
+		debug("setLogo() chIDX=%s filename=%s" % (chIDX, filename))
 
 	###########################################################################################################
 	def setIndicators(self):
@@ -1741,7 +1739,6 @@ class ProgDescDialog(xbmcgui.WindowXMLDialog):
 			if not actionID:
 				actionID = action.getButtonCode()
 		except: return
-		debug( "onAction(): actionID=%i" % actionID )
 
 		if actionID in EXIT_SCRIPT:
 			debug("ProgDescDialog() EXIT_SCRIPT")
@@ -2024,7 +2021,7 @@ class ButtonColorPicker(xbmcgui.WindowDialog):
 			if not actionID:
 				actionID = action.getButtonCode()
 		except: return
-		debug( "onAction(): actionID=%i" % actionID )
+
 		if actionID in EXIT_SCRIPT + CANCEL_DIALOG:
 			self.backgFile = ""
 			self.textColor = ""
@@ -4279,7 +4276,7 @@ def configReorderChannels():
 ###################################################################################################################
 class LiveSportOnTV:
 	def __init__(self):
-		debug("> LiveSportOnTV() init()")
+		debug("LiveSportOnTV() init()")
 
 		self.URL_BASE = 'http://www.livesportontv.com/'
 		self.URL_FULLLISTING = self.URL_BASE + 'search3.php?id='
@@ -4289,7 +4286,6 @@ class LiveSportOnTV:
 		self.MAIN_MENU_DATA = {
 			'All Sports' : 'index.php?show=all', 
 			'HDTV' : 'hdfull.php',
-			'Olympics' : 'olympics.php',
 			'Football' : 1,
 			'Darts' : 2,
 			'Snooker' : 3,
@@ -4315,7 +4311,6 @@ class LiveSportOnTV:
 			'Vollyball' : 32,
 			'Pool' : 33
 			}
-		debug("< LiveSportOnTV() init()")
 
 	###################################################################################################################
 	def onAction(self, action):
@@ -4359,19 +4354,15 @@ class LiveSportOnTV:
 		menu = []
 		menuIcons = []
 
-#		regex = '(?:tm\d*|dt)">(.*?)<.*?fx\d*">(.*?)<.*?tt\d*">(.*?)<.*?ch\d*">(.*?)</td' # w/o icon
-		regex = '_images/(\d+).*?(?:tm\d*|dt)">(.*?)<.*?fx\d*">(.*?)<.*?tt\d*">(.*?)<.*?ch\d*">(.*?)</td' # w/icon
+		iconFN = self.ICON_FN.replace('$ID', str(ID))
+		regex = '(?:tm\d*|dt)">(.*?)<.*?fx\d*">(.*?)<.*?tt\d*">(.*?)<.*?ch\d*">(.*?)</td' # w/o icon
+#		regex = '_images/(\d+).*?(?:tm\d*|dt)">(.*?)<.*?fx\d*">(.*?)<.*?tt\d*">(.*?)<.*?ch\d*">(.*?)</td' # w/icon
 		matches = parseDocList(html, regex, 'class="theader"','id="footer"' )
 		for match in matches:
-			iconID = match[0]
-			if iconID:
-				iconFN = self.ICON_FN.replace('$ID', str(iconID))
-			else:
-				iconFN = self.ICON_FN.replace('$ID', str(ID))
-			date = cleanHTML(decodeEntities(match[1]))
-			fixture = cleanHTML(decodeEntities(match[2]))
-			tourn = cleanHTML(decodeEntities(match[3]))
-			channel = cleanHTML(decodeEntities(match[4]))
+			date = cleanHTML(decodeEntities(match[0]))
+			fixture = cleanHTML(decodeEntities(match[1]))
+			tourn = cleanHTML(decodeEntities(match[2]))
+			channel = cleanHTML(decodeEntities(match[3]))
 			channel = re.sub(r'(document.write.*?;)', ' ', channel)
 			label = "%s, %s, %s" % (date,fixture,tourn)
 			menu.append(xbmcgui.ListItem(label, channel))
@@ -4672,19 +4663,19 @@ def downloadLogos():
 			startPos = chNameSZ
 		else:
 			startPos = 14
-		selectedPos = -1
+		selectedPos = 1						# menu option, skip logo
 		for chName_w in range(startPos, 0, -1):
 			partChName = chName[:chName_w]
 			for i, logoname in enumerate(logonames):
 				if logoname.startswith(partChName):
 					selectedPos = i+2		# allow for exit, skip options
 					break
-			if selectedPos != -1:
+			if selectedPos > 1:
 				break
 
 		# dialog to pick logo
 		selectDialog = DialogSelect()
-		selectDialog.setup(__language__(615) + chName, rows=len(menu), width=320, panel=DIALOG_PANEL, useY=True)
+		selectDialog.setup(__language__(615) + ' ' +chName, rows=len(menu), width=320, panel=DIALOG_PANEL, useY=True)
 		selectedPos, action = selectDialog.ask(menu, selectedPos)
 		if selectedPos <= 0:		# exit
 			break

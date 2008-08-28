@@ -13,6 +13,7 @@
  20/03/08 - Changed to use changed imdbLib gallery
  04/04/08 - Fix to use changed fetchURL() params
  04/06/08 - Converted to WindowXMLDialog
+ 27/08/08 - Fix cancel slideshow
 
 """
 
@@ -22,7 +23,7 @@ import xbmc, xbmcgui
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "IMDbWinXML"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '04-06-2008'
+__date__ = '27-08-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_USERDATA = sys.modules[ "__main__" ].DIR_USERDATA           # should be in default.py
@@ -100,10 +101,11 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 
 	################################################################################
 	def onAction(self, action):
-		if not action:
-			return
-
-		actionID = action.getId()
+		try:
+			actionID = action.getId()
+			if not actionID:
+				actionID = action.getButtonCode()
+		except: return
 		if actionID in CANCEL_DIALOG + EXIT_SCRIPT:
 			removeDir(DIR_IMDB_CACHE, force=True)
 			self.close()
@@ -269,13 +271,17 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 				dialogProgress.update(pct, "%s  (%s/%s)" % (os.path.basename(large_fn), idx, MAX))
 				# try to get large image, but save using modified small filename
 				if not fileExist(large_fn):
-					if not fetchURL(large_url, large_fn, isBinary=True):
+					result = fetchURL(large_url, large_fn, isBinary=True)
+					if result == None:			# cancelled or error
+						break
+					elif result == False:
 						# delete bad large_fn
 						deleteFile(large_fn)
 						debug("no large photo, get small photo")
 						if not fileExist(small_fn):
 							dialogProgress.update(pct, "%s  (%s/%s)" % (small_basename, idx, MAX))
-							fetchURL(small_url, small_fn, isBinary=True)
+							if fetchURL(small_url, small_fn, isBinary=True) == None:		# cancelled or error
+								break
 			dialogProgress.close()
 			xbmc.executebuiltin('XBMC.SlideShow(%s)'% DIR_IMDB_CACHE)
 		debug("< slideshow()")

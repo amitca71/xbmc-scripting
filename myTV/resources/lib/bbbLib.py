@@ -19,7 +19,7 @@ import zipstream
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '22-08-2008'
+__date__ = '28-08-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -411,21 +411,24 @@ class FontAttr:
 					  'special10':9, 'special11':9, 'special12':11, 'special13':12, 'special14':12, 'special16':13, 'special18':13}
 		
 	def truncate(self, maxWidth, text, font, rez = 6):
+#		print "FontAttr() orig maxWidth=%s %s %s %s" % (maxWidth, font, rez, text)
 		try:
 			maxWidth *= self.rezAdjust[rez]
 		except: pass
 		try:
 			fontW =  self.fonts[font.lower()]
 		except:
-			fontW = 10
-		shortFontW = 2
+			fontW = 11
+		shortFontW = 8
 
 		for i in range(len(text), 0, -1):
 			newText = text[:i]
-			shortChCount = newText.count('i')+ newText.count('l') + newText.count('t') + newText.count(' ')
+			shortChCount = newText.count('i')+ newText.count('l') + newText.count('t') + newText.count(' ') + \
+						   newText.count('r')
 			otherChCount = len(newText) - shortChCount
 			strW = (otherChCount * fontW) + (shortChCount * shortFontW)
 			if strW <= maxWidth:
+#				print "FontAttr() %s %s maxWidth=%s  strW=%s  shortChCount=%s otherChCount=%s" % (fontW, newText, maxWidth, strW, shortChCount,otherChCount)
 				break
 
 		return newText

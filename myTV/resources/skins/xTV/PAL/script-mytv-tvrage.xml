@@ -29,7 +29,7 @@
 			<posy>0</posy>
 			<width>117</width>
 			<height>23</height>
-			<texture>tvrage.jpg</texture>
+			<texture>..\..\Default\media\tvrage.gif</texture>
 		</control>
 		<control type="label" id="100">
 			<description>title</description>

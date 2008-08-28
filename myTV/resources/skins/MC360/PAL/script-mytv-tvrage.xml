@@ -29,7 +29,7 @@
 			<posy>0</posy>
 			<width>117</width>
 			<height>23</height>
-			<texture>tvrage.gif</texture>
+			<texture>..\..\Default\media\tvrage.gif</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="100">

@@ -11,7 +11,7 @@
 			<width>80</width>
 			<height>46</height>
 			<aspectratio aligny="bottom">keep</aspectratio>
-			<texture>script-logo.png</texture>
+			<texture>..\..\Default\media\script-logo.png</texture>
 		</control>
 		<control type="label" id="3">
 			<description>description label</description>
