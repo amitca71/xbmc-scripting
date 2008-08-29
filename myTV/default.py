@@ -29,7 +29,7 @@ import gc
 __scriptname__ = "myTV"
 __version__ = '1.18'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '22-08-2008'
+__date__ = '29-08-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -298,7 +298,6 @@ class myTV(xbmcgui.WindowXML):
 		self.getControl(self.CLBL_Y_BTN).setLabel(__language__(424))
 		self.getControl(self.CLBL_WHITE_BTN).setLabel(__language__(425))
 		self.getControl(self.CLBL_BACK_BTN).setLabel(__language__(500))
-
 
 		# Channel names visible ?
 		useChannelNames = (config.getSystem(config.KEY_SYSTEM_SHOW_CH_ID) != '0')
@@ -645,7 +644,7 @@ class myTV(xbmcgui.WindowXML):
 				redraw = False
 
 			if reInitLevel != INIT_NONE:
-				self.updateEPG(redrawBtns=redraw, updateLogo=False, updateChNames=updateChNames, forceLoadChannels=forceLoadChannels)
+				self.updateEPG(redrawBtns=redraw, updateLogo=True, updateChNames=updateChNames, forceLoadChannels=forceLoadChannels)
 			debug("< CONTEXT_MENU")
 		elif self.isFooterBtns:										# currently NAVIGATING USING EPG
 			if actionID in CLICK_X:									# toggle footer display
@@ -1584,7 +1583,6 @@ class myTV(xbmcgui.WindowXML):
 		else:
 			filename = LOGO_FILENAME
 		self.getControl(self.CI_CHANNEL_LOGO).setImage(filename)
-		debug("setLogo() chIDX=%s filename=%s" % (chIDX, filename))
 
 	###########################################################################################################
 	def setIndicators(self):
@@ -3973,7 +3971,7 @@ class ConfigMenu:
 
 			# exec func associated with menu option (if has one)
 			if self.menu[selectedPos][self.FUNC]:
-				done = self.menu[selectedPos][self.FUNC]()
+				done = self.menu[selectedPos][self.FUNC]()							# call menu func
 
 				# force exit if updating script
 				if done and self.menu[selectedPos][0] == __language__(554):         # update script
@@ -4253,7 +4251,7 @@ def configReorderChannels():
 	if selectedPos <= 0:
 		for menuIdx in range(len(menu)):
 			label,label2 = menu[menuIdx]
-			if label == __language__(500):		# ignore exit
+			if not label2:		# ignore exit
 				continue
 
 			for channel in channels:
@@ -4557,12 +4555,34 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 #################################################################################################################
 def downloadLogos():
 	debug("> downloadLogos()")
+
+	dialogTitle = __language__(556)
+	debug("check which channels dont have a logo...")
+	missing = []
+#	dialogProgress.create(dialogTitle, __language__(613) )		# missing logos
+	channelNames = mytv.tvChannels.getChannelNames()
+	for i, chData in enumerate(channelNames):
+		chID = logoSafeName(chData[0])
+		chName = logoSafeName(chData[1])
+		chIDFn = xbmc.makeLegalFilename(os.path.join(DIR_LOGOS, chID+'.gif'))
+		chNameFn = xbmc.makeLegalFilename(os.path.join(DIR_LOGOS, chName+'.gif'))
+		
+		if not fileExist(chIDFn) and not fileExist(chNameFn):
+			missing.append(i)                                   # save the idx into channelNames
+#	dialogProgress.close()
+	debug("missing logos=%i" % len(missing))
+
+	if not missing:
+		messageOK(dialogTitle, "No missing logos.")
+		debug("< downloadLogos()")
+		return False
+
+	# DOWNLOAD AVAILABLE COUNTRY LOGOS
 	BASE_URL = "http://www.lyngsat-logo.com/tvcountry/"
 	COUNTRIES_URL = BASE_URL + "tvcountry.html"
 	COUNTRIES_FILE = os.path.join(DIR_CACHE, "tvcountry.html")
 	COUNTRY_URL = BASE_URL + "$CCODE.html"
 
-	dialogTitle = __language__(556)
 	if not fileExist(COUNTRIES_FILE):
 		dialogProgress.create(dialogTitle,__language__(610))		# fetch country codes
 		doc = fetchURL(COUNTRIES_URL, COUNTRIES_FILE)
@@ -4571,34 +4591,34 @@ def downloadLogos():
 		doc = readFile(COUNTRIES_FILE)
 
 	if not doc:
-		messageOK(dialogTitle, "Missing countries webpage", COUNTRIES_FILE)
+		messageOK(dialogTitle, "Missing countries logo webpage!", COUNTRIES_URL, COUNTRIES_FILE)
 		deleteFile(COUNTRIES_FILE)
 		debug("< downloadLogos() no country page")
-		return
+		return False
 
-	# get datasource inuse country code
-	dsName = config.getSystem(MYTVConfig.KEY_SYSTEM_DATASOURCE)[:2]			# eg uk_RadioTimes -> uk
+	# get datasource in use country code
+	dsNameCC = config.getSystem(MYTVConfig.KEY_SYSTEM_DATASOURCE)[:2]			# eg uk_RadioTimes -> uk
 
-	# extract country code
+	debug("parse available countries ...")
 	menu = [xbmcgui.ListItem(__language__(500),'')]
-	matches = parseDocList(doc, 'icon/flags/.*?gif.*?tvcountry/(.*?).html">(.*?)</a')
+	ccMatches = parseDocList(doc, 'icon/flags/.*?gif.*?tvcountry/(.*?).html">(.*?)</a')
 	selectedPos = 0
-	for i, match in enumerate(matches):
+	for i, match in enumerate(ccMatches):
 		ccode = match[0]
-		if ccode == dsName:
+		if ccode == dsNameCC:
 			selectedPos = i+1		# allow for exit
-		menu.append(xbmcgui.ListItem(cleanHTML(match[1]),match[0].upper()))
+		menu.append(xbmcgui.ListItem(cleanHTML(match[1]),ccode.upper()))
 
+	# Choose country code
 	selectDialog = DialogSelect()
 	selectDialog.setup(__language__(611), rows=len(menu), width=300, panel=DIALOG_PANEL)
 	selectedPos, action = selectDialog.ask(menu,selectedPos)
 	if selectedPos <= 0:
 		debug("< downloadLogos() no country picked")
-		return
+		return False
 
 	# get country page
-	ccode = matches[selectedPos-1][0]
-	cname = matches[selectedPos-1][1]
+	ccode,cname = ccMatches[selectedPos-1]
 	country_url = COUNTRY_URL.replace('$CCODE', ccode)
 	country_fn = os.path.join(DIR_CACHE, os.path.basename(country_url))
 	dialogTitle = "%s: %s" % (__language__(556), ccode.upper())
@@ -4613,59 +4633,40 @@ def downloadLogos():
 		messageOK(dialogTitle, "Failed to fetch logo page", country_url)
 		deleteFile(country_fn)
 		debug("< downloadLogos()")
-		return
+		return False
 
 	# extract logo filename & name
+	debug("find downloadable logo url/names ...")
 	logonames = []
-	matches = parseDocList(doc, 'img src="(../icon/tv/.*?.gif)".*?html">(.*?)<')
-	for match in matches:
-		logonames.append(match[1])		# name
+	urlMatches = parseDocList(doc, 'img src="(../icon/tv/.*?.gif)".*?html">(.*?)<')
+	for match in urlMatches:
+		logonames.append(match[1].lower())		# save name as lower for better comparison later
 
 	if not logonames:
-		messageOK(dialogTitle, "No logos found on webpage")
+		messageOK(dialogTitle, "No logos found on webpage!", country_url)
 		deleteFile(country_fn)
 		debug("< downloadLogos()")
-		return
-
-	debug("for each missing logo - try to match by channel ID or name...")
-	missing = []
-	dialogProgress.create(dialogTitle, __language__(613) )		# missing logos
-	channelNames = mytv.tvChannels.getChannelNames()
-	maxFetch = len(channelNames)
-	for i, chData in enumerate(channelNames):
-		chID = logoSafeName(chData[0])
-		chName = logoSafeName(chData[1])
-		chIDFn = xbmc.makeLegalFilename(os.path.join(DIR_LOGOS, chID+'.gif'))
-		chNameFn = xbmc.makeLegalFilename(os.path.join(DIR_LOGOS, chName+'.gif'))
-		
-		if not fileExist(chIDFn) and not fileExist(chNameFn):
-			missing.append(i)                                   # save the idx into channelNames
-	dialogProgress.close()
-
-	if not missing:
-		messageOK(dialogTitle,"No missing logos.")
-		debug("< downloadLogos()")
-		return
+		return False
 
 	# make menu of available logo filenames
 	menu = [__language__(500), __language__(614)]
-	for logoURL, logoName in matches:
+	for logoURL, logoName in urlMatches:
 		menu.append(logoName)
 
-	# ask to pick missing logos
+	debug("For each missing logo, prompt user to select nearest match...")
 	for i in missing:
 		chData = channelNames[i]
 		chName = chData[1]
 
-		# attempt to goto nearest logo name
+		# attempt to match missing logo to nearest logo name
 		chNameSZ = len(chName)
 		if chNameSZ < 14:
 			startPos = chNameSZ
 		else:
 			startPos = 14
-		selectedPos = 1						# menu option, skip logo
+		selectedPos = 1						# menu option 'skip logo'
 		for chName_w in range(startPos, 0, -1):
-			partChName = chName[:chName_w]
+			partChName = chName[:chName_w].lower()
 			for i, logoname in enumerate(logonames):
 				if logoname.startswith(partChName):
 					selectedPos = i+2		# allow for exit, skip options
@@ -4675,24 +4676,26 @@ def downloadLogos():
 
 		# dialog to pick logo
 		selectDialog = DialogSelect()
-		selectDialog.setup(__language__(615) + ' ' +chName, rows=len(menu), width=320, panel=DIALOG_PANEL, useY=True)
+		title = "%s: %s" % (__language__(615), unicode(chName,'latin-1'))
+		selectDialog.setup(title, rows=len(menu), width=320, panel=DIALOG_PANEL, useY=True)
 		selectedPos, action = selectDialog.ask(menu, selectedPos)
 		if selectedPos <= 0:		# exit
 			break
 		elif selectedPos == 1 or action in CLICK_X + CLICK_Y:		# skip
 			continue
 		else:
-			url = BASE_URL + matches[selectedPos-2][0]						# url from previous country logo regex
+			url = BASE_URL + urlMatches[selectedPos-2][0]					# logo url
 			fn = os.path.join(DIR_LOGOS, logoSafeName(chName)+'.gif')		# save logo using ch name
 			fn = xbmc.makeLegalFilename(fn)
-			dialogProgress.create(dialogTitle, matches[selectedPos-2][1], os.path.basename(fn))
+			dialogProgress.create(dialogTitle, urlMatches[selectedPos-2][1], os.path.basename(fn))
 			fetchURL(url, fn, isBinary=True)
 			dialogProgress.close()
 
 	# cause mytv to reload logo filenames
 	mytv.tvChannels.loadLogoFilenames()
 	deleteFile(country_fn)
-	debug("< downloadLogos()")
+	debug("< downloadLogos() True")
+	return True
 
 def messageXBMCOld():
 	messageOK("WindowXML path error","XBMC Build probably too old.", "Upgrade to a post 'Atlantis' (2008-08-12)")

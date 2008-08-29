@@ -1927,7 +1927,6 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 			break # exit selected
 
 		key, label, defaultValue, kbType = configData[selectedPos-1]    # defaultValue could be a list of options
-#		print key, label, defaultValue, kbType
 		currValue = menu[selectedPos].getLabel2()
 
 		# enter new value and save to config
@@ -2191,8 +2190,6 @@ def checkProgContinuity(channel):
 
 		if added or overlapping:
 			debug( "checkProgContinuity() added=%s overlapping=%s prog sz=%s" % (added,overlapping,len(channel)) )
-#			for prog in channel:
-#				print prog
 	debug("< checkProgContinuity()")
 	return channel
 
@@ -2241,7 +2238,6 @@ class TVChannels:
 		self.LOAD_DATA_PREFIX = -1
 		self.LOAD_DATA_CLEAR = 0
 		self.LOAD_DATA_APPEND = 1
-		self.datasourceLogos = {}					# dict of channel logo filenames of those viewed
 		self.tvdata = TVData()
 		self.reset()
 		self.loadLogoFilenames()
@@ -2264,8 +2260,10 @@ class TVChannels:
 		self.tvdata.reset()
 
 	def loadLogoFilenames(self):
+		debug("TVChannels.loadLogoFilenames()")
+		self.datasourceLogos = {}					# dict of channel logo filenames of those viewed
 		self.allLogoFiles = listDir(DIR_LOGOS, getFullFilename=True, lower=True) # logo filenames
-		# ensure loaded fn are safe. eg change '+' to 'plus'
+		# ensure loaded fn are safe. eg change '+' to 'plus', ' ' to '_' etc
 		for i, fn in enumerate(self.allLogoFiles):
 			self.allLogoFiles[i] = logoSafeName(fn)
 
@@ -2302,23 +2300,23 @@ class TVChannels:
 			chID = ''
 			filename = ''
 			chListData = self.channelNames[allChIDX]
-			chID = logoSafeName(chListData[0])
+			chID = logoSafeName(chListData[0]).lower()
 			filename = self.datasourceLogos[chID]
 		except:
-			# filename compare against chName
+			# " filename compare against chName"
 			try:
-				chName = logoSafeName(chListData[1])
+				chName = logoSafeName(chListData[1]).lower()
 				idx = self.allLogoFiles.index(chName+'.gif')
 				filename = os.path.join(DIR_LOGOS, self.allLogoFiles[idx])
 			except:
-				# filename compare against chID
+				# " filename compare against chID"
 				try:
 					idx = self.allLogoFiles.index(chID+'.gif')
 					filename = os.path.join(DIR_LOGOS, self.allLogoFiles[idx])
 				except:
-					# filename compare against chAltID
+					# " filename compare against chAltID"
 					try:
-						chAltID = logoSafeName(chListData[2])
+						chAltID = logoSafeName(chListData[2]).lower()
 						idx = self.allLogoFiles.index(chAltID+'.gif')
 						filename = os.path.join(DIR_LOGOS, self.allLogoFiles[idx])
 					except:
@@ -2330,7 +2328,7 @@ class TVChannels:
 			if chID and filename:
 				self.datasourceLogos[chID] = xbmc.makeLegalFilename(filename)
 
-		debug("< getLogo()")
+		debug("< getLogo() " + filename)
 		return filename
 
 
