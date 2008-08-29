@@ -150,10 +150,10 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 		elif not imdbSearch.SearchResults:
 			if xbmcgui.Dialog().yesno(__language__(980), title, __language__(984)):
 				url = ''		# will cause manual entry
-		elif len(imdbSearch.SearchResults) > 1:
+		else:
 			# make menu list
-			menu = [xbmcgui.ListItem(__language__(500)), xbmcgui.ListItem(__language__(981))]
-			for year, title, url in imdbSearch.SearchResults:
+			menu = [xbmcgui.ListItem(__language__(500),''), xbmcgui.ListItem(__language__(981),'')]
+			for year, title, searchURL in imdbSearch.SearchResults:
 				menu.append(xbmcgui.ListItem(title, year))
 
 			# popup dialog to select choice
@@ -164,8 +164,8 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 				url = ''
 			elif selectedPos > 1:		# title selected
 				year, title, url = imdbSearch.SearchResults[selectedPos-2]	# allow for exit & Manual
-		else:
-			year, title, url = imdbSearch.SearchResults[0]
+#		else:
+#			year, title, url = imdbSearch.SearchResults[0]
 
 		if url:
 			debug("call IMDB with url=" + url)
@@ -310,7 +310,7 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 				url = self.findTitle(title)
 
 			if url == '':
-				title = doKeyboard(title, __language__(981))
+				title = unicode(doKeyboard(title, __language__(981)), 'latin-1')
 				if not title:
 					break
 			elif url == None:

@@ -817,7 +817,9 @@ class myTV(xbmcgui.WindowXML):
 			if link:
 				dialogProgress.create(__language__(206), __language__(300))
 				desc = dataSource.getLink(link, title)
-				prog[TVData.PROG_DESC] = desc
+				# update desc if we don't already have something saved
+				if not self.tvChannels.getProgAttr(prog, TVData.PROG_DESC):
+					prog[TVData.PROG_DESC] = desc
 				dialogProgress.close()
 			else:
 				desc = self.tvChannels.getProgAttr(prog, TVData.PROG_DESC)
@@ -3821,12 +3823,13 @@ def manageAlarms():
 			selectedPos, action = selectDialog.ask(menu)
 			if selectedPos <= 0:
 				break
-			
-			elif xbmcgui.Dialog().yesno(__language__(517), __language__(305), menu[selectedPos], '', \
-										__language__(355), __language__(356)):
-				if alarmClock.cancelAlarm(selectedPos-1):	# allow for exit opt
-					deleted = True
 
+			msgs = menu[selectedPos].split(',')
+			if xbmcgui.Dialog().yesno(__language__(517), msgs[0].strip(), msgs[1].strip(), msgs[2].strip(), \
+										__language__(355), __language__(356)):
+
+				alarmTime = alarmClock.alarms.keys()[selectedPos-1]		# allow for exit opt
+				deleted = alarmClock.cancelAlarm(alarmTime)
 			del selectDialog
 	debug("< manageAlarms() deleted=%s" % deleted)
 	return deleted
@@ -4029,7 +4032,6 @@ class MainMenu:
 		self.OPT_SAVEPROG_PLAYBACK = __language__(503)
 
 		self.alarmClock = AlarmClock()
-		self.alarmClock.loadAlarms()
 		self.countryCode = upper(config.getSystem(config.KEY_SYSTEM_DATASOURCE)[:2])
 
 		debug("< MainMenu() init()")
@@ -4100,6 +4102,7 @@ class MainMenu:
 			self.menu.remove(self.OPT_CH_VIEW)
 
 		# alarm clock
+		self.alarmClock.loadAlarms()
 		if not self.alarmClock.alarms:
 			self.menu.remove(self.OPT_MANAGE_ALARMCLOCK)
 

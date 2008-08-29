@@ -1,5 +1,4 @@
 # AlarmClock.py
-# AlarmClock.py
 #
 # Functions to Save, Load, Set and Cancel XBMC Alarm Clocks.
 #
@@ -9,10 +8,10 @@
 
 __title__ = "AlarmClock"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '14-02-2008'
+__date__ = '29-08-2008'
 
 import sys,os.path
-import xbmc, xbmcgui, time
+import xbmc, xbmcgui, time, traceback
 
 try:
 	__scriptname__ = sys.modules[ "__main__" ].__scriptname__
@@ -94,13 +93,15 @@ class AlarmClock:
 		xbmc.output("> setAlarm() startTime="+str(startTime) + " minsDelta=" + str(minsDelta))
 		success = False
 		try:
-			# set builtin cmd
 			execCMD = 'XBMC.Notification("myTV Alarm",'+alarmDets+'")'
-			xbmc.executebuiltin('XBMC.AlarmClock('+str(startTime)+','+execCMD+','+str(minsDelta)+')')
+			builtinCMD = 'XBMC.AlarmClock(%s,%s,%s)' % (startTime, execCMD, minsDelta)
+			xbmc.executebuiltin(builtinCMD.encode('latin-1'))
 			self.alarms[startTime] = alarmDets
 			success = True
-		except: pass
-		xbmc.output("< setAlarm() success="+str(success))
+		except:
+			self.handleException("setAlarm()")
+
+		xbmc.output("< setAlarm() success=%s" % success)
 		return success
 
 	#################################################################################################################
@@ -108,9 +109,10 @@ class AlarmClock:
 	# save to a file in cache. this will allow the exit routine to housekeep old files.
 	#################################################################################################################
 	def saveAlarm(self, startTime, title , chName):
-		xbmc.output("> saveAlarm() startTime="+str(startTime))
+		xbmc.output("> saveAlarm() startTime=%s" % startTime)
 		success = False
 
+		dialogTitle = __language__(516)
 		fileDate = time.strftime("%Y%m%d",time.localtime(startTime))
 		alarmName = str(startTime)
 		fn = os.path.join(DIR_CACHE, self.FILE_PREFIX+fileDate+'.' + alarmName)
@@ -119,42 +121,56 @@ class AlarmClock:
 		displayDate = time.strftime("%d/%m/%y %H:%M %p" ,time.localtime(startTime))
 		xbmc.log("fn=" + fn)
 
+		when = displayDate + ", " + chName
 		if minsDelta < 1:
-			xbmcgui.Dialog().ok(__language__(516), __language__(125))
+			xbmcgui.Dialog().ok(dialogTitle, __language__(125))
 		elif os.path.isfile(fn) and os.path.getsize(fn) > 0:
-			xbmcgui.Dialog().ok(__language__(516),  __language__(126), title, displayDate + ", " + chName)
-		elif xbmcgui.Dialog().yesno(__language__(516) + '?', title, displayDate + ", " + chName):
+			xbmcgui.Dialog().ok(dialogTitle,  __language__(126), title, when)
+		elif xbmcgui.Dialog().yesno(dialogTitle + '?', title, when):
 			try:
-				# set builtin cmd
-				alarmDets = title + ", " + displayDate + ", " + chName
-				self.setAlarm(alarmName, alarmDets, minsDelta)
-				# save to alarm file
-				fp = open(fn,"w")
-				fp.write(alarmName + '~' + alarmDets)
-				fp.close()
-				success = True
+				alarmDets = "%s, %s, %s" % (title, displayDate, unicode(chName,'latin-1'))
+				if self.setAlarm(alarmName, alarmDets, minsDelta):
+					fp = open(fn,"w")
+					fp.write(alarmName + '~' + alarmDets.encode('latin-1'))
+					fp.close()
+					success = True
 			except:
-				xbmcgui.Dialog().ok(__language__(516), "Failed to save Alarm to file:", fn)
+				xbmcgui.Dialog().ok(dialogTitle, "Failed to save Alarm to file:", fn)
+				self.handleException()
 
 		xbmc.output("< saveAlarm() success="+str(success))
 		return success
 
 	##############################################################################################################
-	def cancelAlarm(self, index):
-		xbmc.output("> cancelAlarm() index="+str(index))
+	def cancelAlarm(self, alarmTime):
+		xbmc.output("> cancelAlarm() alarmTime=%s" % alarmTime)
 		success = False
 		try:
-			alarmName = self.alarms.keys()[index]
-			xbmc.executebuiltin('XBMC.CancelAlarm('+ alarmName + ')')
-			del self.alarms[alarmName]
-			fileDate = time.strftime("%Y%m%d", time.localtime(int(alarmName)))
-			filename = os.path.join(DIR_CACHE, self.FILE_PREFIX + fileDate + '.' + alarmName)
+			xbmc.executebuiltin('XBMC.CancelAlarm(%s)'% alarmTime)
+			fileDate = time.strftime("%Y%m%d", time.localtime(int(alarmTime)))
+			basename = "%s%s.%s" % (self.FILE_PREFIX, fileDate, alarmTime)
+			filename = os.path.join(DIR_CACHE, basename)
 			os.remove(filename)
+			del self.alarms[alarmTime]
 			success = True
 		except:
-			messageOK(__language__(517), __language__(122))
+#			xbmcgui.Dialog().ok(__language__(517), __language__(122))
+			self.handleException()
 		xbmc.output("< cancelAlarm() success="+str(success))
 		return success
+
+	##############################################################################################################
+	def handleException(self, txt=''):
+		try:
+			title = "EXCEPTION: " + txt
+			e=sys.exc_info()
+			list = traceback.format_exception(e[0],e[1],e[2],3)
+			text = ''
+			for l in list:
+				text += l
+	#		print text
+			xbmcgui.Dialog().ok(title, text)
+		except: pass
 
 ########################################################################################################
 # Determine if standalone startup or imported

@@ -9,7 +9,7 @@
   08/08/07 Updated for myTV v1.17
   02/11/07 Modified getDescriptionLink() to replace more html tags to newline
   26/11/07 Modified getChannelsLIB() to use fetchCookieURL() which takes headers and reversed regex
-  18/08/08 Updated for myTV v1.18
+  29/08/08 Updated for myTV v1.18
 """
 
 import sys,os.path
@@ -30,7 +30,7 @@ from smbLib import enterSMB
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "mytvLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '20-08-2008'
+__date__ = '29-08-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 # script specific paths
@@ -1998,26 +1998,6 @@ class TVData:
 
 	def addChannel(self, listOfProgs, chID, chName, chIDAlt=''):
 		self.channels.append(listOfProgs)
-#		self.channelInfo.append( { self.CHAN_ID:chID, self.CHAN_NAME:chName, self.CHAN_IDALT:chIDAlt } )
-
-#	def getChannelInfo(self, chIDX):
-#		try:
-#			return self.channelInfo[chIDX]
-#		except:
-#			return {}
-
-#	def getChannelAttr(self, chIDX, attr):
-#		try:
-#			return self.channelInfo[chIDX][attr]
-#		except:
-#			return ''
-
-#	def setChannelAttr(self, chIDX, attr, value):
-#		try:
-#			self.channelInfo[chIDX][attr] = value
-#			return True
-#		except:
-#			return None
 
 	# append a single prog dict to a channels list of progs
 	def addProg(self, chIDX, prog):

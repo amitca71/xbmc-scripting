@@ -1241,7 +1241,11 @@ def safeFilename(path, replaceCh='_'):
 
 #################################################################################################################
 def cleanPunctuation(text, replaceCh='_'):
-	return re.sub(r'[\'\";:?*<>|+\\/,=!\.]', replaceCh, text)
+	try:
+		return re.sub(r'[\'\";:?*<>|+\\/,=!\.]', replaceCh, text)
+	except:
+		debug("cleanPunctuation() re failed")
+		return text
 
 #################################################################################################################
 # Does a direct image URL exist in string ?
