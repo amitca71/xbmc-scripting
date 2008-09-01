@@ -85,6 +85,7 @@
     <string id="327">Vandaag</string>
     <string id="328">Morgen</string>
     <string id="329">Reset</string>
+	<string id="578">Gisteren</string>
 
     <!-- Yes/No buttons -->
     <string id="350">Ja</string>
@@ -181,9 +182,6 @@
     <string id="575">Selecteer Zender:</string>
     <string id="576">Selecteer Frequenctie:</string>
     <string id="577">Geen Zender naam/ID</string>
-    <string id="578">Gisteren</string>
-    <string id="579">Vandaag</string>
-    <string id="580">Morgen</string>
     <string id="581">Wekelijkse Programma's</string>
     <string id="582">Dagelijkse Programma's</string>
     <string id="583">Huidig Programma</string>

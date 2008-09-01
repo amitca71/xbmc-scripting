@@ -29,7 +29,7 @@ import gc
 __scriptname__ = "myTV"
 __version__ = '1.18'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '29-08-2008'
+__date__ = '01-09-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources

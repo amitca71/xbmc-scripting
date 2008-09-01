@@ -86,6 +86,7 @@
     <string id="327">Today</string>
     <string id="328">Tomorrow</string>
     <string id="329">Reset</string>
+    <string id="330">Yesterday</string>
 
     <!-- Yes/No buttons -->
     <string id="350">Yes</string>
@@ -175,17 +176,12 @@
     <string id="567">Select A Stream File</string>
     <string id="568">Select File to View</string>
     <string id="569">Enter Show Name</string>
-    <string id="570"></string>
-    <string id="571"></string>
     <string id="572">Select A Font</string>
     <string id="573">ROW Height:</string>
     <string id="574">ROW GAP Height:</string>
     <string id="575">Select Channel:</string>
     <string id="576">Select Frequency:</string>
     <string id="577">No Channel Name/ID</string>
-    <string id="578">Yesterday</string>
-    <string id="579">Today</string>
-    <string id="580">Tomorrow</string>
     <string id="581">Scheduled Week</string>
     <string id="582">Scheduled Day</string>
     <string id="583">Current Programme</string>

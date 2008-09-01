@@ -9,7 +9,7 @@
   08/08/07 Updated for myTV v1.17
   02/11/07 Modified getDescriptionLink() to replace more html tags to newline
   26/11/07 Modified getChannelsLIB() to use fetchCookieURL() which takes headers and reversed regex
-  29/08/08 Updated for myTV v1.18
+  01/09/08 Updated for myTV v1.18
 """
 
 import sys,os.path
@@ -30,7 +30,7 @@ from smbLib import enterSMB
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "mytvLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '29-08-2008'
+__date__ = '01-09-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 # script specific paths
@@ -1343,9 +1343,9 @@ class TVRage:
 		self.URL_QUICK_INFO = self.URL_BASE + 'quickinfo.php?show=%s'
 		self.URL_SEARCH = self.URL_BASE + 'search.php?search=%s&show_ids=1&sonly=1'
 
-		self.MENU_OPT_YESTERDAY = __language__(578)
-		self.MENU_OPT_TODAY = __language__(579)
-		self.MENU_OPT_TOMORROW = __language__(580)
+		self.MENU_OPT_YESTERDAY = __language__(330)
+		self.MENU_OPT_TODAY = __language__(327)
+		self.MENU_OPT_TOMORROW = __language__(328)
 		self.MENU_OPT_WEEK = __language__(581)
 		self.MENU_OPT_DAY = __language__(582)
 		self.MENU_OPT_CURR_PROG = __language__(583)
@@ -1356,10 +1356,10 @@ class TVRage:
 		self.KEY_SHOW_URL = 'Show URL'
 
 		self.DEFAULT_COUNTRY = "US"
-		self.COUNTRIES = (__language__(500), "AU","CA","JP","KR","SE","UK","US")
+		self.COUNTRIES = (__language__(500), "AU","CA","JP","SE","UK","US")
 
 		# dayDelta 0, 1, 2
-		self.DAYS = ['Yesterday','Today','Tomorrow']
+		self.DAYS = [__language__(330),__language__(327),__language__(328)]    #'Yesterday','Today','Tomorrow'
 
 		debug("< TVRage() init()")
 
@@ -2882,6 +2882,7 @@ class myTVFavShows(xbmcgui.Window):
 
 	def addToFavShows(self, showName, chID, chName):
 		debug("> myTVFavShows.addToFavShows()")
+		success = False
 
 		if not showName:
 			messageOK(__language__(507), __language__(123))
@@ -2907,11 +2908,10 @@ class myTVFavShows(xbmcgui.Window):
 		# save to file
 		if not dup:
 			self.favShowsList.append([showName, chID, chName])
-			self.saveFavShows()
+			success = self.saveFavShows()
 		else:
 			messageOK(__language__(507), __language__(124))
 
-		success = not dup
 		debug("< myTVFavShows.addToFavShows() success=%s" % success)
 		return success
 
@@ -2923,7 +2923,7 @@ class myTVFavShows(xbmcgui.Window):
 				title, chID, chName = readLine.split('~')
 				self.favShowsList.append([title.decode('latin-1', 'replace').strip(), \
 								chID, chName.decode('latin-1', 'replace').strip()])
-		debug("< myTVFavShows.loadFavShows() sz: " + str(len(self.favShowsList)))
+		debug("< myTVFavShows.loadFavShows() sz: %s" % len(self.favShowsList))
 
 	def saveFavShows(self):
 		debug("> myTVFavShows.saveFavShows()")
@@ -2935,12 +2935,19 @@ class myTVFavShows(xbmcgui.Window):
 			try:
 				fp = open(self.FAVSHOWS_FILENAME, 'w')
 				for showName, chID, chName in self.favShowsList:
-					showName = showName.encode('latin-1', 'replace').strip()
+					chID = chID.encode('latin-1', 'replace').strip()
+					if not isinstance(showName, unicode):
+						showName = unicode(showName,'latin-1').strip()
+					showName = showName.encode('latin-1', 'replace')
+					if not isinstance(chName, unicode):
+						chName = unicode(chName,'latin-1').strip()
 					chName = chName.encode('latin-1', 'replace').strip()
-					fp.write(showName + '~' + chID + '~' + chName+'\n')
+					rec = "%s~%s~%s\n" % (showName, chID, chName)
+					fp.write(rec)
 				fp.close()
 				success = True
 			except:
+				deleteFile(self.FAVSHOWS_FILENAME)
 				handleException()
 		debug("< myTVFavShows.saveFavShows() success=%s" % success)
 		return success
@@ -2980,8 +2987,7 @@ class myTVFavShows(xbmcgui.Window):
 				if selectedPos <= 0:
 					break		# stop
 
-				showName = menu[selectedPos].getLabel2()
-				chName = menu[selectedPos].getLabel()
+				showName, chID, chName = self.favShowsList[selectedPos-1]
 				if xbmcgui.Dialog().yesno(__language__(510), showName, chName, "", __language__(355), __language__(356)):
 					del self.favShowsList[selectedPos-1]
 					deleted = True

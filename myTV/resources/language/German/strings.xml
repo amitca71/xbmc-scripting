@@ -87,6 +87,7 @@
     <string id="327">Heute</string>
     <string id="328">Morgen</string>
     <string id="329">Zurücks.</string>
+	<string id="330">Gestern</string>
 
     <!-- Yes/No buttons -->
     <string id="350">Ja</string>
@@ -184,9 +185,6 @@
     <string id="575">Sender auswählen:</string>
     <string id="576">Frequenz auswählen:</string>
     <string id="577">Kein Sendername/ID</string>
-    <string id="578">Gestern</string>
-    <string id="579">Heute</string>
-    <string id="580">Morgen</string>
     <string id="581">Geplante Woche</string>
     <string id="582">Geplanter Tag</string>
     <string id="583">Aktuelles Programm</string>

@@ -19,7 +19,7 @@ import zipstream
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '28-08-2008'
+__date__ = '01-09-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -182,7 +182,7 @@ REZ_H = 576
 #######################################################################################################################    
 # DEBUG - display indented information
 #######################################################################################################################    
-DEBUG = True
+DEBUG = False
 debugIndentLvl = 0	# current indentation level
 def debug( value ):
 	global debugIndentLvl

@@ -310,7 +310,7 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 				url = self.findTitle(title)
 
 			if url == '':
-				title = unicode(doKeyboard(title, __language__(981)), 'latin-1')
+				title = unicodeToAscii(doKeyboard(title, __language__(981)))
 				if not title:
 					break
 			elif url == None:

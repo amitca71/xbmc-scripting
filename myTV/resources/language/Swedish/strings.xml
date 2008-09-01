@@ -86,6 +86,7 @@
     <string id="327">Idag</string>
     <string id="328">Imorgon</string>
     <string id="329">Återställ</string>
+    <string id="330">Igår</string>
 
     <!-- Yes/No buttons -->
     <string id="350">Ja</string>
@@ -183,9 +184,6 @@
     <string id="575">Välj kanal:</string>
     <string id="576">Välj frekvens:</string>
     <string id="577">Inget kanalnamn/ID</string>
-    <string id="578">Igår</string>
-    <string id="579">Idag</string>
-    <string id="580">Imorgon</string>
     <string id="581">Schemalagd vecka</string>
     <string id="582">Schemalagd dag</string>
     <string id="583">Nuvarande program</string>

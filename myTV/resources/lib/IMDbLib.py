@@ -281,14 +281,15 @@ class IMDbSearch:
 				log( "lookupStr assigned" )
 
 		self.SearchResults = None
-		url = 'http://www.imdb.com/find?s=tt&q='
-		if isinstance(lookupStr,unicode):
-			try:
-				url += lookupStr.encode('latin-1')
-			except:
-				url += lookupStr
-		else:
-			url += lookupStr
+#		url = 'http://www.imdb.com/find?s=tt&q='
+		url = 'http://www.imdb.com/find?s=tt&q=' + lookupStr
+#		if isinstance(lookupStr,unicode):
+#			try:
+#				url += lookupStr.encode('latin-1')
+#			except:
+#				url += lookupStr
+#		else:
+#			url += lookupStr
 
 		page = readPage(url)
 		if not page:
@@ -451,7 +452,7 @@ def readPage(url, readLines=False):
 	log("readPage() readLines=%s" % readLines)
 	page = None
 	try:
-		sock = urllib.urlopen(url)
+		sock = urllib.urlopen(urllib.quote_plus(url,'/:&?=+#@'))
 		if not readLines:
 			page = sock.read()
 		else:
@@ -501,15 +502,3 @@ def urlTextToASCII(text):
 
 	except: pass
 	return text
-
-def unicodeToAscii(text, charset='utf8'):
-	if not text: return ""
-	try:
-		newtxt = text.decode(charset)
-		newtxt = unicodedata.normalize('NFKD', newtxt).encode('ASCII','replace')
-		return newtxt
-	except:
-		log("unicodeToAscii() except")
-		e=sys.exc_info()
-		print traceback.format_exception(e[0],e[1],e[2],3)
-		return text
