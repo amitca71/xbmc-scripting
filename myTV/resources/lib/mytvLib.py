@@ -1392,7 +1392,7 @@ class TVRage:
 
 	#################################################################################################################
 	def deleteCache(self):
-		debug("> deleteCache()")
+		debug("> TVRage.deleteCache()")
 
 		try:
 			if os.path.exists(DIR_CACHE):
@@ -1404,11 +1404,11 @@ class TVRage:
 		except:
 			handleException("deleteCache()")
 
-		debug("< deleteCache()")
+		debug("< TVRage.deleteCache()")
 
 	###################################################################################################################
 	def selectCountry(self):
-		debug("> selectCountry()")
+		debug("> TVRage.selectCountry()")
 
 		origCode = self.countryCode
 		flags = []
@@ -1422,7 +1422,7 @@ class TVRage:
 			self.countryCode = self.COUNTRIES[selectedPos]
 
 		changed = (origCode != self.countryCode)
-		debug("< selectCountry() changed="+str(changed) + " countryCode="+self.countryCode)
+		debug("< TVRage.selectCountry() changed=%s countryCode=%s" % (changed, self.countryCode))
 		return changed
 
 	###################################################################################################################
@@ -1437,7 +1437,7 @@ class TVRage:
 
 	###################################################################################################################
 	def menuAddDate(self, menu, date, addFirstTitle=False):
-		debug("> menuAddDate() date="+date + " addFirstTitle="+str(addFirstTitle))
+		debug("> TVRage.menuAddDate() date="+date + " addFirstTitle="+str(addFirstTitle))
 		if addFirstTitle:
 			menu.append(xbmcgui.ListItem(date))
 
@@ -1445,11 +1445,11 @@ class TVRage:
 			menu.append(xbmcgui.ListItem(time))
 			for show in shows:
 				menu.append(self.makeShowListItem(show))
-		debug("< menuAddDate()")
+		debug("< TVRage.menuAddDate()")
 
 	###################################################################################################################
 	def searchShow(self, showName=''):
-		debug("> searchShow()")
+		debug("> TVRage.searchShow()")
 
 		firstSearch = True
 		found = False
@@ -1466,7 +1466,7 @@ class TVRage:
 			doc = fetchURL(url)
 			dialogProgress.close()
 
-			if doc and doc != -1:
+			if doc:
 				flags = []
 #				regex = "src=['\"](.*?)['\"].+?href=.*?>(.*?)<.+?align='center'>(.*?)<"     # 25/01/08
 				regex = "src=['\"](.*?)['\"].+?href=.*?>(.*?)<.+?(<table.*?</table>)"       # 30/04/08
@@ -1485,7 +1485,7 @@ class TVRage:
 					showSelectPos = 0
 					while menu:
 						selectDialog = DialogSelect()
-						selectDialog.setup(width=450, rows=len(menu), imageWidth=25, banner=self.FILE_LOGO, panel=DIALOG_PANEL)
+						selectDialog.setup(width=475, rows=len(menu), imageWidth=25, banner=self.FILE_LOGO, panel=DIALOG_PANEL)
 						showSelectPos,action = selectDialog.ask(menu, showSelectPos, icons=flags)
 						if showSelectPos <= 0:				# exit selected
 							break
@@ -1494,11 +1494,11 @@ class TVRage:
 				else:
 					messageOK(__language__(518), __language__(117), showName)
 
-		debug("< searchShow()")
+		debug("< TVRage.searchShow()")
 
 	###################################################################################################################
 	def getShowInfo(self, showName):
-		debug("> getShowInfo()")
+		debug("> TVRage.getShowInfo()")
 		showInfo = {}
 		imgFN = ''
 		summary = ''
@@ -1520,7 +1520,7 @@ class TVRage:
 		else:
 			dialogProgress.update(33, __language__(208))
 			doc = fetchURL(showURL)
-			if doc and doc != -1:
+			if doc:
 				debug("scrape Summary & banner url")
 				regex = "Summary<.+?<img src=.(http://images.tvrage.net/shows.*?)['\"].+?</table>(.*?)</td"
 				matches = re.search(regex, doc, re.IGNORECASE + re.MULTILINE + re.DOTALL)
@@ -1538,7 +1538,7 @@ class TVRage:
 			tvrageDialog.ask(showName, showInfo, imgFN, summary)
 			del tvrageDialog
 
-		debug("< getShowInfo()")
+		debug("< TVRage.getShowInfo()")
 
 	###################################################################################################################
 	# parse the schedule into a dict of dates
@@ -1549,7 +1549,7 @@ class TVRage:
 	# }
 	###################################################################################################################
 	def parseSchedule(self, doc):
-		debug("> parseSchedule()")
+		debug("> TVRage.parseSchedule()")
 
 		self.schedule = {}			# holds all data
 		self.scheduleDates = []		# list maintains dates order
@@ -1591,13 +1591,13 @@ class TVRage:
 		if not success:
 			messageOK(__language__(518), __language__(119))
 
-		debug("< parseSchedule() success="+str(success))
+		debug("< TVRage.parseSchedule() success="+str(success))
 		return success
 
 
 	###################################################################################################################
 	def getSchedule(self):
-		debug("> getSchedule()")
+		debug("> TVRage.getSchedule()")
 		success = False
 		
 		dialogProgress.create(__language__(518), __language__(303))
@@ -1606,7 +1606,7 @@ class TVRage:
 		else:
 			doc = readFile(self.FILE_SCHEDULE)
 
-		if doc and doc != -1:	# no error
+		if doc:	# no error
 			dialogProgress.update(50, __language__(312))
 			success = self.parseSchedule(doc)
 			dialogProgress.update(100, __language__(304))
@@ -1614,12 +1614,12 @@ class TVRage:
 			messageOK(__language__(518), __language__(120))
 
 		dialogProgress.close()
-		debug("< getSchedule() success="+str(success))
+		debug("< TVRage.getSchedule() success="+str(success))
 		return success
 
 	###################################################################################################################
 	def scheduledWeek(self):
-		debug("> scheduledWeek()")
+		debug("> TVRage.scheduledWeek()")
 		menu = [__language__(500)]
 
 		# exclude first date which is 'yesterday'
@@ -1629,14 +1629,14 @@ class TVRage:
 		title = __language__(210) % (self.scheduleDates[1], self.scheduleDates[-1])
 		self.displayShowMenu(menu, title)
 
-		debug("< scheduledWeek()")
+		debug("< TVRage.scheduledWeek()")
 
 	###################################################################################################################
 	# dayDelta: 0, Yesterday, 1 Today, 2 Tomorrow ...
 	# dayDelta None - show date menu
 	###################################################################################################################
 	def scheduledDay(self, dayDelta=None):
-		debug("> scheduledDay() dayDelta="+str(dayDelta))
+		debug("> TVRage.scheduledDay() dayDelta="+str(dayDelta))
 
 		if dayDelta == None:
 			menu = self.DAYS + self.scheduleDates[3:]	# join [Yes, Tod, Tom] onto rest of week dates
@@ -1653,12 +1653,12 @@ class TVRage:
 			title = __language__(211) % date
 			self.displayShowMenu(menu, title)
 
-		debug("< scheduledDay()")
+		debug("< TVRage.scheduledDay()")
 
 
 	###################################################################################################################
 	def displayShowMenu(self, menu, title):
-		debug("> displayShowMenu()")
+		debug("> TVRage.displayShowMenu()")
 
 		selectedPos = 0
 		while menu:
@@ -1674,11 +1674,11 @@ class TVRage:
 			if showName:
 				self.getShowInfo(showName)
 
-		debug("< displayShowMenu()")
+		debug("< TVRage.displayShowMenu()")
 
 	###################################################################################################################
 	def parseShowEpisodeName(self, listItem):
-		debug("> parseShowEpisodeName()")
+		debug("> TVRage.parseShowEpisodeName()")
 		lbl1 = listItem.getLabel()
 		lbl2 = listItem.getLabel2()
 
@@ -1686,7 +1686,7 @@ class TVRage:
 		epName = searchRegEx(lbl2, '(\d+x\d+)')
 		if epName and len(epName) < 2:
 			epName = '0'+epName
-		debug("< parseShowEpisodeName()")
+		debug("< TVRage.parseShowEpisodeName()")
 		return showName, epName
 
 	###################################################################################################################
