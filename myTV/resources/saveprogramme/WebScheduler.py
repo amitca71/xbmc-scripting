@@ -121,7 +121,6 @@ class SaveProgramme:
 		logTitle = ''
 		schedID = ''
 		url = self.SERVER + schedLink
-		print "WS SP run() dialogProgress=", dialogProgress
 		dialogProgress.update(0, __language__(819))					# setting rec
 		logTitle = searchRegEx(schedLink, '&name=(.*?)&')			# get log title
 		if logTitle:
@@ -434,7 +433,6 @@ class SaveProgramme:
 		debug("> getSchedulesHTML() preRecSecs=%s postRecSecs=%s" % (preRecSecs, postRecSecs))
 
 		timersList = []
-		print "WS SP getSchedulesHTML dialogProgress=", dialogProgress
 		dialogProgress.create(self.name, __language__(824))
 		doc = fetchCookieURL(self.SERVER + self.SCHEDULE_HTML_URL)
 		if doc:
