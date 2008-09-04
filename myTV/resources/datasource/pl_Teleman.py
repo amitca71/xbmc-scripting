@@ -60,7 +60,7 @@ class ListingData:
 		if not doc:
 			return doc
 
-		doc = doc.decode('ISO 8859-2','replace')			# utf-8 or latin-1 or iso-8859-2 ???
+		doc = doc.decode('utf-8','replace')			# utf-8 or latin-1 or iso-8859-2 ???
 		debug("processing data ...")
 		regex = '>(\d+:\d+).*?href="(.*?)">(.*?)<'		# new 02/05/2008 (smuto)
 		matches = findAllRegEx(doc, regex)
@@ -98,5 +98,9 @@ class ListingData:
 	#
 	def getLink(self, link, title=''):
 		debug("ListingData.getLink()")
-		regex = 'class="content"(.*?)<div'		# 12/08/08
-		return getDescriptionLink(link, regex, decodeSet='ISO 8859-2')
+		# change re according to desc link type
+		if find(link,'programy') != -1:
+			regex = 'id="series-summary">.*?<div>(.*?)<td class="sidebar'
+		else:
+			regex = 'class="airing".*?class=.*?">(.*?)</div'		# 03/09/08
+		return getDescriptionLink(link, regex, decodeSet='utf-8')
