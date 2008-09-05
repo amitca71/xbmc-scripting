@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: smuto-->
+<!--Email: smuto.promyk@gmail.com-->
+<!--Date of translation: 09/04/2008-->
+<!--$Revision$-->
+<strings>
+  <string id="0">myTV</string>
+  <string id="99">Błąd!</string>
+  <string id="203">Kanał niedostępny</string>
+  <string id="204">Brak programu</string>
+  <string id="205">Brak informacji</string>
+  <string id="206">Informacje o programie</string>
+  <string id="300">Proszę czekać ...</string>
+  <string id="303">Pobieram ...</string>
+  <string id="320">Poniedziałek</string>
+  <string id="321">Wtorek</string>
+  <string id="322">Środa</string>
+  <string id="323">Czwartek</string>
+  <string id="324">Piątek</string>
+  <string id="325">Sobota</string>
+  <string id="326">Niedziela</string>
+  <string id="327">Dzisiaj</string>
+  <string id="328">Jutro</string>
+  <string id="330">Wczoraj</string>
+  <string id="350">Tak</string>
+  <string id="351">Nie</string>
+  <string id="352">Katalog</string>
+  <string id="353">Plik</string>
+  <string id="355">Anuluj</string>
+  <string id="356">Usuń</string>
+  <string id="357">Wyłącz</string>
+  <string id="358">Włącz</string>
+  <string id="360">OK</string>
+  <string id="400">Konfiguracja</string>
+  <string id="420">Wybierz</string>
+  <string id="421">Kanały HD</string>
+  <string id="422">Nagrywaj</string>
+  <string id="427">Kanały SD</string>
+  <string id="500">Wyjście</string>
+  <string id="501">Menu</string>
+  <string id="502">Ustawienia</string>
+  <string id="507">Dodaj do ulubionych</string>
+  <string id="508">Przeglądaj ulubione programy</string>
+  <string id="510">Zarządzaj ulubionymi</string>
+  <string id="818">Bez karty TV</string>
+</strings>
