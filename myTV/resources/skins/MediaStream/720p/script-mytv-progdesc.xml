@@ -1,0 +1,167 @@
+<window>
+	<defaultcontrol>6</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<type>dialog</type>
+  <include>DialogFade</include>
+	<controls>
+      <control type="image">
+        <description>Buttons cover</description>
+      <posx>275</posx>
+      <posy>678</posy>
+        <width>1253</width>
+        <height>43</height>
+        <colordiffuse>FFFFFFFF</colordiffuse>
+        <texture border="30,30,0,0">HomeRSS.png</texture>
+      </control>
+    <include>DialogFadeBG</include>
+	<control type="group" id="2000">
+      <include>InfoDialogPos</include>
+
+      <include>InfoDialogBG</include>
+
+
+      <control type="group">
+        <description>Thumb image</description>
+        <posx>40</posx>
+        <posy>64</posy>
+
+        <control type="image">
+          <width>426</width>
+          <height>366</height>
+          <texture>..\..\Default\media\script-logo.png</texture>
+          <aspectratio aligny="bottom">keep</aspectratio>
+        </control>
+
+        <control type="image">
+          <posx>8</posx>
+          <posy>358</posy>
+          <width>410</width>
+          <height>350</height>
+          <texture flipy="true" diffuse="DiffuseMirror3.png">..\..\Default\media\script-logo.png</texture>
+          <aspectratio aligny="top">keep</aspectratio>
+        </control>
+      </control>
+
+      <control type="group">
+        <posx>InfoDialogTitleXOffset</posx>
+
+        <control type="label" id="1">
+          <description>title</description>
+          <label></label>
+          <include>InfoDialogTitle</include>
+        </control>
+
+        <control type="grouplist">
+          <posx>-460</posx>
+          <posy>InfoDialogTopButtonsPosY</posy>
+          <orientation>horizontal</orientation>
+
+
+
+
+		<control type="label" id="7">
+			<description>B button label</description>
+            <include>MusicInfoTopButton</include>
+			<label></label>
+		</control>
+
+
+		<control type="label" id="8">
+			<description>X button label</description>
+            <include>MusicInfoTopButton</include>
+			<label></label>
+
+		</control>
+
+
+		<control type="label" id="9">
+			<description>Y button label</description>
+            <include>MusicInfoTopButton</include>
+			<label></label>
+		</control>
+
+
+		<control type="label" id="10">
+			<description>BACK button label</description>
+            <include>MusicInfoTopButton</include>
+			<label></label>
+		</control>
+        </control>
+        <control type="grouplist">
+          <posx>-220</posx>
+          <posy>InfoDialogTopButtonsPosY</posy>
+          <orientation>horizontal</orientation>
+		<control type="image">
+			<description>B button image</description>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\bbutton.png</texture>
+			<visible>Control.IsVisible(7)</visible>
+		</control>
+		<control type="image">
+			<description>X button image</description>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\xbutton.png</texture>
+		</control>
+		<control type="image">
+			<description>Y button image</description>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\ybutton.png</texture>
+		</control>
+		<control type="image">
+			<description>BACK button image</description>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\backbutton.png</texture>
+		</control>
+        </control>
+		<control type="label" id="2">
+			<description>sub title</description>
+			<posx>10</posx>
+			<posy>65</posy>
+			<width>600</width>
+			<align>left</align>
+			<label></label>
+			<font>special12</font>
+			<textcolor>FFFFFFFF</textcolor>
+		</control>
+		<control type="label" id="4">
+			<description>genre</description>
+			<posx>10</posx>
+			<posy>90</posy>
+			<width>600</width>
+			<align>left</align>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FFFFFF99</textcolor>
+		</control>
+		<control type="label" id="5">
+			<description>datetime</description>
+			<posx>35</posx>
+			<posy>InfoDialogTopButtonsPosY</posy>
+			<width>400</width>
+			<align>left</align>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FFB2D4F5</textcolor>
+            <scroll>true</scroll>
+		</control>        
+        <control type="group">
+          <posx>10</posx>
+          <posy>138</posy>
+
+          <control type="textbox" id="6">
+            <description>Comment</description>
+            <width>450</width>
+            <height>440</height>
+          </control>
+        </control>
+        
+        </control>
+
+	</control>
+
+	</controls>
+</window>
