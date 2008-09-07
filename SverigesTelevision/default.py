@@ -206,7 +206,7 @@ class SVTGui(xbmcgui.WindowXML):
 			self.close()
 
 
-res_path = os.getcwd()[:-1]
+res_path = os.getcwd().replace(';','')
 svt = SVTGui('main.xml', res_path)
 svt.doModal()
 del svt
