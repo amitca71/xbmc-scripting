@@ -4,15 +4,7 @@
 	<type>dialog</type>
   <include>DialogFade</include>
 	<controls>
-      <control type="image">
-        <description>Buttons cover</description>
-      <posx>275</posx>
-      <posy>678</posy>
-        <width>1253</width>
-        <height>43</height>
-        <colordiffuse>FFFFFFFF</colordiffuse>
-        <texture border="30,30,0,0">HomeRSS.png</texture>
-      </control>
+
     <include>DialogFadeBG</include>
 	<control type="group" id="2000">
       <include>InfoDialogPos</include>
@@ -40,6 +32,71 @@
           <texture flipy="true" diffuse="DiffuseMirror3.png">..\..\Default\media\script-logo.png</texture>
           <aspectratio aligny="top">keep</aspectratio>
         </control>
+        <control type="group">
+          <posx>0</posx>
+          <posy>450</posy>
+		<control type="image">
+			<description>B button image</description>
+			<posx>-15</posx>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\bbutton.png</texture>
+			<!--<visible>Control.IsVisible(7)</visible>-->
+			<visible>true</visible>
+		</control>
+		<control type="label" id="7">
+			<description>B button label</description>
+			<posx>10</posx>
+			<label>smuto</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<control type="image">
+			<description>X button image</description>
+			<posx>80</posx>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\xbutton.png</texture>
+		</control>
+		<control type="label" id="8">
+			<description>X button label</description>
+			<posx>105</posx>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<control type="image">
+			<description>Y button image</description>
+			<posx>250</posx>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\ybutton.png</texture>
+		</control>
+		<control type="label" id="9">
+			<description>Y button label</description>
+			<posx>275</posx>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<control type="image">
+			<description>BACK button image</description>
+			<posx>370</posx>
+			<width>20</width>
+			<height>20</height>
+			<texture>..\..\Default\media\backbutton.png</texture>
+		</control>
+		<control type="label" id="10">
+			<description>BACK button label</description>
+			<posx>395</posx>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+        </control>
       </control>
 
       <control type="group">
@@ -51,72 +108,7 @@
           <include>InfoDialogTitle</include>
         </control>
 
-        <control type="grouplist">
-          <posx>-460</posx>
-          <posy>InfoDialogTopButtonsPosY</posy>
-          <orientation>horizontal</orientation>
 
-
-
-
-		<control type="label" id="7">
-			<description>B button label</description>
-            <include>MusicInfoTopButton</include>
-			<label></label>
-		</control>
-
-
-		<control type="label" id="8">
-			<description>X button label</description>
-            <include>MusicInfoTopButton</include>
-			<label></label>
-
-		</control>
-
-
-		<control type="label" id="9">
-			<description>Y button label</description>
-            <include>MusicInfoTopButton</include>
-			<label></label>
-		</control>
-
-
-		<control type="label" id="10">
-			<description>BACK button label</description>
-            <include>MusicInfoTopButton</include>
-			<label></label>
-		</control>
-        </control>
-        <control type="grouplist">
-          <posx>-220</posx>
-          <posy>InfoDialogTopButtonsPosY</posy>
-          <orientation>horizontal</orientation>
-		<control type="image">
-			<description>B button image</description>
-			<width>20</width>
-			<height>20</height>
-			<texture>..\..\Default\media\bbutton.png</texture>
-			<visible>Control.IsVisible(7)</visible>
-		</control>
-		<control type="image">
-			<description>X button image</description>
-			<width>20</width>
-			<height>20</height>
-			<texture>..\..\Default\media\xbutton.png</texture>
-		</control>
-		<control type="image">
-			<description>Y button image</description>
-			<width>20</width>
-			<height>20</height>
-			<texture>..\..\Default\media\ybutton.png</texture>
-		</control>
-		<control type="image">
-			<description>BACK button image</description>
-			<width>20</width>
-			<height>20</height>
-			<texture>..\..\Default\media\backbutton.png</texture>
-		</control>
-        </control>
 		<control type="label" id="2">
 			<description>sub title</description>
 			<posx>10</posx>
