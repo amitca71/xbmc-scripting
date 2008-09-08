@@ -43,6 +43,15 @@
         <texture border="24">DialogBG.png</texture>
       </control>
 
+        <control type="image">
+          <description>Glass overlay for title to sit on</description>
+          <posx>310</posx>
+          <posy>10</posy>
+          <width>593</width>
+          <height>60</height>
+          <texture>GlassTitleBar.png</texture>
+        </control>
+
       <control type="label" id="3">
         <description>Heading</description>
         <label>title</label>

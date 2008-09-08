@@ -33,6 +33,7 @@
     <control type="group">
       <include>MediaViewFade</include>
       <control type="image">
+        		<animation effect="zoom" start="100,131" center="0,64" time="200" condition="!Control.IsVisible(1200)">conditional</animation>
         <description>Movie view background</description>
         <include>FullScreenBGImage</include>
         <texture>MovieViewBG.png</texture>
@@ -54,7 +55,7 @@
 
           <control type="group">
             <posx>272</posx>
-            <posy>73</posy>
+            <posy>78</posy>
 
             <control type="image" id="1010">
               <description>LOGO image control</description>
@@ -113,51 +114,32 @@
     <control type="group">
       <include>TopOverlayTitlePos</include>
 
+      <control type="group">
+        <include>TopOverlaySecondTitleSlide</include>
+
+        <include>TopOverlaySecondTitleAreaBG</include>
+
+        <control type="label" id="1060">
+          <description>Scripts label</description>
+          <label></label>
+          <include>TopOverlaySecondTitleAreaText</include>
+        </control>
+      </control>
+
       <include>TopOverlayFirstTitleAreaBG</include>
 
       <control type="label" id="1050">
-        <description>Scripts label</description>
+        <description>DATASOURCE label control</description>
         <include>TopOverlayFirstTitleAreaText</include>
         <label></label>
       </control>
-
-    </control>
-
-    <control type="group">
-      <posx>6</posx>
-      <posy>9</posy>
-
-        <control type="image" id="1">
-          <include>ClockBG</include>
-        </control>
-
-        <control type="group">
-          <posx>40</posx>
-          <posy>3</posy>
-
-          <control type="label">
-    <info>System.Time(hh:mm:ss)</info>
-    <textcolor>Highlighted</textcolor>
-    <include>ClockText</include>
-          </control>
           <control type="label" id="1040">
             <include>ClockText</include>
-          </control>
-        </control>
-      </control>
-
-		<control type="label" id="1060">
-			<description>DATASOURCE label control</description>
-			<posx>2r</posx>
-			<posy>40</posy>
-			<width>120</width>
-			<height>25</height>
-			<font>font10</font>
-			<label></label>
-			<align>right</align>
             <visible>false</visible>
-			<textcolor>7FFFFFFF</textcolor>
-		</control>
+          </control>
+    </control>
+
+    <include>Clock</include>
 
 	</control>
 
@@ -175,6 +157,7 @@
         <effect type="fade" time="100" delay="100" />
       </animation>
 		<animation effect="slide" time="700" end="0,50" delay="1500" acceleration="1.1" condition="!Control.IsVisible(1200)">conditional</animation>
+		<animation effect="fade" time="200" start="100" end="10" condition="!Control.IsEnabled(1000)">conditional</animation>
 		<visible>true</visible>
       <control type="image">
         <description>RSS Background</description>
