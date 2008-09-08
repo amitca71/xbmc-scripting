@@ -41,13 +41,12 @@
 			<width>20</width>
 			<height>20</height>
 			<texture>..\..\Default\media\bbutton.png</texture>
-			<!--<visible>Control.IsVisible(7)</visible>-->
-			<visible>true</visible>
+			<visible>Control.IsVisible(7)</visible>
 		</control>
 		<control type="label" id="7">
 			<description>B button label</description>
 			<posx>10</posx>
-			<label>smuto</label>
+			<label></label>
 			<font>font10</font>
 			<textcolor>FF99FFFF</textcolor>
 		</control>
