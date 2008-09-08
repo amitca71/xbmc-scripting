@@ -70,7 +70,6 @@
     <string id="98">Elavult XML fájlok eltávolítása...</string>
     <string id="99">Filmelőzetes</string>
     
-
     <!-- Buttons -->
     <string id="103">Műfajok</string>
     <string id="104">Studiók</string>
@@ -103,7 +102,10 @@
     <string id="163">Megtekintett</string>
     <string id="164">Utolsó 25</string>
     <string id="165">Több filmelőzetes</string>
-
+    <string id="166">Film Info</string>
+    <string id="167">Premier</string>
+    <string id="168">Hozzáadva</string>
+    
     <!-- Settings labels -->
     <string id="200">Kiválasztás:</string>
     <string id="201">Skin</string>
@@ -197,15 +199,8 @@
     <string id="603">Hely</string>
 
     <!-- Plugin -->
-    <string id="700">Apple Movie Trailers Plugin</string>
-    <string id="701">A plugin lehetővé teszi, hogy a Videóknál is</string>
-    <string id="702">megnézhetőek legyenek az előzetesek.</string>
-    <string id="703">Installáljuk a plugint?</string>
-
-    <string id="704">Movie Theater Plugin</string>
-    <string id="705">A plugin lehetővé teszi a kiválasztott film megnézése</string>
-    <string id="706">előtt az előzetesek megtekintését.</string>
-    <string id="707">Installáljuk a plugint?</string>
+    <string id="700">Ez a plugin lehetővé teszi, hogy az előzeteseket a vidók között is megnézhesd. A funkció eléréshez installálni kell a plugint, melynek beállításai a plugin beállítások között találhatók.</string>
+    <string id="701">Ennek a pluginnak a segítségével bevezető videókat, kvízeket, előzeteseket, stb nézhetsz meg a kiválasztott film előtt. A funkció eléréshez installálni kell a plugint, melynek beállításai a plugin beállítások között találhatók.</string>
 
     <string id="710">Ikon kiválasztása</string>
     <string id="711">Installálás</string>
@@ -213,8 +208,8 @@
     <string id="713">Plugin</string>
     <string id="714">hozzáad</string>
 
-    <string id="720">A plugin sorrást hozzá kell adni a Nézetekhez</string>
-    <string id="721">Könyvtár Nézet esetén az automatikus, további teendőkre</string>
+    <string id="720">A plugin forrást hozzá kell adni a Nézetekhez</string>
+    <string id="721">Méditár nézet esetén az automatikus, további teendőkre</string>
     <string id="722">nincs szükség.</string>
 
     <string id="723">Hozzáadjuk a Kedvencek részhez ezt a</string>
@@ -224,6 +219,11 @@
 
     <string id="730">Hiba a plugin installálása során!</string>
 
+    <string id="750">Installáljuk ezt a plugint?</string>
+    <string id="755">Ez az összes plugint-t installálni fogja.</string>
+
+    <string id="799">Összes plugin</string>
+    
     <!-- Credits -->
     <string id="900">Verzió</string>
     <string id="901">Team névjegy:</string>
@@ -238,8 +238,8 @@
     <string id="914">Nyelvi fájl</string>
 
     <!-- Update messages -->
-    <string id="1000">Ez a verzió a legfrissebb.</string>
-    <string id="1001">Jelenlegi tagged verziók lekérése...</string>
+    <string id="1000">A jelenlegi verzió a legfrissebb.</string>
+    <string id="1001">Jelenlegi címkézett verziók lekérése...</string>
     <string id="1002">újabb</string>
     <string id="1003">Szeretné frissíteni?</string>
     <string id="1004">Fájllista lekérése...</string>
@@ -251,7 +251,7 @@
     <string id="1010">Az új verzió mentve:</string>
 
     <!-- Update error messages -->
-    <string id="1030">No tagged versions were found!</string>
+    <string id="1030">Címkézett verzió nem található!</string>
     <string id="1031">Hiba a script frissítése során!</string>
 
 </strings>
