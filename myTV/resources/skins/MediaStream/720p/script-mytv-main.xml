@@ -81,7 +81,7 @@
           <posy>72</posy>
           <control type="label" id="1020">
             <description>Movie Title</description>
-            <width>1000</width>
+            <width>880</width>
             <label></label>
             <font>TitleCapsFont</font>
             <scroll>true</scroll>
@@ -89,7 +89,7 @@
           <control type="label" id="1030">
             <description>Plot/Details</description>
             <posy>36</posy>
-            <width>1000</width>
+            <width>880</width>
             <font>DefaultFont</font>
             <textcolor>Focused</textcolor>
             <scroll>true</scroll>

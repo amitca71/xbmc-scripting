@@ -111,12 +111,12 @@
 		<control type="label" id="2">
 			<description>sub title</description>
 			<posx>10</posx>
-			<posy>65</posy>
+			<posy>110</posy>
 			<width>600</width>
 			<align>left</align>
 			<label></label>
 			<font>special12</font>
-			<textcolor>FFFFFFFF</textcolor>
+			<textcolor>FF99FFFF</textcolor>
 		</control>
 		<control type="label" id="4">
 			<description>genre</description>

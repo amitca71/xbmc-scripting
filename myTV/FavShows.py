@@ -40,7 +40,7 @@ except:
         __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
         if not __language__( 0 ): raise
     except:
-        print "FavShows() failed to get builtin xbmc.Language() or strings not parsed from path - upgrade XBMC"
+        xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language.", "Update your XBMC to a newer version.")
 
 
 from bbbLib import *

@@ -47,7 +47,7 @@
 			<visible>Player.HasAudio</visible>
 		</control>
 		<control type="label" id="1">
-			<description>Time label</description>
+			<description>Music Time label</description>
 			<width>235</width>
 			<posx>70</posx>
 			<posy>38</posy>
@@ -71,7 +71,7 @@
 			<width>48</width>
 			<height>37</height>
 			<aspectratio aligny="bottom">keep</aspectratio>
-			<texture>..\..\Default\media\script-name.png</texture>
+			<texture>script-name.png</texture>
 		</control>
 		<control type="label">
 			<posx>530</posx>
@@ -93,6 +93,29 @@
 			<align>left</align>
 			<textcolor>FFB2D4F5</textcolor>
 		</control>
+		<control type="label" id="1050">
+			<description>Datasource label control</description>
+			<visible>yes</visible>
+			<posx>5r</posx>
+			<posy>5</posy>
+			<width>140</width>
+			<height>25</height>
+			<font>font10</font>
+			<align>right</align>
+			<textcolor>FFB2D4F5</textcolor>
+		</control>
+		<control type="label" id="1060">
+			<description>Saveprogramme label control</description>
+			<visible>yes</visible>
+			<posx>5r</posx>
+			<posy>20</posy>
+			<width>140</width>
+			<height>25</height>
+			<font>font10</font>
+			<align>right</align>
+			<textcolor>FFB2D4F5</textcolor>
+		</control>
+
 	</control> <!-- End HEADER Group -->
 
 	<!-- FOOTER GROUP NAV LISTS -->
@@ -418,7 +441,7 @@
 		<height>155</height>
 		<visible>Control.IsVisible(1200) + Control.IsEnabled(1000)</visible>
 		<animation effect="slide" time="200" start="0,155" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-			<animation effect="slide" time="200" end="0,155" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		<animation effect="slide" time="200" end="0,155" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		<animation effect="slide" time="200" start="0,155" acceleration="-1.1" condition="!Skin.HasSetting(animated)">Visible</animation>
 		<animation effect="slide" time="200" end="0,155" acceleration="1.1" condition="!Skin.HasSetting(animated)">Hidden</animation>
 		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
@@ -459,15 +482,6 @@
 			<height>25</height>
 			<align>left</align>
 			<font>font12</font>
-		</control>
-
-		<control type="label" id="1050">
-			<description>DATASOURCE label control</description>
-			<visible>NO</visible>
-		</control>
-		<control type="label" id="1060">
-			<description>DATASOURCE label control</description>
-			<visible>NO</visible>
 		</control>
 
 	</control>

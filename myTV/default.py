@@ -27,9 +27,9 @@ import gc
 
 # Script doc constants
 __scriptname__ = "myTV"
-__version__ = '1.18'
+__version__ = '1.18.1'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '01-09-2008'
+__date__ = '09-09-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -46,7 +46,7 @@ try:
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
     if not __language__( 0 ): raise
 except:
-	print "failed to get builtin xbmc.Language() or strings not parsed from path - upgrade XBMC"
+	xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language.", "Update your XBMC to a newer version.")
 
 import update                                       # script update module
 from bbbLib import *								# requires __language__ to be defined
@@ -1641,7 +1641,7 @@ class myTV(xbmcgui.WindowXML):
 
 			desc = self.tvChannels.getProgAttr(prog, TVData.PROG_DESC)
 			if desc:
-				descText += ": " + desc[:70].replace('\n',' ')
+				descText += ": " + desc[:150].replace('\n',' ')
 			self.getControl(self.CLBL_PROG_DESC).setLabel(descText)
 		except:
 			self.getControl(self.CLBL_PROG_TITLE).setLabel("Error")

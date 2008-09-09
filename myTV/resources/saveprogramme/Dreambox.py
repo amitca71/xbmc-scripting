@@ -1,6 +1,6 @@
 ############################################################################################################
 #
-# Save Programme_Dreambox - Custom script called from myTV 'Save Programme' menu option.
+# Dreambox - Custom script called from myTV 'Save Programme' menu option.
 #
 # NOTES:
 # Sends URL cmds to Dreambox PVR web interface that can set/list/delete timers and programmes.
@@ -11,12 +11,13 @@
 # Setup Dreambox IP below.
 #
 # Many Thanks to kaisersose for the idea and Dreambox testing.
-# Any problems contact bm at BigBellyBilly @ gmail dot com
+# Any problems contact me at BigBellyBilly AT gmail dot com
 # ChangeLog:
 # 09/03/06 - Created
 # 03/05/06 - Updated to only pass Channel/Programme to run().
 # 11/05/06 - Updated. Config now done throu GUI.
 # 22/08/06 - Updated: Uses new Config.
+# 09/09/08 - Updated for myTV v1.18
 ############################################################################################################
 
 import xbmc, urllib, time
@@ -26,8 +27,6 @@ from string import zfill, find
 
 DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
-
-# NOTE: ALL SERVER SETTINGS NOW SET VIA myTV AT FIRST RUN & CONFIG MENU
 
 # CHANNELS - Translates Channel ID into Dreambox REF ID
 REF_CODES = {
@@ -240,7 +239,13 @@ class SaveProgramme:
 				timerModePrefix = self.configSaveProgramme.getTimerModePrefix()
 
 				# URLs
-				self.BASE_URL = 'http://%s:%s@%s/' % (serverUser,serverPwd,serverIP)
+				if serverUser and serverPwd:
+					self.BASE_URL = 'http://%s:%s@%s/' % (serverUser,serverPwd,serverIP)
+				elif serverUser:
+					self.BASE_URL = 'http://%s@%s/' % (serverUser,serverIP)
+				else:
+					self.BASE_URL = 'http://%s/' % (serverIP)
+				debug("dreambox BASE_URL=" + self.BASE_URL)
 				self.URL_TIMER_CREATE = self.BASE_URL + "addTimerEvent?type=regular&ref=$REF&start=$TIME" \
 										"&duration=$DURATION$&channel=$CHNAME&descr=$DESC"
 				self.URL_TIMER_LIST = self.BASE_URL + timerModePrefix
@@ -456,6 +461,8 @@ class ConfigSaveProgramme:
 		success = True
 		for data in self.configData:
 			key = data[0]
+			if key == self.KEY_PASS:			# pwd not reqd
+				continue
 			value = self.getValue(key)			# key
 			if value in (None,""):
 				debug("missing value for mandatory key=%s" % key)

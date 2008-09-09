@@ -1,4 +1,10 @@
- Version     Date        Change
+ Version     Date
+ 1.18.1      ??/09/08 
+                Fix: Dreambox setup, password not mandatory.
+                Fix: xTV skin wasnt showing pad buttons.
+                Change: Pad buttons (A,B,X,Y etc) graphics much improved (thanks smuto).
+                New: mediaStream skin (thanks smuto).
+                New: Polish translation (thanks smuto).
  1.18        19/08/08
                 Fix/Change/Updated: All datasources and SaveProgramme modules.
                 Change: datasource us_Zap2it amended to use us_SchedulesDirect (now a paid for service - you need to sign up ~ $20 - sorry!)

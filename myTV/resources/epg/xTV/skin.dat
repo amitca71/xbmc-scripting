@@ -1,8 +1,8 @@
 [SKIN]
 font_title = font18
 font_short_desc = font16
-font_epg = font18
-font_chname = font18
+font_epg = font16
+font_chname = font16
 colour_chnames= 0xFFFFFFFF
 colour_title = 0xFFFFFFFF
 colour_title_desc = 0xFFFFFFFF
