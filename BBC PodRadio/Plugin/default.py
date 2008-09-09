@@ -4,13 +4,6 @@
  Written By BigBellyBilly
  bigbellybilly AT gmail DOT com	- bugs, comments, ideas ...
 
- CHANGELOG:
- 01-10-07	v1.0 Created
- 17-10-07   v1.2 Fix: Scrapping of streams media url
-            Added Live Radio
- 20-10-07	v1.3 Improved txinfo scrapping
- 28-03-08   v1.4 Updated/Fix for BPR v2.1
-
  - url = sys.argv[ 0 ]
  - handle = sys.argv[ 1 ]
  - params =  sys.argv[ 2 ]
@@ -18,9 +11,9 @@
 """
 
 __plugin__ = "BBC PodRadio"
-__version__ = '1.4'
+__version__ = '1.4.1'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '28-03-2008'
+__date__ = '09-09-2008'
 
 import sys, os.path
 import xbmc, xbmcgui, xbmcplugin
@@ -39,7 +32,7 @@ class BBCPodRadioPlugin:
 	""" main plugin class """
 	def __init__( self, *args, **kwargs ):
 
-		xbmc.output("> BBCPodRadioPlugin.__init__()")
+		debug("> BBCPodRadioPlugin.__init__()")
 		
 		# BASE URLS
 		self.URL_PAGE_LIVE = '/live.shtml'
@@ -51,6 +44,8 @@ class BBCPodRadioPlugin:
 		self.URL_RADIO_HOME = self.URL_HOME + 'radio/aod/index_noframes.shtml'		
 		self.URL_RADIO_LIVE_HOME = self.URL_HOME + 'radio/aod/networks/$STATION/' + self.URL_PAGE_LIVE
 		self.URL_PODCAST = 'http://downloads.bbc.co.uk/podcasts/$STATION/$PROG/rss.xml'
+		self.URL_RADIO_AOD = "radio/aod/"
+		self.URL_RADIO_STREAM = self.URL_HOME + self.URL_RADIO_AOD + "genres/classicpop/"
 
 		self.SOURCE_POD = 'Podcasts'
 		self.SOURCE_RADIO = 'Radio'
@@ -66,8 +61,9 @@ class BBCPodRadioPlugin:
 		self.PARAM_URL = 'url'
 
 		self.ICON_MUSIC = 'DefaultMusic.png'
+		self.lastSaveMediaPath = DIR_USERDATA
 
-		xbmc.output( "argv[ 2 ]=%s " % sys.argv[ 2 ] )
+		debug( "argv[ 2 ]=%s " % sys.argv[ 2 ] )
 
 		if ( not sys.argv[ 2 ] ):
 			self.getDirectories()							# make list of directories
@@ -79,10 +75,13 @@ class BBCPodRadioPlugin:
 				paramDict = self._getParams()				# extract url args
 				url = paramDict[self.PARAM_URL]
 				self.source = paramDict[self.PARAM_SOURCE]
+				debug("source=%s" % self.source)
 				if paramDict.has_key(self.PARAM_DIR):		# directory, find categories
+					debug("directory, find categories")
 					dir = paramDict[self.PARAM_DIR]
 					self.getCategories(dir, url)
 				elif paramDict.has_key(self.PARAM_CAT):		# category, find streams
+					debug("category, find streams")
 					cat = paramDict[self.PARAM_CAT]
 					if self.source == self.SOURCE_POD:
 						self.getStreamsPodcast(cat, url)
@@ -90,12 +89,19 @@ class BBCPodRadioPlugin:
 						self.getStreamsRadio(cat, url)
 					else:
 						self.getMediaRadioLive(cat, url)	# RADIO LIVE
+
 				elif paramDict.has_key(self.PARAM_STREAM):	# stream, find media link
+					debug("stream, find media link")
 					title = paramDict[self.PARAM_STREAM]
 					if self.source == self.SOURCE_POD:
-						url = self.getMediaPodcast(url)
-						if url:
-							self.playPodcast(title, url)
+						mediaURL = self.getMediaPodcast(url)
+						if mediaURL:
+							# play existing file rather than download
+							fn = self.makeFilenameFromUrl(mediaURL)
+							if not fileExist(fn):
+								fn = self.saveMedia(mediaURL)		# always save anyway
+							if fn:
+								playMedia(fn)
 					elif self.source == self.SOURCE_RADIO:
 						self.getMediaRadio(title, url)
 
@@ -108,7 +114,7 @@ class BBCPodRadioPlugin:
 			if error:
 				messageOK("Plugin Callback URL Error","Required URL params missing")
 
-		xbmc.output("< BBCPodRadioPlugin.__init__()")
+		debug("< BBCPodRadioPlugin.__init__()")
 
 	########################################################################################################################
 	def _getParams(self):
@@ -117,8 +123,8 @@ class BBCPodRadioPlugin:
 		paramPairs=sys.argv[2][1:].split( "&" )
 		for paramsPair in paramPairs:
 			param = paramsPair.split('=')
-			paramDict[param[0]] = param[1]
-
+			if len(param) > 1:
+				paramDict[param[0]] = param[1]
 		return paramDict
 
 	########################################################################################################################
@@ -126,7 +132,7 @@ class BBCPodRadioPlugin:
 		""" Return a list of Directories """
 		ok = False
 		try:
-			xbmc.output( "getDirectories()")
+			debug( "getDirectories()")
 			directoriesDict = {'Browse Podcasts by radio stations' : self.URL_POD_HOME + 'station/',
 								'Browse Podcasts by genre' : self.URL_POD_HOME + 'genre/',
 								'Browse Podcasts by A-Z' : self.URL_POD_HOME + 'title/',
@@ -165,7 +171,7 @@ class BBCPodRadioPlugin:
 	def getCategories(self, directory, url):
 		""" Discover a list of Categories within a Directory """
 
-		xbmc.output( "getCategories() %s %s %s" % (directory, url, self.source))
+		debug( "getCategories() %s %s %s" % (directory, url, self.source))
 		ok = False
 		try:
 			dialogProgress.create("Downloading ...", "Categories for: ", directory)
@@ -186,11 +192,11 @@ class BBCPodRadioPlugin:
 				else:
 					startStr = '>SPEECH:<'
 				endStr = '</ul>'
-				regex = '<a href="(.*?)".*?>(.*?)</'
+				regex = '^<li><a href="(.*?)".*?>(.*?)</a'
 			elif self.source == self.SOURCE_RADIO_LIVE:
 				startStr = '>CHOOSE A RADIO STATION<'
 				endStr = '</ul>'
-				regex = 'href="(.*?)".*?>(.*?)<'
+				regex = '^<li><a href="(.*?)".*?>(.*?)</a'
 			else:
 				print "unknown source - stopping", self.source
 
@@ -235,7 +241,7 @@ class BBCPodRadioPlugin:
 	def getStreamsPodcast(self, category, url):
 		""" Discover a list of Streams within a Category for PODCASTS """
 
-		xbmc.output( "getStreamsPodcast() %s %s" % (category, url) )
+		debug( "getStreamsPodcast() %s %s" % (category, url) )
 		try:
 			dialogProgress.create("Downloading ...", "Podcasts for: ", category)
 			doc = fetchURL(url)
@@ -303,7 +309,7 @@ class BBCPodRadioPlugin:
 ########################################################################################################################
 	def getStreamsRadio(self, category, url):
 		""" Discover a list of Streams within a Category for RADIO """
-		xbmc.output( "getStreamsRadio() %s" % category)
+		debug( "getStreamsRadio() %s" % category)
 
 		ok = False
 		if not url.endswith(self.URL_PAGE_AUDIOLIST):
@@ -338,7 +344,10 @@ class BBCPodRadioPlugin:
 					MAX = len(linkMatches)
 					for idx in range(MAX):
 						linkMatch = linkMatches[idx]
-						streamURL = self.URL_HOME + linkMatch[0]
+						if find(linkMatch[0], self.URL_RADIO_AOD) == -1:
+							mediaURL = self.URL_RADIO_STREAM + linkMatch[0]
+						else:
+							mediaURL = self.URL_HOME + linkMatch[0]
 						title = cleanHTML(decodeEntities(linkMatch[1])).replace('&','and')
 						shortDesc = cleanHTML(decodeEntities(linkMatch[2]))
 
@@ -370,6 +379,7 @@ class BBCPodRadioPlugin:
 
 				except:
 					print "bad streamMatch", streamMatch
+					print traceback.print_exc()
 			if ( not ok ): raise
 		except:
 			print traceback.print_exc()
@@ -388,8 +398,10 @@ class BBCPodRadioPlugin:
 	def getMediaRadio(self, title, url):
 		""" Discover media link from stream for RADIO """
 
-		xbmc.output( "getMediaRadio()" )
+		debug( "getMediaRadio()" )
 		ok = False
+		mediaURL = ''
+		rpmURL = ''
 		try:
 			dialogProgress.create("Downloading ...", "Radio Stream: ", title)
 			doc = fetchURL(url, encodeURL=False)
@@ -423,15 +435,17 @@ class BBCPodRadioPlugin:
 
 				# break down txinfo if possible
 				txinfo = match[1].replace('\n','')
-				txinfoMatches = searchRegEx(txinfo, '\((.*?)\)<.*?>(.*?)-(.*?)-(.*?)$')
+#				txinfoMatches = searchRegEx(txinfo, '\((.*?)\)<.*?>(.*?)-(.*?)-(.*?)$')
+				txinfoMatches = findAllRegEx(txinfo, '(.*?)<.*?>.*?((?:Sat|Sun|Mon|Tue|Wed|Thu|Fri).*?)-(.*?)$')
 				if txinfoMatches:
-					print("full txinfo")
+					debug("full txinfo")
 					dur = cleanHTML(txinfoMatches[0][0])
 					txDate =  cleanHTML(decodeEntities(txinfoMatches[0][1]))
 					txTime = cleanHTML(decodeEntities(txinfoMatches[0][2]))
 				else:
-					print("minimal txinfo")
-					txinfoMatches = findAllRegEx(txinfo, '\((.*?)\)<.*?>(.*?)$')
+					debug("minimal txinfo")
+#					txinfoMatches = findAllRegEx(txinfo, '\((.*?)\)<.*?>(.*?)$')
+					txinfoMatches = findAllRegEx(txinfo, '(.*?)<.*?>(.*?)$')
 					dur = cleanHTML(txinfoMatches[0][0])
 					txDate =  cleanHTML(decodeEntities(txinfoMatches[0][1]))
 
@@ -439,10 +453,11 @@ class BBCPodRadioPlugin:
 #			print "txinfo split=", dur, station, txDate, txTime
 			durMins = self._convertDurToMins(dur)
 
-			xbmc.output("download .rpm URL to extract rtsp URL")
-			rtspDoc = fetchURL(rpmURL)
-			mediaURL = searchRegEx(rtspDoc, '(rtsp.*?)\?')
-			xbmc.output( "mediaURL=%s" % mediaURL)
+			debug("download .rpm URL to extract rtsp URL")
+			if rpmURL:
+				rtspDoc = fetchURL(rpmURL)
+				mediaURL = searchRegEx(rtspDoc, '(rtsp.*?)\?')
+
 			if not mediaURL: raise
 
 			# download icon
@@ -471,15 +486,16 @@ class BBCPodRadioPlugin:
 	def getMediaRadioLive(self, title, url):
 		""" Discover media links from stream for RADIO LIVE """
 
-		xbmc.output( "getMediaRadioLive() %s %s" % (title,url))
+		debug( "getMediaRadioLive() %s %s" % (title,url))
 		ok = False
+		mediaURL = ''
 		if not url.endswith(self.URL_PAGE_LIVE):
 			# if url not live link, get next web page and choose station
 			try:
 				title, url = self.getStationsPage(title, url)
 			except:
 				print "no station selected - stop"
-				return
+				return None
 
 		try:
 			dialogProgress.create("Downloading ...", "Live Radio stream: ", title)
@@ -489,7 +505,7 @@ class BBCPodRadioPlugin:
 			matches = findAllRegEx(doc, 'AudioStream.*?"(.*?)"')
 			rpmURL = self.URL_HOME + matches[0] + '.rpm'
 
-			xbmc.output("download .rpm URL to extract rtsp URL")
+			debug("download .rpm URL to extract rtsp URL")
 			rtspDoc = fetchURL(rpmURL)
 			mediaURL = searchRegEx(rtspDoc, '(rtsp://rmlive.*?)\?')
 			if not mediaURL:
@@ -497,12 +513,11 @@ class BBCPodRadioPlugin:
 			if not mediaURL:
 				raise
 
-			xbmc.output("found mediaURL=%s" % mediaURL)
+			debug("found mediaURL=%s" % mediaURL)
 			li = xbmcgui.ListItem(title)
 			li.setInfo(type="Music", infoLabels={ "Size": 1 })
 			ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
 								  url=mediaURL, listitem=li, isFolder=False )
-
 			if ( not ok ): raise
 		except:
 			messageOK("Live Radio","No Media links found!")
@@ -512,7 +527,6 @@ class BBCPodRadioPlugin:
 	def getMediaPodcast(self, url):
 		""" Discover media link from RSS for PODCAST """
 
-		xbmc.output( "getMediaPodcast()")
 		mediaURL = ''
 		try:
 			self.rssparser = RSSParser2()
@@ -527,27 +541,28 @@ class BBCPodRadioPlugin:
 		except:
 			print traceback.print_exc()
 			messageOK("Podcast Unavailable","Podcast file not found!")
+
+		debug( "getMediaPodcast() %s" % mediaURL)
 		return mediaURL
 
 	############################################################################################################
 	# download mp3 file before can be played
 	############################################################################################################
-	def playPodcast(self, title, url):
-		xbmc.output("> playPodcast()")
-
+	def playPodcast(self, title, url, fn):
+		debug("> playPodcast()")
 		xbmc.Player().stop()
-		if fetchURL(url, MP3_FILENAME, isBinary=True):
-			playMedia(MP3_FILENAME)
+		if fetchURL(url, fn, isBinary=True):
+			playMedia(fn)
 		else:
 			messageOK("Podcast Failed!", "Failed to download media to playback.",title, url)
 
-		xbmc.output("< playPodcast()")
+		debug("< playPodcast()")
 
 	############################################################################################################
 	# scrape a page of stations and convert links to LIVE links
 	############################################################################################################
 	def getStationsPage(self, category, url):
-		xbmc.output("> getStationsPage() %s %s " % (category, url))
+		debug("> getStationsPage() %s %s " % (category, url))
 		stations = []
 		info = ()
 
@@ -585,7 +600,7 @@ class BBCPodRadioPlugin:
 			# return all radio live links found
 			info = stations[0]
 
-		xbmc.output("< getStationsPage()")
+		debug("< getStationsPage()")
 		return info
 
 	############################################################################################################
@@ -603,6 +618,46 @@ class BBCPodRadioPlugin:
 		mins = (hr * 60) + min
 		print "_convertDurToMins() = ", durStr, mins
 		return mins
+
+
+	############################################################################################################
+	def makeFilenameFromUrl(self, url):
+		basename = os.path.basename(url)
+		return xbmc.makeLegalFilename(os.path.join(self.lastSaveMediaPath, basename))
+
+	############################################################################################################
+	def saveMedia(self, url):
+		debug("> saveMedia %s" % url)
+		success = False
+
+		fn = ''
+		# show and get save folder
+		savePath = xbmcgui.Dialog().browse(3, "Save To:", "files", "", False, False, self.lastSaveMediaPath)
+		debug("savePath=" + savePath)
+		if savePath:
+			self.lastSaveMediaPath = savePath + '\\'
+			basename = os.path.basename(url)
+			fn = xbmc.makeLegalFilename(os.path.join(savePath, basename))
+			save = True
+			if fileExist(fn):
+				if xbmcgui.Dialog().yesno("Overwrite Existing File?", os.path.basename(fn)):
+					deleteFile(fn)
+				else:
+					fn= ''
+			if fn:
+				dialogProgress.create("Downloading ...", savePath, basename )
+				success = fetchURL(url, fn, isBinary=True)
+				dialogProgress.close()
+				if not success:
+					fn = ''
+
+		debug("< saveMedia fn=%s" % fn)
+		return fn
+
+#################################################################################################################
+def debug(msg):
+	xbmc.output(str(msg))
+
 #################################################################################################################
 # if success: returns the html page given in url as a string
 # else: return -1 for Exception None for HTTP timeout, '' for empty page otherwise page data
@@ -612,17 +667,17 @@ def fetchURL(url, file='', isBinary=False, encodeURL=True):
 		safe_url = urllib.quote_plus(url,'/:&?=+#@')
 	else:
 		safe_url = url
-	if not safe_url.startswith('http://'):
-		safe_url = 'http://' + safe_url
-	xbmc.output("> fetchURL() %s" % safe_url)
+	debug("> fetchURL() %s" % safe_url)
 
 	def _report_hook( count, blocksize, totalsize ):
 		# just update every x%
-		if count:
+		if count and totalsize:
 			percent = int( float( count * blocksize * 100) / totalsize )
 			if (percent % 5) == 0:
 				dialogProgress.update( percent )
-		if ( dialogProgress.iscanceled() ): raise
+		if ( dialogProgress.iscanceled() ):
+			debug("fetchURL() iscanceled()")
+			raise "Cancel"
 
 	success = False
 	data = None
@@ -637,17 +692,19 @@ def fetchURL(url, file='', isBinary=False, encodeURL=True):
 		opener = urllib.FancyURLopener()
 		fn, resp = opener.retrieve(safe_url, file, _report_hook)
 		opener.close()
-		print resp
-		# check correct content type
+#		print resp
+
+		# check correct content type		
 		content_type = resp["Content-Type"].lower()
-		if isBinary and (find(content_type,"image") == -1 and find(content_type,"audio") == -1):
+		# fail if expecting an image but not corrent type returned
+		if isBinary and (find(content_type,"text") != -1):
 			raise "Not Binary"
+
 	except IOError, errobj:
 		ErrorCode(errobj)
 	except "Not Binary":
 		print("Returned Non Binary content")
 		data = False
-		success = False
 	except:
 		print traceback.print_exc()
 		messageOK("fetchURL() Exception", sys.exc_info()[ 1 ] )
@@ -660,7 +717,7 @@ def fetchURL(url, file='', isBinary=False, encodeURL=True):
 		if data:
 			success = True
 
-	xbmc.output( "< fetchURL success=%s" % success)
+	debug( "< fetchURL success=%s" % success)
 	return data
 
 #################################################################################################################
@@ -715,8 +772,11 @@ def fileExist(filename):
 
 #################################################################################################################
 # look for html between < and > chars and remove it
-def cleanHTML(data):
+def cleanHTML(data, breaksToNewline=False):
+	if not data: return ""
 	try:
+		if breaksToNewline:
+			data = data.replace('<br>','\n').replace('<p>','\n')
 		reobj = re.compile('<.+?>', re.IGNORECASE+re.DOTALL+re.MULTILINE)
 		return (re.sub(reobj, '', data)).strip()
 	except:
@@ -725,9 +785,8 @@ def cleanHTML(data):
 #################################################################################################################
 # Thanks to Arboc for contributing most of the translation in this function. 
 #################################################################################################################
-def decodeEntities(txt):
-	txt = txt.replace('\n','')
-	txt = txt.replace('\r','')
+def decodeEntities(txt, removeNewLines=True):
+	if not txt: return ""
 	txt = txt.replace('\t','')
 
 # % values
@@ -1195,24 +1254,28 @@ def decodeEntities(txt):
 		txt = txt.replace('&zwj;', "|") # zero width joiner U+200D NEW RFC 2070
 		txt = txt.replace('&zwnj;', " ") # zero width non-joiner U+200C NEW RFC 2070
 
+	if removeNewLines:
+		txt = txt.replace('\n','')
+		txt = txt.replace('\r','')
+
 	return txt
+
 
 #######################################################################################################################    
 def parseDocList(doc, regex, startStr='', endStr=''):
-	print "parseDocList()", startStr, endStr, regex
-
+	if not doc: return []
 	# find section
 	startPos = -1
 	endPos = -1
 	if startStr:
 		startPos = find(doc,startStr)
 		if startPos == -1:
-			print "start not found"
+			print "parseDocList() start not found " + startStr
 
 	if endStr:
 		endPos = find(doc, endStr, startPos+1)
 		if endPos == -1:
-			print "end not found"
+			print "parseDocList() end not found " + endStr
 
 	if startPos < 0:
 		startPos = 0
@@ -1227,13 +1290,15 @@ def parseDocList(doc, regex, startStr='', endStr=''):
 		matchList = []
 
 	if matchList:
-		print "parseDocList() matches = ", len(matchList)
+		sz = len(matchList)
 	else:
-		print "parseDocList() matches = 0"
+		sz = 0
+	print( "parseDocList() matches=%s" % sz)
 	return matchList
 
 #################################################################################################################
 def searchRegEx(data, regex, flags=re.IGNORECASE):
+	if not data: return ""
 	try:
 		value = re.search(regex, data, flags).group(1)
 	except:
@@ -1242,6 +1307,7 @@ def searchRegEx(data, regex, flags=re.IGNORECASE):
 
 #################################################################################################################
 def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
+	if not data: return ""
 	try:
 		matchList = re.compile(regex, flags).findall(data)
 	except:
@@ -1256,57 +1322,68 @@ def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
 #############################################################################################################
 def safeFilename(path):
 	head, tail = os.path.split(path)
-	return  os.path.join(head, re.sub(r'[ &\'\":?*<>|+\\/]', '_', tail))
+	name, ext = os.path.splitext(tail)
+	return  os.path.join(head, cleanPunctuation(name, replaceCh) + ext)
 
 #################################################################################################################
-def unicodeToAscii(txt, charset='utf8'):
+def cleanPunctuation(text, replaceCh='_'):
+	if not text: return ""
 	try:
-		newtxt = txt.decode(charset)
+		return re.sub(r'[\'\";:?*<>|+\\/,=!\.]', replaceCh, text)
+	except:
+		debug("cleanPunctuation() re failed")
+		return text
+
+#################################################################################################################
+def unicodeToAscii(text, charset='utf8'):
+	if not text: return ""
+	try:
+		newtxt = text.decode(charset)
 		newtxt = unicodedata.normalize('NFKD', newtxt).encode('ASCII','replace')
 		return newtxt
 	except:
-		return txt
+		return text
 
 #################################################################################################################
 class RSSParser2:
 	def __init__(self):
-		xbmc.output("RSSParser2().init()")
+		debug("RSSParser2().init()")
 
 	# feeds the xml document from given url or file to the parser
 	def feed(self, url="", file="", doc="", title=""):
-		xbmc.output("> RSSParser2().feed()")
+		debug("> RSSParser2().feed()")
 		success = False
 		self.dom = None
 
 		if url:
-			xbmc.output("parseString from URL")
+			debug("parseString from URL")
 			if not file:
 				dir = os.getcwd().replace(';','')
 				file = os.path.join(dir, "temp.xml")
 			doc = fetchURL(url, file)
 		elif file:
-			xbmc.output("parseString from FILE " + file)
+			debug("parseString from FILE " + file)
 			doc = readFile(file)
 		else:
-			xbmc.output("parseString from DOC")
+			debug("parseString from DOC")
 
 		if doc:
 			success = self.__parseString(doc)
 
-		xbmc.output("< RSSParser2().feed() success: " + str(success))
+		debug("< RSSParser2().feed() success: " + str(success))
 		return success
 
 	def __parseString(self, xmlDocument):
-		xbmc.output("> RSSParser2().__parseString()")
+		debug("> RSSParser2().__parseString()")
 		success = True
 		try:
 			self.dom = parseString(xmlDocument.encode( "utf-8" ))
 		except UnicodeDecodeError:
 			try:
-				xbmc.output("__parseString() UnicodeDecodeError, try unicodeToAscii")
+				debug("__parseString() UnicodeDecodeError, try unicodeToAscii")
 				self.dom = parseString(unicodeToAscii(xmlDocument))
 			except:
-				xbmc.output("__parseString() unicodeToAscii failed")
+				debug("__parseString() unicodeToAscii failed")
 				self.dom = parseString(xmlDocument)
 		except:
 			success = False
@@ -1314,13 +1391,13 @@ class RSSParser2:
 		if not self.dom:
 			messageOK("XML Parser Failed","Empty/Bad XML file","Unable to parse data.")
 
-		xbmc.output("< RSSParser2().__parseString() success: " + str(success))
+		debug("< RSSParser2().__parseString() success: " + str(success))
 		return success
 
 
 	# parses RSS document items and returns an list of objects
 	def __parseElements(self, tagName, elements, elementDict):
-		xbmc.output("> RSSParser2().__parseElements() element count=%s" % len(elements))
+		debug("> RSSParser2().__parseElements() element count=%s" % len(elements))
 
 		# extract required attributes from element attribute
 		def _get_element_attributes(el, attrNameList):
@@ -1363,22 +1440,22 @@ class RSSParser2:
 					except: pass
 
 				if data:
-#					xbmc.output("Tag: %s = %s" % (elTagName, data)
+#					debug("Tag: %s = %s" % (elTagName, data)
 					dict[elTagName] = data
 #				else:
-#					xbmc.output("Tag: %s No Data found" % (elTagName, )
+#					debug("Tag: %s No Data found" % (elTagName, )
 
-			if xbmc.output:
+			if debug:
 				print "%s %s" % (index, dict)
 			objectsList.append(RSSNode(dict))
 
-		xbmc.output("< RSSParser2().__parseElements() No. objects= %s" % len(objectsList))
+		debug("< RSSParser2().__parseElements() No. objects= %s" % len(objectsList))
 		return objectsList
 
 
 	# parses the RSS document
 	def parse(self, tagName, elementDict):
-		xbmc.output("> RSSParser2().parse() tagName: %s %s" % (tagName,elementDict))
+		debug("> RSSParser2().parse() tagName: %s %s" % (tagName,elementDict))
 
 		parsedList = None
 		if self.dom:
@@ -1386,9 +1463,9 @@ class RSSParser2:
 				elements = self.dom.getElementsByTagName(tagName)
 				parsedList = self.__parseElements(tagName, elements, elementDict)
 			except:
-				xbmc.output("exception No parent elements found for tagName")
+				debug("exception No parent elements found for tagName")
 
-		xbmc.output("< RSSParser2().parse()")
+		debug("< RSSParser2().parse()")
 		return parsedList
 
 #################################################################################################################
@@ -1410,19 +1487,24 @@ class RSSNode:
 
 ##############################################################################################################    
 def playMedia(filename):
-	xbmc.output("> playMedia() " + filename)
-	success = True
+	debug("> playMedia() " + filename)
+	success = False
 
 	try:
+		xbmc.Player().stop()
 		xbmc.Player().play(filename)
-	except:
-		xbmc.output('xbmc.Player().play() failed trying xbmc.PlayMedia() ')
+		success = xbmc.Player().isPlaying()
+	except: pass
+
+	if not success:
+		debug('xbmc.Player().play() failed, trying xbmc.PlayMedia() ')
 		try:
 			cmd = 'xbmc.PlayMedia(%s)' % filename
-			xbmc.executebuiltin(cmd)
+			result = xbmc.executebuiltin(cmd)
+			success = True
 		except:
-			success = False
-	xbmc.output("< playMedia() success=%s" % success)
+			traceback.print_exc()
+	debug("< playMedia() success=%s" % success)
 	return success
 
 #######################################################################################################################    

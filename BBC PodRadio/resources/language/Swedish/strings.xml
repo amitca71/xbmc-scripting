@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">BBC PodRadio</string>
-  <!-- Messages -->
+  <!-- Prompts -->
   <string id="100">Välj en källa</string>
   <string id="101">Välj en ström att spela</string>
   <string id="102">Välj station</string>
@@ -29,9 +29,8 @@
   <string id="403">Laddar ner...</string>
   <string id="404">Sidan kanske har ändrats ?</string>
   <string id="405">Plugin installed.</string>
+  <string id="406">I instick 'Lägg till källa' för att slutföra installation.</string>
   <string id="407">Strömmar för:</string>
-  <string id="490">I instick 'Lägg till källa' för att slutföra installation.</string>
-  <string id="491">Kategorier för:</string>
   <!-- Main Menu -->
   <string id="500">Meny</string>
   <string id="501">Visa Skript Readme</string>

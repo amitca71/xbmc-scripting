@@ -3,7 +3,7 @@
 <strings>
     <string id="0">BBC PodRadio</string>
 
-    <!-- Messages -->
+    <!-- Prompts -->
     <string id="100">Quelle wählen</string>
     <string id="101">Stream wählen</string>
     <string id="102">Station wählen</string>
@@ -34,9 +34,8 @@
     <string id="403">Downloading...</string>
     <string id="404">Hat sich die Seite evtl. geändert?</string>
     <string id="405">Plugin installiert.</string>
+    <string id="406">In Plugins 'Quelle hinzufügen' um Installation fertigzustellen.</string>
     <string id="407">Streams für:</string>
-    <string id="490">In Plugins 'Quelle hinzufügen' um Installation fertigzustellen.</string>
-    <string id="491">Kategorien für:</string>
 
     <!-- Main Menu -->
     <string id="500">Menü</string>

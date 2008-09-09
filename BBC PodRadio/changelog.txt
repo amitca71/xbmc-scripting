@@ -1,4 +1,8 @@
  Version    Date        Change
+ v2.2       ??/09/08    Updated: Supporting libs.
+                        Updated: Some Skin tweaks.
+                        New: Prompt to Save or Play stream after selection.
+                        New: Some skins.
  v2.1.1     20/04/08    Fix: Script self update would hang whilst making backup subfolder.
  v2.1       26/03/08    Fix: Data scraping in some areas
                         Change: Uses UserData for its settings/cache location.

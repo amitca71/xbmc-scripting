@@ -2,10 +2,13 @@
 <strings>
     <string id="0">BBC PodRadio</string>
 
-    <!-- Messages -->
+    <!-- Prompts-->
     <string id="100">Select a Source</string>
     <string id="101">Select a Stream to play</string>
     <string id="102">Select a Station</string>
+    <string id="103">Save To</string>
+    <string id="104">Save or Play ?</string>
+    <string id="105">File Exists, overwrite ?</string>
 
     <!-- menu options  -->
     <string id="200">Podcasts</string>
@@ -33,14 +36,20 @@
     <string id="403">Downloading ...</string>
     <string id="404">Site may have changed ?</string>
     <string id="405">Plugin installed.</string>
+    <string id="406">In plugins 'Add Source' to complete installation.</string>
     <string id="407">Streams for:</string>
-    <string id="490">In plugins 'Add Source' to complete installation.</string>
-    <string id="491">Categories for:</string>
+    <string id="408">Now playing... </string>
+    <string id="409">Play</string>
+    <string id="410">Save</string>
+    <string id="411">Saving ...</string>
 
+    <string id="493">Play</string>
     <!-- Main Menu -->
     <string id="500">Menu</string>
     <string id="501">View Script Readme</string>
     <string id="502">View Script Changelog</string>
+    <string id="503">Play Saved File</string>
+    <string id="504">Stop Playing</string>
 
     <!-- Update messages -->
     <string id="1000">Your version is up to date.</string>

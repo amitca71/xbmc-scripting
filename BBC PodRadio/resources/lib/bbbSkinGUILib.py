@@ -8,14 +8,16 @@ import xbmc, xbmcgui, sys
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbSkinGUILib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '28-02-2008'
+__date__ = '15-07-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
-TEXTBOX_DIALOG_XML = "script-bbb-fullscreen-textbox.xml"
 
 #################################################################################################################
 class TextBoxDialogXML( xbmcgui.WindowXML ):
 	""" Create a skinned textbox window """
+
+	XML_FILENAME = "script-bbb-textbox.xml"
+	
 	def __init__( self, *args, **kwargs):
 		self.EXIT_CODES = (9, 10, 216, 257, 275, 216, 61506, 61467,)
 		
