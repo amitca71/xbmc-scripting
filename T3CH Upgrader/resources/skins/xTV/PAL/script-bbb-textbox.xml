@@ -7,16 +7,16 @@
 		<control type="image">
 			<description>Settings Logo</description>
 			<posx>475</posx>
-			<posy>5</posy>
-			<width>48</width>
-			<height>37</height>
+			<posy>2</posy>
+			<width>80</width>
+			<height>46</height>
 			<aspectratio aligny="bottom">keep</aspectratio>
 			<texture>script-logo.png</texture>
 		</control>
 		<control type="label" id="3">
 			<description>description label</description>
 			<posx>100</posx>
-			<posy>7</posy>
+			<posy>10</posy>
 			<label></label>
 			<font>font20</font>
 			<textcolor>button-text</textcolor>
@@ -39,6 +39,7 @@
 			<textcolor>button-text</textcolor>
 			<spinposx>646</spinposx>
 			<spinposy>482</spinposy> 
+			<autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>
 		</control>
 	</controls>
 </window>

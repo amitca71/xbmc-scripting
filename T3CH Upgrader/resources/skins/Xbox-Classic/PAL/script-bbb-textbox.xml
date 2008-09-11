@@ -50,6 +50,7 @@
 			<pagecontrol>90</pagecontrol>
 			<include>textcolor-white</include>
 			<font>font12</font>
+			<autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>
 			<include>Slide_From_Left_Animation</include>
 		</control>
 		<control type="group">

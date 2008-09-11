@@ -1,5 +1,12 @@
 T3CH Upgrader Changelog:
 ========================
+v1.7.3 11/09/08
+  Fix: Plugin\Video folder not copied due to it looking for 'videos'
+  New: MediaStream skin (created by smuto)
+  New: Default 720p skin.
+  Updated: Added 'autoscroll' to skins.
+  Change: For xbmc Atlantis; Uses Language builtin.
+  Change: For xbmc Atlantis; Skin XML path changed.
 v1.7.2 26/08/08
   Change: Delete, if exists, .cfg_new before file writting out new build path.
   Change: Copying of subfolders root checked before copytree.

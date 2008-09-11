@@ -31,20 +31,25 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '26-08-2008'
-__version__ = "1.7.2"
+__date__ = '11-09-2008'
+__version__ = "1.7.3"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
 # Shared resources
-DIR_HOME = os.path.join( os.getcwd().replace( ";", "" ) )
+DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME, "resources")
 DIR_LIB = os.path.join( DIR_RESOURCES, "lib")
 sys.path.append( DIR_RESOURCES )
 sys.path.append( DIR_LIB )
 
-import language
-mylanguage = language.Language()
-__language__ = mylanguage.localized
+# Load Language using xbmc builtin
+try:
+    # 'resources' now auto appended onto path
+    __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
+    if not __language__( 0 ): raise
+except:
+	xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language builtin.", "Update your XBMC to a newer version.")
+
 import update
 import zipstream
 import SFVCheck
@@ -679,13 +684,18 @@ class Main:
 		xbmc.output("_hardcoded_includes()")
 		changed = False
 		# add if not already included
-		srcList = [ "skin\\", "screensavers\\", "scripts\\", "plugins\\videos", "plugins\\pictures", \
+		srcList = [ "skin\\", "screensavers\\", "scripts\\", "plugins\\video", "plugins\\pictures", \
 					"plugins\\music", "plugins\\programs", "system\\profiles.xml" ]
 		# ensure hardcoded in includes
 		for src in srcList:
 			if src not in self.includes:
 				self.includes.append(src)
 				changed = True
+		# change 'mispelt 'videos' to 'video'
+		try:
+			self.includes.remove("plugins\\videos")
+			xbmc.output("includes 'plugins\\videos' removed")
+		except: pass
 		return changed
 
 	######################################################################################
@@ -883,8 +893,8 @@ class Main:
 			if doc: break
 
 		if doc:
-			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_RESOURCES, "Default")
-			tbd.ask("T3CH Changelog", doc)
+			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
+			tbd.ask("T3CH " + __language__(415), doc)
 			del tbd
 		else:
 			dialogOK( __language__( 0 ), __language__( 310 ))
@@ -899,8 +909,8 @@ class Main:
 			if doc: break
 
 		if doc:
-			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_RESOURCES, "Default")
-			tbd.ask("XBMC Changelog", doc )
+			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
+			tbd.ask("XBMC " + __language__(415), doc )	# XBMC changelog
 			del tbd
 		else:
 			dialogOK( __language__( 0 ), __language__( 310 ))
@@ -912,11 +922,10 @@ class Main:
 			title = "%s: %s" % (__language__(0), __language__(414))
 
 			# determine language path
-			base_path = mylanguage.get_base_path()
-			language = xbmc.getLanguage().lower()
+			base_path, language = getLanguagePath()
 			fn = os.path.join( base_path, language, "readme.txt" )
 			if ( not fileExist( fn ) ):
-				fn = os.path.join( base_path, "english", "readme.txt" )
+				fn = os.path.join( base_path, "English", "readme.txt" )
 		else:
 			title = "%s: %s" % (__language__(0), __language__(415))
 			fn = os.path.join(DIR_RESOURCES, "changelog.txt")
@@ -924,11 +933,11 @@ class Main:
 		xbmc.output("fn=" + fn)
 		# read and display
 		if not fileExist(fn):
-			doc = "File is missing!"
+			doc = "File is missing! " + fn
 		else:
 			doc = file(fn).read()
 
-		tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_RESOURCES, "Default")
+		tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
 		tbd.ask(title, doc)
 		del tbd
 
@@ -1834,6 +1843,19 @@ def unzip(extract_path, filename, silent=False, msg=""):
 	xbmc.output("< unzip() success=" + str(success) + " installed_path=" + installed_path)
 	return success, installed_path
 
+##############################################################################################################    
+def getLanguagePath():
+	try:
+		base_path = os.path.join( os.getcwd().replace(';',''), 'resources', 'language' )
+		language = xbmc.getLanguage()
+		langPath = os.path.join( base_path, language )
+		if not os.path.exists(langPath):
+			xbmc.output("getLanguagePath() path not exist: " + langPath)
+			raise
+	except:
+		language = 'English'
+	xbmc.output("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
+	return base_path, language
 
 #################################################################################################################
  # Script starts here
