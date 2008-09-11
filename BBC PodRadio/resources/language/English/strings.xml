@@ -50,6 +50,7 @@
     <string id="502">View Script Changelog</string>
     <string id="503">Play Saved File</string>
     <string id="504">Stop Playing</string>
+    <string id="505">Clear Cache</string>
 
     <!-- Update messages -->
     <string id="1000">Your version is up to date.</string>

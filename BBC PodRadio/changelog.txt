@@ -1,17 +1,26 @@
  Version    Date        Change
- v2.2       ??/09/08    Updated: Supporting libs.
-                        Updated: Some Skin tweaks.
-                        New: Prompt to Save or Play stream after selection.
-                        New: Some skins.
- v2.1.1     20/04/08    Fix: Script self update would hang whilst making backup subfolder.
- v2.1       26/03/08    Fix: Data scraping in some areas
-                        Change: Uses UserData for its settings/cache location.
-                        Change: Improved 'Local Stations'
-                        New: Self updating from svn.
-                        New: Language support.
-                        New: View Readme and Changelog from MainMenu (white button)
- v2.01      20/10/07    Improved txinfo scrapping
-                        Fix finding Radio Live feed when has intro clip first.
- v2.0       17/10/07    Re-written to use WindowXML.
- v1.0       Sept 07     Created
+ v2.2       ??/09/08   
+  Updated: To be xbmc 'Atlantis' compatible. 
+  Updated: Supporting libs.
+  Updated: Some Skin tweaks.
+  Updated: Stream scraping.
+  New: Prompt to Save or Play stream after selection.
+  New: More skins. (mediaStream, Default 720p ...)
+  New: Menu options 'Clear Cache', 'Play Saved File', 'Stop Playing'
+ v2.1.1     20/04/08    
+  Fix: Script self update would hang whilst making backup subfolder.
+ v2.1       26/03/08    
+  Fix: Data scraping in some areas                      
+  Change: Uses UserData for its settings/cache location.
+  Change: Improved 'Local Stations'
+  New: Self updating from svn.
+  New: Language support.
+  New: View Readme and Changelog from MainMenu (white button)
+ v2.01      20/10/07    
+  Improved txinfo scrapping
+  Fix finding Radio Live feed when has intro clip first.
+ v2.0       17/10/07    
+  Re-written to use WindowXML.
+ v1.0       Sept 07     
+  Created
 

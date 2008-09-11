@@ -240,11 +240,15 @@ def makeDir(dir):
 
 #############################################################################################################
 def removeDir(dir, title="", msg="", msg2="", force=False):
+	print "removeDir() dir=%s" % dir
 	if force or xbmcgui.Dialog().yesno(title, msg, msg2):
 		try:
 			rmtree(dir,ignore_errors=True)
 			debug("removeDir() done %s" % dir)
-		except: pass
+			return True
+		except:
+			handleException()
+	return False
 	
 #################################################################################################################
 # delete a single file
@@ -1035,8 +1039,6 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 		safe_url = urllib.quote_plus(url,'/:&?=+#@')
 	else:
 		safe_url = url
-	if not safe_url.startswith('http://'):
-		safe_url = 'http://' + safe_url
 
 	def _report_hook( count, blocksize, totalsize ):
 		# just update every x%
@@ -1121,8 +1123,6 @@ def fetchCookieURL(url, fn='', params=None, headers={}, isBinary=False, encodeUR
 		safe_url = urllib.quote_plus(url,'/:&?=+#@')
 	else:
 		safe_url = url
-	if not safe_url.startswith('http://'):
-		safe_url = 'http://' + safe_url
 
 	data = None
 	handle = None

@@ -380,7 +380,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 						label1 = "%s.  %s  %s" % (unicodeToAscii(pcd[self.STREAM_DETAILS_TITLE]),
 												   pcd[self.STREAM_DETAILS_STATION],
 												   unicodeToAscii(pcd[self.STREAM_DETAILS_SHORTDESC]))
-						label2 = "%s  %smins" % (pcd[self.STREAM_DETAILS_DATE], pcd[self.STREAM_DETAILS_DUR])
+						label2 = "%s  %s" % (pcd[self.STREAM_DETAILS_DATE], pcd[self.STREAM_DETAILS_DUR])
 					li = xbmcgui.ListItem(label1, label2, \
 										pcd[self.STREAM_DETAILS_IMG_FILENAME], \
 										pcd[self.STREAM_DETAILS_IMG_FILENAME])
@@ -891,7 +891,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 
 		menuTitle = "%s - %s" % (__language__(0), __language__(500))
 		while True:
-			options = [ __language__(501), __language__(502), __language__(503)]
+			options = [ __language__(501), __language__(502), __language__(505), __language__(503)]
 			if xbmc.Player().isPlaying():
 				options.append(__language__(504))
 
@@ -911,10 +911,14 @@ class BBCPodRadio(xbmcgui.WindowXML):
 				tbd.ask(options[selectedPos], fn=fn)
 				del tbd
 			elif selectedPos == 2:
+				if removeDir(DIR_USERDATA, __language__(505) + '?'):
+					xbmc.sleep(1000)
+					makeScriptDataDir()
+			elif selectedPos == 3:
 				fn = xbmcgui.Dialog().browse(1, __language__(503), "files", ".mp3|.mp4|.m4a", False, False, self.lastSaveMediaPath)
 				if fn and playMedia(fn):
 					self.showNowPlaying(False, os.path.basename(fn))
-			elif selectedPos == 3:
+			elif selectedPos == 4:
 				self.stopPlayback()
 
 			del selectDialog

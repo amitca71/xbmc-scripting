@@ -24,7 +24,6 @@ from xml.dom.minidom import parse, parseString
 DIR_HOME= os.getcwd().replace(';','')
 DIR_USERDATA = os.path.join( "T:\\script_data", __plugin__ )
 
-MP3_FILENAME = os.path.join(DIR_USERDATA, "podcast.mp3")
 dialogProgress = xbmcgui.DialogProgress()
 
 #################################################################################################################

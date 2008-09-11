@@ -62,6 +62,7 @@
                 <textcolor>white</textcolor>
                 <shadowcolor>black</shadowcolor>
 				<font>font12</font>
+				<autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>
 			</control>
             <control type="group">
                 <posx>90r</posx>
