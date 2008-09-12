@@ -223,7 +223,7 @@ def handleException(txt=''):
 #################################################################################################################
 def makeScriptDataDir():
 	try:
-		scriptPath = os.path.join("T:\script_data", __scriptname__)
+		scriptPath = os.path.join("T:"+os.sep,"script_data", __scriptname__)
 		os.makedirs(scriptPath)
 		debug("makeScriptDataDir() created=%s" % scriptPath )
 		return True
@@ -432,70 +432,6 @@ class FontAttr:
 			strW = (otherChCount * fontW) + (shortChCount * shortFontW)
 			if strW <= maxWidth:
 #				print "FontAttr() %s %s maxWidth=%s  strW=%s  shortChCount=%s otherChCount=%s" % (fontW, newText, maxWidth, strW, shortChCount,otherChCount)
-				break
-
-		return newText
-
-#################################################################################################################
-class FontAttr_old:
-	def __init__(self):
-		# w/s rez multiplier, 0 - 1080i (1920x1080), 1 - 720p (1280x720)
-		self.rezAdjust = {0 : 2.65, 1 : 1.77}	
-		self.adjust = {'font10':-.2, 'font11':0, 'font12':.1, 'font13':.1, 'font14':.1, 'font16':1, 'font18':2, \
-					   'special10':-.1, 'special11':0, 'special12':2, 'special13':2.5, 'special14':3, 'special16':4, 'special18':5}
-
-		# base widths based on font14
-		self.width = [ \
-			0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-			0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-			0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-			#       SP   !   "   #   $   %   &   '
-			0,  0,  6,  6,  8, 14, 10, 19, 13,  4,
-			#(   )   *   +   ,   -   .   /   0   1
-			7,  7, 24, 14,  6,  7,  6,  7, 10, 10,
-			#2   3   4   5   6   7   8   9   :  ;
-			10, 10, 10, 10, 10, 10, 10, 10,  7,  7,
-			#<   =   >   ?   @   A   B   C   D   E
-			14, 14, 14,  9, 17, 11, 11, 11, 13, 11,
-			#F   G   H   I   J   K   L   M   N   O
-			10, 13, 13,  7,  8, 11,  9, 15, 13, 13,
-			#P   Q   R   S   T   U   V   W   X   Y
-			10, 13, 12, 11, 11, 12, 11, 17, 11, 11,
-			#Z   [   \   ]   ^   _   `   a   b   c
-			11,  7,  7,  7, 14, 10, 10, 10, 11,  9,
-			#d   e   f   g   h   i   j   k   l   m
-			11, 10,  6, 11, 11,  4,  5,  9,  4, 16,
-			#n   o   p   q   r   s   t   u   v   w
-			11, 10, 11, 11,  7,  8,  6, 11,  9, 14,
-			#x   y   z   {   |   }   ~
-			9,  9,  8,  9,  7,  9, 14
-		]
-
-	def getWidth( self, c, font ):
-		try:
-			w = self.width[ord(c)] + self.adjust[font]
-		except:
-			w = 14			# unknown ch, use avg width
-		return w
-
-	def getTextWidth(self, txt, font):
-		len = 0
-		for c in txt:
-			len += self.getWidth(c, font)
-		return int(len)
-
-	def truncate(self, maxWidth, text, font, rez = 6):
-		chCount = len(text)
-		maxWidth = int(maxWidth)
-		font = font.lower()
-		try:
-			maxWidth *= self.rezAdjust[rez]
-		except: pass
-			
-		newText = ''
-		for i in range(chCount, 0, -1):
-			if self.getTextWidth(text[0:i], font) <= maxWidth:
-				newText = text[0:i]
 				break
 
 		return newText
@@ -1233,7 +1169,6 @@ def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
 
 #############################################################################################################
 def safeFilename(path, replaceCh='_'):
-#	head, tail = os.path.split(path.replace( "\\", "/" ))
 	head, tail = os.path.split(path)
 	name, ext = os.path.splitext(tail)
 	return  os.path.join(head, cleanPunctuation(name, replaceCh) + ext)
@@ -1568,7 +1503,7 @@ def installPlugin(pluginType, scriptname, checkOnly=True, msg=""):
 	try:
 		copyFromPath = xbmc.translatePath( os.path.join( DIR_HOME, "Plugin" ) )
 		copyFromFile = os.path.join( copyFromPath, 'default.py')
-		copyToPath = xbmc.translatePath( os.path.join( "Q:\\", "plugins", pluginType, name ) )
+		copyToPath = xbmc.translatePath( os.path.join( "Q:", "plugins", pluginType, name ) )
 		copyToFile = os.path.join( copyToPath, 'default.py')
 
 		# set not exist if; path/file missing or previous installed is older

@@ -10,6 +10,7 @@
   02/11/07 Modified getDescriptionLink() to replace more html tags to newline
   26/11/07 Modified getChannelsLIB() to use fetchCookieURL() which takes headers and reversed regex
   01/09/08 Updated for myTV v1.18
+  12/09/08 Updated for myTV v1.18.1
 """
 
 import sys,os.path
@@ -127,95 +128,6 @@ def getDescriptionLink(link, regex, startStr='', endStr='', decodeSet='latin-1',
 	debug("< getDescriptionLink()")
 	return description
 
-
-############################################################################################################
-#class Channel:
-#	def __init__(self, chID, chName, programmeList, chIDAlternate=''):
-#		self.chID	= chID
-#		self.chName	= chName
-#		self.chIDAlternate = chIDAlternate
-#		self.programmeList = programmeList
-#
-#	def getChID(self):
-#		return self.chID
-#	def getChName(self):
-#		return self.chName
-#	def getChIDAlternate(self):
-#		return self.chIDAlternate
-#	def getProgrammeList(self):
-#		return self.programmeList
-#	def getProgrammeCount(self):
-#		return len(self.programmeList)
-#	def deleteProgramme(self, idx):
-#		try:
-#			del self.programmeList[idx]
-#		except: pass
-#	def insertProgramme(self, idx, prog):
-#		self.programmeList.insert(idx, prog)
-#	def appendProgramme(self, prog):
-#		self.programmeList.append(prog)
-
-############################################################################################################
-#class Programme:
-#	def __init__(self, title='', desc='', startTime=0, endTime=0, link='', genre='', subTitle='', scheduleLink='', progID=''):
-#		if title:
-#			self.title	= title
-#		elif title == None:                     # ch unavailable
-#			self.title = __language__(203)
-#		else:
-#			self.title = __language__(204)		# no programme
-#
-#		if desc:
-#			self.desc	= desc
-#		elif desc == None:                     # ch unavailable
-#			self.desc = __language__(203)
-#		else:
-#			self.desc = __language__(205)		# no information
-#
-#		self.startTime	= startTime
-#		self.endTime = endTime
-#		self.link = link
-#		self.genre = genre
-#		self.subTitle = subTitle
-#		self.scheduleLink = scheduleLink
-#		self.progID = progID
-#
-#	def getTitle(self):
-#		return self.title
-#	def getDescription(self):
-#		return self.desc
-#	def getStartTime(self):
-#		return self.startTime
-#	def getEndTime(self):
-#		return self.endTime
-#	def getLink(self):
-#		return self.link
-#	def getGenre(self):
-#		return self.genre
-#	def getSubTitle(self):
-#		return self.subTitle
-#	def getScheduleLink(self):
-#		return self.scheduleLink
-#	def getProgID(self):
-#		return self.progID
-#
-#	def setDescription(self, value):
-#		self.desc = value
-#	def setStartTime(self, value):
-#		self.startTime = value
-#	def setEndTime(self, value):
-#		self.endTime = value
-#	def setLink(self, value):
-#		self.link = value
-#	def setGenre(self, value):
-#		self.genre = value
-#	def setSubTitle(self, value):
-#		self.subTitle = value
-#	def setscheduleLink(self, value):
-#		self.scheduleLink = value
-#	def setProgID(self, value):
-#		self.progID = value
-#
 
 ############################################################################################################
 # remove duplicate from a list, done this way to preserve order
@@ -592,7 +504,7 @@ class ManageTimers:
 		removeDir(self.DIR_CACHE, force=True)
 		makeDir(self.DIR_CACHE)
 
-	def saveTimer(self, programme, chID, chName):
+	def saveTimer(self, programme, channelInfo):
 		debug("> ManageTimers.saveTimer()")
 
 		startTimeSecs = programme[TVData.PROG_STARTTIME]
@@ -611,6 +523,9 @@ class ManageTimers:
 			progID = programme[TVData.PROG_ID]
 		except:
 			progID = ''
+
+		chID = channelInfo[TVChannels.CHAN_ID]
+		chName = channelInfo[TVChannels.CHAN_NAME]
 		if self.saveToFile:
 			self.writeTimer(fname, startTimeSecs, chID, durSecs, chName, progName, delURL, progID)
 		self.timers.append((startTimeSecs, chID, durSecs, chName, progName, delURL, progID))
@@ -1956,10 +1871,6 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 ###################################################################################################################
 class TVData:
 
-#	CHAN_ID = 'chID'
-#	CHAN_NAME = 'chName'
-#	CHAN_IDALT = 'chIDAlt'
-
 	PROG_STARTTIME = 'start'
 	PROG_ENDTIME = 'end'
 	PROG_TITLE = 'title'
@@ -1978,7 +1889,6 @@ class TVData:
 	def reset(self):
 		debug("TVData.reset()")
 		self.channels = []
-#		self.channelInfo = []
 
 	def showChannels(self, chIDX=-1):
 		if chIDX == -1:

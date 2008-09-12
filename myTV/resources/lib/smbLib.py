@@ -284,7 +284,7 @@ def selectSMB(currentValue=''):
 	returnValue = ''
 	doc = ''
 
-	doc = readFile('Q:\\UserData\\sources.xml')
+	doc = readFile(os.path.join('Q:','UserData','sources.xml'))
 	if doc:
 		# extract SMB paths from XBMC config file
 		menuList = []
@@ -510,8 +510,6 @@ def getSMBPathIP(smbPath, isSMBBasePathOnly=False):
 	if DEBUG: print remoteInfo
 
 	if remoteInfo and smbPath:
-#		if smbPath[-1] not in ["\\","/"]: smbPath += '/'
-		
 		domain,user,password,pcname,share,dirPath = remoteInfo
 		if '.' not in pcname:										# PCNAME not an IP
 			ip = getIPFromName(pcname)								# discover IP

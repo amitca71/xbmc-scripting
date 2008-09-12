@@ -251,7 +251,7 @@ class ConfigSaveProgramme:
 
 		self.CARD_TYPES = {
 				self.CARD_TYPE_NOVA : "C:\\progra~1\\Hauppauge\\WinTV NOVA\\DVB-TV.exe",
-				self.CARD_TYPE_WINTV2K : "C:\\progra~1\\WinTV\\WinTV2K.EXE",
+				self.CARD_TYPE_WINTV2K : "C:\\progra~1\\WinTV\\WinTV2K.exe",
 				self.CARD_TYPE_USB : "C:\\progra~1\\WinTV\\bgrecorder.exe"
 				}
 
@@ -336,7 +336,7 @@ class ConfigSaveProgramme:
 			user = self.getValue(self.KEY_USER)
 			pwd = self.getValue(self.KEY_PASS)
 
-			value = baseCMD + tr.replace('$TRPARMS',tr_parms)
+			value = baseCMD + tr.replace('$PARMS',tr_parms)
 			value = value.replace('$EXE',pathEXE).replace('$REC',pathREC)
 			value = value.replace('$USER',user).replace('$PWD',pwd)
 		except:
@@ -354,10 +354,16 @@ class ConfigSaveProgramme:
 			return CHANNEL_CODES_WINTV2K
 
 	def getPreRecMins(self):
-		return self.getValue(self.KEY_PRE_REC_MINS)
+		try:
+			return int(self.getValue(self.KEY_PRE_REC_MINS))
+		except:
+			return 0
 
 	def getPostRecMins(self):
-		return self.getValue(self.KEY_POST_REC_MINS)
+		try:
+			return int(self.getValue(self.KEY_POST_REC_MINS))
+		except:
+			return 0
 
 	def getValue(self, key):
 		value = config.action(self.CONFIG_SECTION, key)
