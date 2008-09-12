@@ -245,7 +245,10 @@ def removeDir(dir, title="", msg="", msg2="", force=False):
 		try:
 			rmtree(dir,ignore_errors=True)
 			debug("removeDir() done %s" % dir)
-		except: pass
+			return True
+		except:
+			handleException()
+	return False
 	
 #################################################################################################################
 # delete a single file
@@ -1036,8 +1039,6 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 		safe_url = urllib.quote_plus(url,'/:&?=+#@')
 	else:
 		safe_url = url
-	if not safe_url.startswith('http://'):
-		safe_url = 'http://' + safe_url
 
 	def _report_hook( count, blocksize, totalsize ):
 		# just update every x%
@@ -1122,8 +1123,6 @@ def fetchCookieURL(url, fn='', params=None, headers={}, isBinary=False, encodeUR
 		safe_url = urllib.quote_plus(url,'/:&?=+#@')
 	else:
 		safe_url = url
-	if not safe_url.startswith('http://'):
-		safe_url = 'http://' + safe_url
 
 	data = None
 	handle = None
@@ -1229,7 +1228,7 @@ def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
 		sz = len(matchList)
 	else:
 		sz = 0
-#	debug ("findAllRegEx() matches= " + str(sz))
+	debug ("findAllRegEx() matches=%s" % sz)
 	return matchList
 
 #############################################################################################################
@@ -1561,12 +1560,10 @@ def prefixDirPath(fn, dirPath):
 
 #############################################################################################################
 # pluginType = music, video, pictures
-def installPlugin(pluginType, name='', checkOnly=True):
-	debug("> installPlugin() %s %s checkOnly=%s"  % (pluginType, name, checkOnly))
+def installPlugin(pluginType, scriptname, checkOnly=True, msg=""):
+	debug("> installPlugin() %s %s checkOnly=%s"  % (pluginType, scriptname, checkOnly))
 	exists = False
-	if not name:
-		name = __scriptname__
-	name += " Plugin"
+	name = scriptname + " Plugin"
 
 	try:
 		copyFromPath = xbmc.translatePath( os.path.join( DIR_HOME, "Plugin" ) )
@@ -1580,17 +1577,17 @@ def installPlugin(pluginType, name='', checkOnly=True):
 		debug( "comparing fromSecs %d  toSecs %d"  % (copyFromFileSecs, copyToFileSecs))
 		exists = fileExist(copyToFile) and copyFromFileSecs <= copyToFileSecs
 	except:
-		debug( "paths dont exist. This is OK if we're just checking" )
+		debug( "paths dont exist." )
 
 	if not checkOnly:
-		# do installation
+		debug("do plugin installation...")
 		try:
 			from shutil import copytree, rmtree
 			try:
 				rmtree( copyToPath,ignore_errors=True )
 			except: pass
 			copytree( copyFromPath, copyToPath )
-			dialogOK(__scriptname__, "In plugins 'Add Source' to complete installation.", name)
+			dialogOK(name, msg)
 		except:
 			msg = "Plugin Failed\n" + str(sys.exc_info()[ 1 ])
 			dialogOK(__scriptname__, msg)
@@ -1624,11 +1621,13 @@ def playMedia(filename):
 	try:
 		xbmc.Player().play(filename)
 		success = xbmc.Player().isPlaying()
-	except:
-		debug('xbmc.Player().play() failed trying xbmc.PlayMedia() ')
+	except: pass
+
+	if not success:
+		debug('xbmc.Player().play() failed, trying xbmc.PlayMedia() ')
 		try:
 			cmd = 'xbmc.PlayMedia(%s)' % filename
-			xbmc.executebuiltin(cmd)
+			result = xbmc.executebuiltin(cmd)
 			success = True
 		except:
 			handleException('xbmc.PlayMedia()')

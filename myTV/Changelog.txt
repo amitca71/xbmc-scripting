@@ -1,8 +1,9 @@
  Version     Date
  1.18.1      ??/09/08 
-                Fix: Dreambox setup, password not mandatory.
+                Fix: Dreambox setup, password now not mandatory.
                 Fix: xTV skin wasnt showing pad buttons.
                 Change: Pad buttons (A,B,X,Y etc) graphics much improved (thanks smuto).
+                Change: Some skin tweaks.
                 New: mediaStream skin (thanks smuto).
                 New: Polish translation (thanks smuto).
  1.18        19/08/08

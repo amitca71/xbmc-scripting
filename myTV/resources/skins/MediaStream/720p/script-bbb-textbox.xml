@@ -70,6 +70,7 @@
           <description>Textarea</description>
           <width>1160</width>
           <height>576</height>
+		  <autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>
         </control>
       </control>
     </control>
