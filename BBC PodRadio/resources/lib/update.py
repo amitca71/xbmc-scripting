@@ -13,6 +13,7 @@ Changes:
 20-02-2008 Altered to save script backup into Q:\\scripts\\backups subfolder. Makes the scripts folder cleaner.
 20-04-2008 Fix makedir of backup folder.
 02-05-2008 \backups renamed to \.backups in anticipation of xbmc adopting hidden folder prefixed with '.'
+12-09-2008 use os.path.join in stead of string +
 """
 
 import sys
@@ -31,9 +32,9 @@ class Update:
 		self.script = script.replace( ' ', '%20' )
 		self.base_url = "http://xbmc-scripting.googlecode.com/svn"
 		self.tags_url = "%s/tags/%s/" % ( self.base_url, self.script)
-		self.local_dir = 'Q:\\scripts\\' + script
-		self.backup_base_dir = 'Q:\\scripts\\.backups'
-		self.local_backup_dir = self.backup_base_dir + '\\' + script
+		self.local_dir = os.path.join('Q:','scripts', script)
+		self.backup_base_dir = os.path.join('Q:','scripts','.backups')
+		self.local_backup_dir = os.path.join(self.backup_base_dir, script)
 
 		xbmc.output("script=" + script)
 		xbmc.output("base_url=" + self.base_url)
@@ -121,7 +122,7 @@ class Update:
 
 	def issueUpdate( self, version ):
 		xbmc.output("> Update().issueUpdate() version=%s" % version)
-		path = os.path.join(self.local_backup_dir, 'resources\\lib\\update.py')
+		path = os.path.join(self.local_backup_dir, 'resources','lib','update.py')
 		command = 'XBMC.RunScript(%s,%s,%s)'%(path, self.script.replace('%20',' '), version)
 		xbmc.executebuiltin(command)
 		xbmc.output("< Update().issueUpdate() done")

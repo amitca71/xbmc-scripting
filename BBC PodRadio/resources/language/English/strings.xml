@@ -28,6 +28,7 @@
     <string id="302">Stream Unavailable</string>
     <string id="303">There are no episodes available.</string>
     <string id="304">No media link found!</string>
+    <string id="305">Download failed!</string>
 
     <!-- Status messages -->
     <string id="400">Please wait ...</string>

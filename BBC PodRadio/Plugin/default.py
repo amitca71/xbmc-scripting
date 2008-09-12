@@ -21,8 +21,11 @@ import re, os, traceback, urllib, urllib2
 from string import replace,split,find,capwords
 from xml.dom.minidom import parse, parseString
 
-DIR_HOME= os.getcwd().replace(';','')
-DIR_USERDATA = os.path.join( "T:\\script_data", __plugin__ )
+if os.name=='posix':    
+    DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
+else:
+    DIR_HOME= os.getcwd().replace(';','')
+DIR_USERDATA = os.path.join( "T:","script_data", __plugin__ )
 
 dialogProgress = xbmcgui.DialogProgress()
 
@@ -545,19 +548,6 @@ class BBCPodRadioPlugin:
 		return mediaURL
 
 	############################################################################################################
-	# download mp3 file before can be played
-	############################################################################################################
-	def playPodcast(self, title, url, fn):
-		debug("> playPodcast()")
-		xbmc.Player().stop()
-		if fetchURL(url, fn, isBinary=True):
-			playMedia(fn)
-		else:
-			messageOK("Podcast Failed!", "Failed to download media to playback.",title, url)
-
-		debug("< playPodcast()")
-
-	############################################################################################################
 	# scrape a page of stations and convert links to LIVE links
 	############################################################################################################
 	def getStationsPage(self, category, url):
@@ -592,7 +582,6 @@ class BBCPodRadioPlugin:
 				menu.append(name)
 			selectDialog = xbmcgui.Dialog()
 			selectedPos = selectDialog.select("Choose Station:", menu )
-			print "selectedPos=", selectedPos
 			if selectedPos >= 0:
 				info = stations[selectedPos]
 		elif len(stations) == 1:
@@ -634,7 +623,7 @@ class BBCPodRadioPlugin:
 		savePath = xbmcgui.Dialog().browse(3, "Save To:", "files", "", False, False, self.lastSaveMediaPath)
 		debug("savePath=" + savePath)
 		if savePath:
-			self.lastSaveMediaPath = savePath + '\\'
+			self.lastSaveMediaPath = savePath
 			basename = os.path.basename(url)
 			fn = xbmc.makeLegalFilename(os.path.join(savePath, basename))
 			save = True

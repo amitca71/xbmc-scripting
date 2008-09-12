@@ -23,15 +23,18 @@ from string import replace,split,find,capwords
 __scriptname__ = "BBC PodRadio"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/BBC%20PodRadio"
-__date__ = '09-09-2008'
+__date__ = '12-09-2008'
 __version__ = "2.2"
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
-DIR_HOME = os.getcwd().replace( ";", "" )
+if os.name=='posix':    
+    DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
+else:
+	DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-DIR_USERDATA = os.path.join( "T:\\script_data", __scriptname__ )
+DIR_USERDATA = os.path.join( "T:","script_data", __scriptname__ )
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
 # Load Language using xbmc builtin
@@ -46,7 +49,6 @@ from bbbLib import *
 from bbbSkinGUILib import TextBoxDialogXML
 import update
 
-MP3_FILENAME = os.path.join(DIR_USERDATA, "podcast.mp3")
 
 #################################################################################################################
 # MAIN
@@ -242,30 +244,46 @@ class BBCPodRadio(xbmcgui.WindowXML):
 			idx = self.getControl( self.CLST_STREAM ).getSelectedPosition()
 			self.getControl( self.CLBL_DESC).setLabel(__language__(403))
 
-			mediaURL = self.getMediaStreamURL(idx)
+			# check if it always need downloading first
+			mediaURL = self.streamDetails[idx][self.STREAM_DETAILS_STREAMURL]
+			if mediaURL[-3:].lower() in ('mp3','m4a','mp4'):
+				isPodcast = True
+			else:
+				isPodcast = False
+				mediaURL = self.getMediaStreamURL(idx)
+
 			if mediaURL:
 				debug(" prompt to save or play ")
 				details = self.streamDetails[idx]
 				title = details[self.STREAM_DETAILS_TITLE]
 				station = details[self.STREAM_DETAILS_STATION]
-				if xbmcgui.Dialog().yesno(__language__(104),title,station,"",__language__(409),__language__(410)):
-					self.saveMedia(mediaURL)
-					isPlaying = False
-				else:
-					isPlaying = playMedia(mediaURL)
+				save_fn = ''
+				saveFile = xbmcgui.Dialog().yesno(__language__(104),title,station,"",__language__(409),__language__(410))
+				if saveFile or isPodcast:
+					if not saveFile and isPodcast:
+						save_fn = "podcast" + mediaURL[-4:]	# add correct ext
 
-				if self.source == self.SOURCE_RADIO:
-					# redraw stream list as we've got more info
-					self.getControl( self.CLST_STREAM).reset()
-					self.getIcons(idx)
-					self.showStreams()
-					self.getControl( self.CLST_STREAM).selectItem(idx)
-				title = "%s %s" % (self.streamDetails[idx][self.STREAM_DETAILS_TITLE],
-								   self.streamDetails[idx][self.STREAM_DETAILS_STATION])
-				self.getControl( self.CLBL_TITLE).setLabel(title)
-				self.getControl( self.CLBL_DESC).setLabel(self.streamDetails[idx][self.STREAM_DETAILS_SHORTDESC])
+					mediaURL = self.saveMedia(mediaURL, save_fn)		# returns full path+fn
+
+				if not saveFile and mediaURL:
+					isPlaying = playMedia(mediaURL)
+				else:
+					isPlaying = False
+
 				if isPlaying:
+					if self.source == self.SOURCE_RADIO:
+						# redraw stream list as we've got more info
+						self.getControl( self.CLST_STREAM).reset()
+						self.getIcons(idx)
+						self.showStreams()
+						self.getControl( self.CLST_STREAM).selectItem(idx)
+					title = "%s %s" % (self.streamDetails[idx][self.STREAM_DETAILS_TITLE],
+									   self.streamDetails[idx][self.STREAM_DETAILS_STATION])
+					self.getControl( self.CLBL_TITLE).setLabel(title)
+					self.getControl( self.CLBL_DESC).setLabel(self.streamDetails[idx][self.STREAM_DETAILS_SHORTDESC])
 					self.showNowPlaying()
+				else:
+					self.showNowPlaying(clear=True)
 			else:
 				self.getControl(self.CLBL_DESC).setLabel(__language__(304))
 
@@ -561,9 +579,9 @@ class BBCPodRadio(xbmcgui.WindowXML):
 								duration = "%smins" % searchRegEx(rssItem.getElement('itunes:duration'), '(\d+)')
 								shortDesc = longDesc[:40]
 
-								if DEBUG:
-									print station,prog,title,shortDesc,duration,shortDate,mediaURL,imgFilename
 								self.streamDetails.append([title,mediaURL,imgURL,imgFilename,station,shortDesc,duration,shortDate,longDesc])
+								if DEBUG:
+									print self.streamDetails[-1]
 
 					# get thumb icons
 					if self.streamDetails:
@@ -692,30 +710,40 @@ class BBCPodRadio(xbmcgui.WindowXML):
 			self.setFocus(self.getControl( self.CLST_STREAM ))
 
 	############################################################################################################
-	def saveMedia(self, url):
+	def saveMedia(self, url, fn=''):
 		debug("> saveMedia")
 		success = False
 
-		# show and get save folder
-		savePath = xbmcgui.Dialog().browse(3, __language__(103), "files", "", False, False, self.lastSaveMediaPath)
+		if not fn:
+			# show and get save folder
+			savePath = xbmcgui.Dialog().browse(3, __language__(103), "files", "", False, False, self.lastSaveMediaPath)
+			fn = os.path.basename(url)
+			removeFile = False
+		else:
+			savePath = DIR_USERDATA
+			removeFile = True
+
 		debug("savePath=" + savePath)
 		if savePath:
-			self.lastSaveMediaPath = savePath + '\\'
-			basename = os.path.basename(url)
-			fn = xbmc.makeLegalFilename(os.path.join(savePath, basename))
-			save = True
-			if os.path.exists(fn):
+			self.lastSaveMediaPath = savePath
+			fn = xbmc.makeLegalFilename(os.path.join(savePath, fn))
+			if removeFile:
+				deleteFile(fn)
+			elif os.path.exists(fn):
 				if xbmcgui.Dialog().yesno(__language__(105), fn):
 					deleteFile(fn)
 				else:
-					save = False
-			if save:
-				dialogProgress.create(__language__(411), savePath, basename )
+					fn = ''
+			if fn:
+				dialogProgress.create(__language__(411), url, fn )
 				success = fetchURL(url, fn, isBinary=True)
 				dialogProgress.close()
+				if not success:
+					messageOK(__language__(305), url, fn)
+					fn = ''
 
-		debug("< saveMedia success=%s" % success)
-		return success
+		debug("< saveMedia fn=%s" % fn)
+		return fn
 
 	############################################################################################################
 	# 1. download stream URL
@@ -735,7 +763,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 		rpmURL = ''
 		url = self.streamDetails[idx][self.STREAM_DETAILS_STREAMURL]
 		if url[-3:].lower() in ('mp3','m4a','mp4'):
-			debug("url is a media file - fetch and play")
+			debug("url is a media file - download required")
 			mediaURL = url
 		else:
 			dialogProgress.create(__language__(403), __language__(407), title)
@@ -830,7 +858,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 
 	############################################################################################################
 	def showNowPlaying(self, clear=False, text=""):
-		debug("> showNowPlaying() clear="+str(clear))
+		debug("> showNowPlaying() clear=%s" % clear)
 
 		self.getControl( self.CFLBL_NOWPLAYING ).reset()
 		if not clear:
@@ -971,9 +999,6 @@ if not updated:
     del myscript 
 
 # clean up on exit
-deleteFile(os.path.join(DIR_HOME, "temp.xml"))
-deleteFile(os.path.join(DIR_HOME, "temp.html"))
-deleteFile(MP3_FILENAME)
 moduleList = ['bbbLib','bbbSkinGUILib']
 if not updated:
     moduleList += ['update']

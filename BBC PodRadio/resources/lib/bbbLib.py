@@ -222,7 +222,7 @@ def handleException(txt=''):
 #################################################################################################################
 def makeScriptDataDir():
 	try:
-		scriptPath = os.path.join("T:\script_data", __scriptname__)
+		scriptPath = os.path.join("T:","script_data", __scriptname__)
 		os.makedirs(scriptPath)
 		debug("makeScriptDataDir() created=%s" % scriptPath )
 		return True
@@ -240,7 +240,6 @@ def makeDir(dir):
 
 #############################################################################################################
 def removeDir(dir, title="", msg="", msg2="", force=False):
-	print "removeDir() dir=%s" % dir
 	if force or xbmcgui.Dialog().yesno(title, msg, msg2):
 		try:
 			rmtree(dir,ignore_errors=True)
@@ -1233,7 +1232,6 @@ def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
 
 #############################################################################################################
 def safeFilename(path, replaceCh='_'):
-#	head, tail = os.path.split(path.replace( "\\", "/" ))
 	head, tail = os.path.split(path)
 	name, ext = os.path.splitext(tail)
 	return  os.path.join(head, cleanPunctuation(name, replaceCh) + ext)
@@ -1568,7 +1566,7 @@ def installPlugin(pluginType, scriptname, checkOnly=True, msg=""):
 	try:
 		copyFromPath = xbmc.translatePath( os.path.join( DIR_HOME, "Plugin" ) )
 		copyFromFile = os.path.join( copyFromPath, 'default.py')
-		copyToPath = xbmc.translatePath( os.path.join( "Q:\\", "plugins", pluginType, name ) )
+		copyToPath = xbmc.translatePath( os.path.join( "Q:", os.sep, "plugins", pluginType, name ) )
 		copyToFile = os.path.join( copyToPath, 'default.py')
 
 		# set not exist if; path/file missing or previous installed is older
@@ -1628,7 +1626,6 @@ def playMedia(filename):
 		try:
 			cmd = 'xbmc.PlayMedia(%s)' % filename
 			result = xbmc.executebuiltin(cmd)
-			print "executebuiltin result=%s" % result
 			success = True
 		except:
 			handleException('xbmc.PlayMedia()')
