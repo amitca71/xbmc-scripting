@@ -1,11 +1,13 @@
  Version     Date
  1.18.1      ??/09/08 
                 Fix: Dreambox setup, password now not mandatory.
-                Fix: xTV skin wasnt showing pad buttons.
+                Fix: Some skins were not showing action icons.
                 Fix: Hauppauge mins error.
                 Change: Pad buttons (A,B,X,Y etc) graphics much improved (thanks smuto).
                 Change: Some skin tweaks.
-                New: mediaStream skin (thanks smuto).
+                Change: Language strings.
+                Change: Dreambox amended to work with Enimga2 model.
+                New: MediaStream skin (thanks smuto).
                 New: Polish translation (thanks smuto).
  1.18        19/08/08
                 Fix/Change/Updated: All datasources and SaveProgramme modules.

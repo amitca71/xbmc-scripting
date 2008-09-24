@@ -237,6 +237,7 @@ class SaveProgramme:
 				self.preRecMins = self.configSaveProgramme.getPreRecMins()
 				self.postRecMins = self.configSaveProgramme.getPostRecMins()
 				timerModePrefix = self.configSaveProgramme.getTimerModePrefix()
+				self.isEnigma = self.configSaveProgramme.getModel()
 
 				# URLs
 				if serverUser and serverPwd:
@@ -246,8 +247,21 @@ class SaveProgramme:
 				else:
 					self.BASE_URL = 'http://%s/' % (serverIP)
 				debug("dreambox BASE_URL=" + self.BASE_URL)
-				self.URL_TIMER_CREATE = self.BASE_URL + "addTimerEvent?type=regular&ref=$REF&start=$TIME" \
-										"&duration=$DURATION$&channel=$CHNAME&descr=$DESC"
+				if not self.isEnigma:
+					self.URL_TIMER_CREATE = self.BASE_URL + "addTimerEvent?type=regular&ref=$REF&start=$TIME" \
+											"&duration=$DUR$&channel=$CHNAME&descr=$TITLE"
+				else:
+# sampe 'Enigma 2' Dreambox  URL
+# http://192.168.0.3/web/wap/timeradd?justplay=0&syear=2008&smonth=9&sday=16&shour=16&smin=25&eyear=2008&emonth=9&eday=16&ehour=18&emin=25
+# &sRef=1%3A134%3A1%3A0%3A0%3A0%3A0%3A0%3A0%3A0%3AFROM+BOUQUET+&name=Name+of++Prog&description=Description+of+Program&afterevent=0&disabled=0
+# &deleteOldOnSave=0&command=add&save=Add%2FSave
+					self.URL_TIMER_CREATE = self.BASE_URL + "web/wap/timeradd?justplay=0" \
+											"&sRef=$REFAFROM+BOUQUET" \
+											"&syear=$SYEAR&smonth=$SMONTH&sday=$SDAY&shour=$SHOUR&smin=$SHOUR" \
+											"&eyear=$EYEAR&emonth=$EMONTH&eday=$EDAY&ehour=$EHOUR&emin=$EHOUR" \
+											"&name=$TITLE&description=" \
+											"&afterevent=0&disabled=0&deleteOldOnSave=0&command=add&save=Add/Save"
+
 				self.URL_TIMER_LIST = self.BASE_URL + timerModePrefix
 				self.URL_TIMER_DELETE = self.BASE_URL + "deleteTimerEvent?&ref=$REF&start=$TIME" \
 										"&type=$TYPE&force=yes"
@@ -268,19 +282,35 @@ class SaveProgramme:
 			currentTime = time.mktime(time.localtime())
 			chName = channelInfo[TVChannels.CHAN_NAME]
 			title = programme[TVData.PROG_TITLE]
-			startTimeSecs = int(self.programme[TVData.PROG_STARTTIME]) - (self.preRecMins * 60)
-			endTimeSecs = int(self.programme[TVData.PROG_ENDTIME])+ (self.postRecMins * 60)
+			startTimeSecs = int(programme[TVData.PROG_STARTTIME]) - (self.preRecMins * 60)
+			endTimeSecs = int(programme[TVData.PROG_ENDTIME])+ (self.postRecMins * 60)
 			durSecs = int(endTimeSecs - startTimeSecs)
 
 			if endTimeSecs <= currentTime:
 				messageOK(__language__(801),__language__(802), title)			# prog already finished
 			else:
 				# create final URL
-				url = self.URL_TIMER_CREATE.replace('$REF', ref) \
-						.replace('$TIME', str(startTimeSecs)) \
-						.replace('$DURATION', str(durSecs)) \
-						.replace('$CHNAME', chName) \
-						.replace('$DESC', title)
+				if not self.isEnigma:
+					url = self.URL_TIMER_CREATE.replace('$REF', ref) \
+							.replace('$TIME', str(startTimeSecs)) \
+							.replace('$DUR', str(durSecs)) \
+							.replace('$CHNAME', chName) \
+							.replace('$TITLE', title)
+				else:
+					startTime_tm = time.localtime(startTimeSecs)
+					endTime_tm = time.localtime(endTimeSecs)
+					url = self.URL_TIMER_CREATE.replace('$REF', ref) \
+							.replace('$SYEAR', str(startTime_tm.tm_year)) \
+							.replace('$SMONTH', str(startTime_tm.tm_mon)) \
+							.replace('$SDAY', str(startTime_tm.tm_mday)) \
+							.replace('$SHOUR', str(startTime_tm.tm_hour)) \
+							.replace('$SMIN', str(startTime_tm.tm_min)) \
+							.replace('$EYEAR', str(endTime_tm.tm_year)) \
+							.replace('$EMONTH', str(endTime_tm.tm_mon)) \
+							.replace('$EDAY', str(endTime_tm.tm_mday)) \
+							.replace('$EHOUR', str(endTime_tm.tm_hour)) \
+							.replace('$EMIN', str(endTime_tm.tm_min)) \
+							.replace('$TITLE', title)
 
 				doc = fetchURL(url)
 				success = self.checkServerResult(doc)
@@ -415,7 +445,7 @@ class SaveProgramme:
 			messageOK("Failed.","Unsuccessful message returned from server.")
 		else:
 			success = True
-		debug("< checkServerResult() success=" + str(success))
+		debug("< checkServerResult() success=%s " % success)
 		return success
 
 
@@ -434,6 +464,7 @@ class ConfigSaveProgramme:
 		self.KEY_PRE_REC = 'pre_rec'
 		self.KEY_POST_REC = 'post_rec'
 		self.KEY_URL_PREFIX = 'url_prefix'
+		self.KEY_IS_ENIGMA = 'isEnigma'
 
 		# LIST TIMERS URL PREFIX - This depends on your IMG installed.
 		# Uncomment the ONE that works for your web server interface
@@ -445,7 +476,8 @@ class ConfigSaveProgramme:
 			[self.KEY_PASS,__language__(806),'dreambox',KBTYPE_ALPHA],
 			[self.KEY_PRE_REC,__language__(835),'1',KBTYPE_NUMERIC],
 			[self.KEY_POST_REC,__language__(836),'1',KBTYPE_NUMERIC],
-			[self.KEY_URL_PREFIX,"Timer Mode Prefix:", TIMER_MODE_PREFIX, KBTYPE_ALPHA]
+			[self.KEY_URL_PREFIX,"Timer Mode Prefix:", TIMER_MODE_PREFIX, KBTYPE_ALPHA],
+			[self.KEY_IS_ENIGMA,"Is Model Enigma2?", False, KBTYPE_YESNO]
 			]
 
 		debug("< ConfigSaveProgramme().init()")
@@ -484,6 +516,8 @@ class ConfigSaveProgramme:
 		return int(self.getValue(self.KEY_POST_REC))
 	def getTimerModePrefix(self):
 		return self.getValue(self.KEY_URL_PREFIX)
+	def getModel(self):
+		return self.getValue(self.KEY_IS_ENIGMA)
 
 	def getValue(self, key):
 		return config.action(self.CONFIG_SECTION, key)

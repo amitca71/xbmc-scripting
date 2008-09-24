@@ -4,25 +4,24 @@
       <control type="group">
         <include>BackgroundFade</include>
 
-        <control type="group">
-          <description>TV Shows Background Image</description>
-          <include>TVShowsBGVisible</include>
+      <control type="group">
+        <include>SystemBGVisible</include>
 
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGTVShowsLeft.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGTVShowsMid.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGTVShowsRight.png</texture>
-          </control>
+        <control type="image">
+          <include>BackgroundLeftImage</include>
+          <texture>HomeBGSystemLeft.png</texture>
         </control>
+        <control type="image">
+          <include>BackgroundMidImage</include>
+          <texture>HomeBGSystemMid.png</texture>
+        </control>
+        <control type="image">
+          <include>BackgroundRightImage</include>
+          <texture>HomeBGSystemRight.png</texture>
+        </control>
+      </control>
 
-        <include>CustomTVShowsBackground</include>
+        <include>CustomSystemBackground</include>
       </control>
 
         <control type="image">
@@ -85,7 +84,7 @@
       <control type="label">
         <description>Scripts label</description>
         <include>TopOverlayFirstTitleAreaText</include>
-        <label>myTV</label>
+        <label>SCRIPT0</label>
       </control>
     </control>
 
