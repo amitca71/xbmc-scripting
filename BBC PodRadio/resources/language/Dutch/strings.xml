@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+
+    <!-- Update messages -->
+    <string id="1000">Huidge Versie is reeds de laatste.</string>
+    <string id="1001">Fetching huidig tagged versie...</string>
+    <string id="1002">is nieuwer</string>
+    <string id="1003">Upgraden naar nieuwe versie?</string>
+    <string id="1004">Fetching Bestanden lijst...</string>
+    <string id="1005">Even Geduld...</string>
+    <string id="1006">Versie</string>
+    <string id="1007">Fetching:</string>
+    <string id="1008">Path:</string>
+    <string id="1009">Bestand:</string>
+    <string id="1010">Script vernieuwd, nu herstarten.</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Geen tagged versies gevonden!</string>
+    <string id="1031">Fout tijdens upgraden naar nieuwe versie!</string>
+
+</strings>

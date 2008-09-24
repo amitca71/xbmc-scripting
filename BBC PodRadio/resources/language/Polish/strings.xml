@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: smuto-->
+<!--Email: smuto.promyk@gmail.com-->
+<!--Date of translation: 05/05/2008-->
+<!--$Revision$-->
+<strings>
+
+  <string id="1000">Używasz najnowszej wersji.</string>
+  <string id="1001">Sprawdzam  możliwość aktualizacji...</string>
+  <string id="1002">jest nowsza od tej którą używasz</string>
+  <string id="1003">Chcesz zaktualizować?</string>
+  <string id="1004">Przetwarzanie zapytania...</string>
+  <string id="1005">Proszę czekać...</string>
+  <string id="1006">Wersja</string>
+  <string id="1007">Pobieram:</string>
+  <string id="1008">Ścieżka:</string>
+  <string id="1009">Plik:</string>
+  <string id="1030">Nie ma nowej oficjalnej wersji !</string>
+  <string id="1031">Wystąpił błąd podczas aktualizacji!</string>
+</strings>
