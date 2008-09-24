@@ -52,6 +52,9 @@ class _LyricsParser( SGMLParser ):
     def start_pre( self, attrs ):
         self.lyrics_found = True
 
+    def start_br( self, attrs ):
+        self.lyrics += "\n"
+
     def handle_data( self, text ):
         if ( self.lyrics_found ):
             try:
