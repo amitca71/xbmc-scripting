@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Created by BigBellyBilly using google translate - Feel free to correct mistakes -->
+<strings>
+	<string id="0">T3CH Upgrader</string>
+
+	<!-- Browse dialog headings -->
+	<string id="200">Installatie pad (eg. E:\apps)</string>
+	<string id="201">Dash Booten snelkoppeling naam?</string>
+	<string id="202">Selecteer dash snelkoppeling Drive:</string>
+	<string id="203">Selecteer Bestand:</string>
+	<string id="204">Selecteer Path:</string>
+	<string id="205">Selecteer T3CH:</string>
+	<string id="206">Wissen T3CH Bouwen:</string>
+	<string id="207">Voer de bestandsnaam:</string>
+
+	<!-- Error messages -->
+	<string id="300">Er is een fout opgetreden bij het opslaan van uw instellingen!</string>
+	<string id="301">nr. T3CH bouwen kon worden gevonden!</string>
+	<string id="302">Fout bij het downloaden document!</string>
+	<string id="303">Download annuleren!</string>
+	<string id="304">Er is een fout opgetreden bij het uitpakken van bouwen!</string>
+	<string id="305">Er is een fout opgetreden bij het parseren bouwen feed!</string>
+	<string id="306">Fout bij het overbrengen van uw UserData!</string>
+	<string id="307">Fout bij het maken van dash boot Snelkoppeling!</string>
+	<string id="308">Fout bij het overbrengen van uw Scripts!</string>
+	<string id="309">Snelkoppeling dash naam nodig.</string>
+	<string id="310">Changelog niet beschikbaar.</string>
+	<string id="311">Bron bestand / map niet bestaat!</string>
+	<string id="312">Extraction pad bestaat niet! Opnieuw.</string>
+	<string id="313">Restricted bestand of map!</string>
+	<string id="314">Extract map bestaat al, overschrijven?</string>
+	<string id="315">RAR SFV controlesom mislukt![CR]Mag worden beschadigd, neem dan opnieuw downloaden.</string>
+	<string id="316">Niet genoeg FreeSpace op installatie drive!</string>
+	<string id="317">Free RAM minder dan aanbevolen, UnRar kan mislukken.</string>
+	<string id="318">Alle FTP-servers niet beschikbaar!</string>
+	<string id="319">nr. Web Builds gevonden!</string>
+	<string id="320">SFV bestandsnaam item niet gevonden![CR]Wilt u toch doorgaan?</string>
+
+	<!-- Yes/No buttons -->
+	<string id="400">Downloaden</string>
+	<string id="401">Sla</string>
+	<string id="402">Ja</string>
+	<string id="403">Neen</string>
+	<string id="404">Schakelaar</string>
+	<string id="405">Manueel</string>
+	<string id="406">Verwijderen</string>
+	<string id="407">Editeer</string>
+	<string id="408">Map</string>
+	<string id="409">Bestand</string>
+	<string id="410">XBMC</string>
+	<string id="411">T3CH</string>
+	<string id="412">Verwijderen</string>
+	<string id="413">Annuleren</string>
+	<string id="414">LeesMij</string>
+	<string id="415">Modificaties</string>
+	<string id="416">Installeer</string>
+
+	<!-- Status berichten -->
+	<string id="500">De huidige T3CH bouwen is:</string>
+	<string id="501">Wilt u downloaden van deze build?</string>
+	<string id="502">document downloaden vanaf:</string>
+	<string id="503">downloaden T3CH te bouwen:</string>
+	<string id="504">Extracting T3CH te bouwen:</string>
+	<string id="505">T3CH bouwen uitgepakt naar:</string>
+	<string id="506">Parsing T3CH bouwen feed ...</string>
+	<string id="507">Start het kopiëren van bestaande gegevens naar T3CH?</string>
+	<string id="508">UserData (indien ingeschakeld), scripts, plugins, skins ...</string>
+	<string id="509">Keymap.xml verschillende, Kopiëren van jou?</string>
+	<string id="510">verwijderen T3CH UserData ...</string>
+	<string id="511">overzetten van uw UserData te T3CH ...</string>
+	<string id="512">Installatie is voltooid. Herstart nu?</string>
+	<string id="514">Actualisering dash boot Snelkoppelingen ...</string>
+	<string id="515">Kopiëren:</string>
+	<string id="516">Verwijderen:</string>
+	<string id="517">Geen nieuwe T3CH opbouwen!</string>
+	<string id="518">New T3CH bouwen Gevonden!</string>
+	<string id="519">_NEW en _OLD Snelkoppelingen Gemaakt.</string>
+	<string id="520">Switch to NEW Nu?</string>
+	<string id="521">(handmatig hernoemen nodig anders)</string>
+	<string id="522">Extraction klaar. Controleren op pad ...</string>
+	<string id="523">Verwijderen T3CH Build?</string>
+	<string id="524">Even geduld ...</string>
+	<string id="525">Kies Bestand of map?</string>
+	<string id="526">Nieuw pad bestaat?</string>
+	<string id="527">New XBE bestaat?</string>
+	<string id="528">Verwijderen T3CH Archief?</string>
+	<string id="529">Backup and Update XBMC boot snelkoppelingen?[CR](Verplicht te booten naar een nieuw te bouwen)</string>
+	<string id="530">Drive =% s FreeSpace =% SMB Required =% SMB</string>
+	<string id="531">Freemem =% SMB Recommended =% SMB</string>
+	<string id="532">Doorgaan?</string>
+	<string id="533">Alleen downloaden of downloaden en installeren?</string>
+
+	<!-- Menu Titles -->
+	<string id="600">Menu</string>
+	<string id="601">Instellingen Menu</string>
+
+	<!-- Menu options -->
+	<string id="610">Instellingen</string>
+	<string id="611">Bekijk Changelogs</string>
+	<string id="612">Downloaden:</string>
+	<string id="615">Handhaving Copy Data lijst</string>
+	<string id="616">Overschakelen Naar Een Andere T3CH</string>
+	<string id="617">Verwijderen T3CH Bouwen</string>
+	<string id="618">Handhaving Wissen Data Lijst</string>
+	<string id="619">Check For Script Update</string>
+	<string id="620">Installeren van de lokale:</string>
+	<string id="621">Installeer oud bouwen van het Web</string>
+
+	<!-- Settings Options -->
+	<string id="630">Dash snelkoppeling Drive:</string>
+	<string id="631">Dash snelkoppeling naam:</string>
+	<string id="632">Installatie Path:</string>
+	<string id="633">Notify toen niet nieuw T3CH?</string>
+	<string id="634">Selecteer TV-kaart?</string>
+	<string id="635">Transfer UserData naar T3CH?</string>
+	<string id="636">Reset Settings</string>
+	<string id="637">Reset Custom Copy and Delete Lists</string>
+	<string id="638">Vragen voor het schrappen van ZIP bestand?</string>
+	<string id="639">Bekijk Script LeesMij/Modificaties</string>
+
+	<!-- Update messages -->
+	<string id="1000">Huidge Versie is reeds de laatste.</string>
+	<string id="1001">Fetching huidig tagged versie...</string>
+	<string id="1002">is nieuwer</string>
+	<string id="1003">Upgraden naar nieuwe versie?</string>
+	<string id="1004">Fetching Bestanden lijst...</string>
+	<string id="1005">Even Geduld...</string>
+	<string id="1006">Versie</string>
+	<string id="1007">Fetching:</string>
+	<string id="1008">Path:</string>
+	<string id="1009">Bestand:</string>
+	<string id="1010">Script vernieuwd, nu herstarten.</string>
+
+	<!-- Update error messages -->
+	<string id="1030">Geen tagged versies gevonden!</string>
+	<string id="1031">Fout tijdens upgraden naar nieuwe versie!</string>
+
+</strings>

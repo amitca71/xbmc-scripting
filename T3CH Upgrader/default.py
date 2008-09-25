@@ -31,7 +31,7 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '11-09-2008'
+__date__ = '25-09-2008'
 __version__ = "1.7.3"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
