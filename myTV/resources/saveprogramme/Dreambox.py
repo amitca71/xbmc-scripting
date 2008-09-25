@@ -281,7 +281,7 @@ class SaveProgramme:
 		if ref:
 			currentTime = time.mktime(time.localtime())
 			chName = channelInfo[TVChannels.CHAN_NAME]
-			title = programme[TVData.PROG_TITLE]
+			title = cleanPunctuation(programme[TVData.PROG_TITLE])
 			startTimeSecs = int(programme[TVData.PROG_STARTTIME]) - (self.preRecMins * 60)
 			endTimeSecs = int(programme[TVData.PROG_ENDTIME])+ (self.postRecMins * 60)
 			durSecs = int(endTimeSecs - startTimeSecs)
@@ -299,6 +299,7 @@ class SaveProgramme:
 				else:
 					startTime_tm = time.localtime(startTimeSecs)
 					endTime_tm = time.localtime(endTimeSecs)
+					title += "_" + time.strftime("%Y%m%d", startTime_tm)
 					url = self.URL_TIMER_CREATE.replace('$REF', ref) \
 							.replace('$SYEAR', str(startTime_tm.tm_year)) \
 							.replace('$SMONTH', str(startTime_tm.tm_mon)) \

@@ -164,21 +164,21 @@ class SaveProgramme:
 
 		# get programme information
 		chName = channelInfo[TVChannels.CHAN_NAME]
-		title = cleanPunctuation(programme[TVData.PROG_TITLE]).encode('latin-1', 'replace')
-
 		tvCode = self.lookupCode(chName)
 		if tvCode:
+			title = cleanPunctuation(programme[TVData.PROG_TITLE]).encode('latin-1', 'replace')
 			currentTimeSecs = time.mktime(time.localtime())
 			startTimeSecs = programme[TVData.PROG_STARTTIME] - (self.preRecMins * 60)
 			endTimeSecs = programme[TVData.PROG_ENDTIME]
-
+			startTime_tm = time.localtime(startTimeSecs)
+			
 			# Schedule Task wont run if prog already started. so make startTime current time.
 			# Also ensure start time is not within 1 mins of current time.
 			if startTimeSecs <= (currentTimeSecs + 60):
 				startTimeSecs = currentTimeSecs	+120		# delay tobe 2 mins from currentTimeSecs
 
-			startDate = time.strftime(DATE_FORMAT, time.localtime(startTimeSecs))
-			startTime = time.strftime('%H:%M:%S', time.localtime(startTimeSecs))
+			startDate = time.strftime(DATE_FORMAT, startTime_tm)
+			startTime = time.strftime('%H:%M:%S', startTime_tm)
 			endTimeSecs += (self.postRecMins * 60)
 			if self.isCardTypeNova:
 				duration = int((endTimeSecs - startTimeSecs) /60)	# mins
@@ -192,7 +192,7 @@ class SaveProgramme:
 				messageOK(__language__(801), __language__(803))
 			else:
 				# create return string
-				fn = "%s_%s" % (title,startDate)
+				fn = "%s_%s_%s" % (title, time.strftime("%Y%m%d", startTime_tm), time.strftime('%H%M', startTime_tm))
 				returnStr = self.SCHTASKS.replace('$TITLE', title)
 				returnStr = returnStr.replace('$DATE', startDate).replace('$TIME', startTime)
 				returnStr = returnStr.replace('$DUR', str(duration)).replace('$TV', tvCode)
