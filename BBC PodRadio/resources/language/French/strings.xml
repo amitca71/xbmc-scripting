@@ -1,7 +1,60 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Created using google translate - feel free to correct and change -->
 <strings>
+    <string id="0">BBC PodRadio</string>
 
-    <!-- Update messages -->
+	<!-- Invite -->
+	<string id="100">sélectionner une source</string>
+	<string id="101">Sélectionnez un salon à jouer</string>
+	<string id="102">Sélectionnez une Station</string>
+	<string id="103">Pour mettre</string>
+	<string id="104">Enregistrer ou jouer?</string>
+	<string id="105">fichier existe, écraser?</string>
+
+	<!-- Options du menu -->
+	<string id="200">Podcasts</string>
+	<string id="201">Radio Encore une fois</string>
+	<string id="202">Radio Live</string>
+	<string id="203">Recherche par les stations de radio</string>
+	<string id="204">Parcourir par genre</string>
+	<string id="205">Recherche par A-Z</string>
+	<string id="206">Recherche par les stations de radio</string>
+	<string id="207">Recherche par genre musical</string>
+	<string id="208">Recherche par genre discours</string>
+	<string id="209">Recherche par les stations de radio</string>
+
+	<!-- Les messages d'erreur -->
+	<string id="300">catégorie annuaires manque!</string>
+	<string id="301">Pas trouvé d'eau!</string>
+	<string id="302">Stream indisponible</string>
+	<string id="303">Il n'y a pas d'épisodes disponibles.</string>
+	<string id="304">Aucun média trouvé de lien</string>
+	<string id="305">Échec du téléchargement!</string>
+
+	<!-- Messages d'état -->
+	<string id="400">S'il vous plaît attendre ...</string>
+	<string id="401">succès</string>
+	<string id="402">Échec</string>
+	<string id="403">Téléchargement ...</string>
+	<string id="404">site ont changé?</string>
+	<string id="405">Plugin installé.</string>
+	<string id="406">Dans plugins "Ajouter la source" pour terminer l'installation.</string>
+	<string id="407">Streams pour:</string>
+	<string id="408">de jeu ...</string>
+	<string id="409">Lecture</string>
+	<string id="410">Enregistrer</string>
+	<string id="411">Sauvegarde ...</string>
+	<string id="493">Lecture</string>
+
+	<!-- Menu Principal -->
+	<string id="500">Menu</string>
+	<string id="501">Script de vue Lisez-moi</string>
+	<string id="502">Script de vue Changelog</string>
+	<string id="503">Play fichier enregistré</string>
+	<string id="504">Arrêtez de jouer</string>
+	<string id="505">Vider le cache</string>
+
+	<!-- Update messages -->
     <string id="1000">Votre version est à jour.</string>
     <string id="1001">Recherche de la version taggée actuelle...</string>
     <string id="1002">est plus récente</string>
@@ -15,4 +68,6 @@
 
     <!-- Update error messages -->
     <string id="1030">Aucune version taggée n'a été trouvée!</string>
+	<string id="1031">Il ya eu une erreur de script de mise à jour</string>
+
 </strings>

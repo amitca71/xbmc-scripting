@@ -1,21 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
+	<string id="0">BBC PodRadio</string>
 
-    <!-- Update messages -->
-    <string id="1000">Huidge Versie is reeds de laatste.</string>
-    <string id="1001">Fetching huidig tagged versie...</string>
-    <string id="1002">is nieuwer</string>
-    <string id="1003">Upgraden naar nieuwe versie?</string>
-    <string id="1004">Fetching Bestanden lijst...</string>
-    <string id="1005">Even Geduld...</string>
-    <string id="1006">Versie</string>
-    <string id="1007">Fetching:</string>
-    <string id="1008">Path:</string>
-    <string id="1009">Bestand:</string>
-    <string id="1010">Script vernieuwd, nu herstarten.</string>
+	<string id="100">Selecteer een Bron</string>
+	<string id="101">Selecteer een stream te spelen</string>
+	<string id="102">Selecteer een Station</string>
+	<string id="103">Opslaan als</string>
+	<string id="104">Opslaan of Play?</string>
+	<string id="105">bestand bestaat, overschrijven?</string>
 
-    <!-- Update error messages -->
-    <string id="1030">Geen tagged versies gevonden!</string>
-    <string id="1031">Fout tijdens upgraden naar nieuwe versie!</string>
+	<!-- Menu-opties -->
+	<string id="200">Podcasts</string>
+	<string id="201">Radio Again</string>
+	<string id="202">Radio Live</string>
+	<string id="203">Bladeren door radiostations</string>
+	<string id="204">Zoek per genre</string>
+	<string id="205">Bladeren door A-Z</string>
+	<string id="206">Bladeren door radiostations</string>
+	<string id="207">Bladeren door muziek genre</string>
+	<string id="208">Zoek per genre toespraak</string>
+	<string id="209">Bladeren door radiostations</string>
+
+	<!-- Fout berichten -->
+	<string id="300">Directory Categorie vermist!</string>
+	<string id="301">nr. Streams Gevonden!</string>
+	<string id="302">Stream niet beschikbaar</string>
+	<string id="303">Er zijn geen afleveringen beschikbaar zijn.</string>
+	<string id="304">nr. media link gevonden!</string>
+	<string id="305">Download failed!</string>
+
+	<!-- Status berichten -->
+	<string id="400">Even geduld ...</string>
+	<string id="401">succes</string>
+	<string id="402">Mislukt</string>
+	<string id="403">downloaden ...</string>
+	<string id="404">Site kan zijn veranderd?</string>
+	<string id="405">Plugin geïnstalleerd.</string>
+	<string id="406">In plugins' Add Source 'om de installatie te voltooien.</string>
+	<string id="407">Streams voor:</string>
+	<string id="408">Speelt nu af ...</string>
+	<string id="409">Afspelen</string>
+	<string id="410">Opslaan</string>
+	<string id="411">Saving ...</string>
+
+	<string id="493">Afspelen</string>
+	<!-- Main Menu -->
+	<string id="500">Menu</string>
+	<string id="501">View Script Readme</string>
+	<string id="502">View Script Changelog</string>
+	<string id="503">Play opgeslagen bestand</string>
+	<string id="504">Stop Playing</string>
+	<string id="505">Clear Cache</string>
+
+	<!-- Update messages -->
+	<string id="1000">Huidge Versie is reeds de laatste.</string>
+	<string id="1001">Fetching huidig tagged versie...</string>
+	<string id="1002">is nieuwer</string>
+	<string id="1003">Upgraden naar nieuwe versie?</string>
+	<string id="1004">Fetching Bestanden lijst...</string>
+	<string id="1005">Even Geduld...</string>
+	<string id="1006">Versie</string>
+	<string id="1007">Fetching:</string>
+	<string id="1008">Path:</string>
+	<string id="1009">Bestand:</string>
+	<string id="1010">Script vernieuwd, nu herstarten.</string>
+
+	<!-- Update error messages -->
+	<string id="1030">Geen tagged versies gevonden!</string>
+	<string id="1031">Fout tijdens upgraden naar nieuwe versie!</string>
 
 </strings>

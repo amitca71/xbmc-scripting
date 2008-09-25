@@ -34,7 +34,7 @@ else:
 	DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-DIR_USERDATA = os.path.join( "T:","script_data", __scriptname__ )
+DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
 # Load Language using xbmc builtin

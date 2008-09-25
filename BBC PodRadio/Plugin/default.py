@@ -25,7 +25,7 @@ if os.name=='posix':
     DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
 else:
     DIR_HOME= os.getcwd().replace(';','')
-DIR_USERDATA = os.path.join( "T:","script_data", __plugin__ )
+DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __plugin__ )
 
 dialogProgress = xbmcgui.DialogProgress()
 
