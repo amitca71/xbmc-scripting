@@ -270,11 +270,11 @@ class Trailers:
                 _progress_dialog()
                 updated_date = datetime.date.today()
                 source = fetcher.urlopen( self.base_xml )
-                #try:
-                base_xml = ET.fromstring( source )
-                #except:
-                #    source = self.cleanXML( source )
-                #    base_xml = ET.fromstring( source )
+                try:
+                    base_xml = ET.fromstring( source )
+                except:
+                    source = self.cleanXML( source.decode( "utf-8", "replace" ).encode( "utf-8", "ignore" ) )
+                    base_xml = ET.fromstring( source )
 
                 view_matrix = {
                     "view1": "Exclusives",
@@ -352,13 +352,13 @@ class Trailers:
             while next_url:
                 try:
                     source = fetcher.urlopen( next_url )
-                    if "<Document" not in source:
-                        source = "<Document>" + source + "</Document>"
-                    #try:
-                    element = ET.fromstring( source )
-                    #except:
-                    #    source = self.cleanXML( source )
-                    #    element = ET.fromstring( source )
+                    #if "<Document" not in source:
+                    #    source = "<Document>" + source + "</Document>"
+                    try:
+                        element = ET.fromstring( source )
+                    except:
+                        source = self.cleanXML( source.decode( "utf-8", "replace" ).encode( "utf-8", "ignore" ) )
+                        element = ET.fromstring( source )
 
                     lookup = "GotoURL"
                     if not is_special:
