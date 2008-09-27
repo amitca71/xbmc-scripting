@@ -358,7 +358,13 @@ class Trailers:
                         element = ET.fromstring( source )
                     except:
                         source = self.cleanXML( source.decode( "utf-8", "replace" ).encode( "utf-8", "ignore" ) )
-                        element = ET.fromstring( source )
+                        try:
+                            element = ET.fromstring( source )
+                        except:
+                            # if this failed, make sure there are no more
+                            id_number = re.findall( "_([0-9]*).xml", next_url )
+                            next_url = re.sub( "_([0-9]*).xml", "_%d.xml" % ( int( id_number[ 0 ] ) + 1, ), next_url )
+                            continue
 
                     lookup = "GotoURL"
                     if not is_special:
