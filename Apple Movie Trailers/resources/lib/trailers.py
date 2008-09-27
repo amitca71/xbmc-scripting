@@ -352,8 +352,8 @@ class Trailers:
             while next_url:
                 try:
                     source = fetcher.urlopen( next_url )
-                    #if "<Document" not in source:
-                    #    source = "<Document>" + source + "</Document>"
+                    if "<Document" not in source:
+                        source = "<Document>" + source + "</Document>"
                     try:
                         element = ET.fromstring( source )
                     except:
