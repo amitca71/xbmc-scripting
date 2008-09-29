@@ -31,7 +31,7 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '25-09-2008'
+__date__ = '29-09-2008'
 __version__ = "1.7.3"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
@@ -894,10 +894,10 @@ class Main:
 
 		if doc:
 			title = "T3CH " + __language__(415)
-#			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
-#			tbd.ask(title, doc)
-#			del tbd
-			DialogScriptInfo("DialogScriptInfo.xml", DIR_HOME, "Default").ask(title, doc)
+			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
+			tbd.ask(title, doc)
+			del tbd
+#			DialogScriptInfo("DialogScriptInfo.xml", DIR_HOME, "Default").ask(title, doc)
 		else:
 			dialogOK( __language__( 0 ), __language__( 310 ))
 
@@ -1785,30 +1785,30 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 		self.text = text
 		self.doModal()		# causes window to be drawn
 
-class DialogScriptInfo( xbmcgui.WindowXML ):
-	""" Create a skinned textbox window using XBMC Skin XML """
-
-	def __init__( self, *args, **kwargs):
-		pass
-		
-	def onInit( self ):
-		self.getControl( 5 ).setText( self.text )
-
-	def onClick( self, controlId ):
-		pass
-
-	def onFocus( self, controlId ):
-		pass
-
-	def onAction( self, action ):
-		if action and (action.getButtonCode() in CANCEL_DIALOG or action.getId() in CANCEL_DIALOG):
-			self.close()
-
-	def ask(self, title, text ):
-		xbmc.output("TextBoxDialogXML().ask()")
-		self.title = title
-		self.text = text
-		self.doModal()		# causes window to be drawn
+#class DialogScriptInfo( xbmcgui.WindowXML ):
+#	""" Create a skinned textbox window using XBMC Skin XML """
+#
+#	def __init__( self, *args, **kwargs):
+#		pass
+#		
+#	def onInit( self ):
+#		self.getControl( 5 ).setText( self.text )
+#
+#	def onClick( self, controlId ):
+#		pass
+#
+#	def onFocus( self, controlId ):
+#		pass
+#
+#	def onAction( self, action ):
+#		if action and (action.getButtonCode() in CANCEL_DIALOG or action.getId() in CANCEL_DIALOG):
+#			self.close()
+#
+#	def ask(self, title, text ):
+#		xbmc.output("TextBoxDialogXML().ask()")
+#		self.title = title
+#		self.text = text
+#		self.doModal()		# causes window to be drawn
 
 #################################################################################################################
 def unzip(extract_path, filename, silent=False, msg=""):

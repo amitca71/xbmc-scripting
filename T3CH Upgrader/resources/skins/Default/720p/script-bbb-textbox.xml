@@ -57,7 +57,7 @@
 				<align>justify</align>
 				<textcolor>white</textcolor>
 				<pagecontrol>6</pagecontrol>
-				<!--<autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>-->
+				<autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>
 			</control>
 			<control type="scrollbar" id="6">
 				<posx>20r</posx>
