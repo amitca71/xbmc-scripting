@@ -893,9 +893,11 @@ class Main:
 			if doc: break
 
 		if doc:
-			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
-			tbd.ask("T3CH " + __language__(415), doc)
-			del tbd
+			title = "T3CH " + __language__(415)
+#			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
+#			tbd.ask(title, doc)
+#			del tbd
+			DialogScriptInfo("DialogScriptInfo.xml", DIR_HOME, "Default").ask(title, doc)
 		else:
 			dialogOK( __language__( 0 ), __language__( 310 ))
 
@@ -1774,10 +1776,33 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 		pass
 
 	def onAction( self, action ):
-#		print( "onAction(): actionID=%i buttonCode=%i " % ( action.getId(), action.getButtonCode()) )
-		if action:
-			if action.getButtonCode() in CANCEL_DIALOG or action.getId() in CANCEL_DIALOG:
-				self.close()
+		if action and (action.getButtonCode() in CANCEL_DIALOG or action.getId() in CANCEL_DIALOG):
+			self.close()
+
+	def ask(self, title, text ):
+		xbmc.output("TextBoxDialogXML().ask()")
+		self.title = title
+		self.text = text
+		self.doModal()		# causes window to be drawn
+
+class DialogScriptInfo( xbmcgui.WindowXML ):
+	""" Create a skinned textbox window using XBMC Skin XML """
+
+	def __init__( self, *args, **kwargs):
+		pass
+		
+	def onInit( self ):
+		self.getControl( 5 ).setText( self.text )
+
+	def onClick( self, controlId ):
+		pass
+
+	def onFocus( self, controlId ):
+		pass
+
+	def onAction( self, action ):
+		if action and (action.getButtonCode() in CANCEL_DIALOG or action.getId() in CANCEL_DIALOG):
+			self.close()
 
 	def ask(self, title, text ):
 		xbmc.output("TextBoxDialogXML().ask()")
