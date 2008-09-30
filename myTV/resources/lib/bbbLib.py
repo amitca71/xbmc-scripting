@@ -1457,14 +1457,6 @@ class RSSNode:
 		return self.elements.has_key(element)
 
 #############################################################################################################
-# detect if using MC360 style skin - any theme
-def isMC360():
-	skinName = getSkinName()
-	is360 = (find(skinName,'360') >= 0)
-	debug("bbbLib.isMC360() " +str(is360))
-	return is360
-
-#############################################################################################################
 def getSkinName():
 	skinName = os.path.basename(xbmc.getSkinDir())
 	debug("bbbLib.getSkinName() skinName="+skinName)

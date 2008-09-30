@@ -73,7 +73,7 @@
 			<textcolor>7FFFFFFF</textcolor>
 		</control>
 		<control type="label" id="1060">
-			<description>DATASOURCE label control</description>
+			<description>SAVEPROGRAMME label control</description>
 			<posx>2r</posx>
 			<posy>40</posy>
 			<width>120</width>
@@ -103,7 +103,6 @@
 			<posy>0</posy>
 			<texture>footer_background.png</texture>
 		</control>
-
 
 		<!--  CHANNELS -->
 		<control type="list" id="1110">

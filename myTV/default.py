@@ -29,7 +29,7 @@ import gc
 __scriptname__ = "myTV"
 __version__ = '1.18.1'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '12-09-2008'
+__date__ = '29-09-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -286,14 +286,15 @@ class myTV(xbmcgui.WindowXML):
 #		self.getControl(self.CLBL_PROG_DESC).setLabel("", self.descFont, self.descColour)
 #		self.descFont = self.getControl(self.CLBL_PROG_DESC).getFont()
 
-		# datasource
-		self.getControl(self.CLBL_DATASOURCE).setLabel(config.getSystem(config.KEY_SYSTEM_DATASOURCE))
-
-		# saveprogramme
+		# set SP DS label visible
+		showDSSP = config.getSystem(config.KEY_SYSTEM_SHOW_DSSP)
 		text = config.getSystem(config.KEY_SYSTEM_SAVE_PROG)
 		if not text:
 			text = config.VALUE_SAVE_PROG_NOTV
 		self.getControl(self.CLBL_SAVEPROG).setLabel(text)
+		self.getControl(self.CLBL_DATASOURCE).setLabel(config.getSystem(config.KEY_SYSTEM_DATASOURCE))
+		self.getControl(self.CLBL_DATASOURCE).setVisible(showDSSP)
+		self.getControl(self.CLBL_SAVEPROG).setVisible(showDSSP)
 
 		# set footer button labels
 		self.getControl(self.CLBL_A_BTN).setLabel(__language__(420))
@@ -451,7 +452,7 @@ class myTV(xbmcgui.WindowXML):
 		lblTop = xbmcgui.ControlLabel(xpos, ypos, 0, 0, '^', FONT13, \
 								colour,alignment=XBFONT_CENTER_X|XBFONT_CENTER_Y)
 		# BOTTOM
-		ypos = self.epgProgsY + self.epgProgsH
+		ypos = (self.epgProgsY + self.epgProgsH) - self.pageIndicatorH
 		lblBottom = xbmcgui.ControlLabel(xpos, ypos, sideIndicatorW, self.pageIndicatorH, 'V', FONT13, \
 								colour,alignment=XBFONT_CENTER_X|XBFONT_CENTER_Y)
 		self.epgIndicators.append([lblTop, lblBottom])
@@ -789,7 +790,7 @@ class myTV(xbmcgui.WindowXML):
 		if not self.isFooterBtns:
 			self.getControl(self.CGRP_FOOTER_BTNS).setVisible(False)
 
-		debug("< toogleFooter(): isFooterBtns=%s" % self.isFooterBtns)
+		debug("< toogleFooter() isFooterBtns=%s" % self.isFooterBtns)
 
 	###################################################################################################################
 	def showDescription(self):
@@ -1129,7 +1130,8 @@ class myTV(xbmcgui.WindowXML):
 			# channel names
 			try:
 				for ctrl in self.epgChNames:
-					ctrl.setLabel('')
+					ctrl.setLabel('')		# for label
+					ctrl.setVisible(False)
 			except: pass
 
 		# if no epgButtons, there wont be any other controls drawn
@@ -1230,6 +1232,7 @@ class myTV(xbmcgui.WindowXML):
 				else:
 					channelLabel = chName				# show name, no ch id
 				self.epgChNames[epgChIDX].setLabel(channelLabel.strip())
+				self.epgChNames[epgChIDX].setVisible(channelLabel != '')
 
 			self.drawChannel(epgChIDX, self.epgProgsX, tempY, dayDelta, isOddLine, \
 										font, nofocusFile_odd, nofocusFile_even, nofocusFile_fav, \
@@ -1742,43 +1745,78 @@ class ProgDescDialog(xbmcgui.WindowXMLDialog):
 			if not actionID:
 				actionID = action.getButtonCode()
 		except: return
+		print "actionID=%s" % actionID
 
 		if actionID in EXIT_SCRIPT:
 			debug("ProgDescDialog() EXIT_SCRIPT")
-			self.close()
+			self._close_dialog()
 		elif actionID in CLICK_B or actionID == ACTION_REMOTE_RECORD:		# RECORD / cancel record
 			debug("ProgDescDialog() CLICK_B")
-			if self.isTimer != None:										# disabled
-				if not self.isTimer:
-					if callSaveProgramme():									# record
-						self.optReInit = INIT_TIMERS
-						self.close()
-				elif callManageSaveProgramme():								# cancel record
-					self.optReInit = INIT_TIMERS
-					self.close()
+			self.actionB()
 		elif actionID in CLICK_X:											# FAV
 			debug("ProgDescDialog() CLICK_X")
-			global mytvFavShows
-			chID, chName, chIDAlt = mytv.tvChannels.getChannelInfo(mytv.allChannelIDX+mytv.epgChIDX)
-			if not self.isFav:
-				# ADD fav
-				if mytvFavShows.addToFavShows(self.title, chID, chName):
-					self.optReInit = INIT_FAV_SHOWS
-					self.close()
-			else:
-				# CANCEL fav
-				if mytvFavShows.deleteShow(self.title, chID):
-					self.optReInit = INIT_FAV_SHOWS
-					self.close()
+			self.actionX()
 		elif actionID in CLICK_Y:											# IMDB
 			debug("ProgDescDialog() CLICK_Y")
-			self.getControl(self.CGRP_DIALOG).setVisible(False)
-			callIMDB()
-			self.getControl(self.CGRP_DIALOG).setVisible(True)
+			self.actionY()
 
 	#################################################################################################################
 	def onClick(self, controlID):
-		pass
+		debug("onClick() controlID=%s" % controlID)
+
+		if controlID == self.CLBL_B:
+			debug("onClick() CLICK_B")
+			self.actionB()		# rec
+		elif controlID == self.CLBL_X:
+			debug("onClick() CLICK_X")
+			self.actionX()		# fav
+		elif controlID == self.CLBL_Y:
+			debug("onClick() CLICK_Y")
+			self.actionY()		# imdb
+		elif controlID == self.CLBL_BACK:
+			debug("onClick() CLICK_BACK")
+			self._close_dialog()
+
+	#################################################################################################################
+	def _close_dialog( self ):
+		debug("_close_dialog()")
+		self.close()
+
+	#################################################################################################################
+	def actionB(self):
+		debug("actionB()")
+		if self.isTimer != None:										# disabled
+			if not self.isTimer:
+				if callSaveProgramme():									# record
+					self.optReInit = INIT_TIMERS
+					self.close()
+			elif callManageSaveProgramme():								# cancel record
+				self.optReInit = INIT_TIMERS
+				self.close()
+
+	#################################################################################################################
+	def actionX(self):
+		debug("actionX()")
+		global mytvFavShows
+		chID, chName, chIDAlt = mytv.tvChannels.getChannelInfo(mytv.allChannelIDX+mytv.epgChIDX)
+		if not self.isFav:
+			# ADD fav
+			if mytvFavShows.addToFavShows(self.title, chID, chName):
+				self.optReInit = INIT_FAV_SHOWS
+				self.close()
+		else:
+			# CANCEL fav
+			if mytvFavShows.deleteShow(self.title, chID):
+				self.optReInit = INIT_FAV_SHOWS
+				self.close()
+
+	#################################################################################################################
+	def actionY(self):
+		debug("actionY()")
+		self.getControl(self.CGRP_DIALOG).setVisible(False)
+		callIMDB()
+		self.getControl(self.CGRP_DIALOG).setVisible(True)
+
 
 	###################################################################################################################
 	def onFocus(self, controlID):
@@ -2280,6 +2318,13 @@ def configLSOTV():
 	return configYesNo(__language__(400),__language__(549), \
 					   config.KEY_SYSTEM_USE_LSOTV, config.SECTION_SYSTEM)
 
+#################################################################################################################
+# Show SP and DS names
+#################################################################################################################
+def configShowDSSP():
+	return configYesNo(__language__(400), __language__(557), config.KEY_SYSTEM_SHOW_DSSP, config.SECTION_SYSTEM)
+
+	
 #################################################################################################################
 # MENU ITEM - Use 12 or 24hr clock and epg intervals
 #################################################################################################################
@@ -3905,6 +3950,7 @@ class ConfigMenu:
 			[__language__(542), ConfigGenreIcons().ask, INIT_PART],
 			[__language__(543), ConfigGenreColours().ask, INIT_PART],
 			[__language__(545), configEPGRows().ask, INIT_DISPLAY],
+			[__language__(557), configShowDSSP, INIT_DISPLAY, config.KEY_SYSTEM_SHOW_DSSP],
 			[__language__(546), configSMB, INIT_NONE],
 			[__language__(547), configEditTemplate, INIT_NONE, config.KEY_SYSTEM_SAVE_TEMPLATE],
 			[__language__(548), ProgrammeSaveTemplate().viewTemplates,INIT_NONE],

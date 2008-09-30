@@ -115,6 +115,16 @@
 			<align>right</align>
 			<textcolor>FFB2D4F5</textcolor>
 		</control>
+		<control type="label">
+			<description>combined SP | DS label control</description>
+			<posx>5r</posx>
+			<posy>5</posy>
+			<align>right</align>
+			<font>font10</font>
+			<textcolor>grey2</textcolor>
+			<label>$INFO[Control.GetLabel(1060)] | $INFO[Control.GetLabel(1050)]</label>
+			<visible>Control.IsVisible(1050)</visible>
+		</control>
 
 	</control> <!-- End HEADER Group -->
 

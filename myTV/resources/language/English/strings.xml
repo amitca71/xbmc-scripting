@@ -165,6 +165,7 @@
     <string id="554">Check For Script Update</string>
     <string id="555">Wake On LAN MAC:</string>
     <string id="556">Download Missing Logos</string>
+    <string id="557">Show Datasource name?</string>
 
     <!-- misc menu/prompts -->
     <string id="560">Channel Name Only</string>

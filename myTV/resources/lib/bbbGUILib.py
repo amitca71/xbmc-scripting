@@ -39,8 +39,6 @@ FRAME_NOFOCUS_FILENAME = os.path.join(DIR_GFX,'frame_nofocus.png')
 FRAME_NOFOCUS_LRG_FILENAME = os.path.join(DIR_GFX,'frame_nofocus_large.png')
 DIALOG_PANEL_NAME = 'dialog-panel.png'
 PANEL_FILENAME = os.path.join(DIR_GFX, DIALOG_PANEL_NAME)
-DIALOG_PANEL_NAME_MC360 = 'dialog-panel_mc360.png'
-PANEL_FILENAME_MC360 = os.path.join(DIR_GFX, DIALOG_PANEL_NAME_MC360)
 MENU_FILENAME = os.path.join(DIR_GFX,'menu.png')
 
 # rez GUI defined in
@@ -49,7 +47,6 @@ REZ_H = 576
 
 try: Emulating = xbmcgui.Emulating
 except: Emulating = False
-
 
 #################################################################################################################
 # Dialog with options
@@ -411,8 +408,5 @@ global DIALOG_PANEL
 try:
     DIALOG_PANEL = sys.modules[ "__main__" ].DIALOG_PANEL
 except:
-    if isMC360():
-        DIALOG_PANEL = os.path.join(DIR_GFX, PANEL_FILENAME_MC360)
-    else:
-        DIALOG_PANEL = os.path.join(DIR_GFX, PANEL_FILENAME)
+    DIALOG_PANEL = os.path.join(DIR_GFX, PANEL_FILENAME)
 debug("bbbGUILib() DIALOG_PANEL=%s" % DIALOG_PANEL)

@@ -899,6 +899,7 @@ class MYTVConfig:
 	KEY_DISPLAY_COLOUR_ARROWS = "colour_arrows"
 	KEY_DISPLAY_COLOUR_NOWTIME = "colour_nowtime_line"
 	KEY_DISPLAY_COLOUR_TIMERBAR = "colour_timerbar"
+	KEY_SYSTEM_SHOW_DSSP = "show_dssp"
 
 	# DISPLAY DEFAULT VALUES
 	VALUE_DISPLAY_FONT_TITLE = FONT14
@@ -950,6 +951,7 @@ class MYTVConfig:
 		items[MYTVConfig.KEY_SYSTEM_USE_LSOTV]= ConfigHelper.VALUE_NO
 		items[MYTVConfig.KEY_SYSTEM_CHECK_UPDATE]= ConfigHelper.VALUE_NO
 		items[MYTVConfig.KEY_SYSTEM_WOL] = ""
+		items[MYTVConfig.KEY_SYSTEM_SHOW_DSSP] = True
 		# inits any missing values
 		self.configHelper.initSection(MYTVConfig.SECTION_SYSTEM, items)
 		debug("< mytvConfig.initSectionSystem()")
