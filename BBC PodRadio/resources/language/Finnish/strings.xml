@@ -1,17 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!--   21.7.2008 Finnish   -->
+    <!--   30.9.2008 Finnish   -->
     <string id="0">BBC PodRadio</string>
 
     <!-- Messages -->
     <string id="100">Valitse lähde</string>
     <string id="101">Valitse kuunneltava ohjelma</string>
     <string id="102">Valitse asema</string>
+    <string id="103">Tallenna nimellä</string>
+    <string id="104">Tallenna tai toista ?</string>
+    <string id="105">Tiedosto on olemassa, kirjoitetaanko päälle ?</string>
 
     <!-- menu options  -->
     <string id="200">Podcastit</string>
-    <string id="201">Radio tallennetut</string>
-    <string id="202">Radion live</string>
+    <string id="201">Radion tallennukset</string>
+    <string id="202">Radion kuuntelu</string>
     <string id="203">Valitse radioasema</string>
     <string id="204">Valitse tyyli</string>
     <string id="205">Valitse A-Z</string>
@@ -26,6 +29,7 @@
     <string id="302">Ohjelmaa ei ole saatavilla</string>
     <string id="303">Jaksoa ei ole saatavilla.</string>
     <string id="304">Osoitetta ei löydy!</string>
+    <string id="305">Lataus epäonnistui!</string>
 
     <!-- Status messages -->
     <string id="400">Odota hetki ...</string>
@@ -34,14 +38,21 @@
     <string id="403">Ladataan ...</string>
     <string id="404">Sivu on saattanut muuttua ?</string>
     <string id="405">Lisäke asennettu.</string>
+    <string id="406">Lisäke täytyy lisätä 'Lisää sijainti'-toiminnalla, jotta lisäke saadaan käyttöön.</string>   
     <string id="407">Ohjelma:</string>
-    <string id="490">Lisäke täytyy lisätä 'Lisää sijainti'-toiminnalla, jotta lisäke saadaan käyttöön.</string>
-    <string id="491">Kategoria:</string>
+    <string id="408">Toistetaan... </string>
+    <string id="409">Toista</string>
+    <string id="410">Tallenna</string>
+    <string id="411">Tallennetaan ...</string>
+    <string id="493">Toista</string>
 
     <!-- Main Menu -->
     <string id="500">Valikko</string>
-    <string id="501">Katso ohje</string>
-    <string id="502">Katso muutokset</string>
+    <string id="501">Katso skriptin ohje</string>
+    <string id="502">Katso skriptin muutokset</string>
+    <string id="503">Toista tiedosto</string>
+    <string id="504">Pysäytä toisto</string>
+    <string id="505">Tyhjennä välimuisti</string>
 
     <!-- Update messages -->
     <string id="1000">Ohjelmasi on jo ajantasalla.</string>
