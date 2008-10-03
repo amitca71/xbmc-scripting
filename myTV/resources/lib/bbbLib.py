@@ -1036,6 +1036,7 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 		data = False
 	except "Cancel":
 		debug("download cancelled")
+		data = None
 	except:
 		handleException("fetchURL()")
 	else:

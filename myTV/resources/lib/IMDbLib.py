@@ -18,6 +18,7 @@ Changelog:
 11/12/07 Fix: Scraping regex (see date comments)
 18/01/08 Fix: regex for Cast
 29/08/08 Fix: looks for Popular and Exact , Approx matches, fix unicode lookups
+03/10/08 Change: Improved title name cleaning.
 """
 
 import os,sys,re,urllib,string, urlparse,traceback,unicodedata
@@ -307,7 +308,7 @@ class IMDbSearch:
 			if matches:
 				for a in matches:
 					url = "http://www.imdb.com/title/%s/" % (a[0])
-					title = urlTextToASCII(a[1])
+					title = clean(a[1])
 					year = a[2]
 					self.SearchResults.append((year, title, url))
 
@@ -452,7 +453,9 @@ def readPage(url, readLines=False):
 	log("readPage() readLines=%s" % readLines)
 	page = None
 	try:
-		sock = urllib.urlopen(urllib.quote_plus(url,'/:&?=+#@'))
+		safe_url = urllib.quote_plus(url,'/:&?=+#@')
+		log("readPage() " + safe_url)
+		sock = urllib.urlopen(safe_url)
 		if not readLines:
 			page = sock.read()
 		else:

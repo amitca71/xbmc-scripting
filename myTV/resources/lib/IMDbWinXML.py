@@ -139,10 +139,10 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 
 	#################################################################################################
 	def findTitle(self, title=''):
-		debug("> findTitle()")
+		debug("> findTitle() title=" + title)
 		url = None
 
-		dialogProgress.create(__language__(982), title)
+		dialogProgress.create(__language__(982), title, "", "")
 		imdbSearch = IMDbSearch(title)
 		dialogProgress.close()
 		if imdbSearch.SearchResults == None:
@@ -150,7 +150,7 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 		elif not imdbSearch.SearchResults:
 			if xbmcgui.Dialog().yesno(__language__(980), title, __language__(984)):
 				url = ''		# will cause manual entry
-		else:
+		elif len(imdbSearch.SearchResults) > 1:
 			# make menu list
 			menu = [xbmcgui.ListItem(__language__(500),''), xbmcgui.ListItem(__language__(981),'')]
 			for year, title, searchURL in imdbSearch.SearchResults:
@@ -164,12 +164,12 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 				url = ''
 			elif selectedPos > 1:		# title selected
 				year, title, url = imdbSearch.SearchResults[selectedPos-2]	# allow for exit & Manual
-#		else:
-#			year, title, url = imdbSearch.SearchResults[0]
+		else:
+			year, title, url = imdbSearch.SearchResults[0]
 
 		if url:
 			debug("call IMDB with url=" + url)
-			dialogProgress.create(__language__(982),title + ' ' + year)
+			dialogProgress.create(__language__(982),title + ' ' + year, url, "")
 			self.movie = IMDb(url)
 			if not self.movie:
 				url = None		# failed to parse movie info
@@ -194,7 +194,7 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 			fn, basename = self.makeThumbFilename(url)
 			exists = fileExist(fn)
 			if not exists:
-				dialogProgress.create(__language__(986), basename)
+				dialogProgress.create(__language__(986), basename, url, "")
 				exists = fetchURL(url, fn, encodeURL=False, isBinary=True)
 				dialogProgress.close()
 
@@ -260,7 +260,8 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 		debug("> slideshow()")
 		MAX = self.imdbGallery.getGalleryImageCount()
 		if MAX:
-			dialogProgress.create(__language__(988))
+			picCount = 0
+			dialogProgress.create(__language__(988), " ", " ", " ")
 			for idx in range(MAX):
 				pct = int(idx*100.0/MAX)
 
@@ -272,7 +273,9 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 				# try to get large image, but save using modified small filename
 				if not fileExist(large_fn):
 					result = fetchURL(large_url, large_fn, isBinary=True)
-					if result == None:			# cancelled or error
+					if result:
+						picCount += 1
+					elif result == None:			# cancelled or error
 						break
 					elif result == False:
 						# delete bad large_fn
@@ -280,10 +283,13 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 						debug("no large photo, get small photo")
 						if not fileExist(small_fn):
 							dialogProgress.update(pct, "%s  (%s/%s)" % (small_basename, idx, MAX))
-							if fetchURL(small_url, small_fn, isBinary=True) == None:		# cancelled or error
+							if not fetchURL(small_url, small_fn, isBinary=True):		# cancelled or error
 								break
+							else:
+								picCount += 1
 			dialogProgress.close()
-			xbmc.executebuiltin('XBMC.SlideShow(%s)'% DIR_IMDB_CACHE)
+			if picCount:
+				xbmc.executebuiltin('XBMC.SlideShow(%s)'% DIR_IMDB_CACHE)
 		debug("< slideshow()")
 		return MAX
 
@@ -317,7 +323,7 @@ class IMDbWin(xbmcgui.WindowXMLDialog):
 				break
 
 		if self.movie and url:
-			dialogProgress.create(__language__(987))
+			dialogProgress.create(__language__(987), url, "", "")
 			self.imdbGallery = IMDbGallery(url)
 			dialogProgress.close()
 			self.doModal()

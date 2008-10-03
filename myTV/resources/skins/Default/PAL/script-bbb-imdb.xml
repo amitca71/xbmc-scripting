@@ -2,8 +2,6 @@
 	<defaultcontrol>130</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<type>dialog</type>
-<!--    <animation effect="fade" time="300">WindowOpen</animation>
-	<animation effect="slide" end="0,576" time="200">WindowClose</animation> -->
 	<coordinates>
 		<system>1</system>
 		<posx>15</posx>
@@ -63,7 +61,7 @@
 			<font>font12</font>
 			<align>center</align>
 			<onleft>106</onleft>
-			<onright>107</onright>
+			<onright>106</onright>
 			<onup>107</onup>
 			<ondown>107</ondown>
 		</control>
@@ -75,19 +73,6 @@
 			<height>200</height>
 			<texture>imdb-noimage.png</texture>
 		</control>
-<!--        <control type="image" id="105">
-			<description>photo frame</description>
-			<posx>35</posx>
-			<posy>50</posy>
-			<width>200</width>
-			<height>200</height>
-			<texture>imdb-focusframe.png</texture>
-			<onleft>103</onleft>
-			<onright>106</onright>
-			<onup>130</onup>
-			<ondown>130</ondown>
-			<visible allowhiddenfocus="true">Control.HasFocus(104)</visible>
-		</control> -->
 		<control type="button" id="106">
 			<description>photos right nav</description>
 			<posx>245</posx>
@@ -97,7 +82,7 @@
 			<label>&gt;</label>
 			<font>font12</font>
 			<align>center</align>
-			<onleft>107</onleft>
+			<onleft>103</onleft>
 			<onright>103</onright>
 			<onup>107</onup>
 			<ondown>107</ondown>
@@ -110,7 +95,7 @@
 			<height>15</height>
 			<align>center</align>
 			<label></label>
-			<font>font10</font>
+			<font>font12</font>
 			<textcolor>FFFFFFCC</textcolor>
 			<onleft>103</onleft>
 			<onright>106</onright>
@@ -551,7 +536,7 @@
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
-					<width>135</width>
+					<width>250</width>
 					<height>20</height>
 					<font>font10</font>
 					<aligny>center</aligny>
@@ -563,7 +548,7 @@
 				<control type="label">
 					<posx>249</posx>
 					<posy>0</posy>
-					<width>100</width>
+					<width>250</width>
 					<height>20</height>
 					<font>font10</font>
 					<aligny>center</aligny>
@@ -593,7 +578,7 @@
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
-					<width>135</width>
+					<width>250</width>
 					<height>20</height>
 					<font>font10</font>
 					<aligny>center</aligny>
@@ -605,7 +590,7 @@
 				<control type="label">
 					<posx>249</posx>
 					<posy>0</posy>
-					<width>100</width>
+					<width>250</width>
 					<height>20</height>
 					<font>font10</font>
 					<aligny>center</aligny>

@@ -2186,11 +2186,21 @@ class TVChannels:
 	def getLogo(self, allChIDX):
 		debug("> getLogo() allChIDX=%i" % allChIDX)
 
+		def getLogoFilesIdx(name):
+			idx = -1
+			extList = ('.gif','.png','.jpg')
+			for ext in extList:
+				try:
+					idx = self.allLogoFiles.index(name + ext)
+					break
+				except ValueError:
+					idx = -1
+			return idx
+
 		filename = ''
 		try:
 			# check if already stored
 			chID = ''
-			filename = ''
 			chListData = self.channelNames[allChIDX]
 			chID = logoSafeName(chListData[0]).lower()
 			filename = self.datasourceLogos[chID]
@@ -2198,21 +2208,27 @@ class TVChannels:
 			# " filename compare against chName"
 			try:
 				chName = logoSafeName(chListData[1]).lower()
-				idx = self.allLogoFiles.index(chName+'.gif')
+				idx = getLogoFilesIdx(chName)
+				if idx < 0:
+					raise	# not found
 				filename = os.path.join(DIR_LOGOS, self.allLogoFiles[idx])
 			except:
 				# " filename compare against chID"
 				try:
-					idx = self.allLogoFiles.index(chID+'.gif')
+					idx = getLogoFilesIdx(chID)
+					if idx < 0:
+						raise	# not found
 					filename = os.path.join(DIR_LOGOS, self.allLogoFiles[idx])
 				except:
 					# " filename compare against chAltID"
 					try:
 						chAltID = logoSafeName(chListData[2]).lower()
-						idx = self.allLogoFiles.index(chAltID+'.gif')
+						idx = getLogoFilesIdx(chAltID)
+						if idx < 0:
+							raise	# not found
 						filename = os.path.join(DIR_LOGOS, self.allLogoFiles[idx])
 					except:
-						debug("logo not found by any match (chName,chID,chAltID)")
+						debug("logo not found by any match! (chName,chID,chAltID)")
 
 			if not filename:
 				filename = LOGO_FILENAME

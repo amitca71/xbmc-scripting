@@ -3,13 +3,15 @@
                 Fix: Dreambox setup, password now not mandatory.
                 Fix: Some skins were not showing action icons.
                 Fix: Hauppauge mins error.
-                Change: Pad buttons (A,B,X,Y etc) graphics improved.
+                Change: Pad button (A,B,X,Y etc) graphics improved.
                 Change: Some skin tweaks.
                 Change: Language strings.
                 Change: Dreambox amended to work with Enimga2 model.
+                Change: Logos can now be either .gif .png .jpg
+                Change: Some IMDb search improvments.
                 New: MediaStream and PM3.HD skin (thanks smuto).
                 New: Polish translation (thanks smuto).
-                New: Setting option to show datasource/Saveprogramme names.
+                New: Setting option to show/hide datasource/Saveprogramme names.
  1.18        19/08/08
                 Fix/Change/Updated: All datasources and SaveProgramme modules.
                 Change: datasource us_Zap2it amended to use us_SchedulesDirect (now a paid for service - you need to sign up ~ $20 - sorry!)
