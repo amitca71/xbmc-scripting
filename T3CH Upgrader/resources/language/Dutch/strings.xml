@@ -118,6 +118,11 @@
 	<string id="638">Vragen voor het schrappen van ZIP bestand?</string>
 	<string id="639">Bekijk Script LeesMij/Modificaties</string>
 
+    <!-- Misc Menu Options/Prompts -->
+    <string id="650">Afsluiten</string>
+    <string id="651">Add New</string>
+    <string id="652">Gebruik Keyboard</string>
+
 	<!-- Update messages -->
 	<string id="1000">Huidge Versie is reeds de laatste.</string>
 	<string id="1001">Fetching huidig tagged versie...</string>
