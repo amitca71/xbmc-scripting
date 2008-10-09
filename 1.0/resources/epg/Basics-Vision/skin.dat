@@ -1,0 +1,18 @@
+[SKIN]
+font_title = font30
+font_short_desc = font10
+font_epg = font12
+font_chname = font10
+colour_chnames= 0xFFFFFFFF
+colour_title = 0xff3b82e2
+colour_title_desc = 0xFFFFFFFF
+colour_epg_text_odd = 0xFFFFFFFF
+colour_epg_text_even= 0xFFFFFFFF
+colour_epg_text_fav = 0xFF000000
+file_epg_nofocus_odd = BV_Unfocused.png
+file_epg_nofocus_even = BV_Unfocused.png
+file_epg_nofocus_fav = DarkYellow.png
+file_epg_focus = BV_Focused.png
+height_epg_row = 30
+height_epg_row_gap = 2
+colour_arrows = 0xff3b82e2

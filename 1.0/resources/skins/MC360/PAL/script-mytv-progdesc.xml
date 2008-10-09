@@ -1,0 +1,151 @@
+<window>
+	<defaultcontrol>6</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<type>dialog</type>
+	<animation effect="fade" time="300">WindowOpen</animation>
+	<animation effect="slide" end="0,576" time="200">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>80</posx>
+		<posy>70</posy>
+	</coordinates>
+	<controls>
+
+	<control type="image">
+		<description>background image</description>
+		<texture>dialog-panel.png</texture>
+		<width>560</width>
+		<height>460</height>
+	</control>
+
+	<control type="group">
+		<posx>25</posx>
+		<posy>20</posy>
+		<width>540</width>
+		<height>440</height>
+		<control type="label" id="1">
+			<description>title</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>520</width>
+			<align>left</align>
+			<label></label>
+			<font>special13</font>
+			<textcolor>FFFFFFFF</textcolor>
+		</control>
+		<control type="label" id="2">
+			<description>sub title</description>
+			<posx>0</posx>
+			<posy>30</posy>
+			<width>520</width>
+			<align>left</align>
+			<label></label>
+			<font>special12</font>
+			<textcolor>FFFFFFFF</textcolor>
+		</control>
+		<control type="label" id="4">
+			<description>genre</description>
+			<posx>0</posx>
+			<posy>65</posy>
+			<width>520</width>
+			<align>left</align>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FFFFFF99</textcolor>
+		</control>
+		<control type="label" id="5">
+			<description>datetime</description>
+			<posx>0</posx>
+			<posy>85</posy>
+			<width>520</width>
+			<align>left</align>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FFB2D4F5</textcolor>
+		</control>
+		<control type="textbox" id="6">
+			<description>textarea</description>
+			<posx>0</posx>
+			<posy>100</posy>
+			<width>520</width>
+			<height>280</height>
+			<font>special12</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<spinposx>485</spinposx>
+			<spinposy>287</spinposy>
+			<autoscroll time="3000" delay="4000" repeat="5000">!Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
+
+		<control type="image">
+			<description>B button image</description>
+			<posx>0</posx>
+			<posy>385</posy>
+			<width>20</width>
+			<height>20</height>
+			<texture>bbutton.png</texture>
+			<visible>Control.IsVisible(7)</visible>
+		</control>
+		<control type="label" id="7">
+			<description>B button label</description>
+			<posx>25</posx>
+			<posy>387</posy>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<control type="image">
+			<description>X button image</description>
+			<posx>125</posx>
+			<posy>385</posy>
+			<width>20</width>
+			<height>20</height>
+			<texture>xbutton.png</texture>
+		</control>
+		<control type="label" id="8">
+			<description>X button label</description>
+			<posx>150</posx>
+			<posy>387</posy>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<control type="image">
+			<description>Y button image</description>
+			<posx>250</posx>
+			<posy>387</posy>
+			<width>20</width>
+			<height>20</height>
+			<texture>ybutton.png</texture>
+		</control>
+		<control type="label" id="9">
+			<description>Y button label</description>
+			<posx>275</posx>
+			<posy>387</posy>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<control type="image">
+			<description>A button image</description>
+			<posx>375</posx>
+			<posy>387</posy>
+			<width>20</width>
+			<height>20</height>
+			<texture>abutton.png</texture>
+		</control>
+		<control type="label" id="10">
+			<description>A button label</description>
+			<posx>400</posx>
+			<posy>387</posy>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+	</control>
+
+	</controls>
+</window>

@@ -1,0 +1,77 @@
+<window id="3000">
+	<defaultcontrol>6</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<include>CommonBackground</include>
+
+		<control type="image">
+			<posx>0</posx>
+			<posy>90</posy>
+			<width>1280</width>
+			<height>630</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>90</posy>
+			<width>1280</width>
+			<height>630</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>128</height>
+			<texture>Header.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>xbox media center label</description>
+			<include>WindowTitleCommons</include>
+			<label>$LOCALIZE[9] - $INFO[Control.GetLabel(3)]</label>
+		</control>
+		<control type="label" id="3">
+			<description>title - Fake Label so we can pass it value down to the one above</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>0</width>
+			<height>0</height>
+			<font>-</font>
+			<visible>false</visible>
+		</control>
+
+		<control type="group">
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<control type="textbox" id="5">
+				<description>textarea</description>
+				<posx>35</posx>
+				<posy>130</posy>
+				<width>1210</width>
+				<height>555</height>
+				<font>font11</font>
+				<align>justify</align>
+				<textcolor>white</textcolor>
+				<pagecontrol>6</pagecontrol>
+				<autoscroll delay="9000" time="2000" repeat="10000"></autoscroll>
+			</control>
+			<control type="scrollbar" id="6">
+				<posx>20r</posx>
+				<posy>120</posy>
+				<width>20</width>
+				<height>565</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>6</onleft>
+				<onright>6</onright>
+				<ondown>6</ondown>
+				<onup>6</onup>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+	</controls>
+</window>

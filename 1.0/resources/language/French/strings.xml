@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+
+    <!-- Update messages -->
+    <string id="1000">Votre version est à jour.</string>
+    <string id="1001">Recherche de la version taggée actuelle...</string>
+    <string id="1002">est plus récente</string>
+    <string id="1003">Voulez-vous mettre à jour ?</string>
+    <string id="1004">Recherche de la liste des fichiers...</string>
+    <string id="1005">Veuillez patienter...</string>
+    <string id="1006">Version</string>
+    <string id="1007">Recherche:</string>
+    <string id="1008">Chemin:</string>
+    <string id="1009">Fichier:</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Aucune version taggée n'a été trouvée!</string>
+
+</strings>
