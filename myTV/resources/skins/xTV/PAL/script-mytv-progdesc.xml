@@ -85,7 +85,7 @@
 			<posy>130</posy>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\bbutton.png</texture>
+			<texture>bbutton.png</texture>
 			<visible>Control.IsVisible(7)</visible>
 		</control>
 
@@ -104,7 +104,7 @@
 			<posy>130</posy>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\xbutton.png</texture>
+			<texture>xbutton.png</texture>
 		</control>
 
 		<control type="label" id="8">
@@ -122,7 +122,7 @@
 			<posy>130</posy>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\ybutton.png</texture>
+			<texture>ybutton.png</texture>
 		</control>
 
 		<control type="label" id="9">
@@ -140,7 +140,7 @@
 			<posy>130</posy>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\backbutton.png</texture>
+			<texture>backbutton.png</texture>
 		</control>
 
 		<control type="label" id="10">

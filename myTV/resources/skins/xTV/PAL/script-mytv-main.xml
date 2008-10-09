@@ -426,7 +426,7 @@
 			<posy>37</posy>
 			<width>118</width>
 			<height>109</height>
-			<texture>..\..\Default\media\footer_menu.png</texture>
+			<texture>footer_menu.png</texture>
 		</control>
 
 	</control><!-- End group NAV LISTS -->
@@ -471,7 +471,7 @@
 			<width>80</width>
 			<height>63</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\script-logo.png</texture>
+			<texture>script-logo.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -514,7 +514,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\abutton.png</texture>
+			<texture>abutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1203">
@@ -534,7 +534,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\bbutton.png</texture>
+			<texture>bbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1201">
@@ -555,7 +555,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\xbutton.png</texture>
+			<texture>xbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1204">
@@ -575,7 +575,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\ybutton.png</texture>
+			<texture>ybutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1205">
@@ -595,7 +595,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\whitebutton.png</texture>
+			<texture>whitebutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1206">
@@ -615,7 +615,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\backbutton.png</texture>
+			<texture>backbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1207">

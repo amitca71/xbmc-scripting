@@ -31,7 +31,7 @@
 			<posy>0</posy>
 			<width>47</width>
 			<height>23</height>
-			<texture>..\..\Default\media\imdb-logo.png</texture>
+			<texture>imdb-logo.png</texture>
 		</control>
 		<control type="label" id="101">
 			<description>title</description>
@@ -74,7 +74,7 @@
 			<posy>50</posy>
 			<width>200</width>
 			<height>200</height>
-			<texture>..\..\Default\media\imdb-noimage.png</texture>
+			<texture>imdb-noimage.png</texture>
 		</control>
 		<control type="button" id="106">
 			<description>photos right nav</description>

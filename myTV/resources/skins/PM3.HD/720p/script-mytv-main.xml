@@ -162,7 +162,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>155</height>
-			<texture>..\..\Default\media\footer_background.png</texture>
+			<texture>footer_background.png</texture>
 		</control>
 
 		<!--  CHANNELS -->
@@ -183,7 +183,7 @@
 					<posy>0</posy>
 					<width>220</width>
 					<height>25</height>
-					<texture>..\..\Default\media\mytv-list-nofocus.png</texture>
+					<texture>mytv-list-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
@@ -205,7 +205,7 @@
 					<width>220</width>
 					<height>25</height>
 					<visible>!Control.HasFocus(1110)</visible>
-					<texture>..\..\Default\media\mytv-list-nofocus.png</texture>
+					<texture>mytv-list-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<posx>0</posx>
@@ -213,7 +213,7 @@
 					<height>25</height>
 					<width>220</width>
 					<visible>Control.HasFocus(1110)</visible>
-					<texture>..\..\Default\media\mytv-list-focus2.png</texture>
+					<texture>mytv-list-focus2.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
@@ -238,8 +238,8 @@
 				<posy>5</posy>
 				<width>16</width>
 				<height>16</height>
-				<texturenofocus>..\..\Default\media\mytv-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\mytv-scrollbar-up-arrow-focus.png</texturefocus>
+				<texturenofocus>mytv-scrollbar-up-arrow.png</texturenofocus>
+				<texturefocus>mytv-scrollbar-up-arrow-focus.png</texturefocus>
 				<onclick>PageUp(1111)</onclick>
 			</control>
 			<control type="scrollbar" id="1111">
@@ -247,11 +247,11 @@
 				<posy>19</posy>
 				<width>16</width>
 				<height>103</height>
-				<texturesliderbackground border="4">..\..\Default\media\mytv-scrollbar-bg.png</texturesliderbackground>
-				<texturesliderbar border="3">..\..\Default\media\mytv-scrollbar-bar-nofocus.png</texturesliderbar>
-				<texturesliderbarfocus border="3">..\..\Default\media\mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
-				<textureslidernib>..\..\Default\media\mytv-scrollbar-nib-nofocus.png</textureslidernib>
-				<textureslidernibfocus>..\..\Default\media\mytv-scrollbar-nib-focus.png</textureslidernibfocus>
+				<texturesliderbackground border="4">mytv-scrollbar-bg.png</texturesliderbackground>
+				<texturesliderbar border="3">mytv-scrollbar-bar-nofocus.png</texturesliderbar>
+				<texturesliderbarfocus border="3">mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
+				<textureslidernib>mytv-scrollbar-nib-nofocus.png</textureslidernib>
+				<textureslidernibfocus>mytv-scrollbar-nib-focus.png</textureslidernibfocus>
 				<onleft>1110</onleft>
 				<onright>1120</onright>
 				<showonepage>true</showonepage>
@@ -262,8 +262,8 @@
 				<posy>120</posy>
 				<width>16</width>
 				<height>16</height>
-				<texturenofocus>..\..\Default\media\mytv-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\mytv-scrollbar-down-arrow-focus.png</texturefocus>
+				<texturenofocus>mytv-scrollbar-down-arrow.png</texturenofocus>
+				<texturefocus>mytv-scrollbar-down-arrow-focus.png</texturefocus>
 				<onclick>PageDown(1111)</onclick>
 			</control>
 		</control>
@@ -286,7 +286,7 @@
 					<posy>0</posy>
 					<width>150</width>
 					<height>25</height>
-					<texture>..\..\Default\media\mytv-list-nofocus.png</texture>
+					<texture>mytv-list-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
@@ -308,7 +308,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<visible>!Control.HasFocus(1120)</visible>
-					<texture>..\..\Default\media\mytv-list-nofocus.png</texture>
+					<texture>mytv-list-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<width>150</width>
@@ -316,7 +316,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<visible>Control.HasFocus(1120)</visible>
-					<texture>..\..\Default\media\mytv-list-focus2.png</texture>
+					<texture>mytv-list-focus2.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
@@ -341,8 +341,8 @@
 				<posy>5</posy>
 				<width>16</width>
 				<height>16</height>
-				<texturenofocus>..\..\Default\media\mytv-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\mytv-scrollbar-up-arrow-focus.png</texturefocus>
+				<texturenofocus>mytv-scrollbar-up-arrow.png</texturenofocus>
+				<texturefocus>mytv-scrollbar-up-arrow-focus.png</texturefocus>
 				<onclick>PageUp(1121)</onclick>
 			</control>
 			<control type="scrollbar" id="1121">
@@ -350,11 +350,11 @@
 				<posy>19</posy>
 				<width>16</width>
 				<height>103</height>
-				<texturesliderbackground border="4">..\..\Default\media\mytv-scrollbar-bg.png</texturesliderbackground>
-				<texturesliderbar border="3">..\..\Default\media\mytv-scrollbar-bar-nofocus.png</texturesliderbar>
-				<texturesliderbarfocus border="3">..\..\Default\media\mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
-				<textureslidernib>..\..\Default\media\mytv-scrollbar-nib-nofocus.png</textureslidernib>
-				<textureslidernibfocus>..\..\Default\media\mytv-scrollbar-nib-focus.png</textureslidernibfocus>
+				<texturesliderbackground border="4">mytv-scrollbar-bg.png</texturesliderbackground>
+				<texturesliderbar border="3">mytv-scrollbar-bar-nofocus.png</texturesliderbar>
+				<texturesliderbarfocus border="3">mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
+				<textureslidernib>mytv-scrollbar-nib-nofocus.png</textureslidernib>
+				<textureslidernibfocus>mytv-scrollbar-nib-focus.png</textureslidernibfocus>
 				<onleft>1120</onleft>
 				<onright>1130</onright>
 				<showonepage>true</showonepage>
@@ -365,8 +365,8 @@
 				<posy>120</posy>
 				<width>16</width>
 				<height>16</height>
-				<texturenofocus>..\..\Default\media\mytv-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\mytv-scrollbar-down-arrow-focus.png</texturefocus>
+				<texturenofocus>mytv-scrollbar-down-arrow.png</texturenofocus>
+				<texturefocus>mytv-scrollbar-down-arrow-focus.png</texturefocus>
 				<onclick>PageDown(1121)</onclick>
 			</control>
 		</control>
@@ -389,7 +389,7 @@
 					<posy>0</posy>
 					<width>80</width>
 					<height>25</height>
-					<texture>..\..\Default\media\mytv-list-nofocus.png</texture>
+					<texture>mytv-list-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
@@ -411,7 +411,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<visible>!Control.HasFocus(1130)</visible>
-					<texture>..\..\Default\media\mytv-list-nofocus.png</texture>
+					<texture>mytv-list-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<width>80</width>
@@ -419,7 +419,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<visible>Control.HasFocus(1130)</visible>
-					<texture>..\..\Default\media\mytv-list-focus2.png</texture>
+					<texture>mytv-list-focus2.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
@@ -444,8 +444,8 @@
 				<posy>5</posy>
 				<width>16</width>
 				<height>16</height>
-				<texturenofocus>..\..\Default\media\mytv-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\mytv-scrollbar-up-arrow-focus.png</texturefocus>
+				<texturenofocus>mytv-scrollbar-up-arrow.png</texturenofocus>
+				<texturefocus>mytv-scrollbar-up-arrow-focus.png</texturefocus>
 				<onclick>PageUp(1131)</onclick>
 			</control>
 			<control type="scrollbar" id="1131">
@@ -453,11 +453,11 @@
 				<posy>19</posy>
 				<width>16</width>
 				<height>103</height>
-				<texturesliderbackground border="4">..\..\Default\media\mytv-scrollbar-bg.png</texturesliderbackground>
-				<texturesliderbar border="3">..\..\Default\media\mytv-scrollbar-bar-nofocus.png</texturesliderbar>
-				<texturesliderbarfocus border="3">..\..\Default\media\mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
-				<textureslidernib>..\..\Default\media\mytv-scrollbar-nib-nofocus.png</textureslidernib>
-				<textureslidernibfocus>..\..\Default\media\mytv-scrollbar-nib-focus.png</textureslidernibfocus>
+				<texturesliderbackground border="4">mytv-scrollbar-bg.png</texturesliderbackground>
+				<texturesliderbar border="3">mytv-scrollbar-bar-nofocus.png</texturesliderbar>
+				<texturesliderbarfocus border="3">mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
+				<textureslidernib>mytv-scrollbar-nib-nofocus.png</textureslidernib>
+				<textureslidernibfocus>mytv-scrollbar-nib-focus.png</textureslidernibfocus>
 				<onleft>1130</onleft>
 				<onright>1140</onright>
 				<showonepage>true</showonepage>
@@ -468,8 +468,8 @@
 				<posy>120</posy>
 				<width>16</width>
 				<height>16</height>
-				<texturenofocus>..\..\Default\media\mytv-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\mytv-scrollbar-down-arrow-focus.png</texturefocus>
+				<texturenofocus>mytv-scrollbar-down-arrow.png</texturenofocus>
+				<texturefocus>mytv-scrollbar-down-arrow-focus.png</texturefocus>
 				<onclick>PageDown(1131)</onclick>
 			</control>
 		</control>
@@ -496,7 +496,7 @@
 			<posy>5</posy>
 			<width>144</width>
 			<height>135</height>
-			<texture>..\..\Default\media\footer_menu.png</texture>
+			<texture>footer_menu.png</texture>
 		</control>
 
 
@@ -518,7 +518,7 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
-			<texture>..\..\Default\media\footer_background.png</texture>
+			<texture>footer_background.png</texture>
 		</control>
 
 		<control type="image">
@@ -528,7 +528,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\abutton.png</texture>
+			<texture>abutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1203">
@@ -549,7 +549,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\bbutton.png</texture>
+			<texture>bbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1201">
@@ -570,7 +570,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\xbutton.png</texture>
+			<texture>xbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1204">
@@ -590,7 +590,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\ybutton.png</texture>
+			<texture>ybutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1205">
@@ -611,7 +611,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\whitebutton.png</texture>
+			<texture>whitebutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1206">
@@ -632,7 +632,7 @@
 			<width>25</width>
 			<height>25</height>
 			<visible>true</visible>
-			<texture>..\..\Default\media\backbutton.png</texture>
+			<texture>backbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1207">

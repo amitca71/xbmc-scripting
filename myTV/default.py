@@ -27,9 +27,9 @@ import gc
 
 # Script doc constants
 __scriptname__ = "myTV"
-__version__ = '1.18.1'
+__version__ = '1.0'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '29-09-2008'
+__date__ = '10-10-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -4709,6 +4709,7 @@ def downloadLogos():
 	for i in missing:
 		chData = channelNames[i]
 		chName = chData[1]
+		chName = unicode(chData[1], 'latin-1')
 
 		# attempt to match missing logo to nearest logo name
 		chNameSZ = len(chName)

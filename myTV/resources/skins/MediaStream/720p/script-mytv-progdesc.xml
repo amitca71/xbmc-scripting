@@ -20,7 +20,7 @@
         <control type="image">
           <width>426</width>
           <height>366</height>
-          <texture>..\..\Default\media\script-logo.png</texture>
+          <texture>script-logo.png</texture>
           <aspectratio aligny="bottom">keep</aspectratio>
         </control>
 
@@ -29,7 +29,7 @@
           <posy>358</posy>
           <width>410</width>
           <height>350</height>
-          <texture flipy="true" diffuse="DiffuseMirror3.png">..\..\Default\media\script-logo.png</texture>
+          <texture flipy="true" diffuse="DiffuseMirror3.png">script-logo.png</texture>
           <aspectratio aligny="top">keep</aspectratio>
         </control>
         <control type="group">
@@ -40,7 +40,7 @@
 			<posx>-15</posx>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\bbutton.png</texture>
+			<texture>bbutton.png</texture>
 			<visible>Control.IsVisible(7)</visible>
 		</control>
 		<control type="label" id="7">
@@ -56,7 +56,7 @@
 			<posx>80</posx>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\xbutton.png</texture>
+			<texture>xbutton.png</texture>
 		</control>
 		<control type="label" id="8">
 			<description>X button label</description>
@@ -71,7 +71,7 @@
 			<posx>250</posx>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\ybutton.png</texture>
+			<texture>ybutton.png</texture>
 		</control>
 		<control type="label" id="9">
 			<description>Y button label</description>
@@ -86,7 +86,7 @@
 			<posx>370</posx>
 			<width>20</width>
 			<height>20</height>
-			<texture>..\..\Default\media\backbutton.png</texture>
+			<texture>backbutton.png</texture>
 		</control>
 		<control type="label" id="10">
 			<description>BACK button label</description>
