@@ -3,5 +3,5 @@
 
 import xbmc
 
-xbmc.executescript('q:\\scripts\\mytv\\AlarmClock.py')
+xbmc.executescript('Q:\\scripts\\myTV\\AlarmClock.py')
 

@@ -13,7 +13,9 @@ Changes:
 20-02-2008 Altered to save script backup into Q:\\scripts\\backups subfolder. Makes the scripts folder cleaner.
 20-04-2008 Fix makedir of backup folder.
 02-05-2008 \backups renamed to \.backups in anticipation of xbmc adopting hidden folder prefixed with '.'
-12-09-2008 use os.path.join in stead of string +
+12-09-2008 use os.path.join instead of string +
+10-10-2008 Fix: to use xbmc.language from __main__
+           Fix: Created folders replaced %20 with a space
 """
 
 import sys
@@ -58,7 +60,7 @@ class Update:
 				try:
 					htmlsource = self.getHTMLSource( '%s%s' % (self.tags_url, folders[0]) )
 					if htmlsource:
-						# extract folder/files sored in path
+						# extract folder/files stored in path
 						itemList, url = self.parseHTMLSource( htmlsource )
 
 						# append folders to those we're looping throu and store file
@@ -84,7 +86,7 @@ class Update:
 			self.dialog.close()
 			traceback.print_exc()
 			xbmcgui.Dialog().ok( self._(0), self._( 1031 ) )
-		xbmc.output("< Update().downloadVersion() success = " + str(success))
+		xbmc.output("< Update().downloadVersion() success = %s" % success)
 		return success
 
 	def getLatestVersion( self, quiet=True ):
@@ -151,15 +153,15 @@ class Update:
 			totalFiles = len(script_files)
 			for cnt, url in enumerate( script_files ):
 				items = os.path.split( url )
-				path = os.path.join(self.local_dir, items[0]).replace( version+'/', '' ).replace( version, '' ).replace('/','\\')
+				path = os.path.join(self.local_dir, items[0]).replace( version+'/', '' ).replace( version, '' ).replace('/','\\').replace( '%20', ' ' )
 				file = items[ 1 ].replace( '%20', ' ' )
 				pct = int( ( float( cnt ) / totalFiles ) * 100 )
 				self.dialog.update( pct, "%s %s" % ( self._( 1007 ), url, ), "%s %s" % ( self._( 1008 ), path, ), "%s %s" % ( self._( 1009 ), file, ) )
 				if ( self.dialog.iscanceled() ): raise
-				if ( not os.path.isdir( path ) ): os.makedirs( path )
+				if ( not os.path.isdir( path ) ):
+					os.makedirs( path )
 				src = "%s%s" % (self.tags_url, url)
-				dest = os.path.join(path, file)
-#				print src, dest
+				dest = os.path.join(path, file).replace( '%20', ' ' )
 				urllib.urlretrieve( src,  dest)
 
 			success = True
@@ -197,7 +199,9 @@ if __name__ == "__main__":
 	if len(sys.argv) != 3:
 		xbmcgui.Dialog().ok("Update error",  "Not enough arguments were passed for update")
 		sys.exit(1)
-	up = Update(language.Language().localized,sys.argv[1])
+
+	lang_path = os.path.join('Q:' + os.sep,'scripts', sys.argv[1])
+	up = Update(xbmc.Language( lang_path ).getLocalizedString, sys.argv[1])
 	up.removeOriginal()
 	up.downloadVersion(sys.argv[2])
 	xbmc.executebuiltin('XBMC.RunScript(%s)'%(up.local_dir+'\\default.py'))

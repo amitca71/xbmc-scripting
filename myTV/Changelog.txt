@@ -1,5 +1,7 @@
  Version     Date
  1.18.1      ??/09/08 
+                Fix: All skins that were missing button icons etc
+                Fix: Self updateing. (You will need to manual update from v1.18)
                 Fix: Dreambox setup, password now not mandatory.
                 Fix: Some skins were not showing action icons.
                 Fix: Hauppauge mins error.

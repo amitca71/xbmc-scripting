@@ -4777,7 +4777,7 @@ if not updated:
 debug("exiting script ...")
 moduleList = ['mytvLib', 'bbbLib', 'bbbGUILib','smbLib', 'IMDbWin', 'IMDbLib','AlarmClock','FavShows','saveProgramme','datasource','tv.com','mytvFavShows','wol']
 if not updated:
-    moduleList += ['update', 'language']
+    moduleList += ['update']
 for m in moduleList:
 	try:
 		del sys.modules[m]
