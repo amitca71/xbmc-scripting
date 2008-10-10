@@ -236,35 +236,40 @@ class SaveProgramme:
 				serverPwd = self.configSaveProgramme.getServerPwd()
 				self.preRecMins = self.configSaveProgramme.getPreRecMins()
 				self.postRecMins = self.configSaveProgramme.getPostRecMins()
-				timerModePrefix = self.configSaveProgramme.getTimerModePrefix()
 				self.isEnigma = self.configSaveProgramme.getModel()
 
 				# URLs
 				if serverUser and serverPwd:
-					self.BASE_URL = 'http://%s:%s@%s/' % (serverUser,serverPwd,serverIP)
+					self.URL_BASE = 'http://%s:%s@%s/' % (serverUser,serverPwd,serverIP)
 				elif serverUser:
-					self.BASE_URL = 'http://%s@%s/' % (serverUser,serverIP)
+					self.URL_BASE = 'http://%s@%s/' % (serverUser,serverIP)
 				else:
-					self.BASE_URL = 'http://%s/' % (serverIP)
-				debug("dreambox BASE_URL=" + self.BASE_URL)
+					self.URL_BASE = 'http://%s/' % (serverIP)
 				if not self.isEnigma:
-					self.URL_TIMER_CREATE = self.BASE_URL + "addTimerEvent?type=regular&ref=$REF&start=$TIME" \
+					self.URL_TIMER_CREATE = self.URL_BASE + "addTimerEvent?type=regular&ref=$REF&start=$TIME" \
 											"&duration=$DUR$&channel=$CHNAME&descr=$TITLE"
+					self.URL_TIMER_DELETE = self.URL_BASE + "deleteTimerEvent?&ref=$REF&start=$STIME" \
+											"&type=$TYPE&force=yes"
+					self.URL_TIMER_LIST = self.URL_BASE + 'body?mode=controlTimerList'
 				else:
+					self.URL_BASE += 'web/wap/'
 # sampe 'Enigma 2' Dreambox  URL
 # http://192.168.0.3/web/wap/timeradd?justplay=0&syear=2008&smonth=9&sday=16&shour=16&smin=25&eyear=2008&emonth=9&eday=16&ehour=18&emin=25
 # &sRef=1%3A134%3A1%3A0%3A0%3A0%3A0%3A0%3A0%3A0%3AFROM+BOUQUET+&name=Name+of++Prog&description=Description+of+Program&afterevent=0&disabled=0
 # &deleteOldOnSave=0&command=add&save=Add%2FSave
-					self.URL_TIMER_CREATE = self.BASE_URL + "web/wap/timeradd?justplay=0" \
+					self.URL_TIMER_CREATE = self.URL_BASE + "timeradd?justplay=0" \
 											"&sRef=$REFAFROM+BOUQUET" \
 											"&syear=$SYEAR&smonth=$SMONTH&sday=$SDAY&shour=$SHOUR&smin=$SHOUR" \
 											"&eyear=$EYEAR&emonth=$EMONTH&eday=$EDAY&ehour=$EHOUR&emin=$EHOUR" \
 											"&name=$TITLE&description=" \
 											"&afterevent=0&disabled=0&deleteOldOnSave=0&command=add&save=Add/Save"
+					self.URL_TIMER_DELETE = self.URL_BASE + "timerdelete?&ref=$REF&begin=$STIME&end=$ETIME"
+					self.URL_TIMER_LIST = self.URL_BASE + 'timerlist.html'
 
-				self.URL_TIMER_LIST = self.BASE_URL + timerModePrefix
-				self.URL_TIMER_DELETE = self.BASE_URL + "deleteTimerEvent?&ref=$REF&start=$TIME" \
-										"&type=$TYPE&force=yes"
+				debug("dreambox URL_BASE=" + self.URL_BASE)
+				debug("dreambox URL_TIMER_LIST=" + self.URL_TIMER_LIST)
+				debug("dreambox URL_TIMER_CREATE=" + self.URL_TIMER_CREATE)
+				debug("dreambox URL_TIMER_DELETE=" + self.URL_TIMER_DELETE)
 		except:
 			handleException()
 
@@ -335,11 +340,11 @@ class SaveProgramme:
 			# DELETE TIMER ON SERVER
 			dialogProgress.create(msgTitle, __language__(821))	# deleting timer
 
-			startTimeSecs = timer[ManageTimers.REC_STARTTIME]
-			chName = timer[ManageTimers.REC_CHNAME]
-			durSecs = timer[ManageTimers.REC_DUR]
-			progName = timer[ManageTimers.REC_PROGNAME]
-			type = timer[ManageTimers.REC_PROG_ID]	# not really progID
+#			startTimeSecs = timer[ManageTimers.REC_STARTTIME]
+#			chName = timer[ManageTimers.REC_CHNAME]
+#			durSecs = timer[ManageTimers.REC_DUR]
+#			progName = timer[ManageTimers.REC_PROGNAME]
+#			type = timer[ManageTimers.REC_PROG_ID]	# not really progID
 
 			doc = fetchURL(delURL)
 			dialogProgress.close()
@@ -367,52 +372,99 @@ class SaveProgramme:
 		dialogProgress.create(self.name, __language__(824))
 		doc = fetchURL(self.URL_TIMER_LIST)
 		if doc:
-			timersList = []	# empty
-			regex = "editTimerEvent\(\"ref=(.*?)&start=(\d+)&duration=(\d+)&channel=(.*?)&descr=(.*?)&type=(\d+)\"(?:.*?)(off|on|trans)"
-			startStopStrList = [
-								['Recurring Timer Events', 'One-time Timer Events'],
-								['One-time Timer Events','</table']
-								]
-			for startStr, endStr in startStopStrList:
-				matches = parseDocList(doc, regex, startStr, endStr)
-				# found, extract details
-				if matches:
-					itemList.append([startStr,'Date/Time'])
-					for match in matches:
-						try:
-							if len(match) != 7:
-								debug("rec too short %s " % match)
-								continue
-
-							# ignore OFF entries (red cross)
-							state = match[6]
-							if state == 'off':
-								continue
-
-							pid = match[0]
-							chID = self.lookupCHID(ref)
-							if not chID:
-								continue
-							startTimeSecs = int(match[1])
-							durSecs = int(match[2])
-							chName = decodeEntities(match[3]).strip()
-							title = decodeEntities(match[4]).strip()
-							type = match[5].strip()
-							delURL = self.URL_TIMER_DELETE.replace('$REF', pid) \
-										.replace('$TIME',str(startTimeSecs)) \
-										.replace('$TYPE',type).replace('$TITLE',title)
-
-							timersList.append([startTimeSecs, chID, durSecs, chName, title, delURL, pid])
-							if DEBUG:
-								print timersList[-1]
-						except:
-							handleException("getTimers()")
-
+			if not self.isEnigma:
+				timersList = self.getTimersOld(doc)
+			else:
+				timersList = self.getTimersEnigma(doc)
 			debug("Count of timers found=%s" % len(timersList))
 
 		dialogProgress.close()
 		debug("< SaveProgramme().getTimers()")
 		return timersList	# None is error, [] is empty, otherwise contains data
+
+	############################################################################################################
+	def getTimersOld(doc):
+		debug("> getTimersOld()")
+		timersList = []
+
+		regex = "editTimerEvent\(\"ref=(.*?)start=(\d+)duration=(\d+)channel=(.*?)&descr=(.*?)&type=(\d+)\".*?(off|on|trans)"
+		startStopStrList = [
+							['Recurring Timer Events', 'One-time Timer Events'],
+							['One-time Timer Events','</table']
+							]
+		for startStr, endStr in startStopStrList:
+			matches = parseDocList(doc, regex, startStr, endStr)
+			# found, extract details
+			for match in matches:
+				try:
+					if len(match) != 7:
+						debug("rec too short %s " % match)
+						continue
+
+					# ignore OFF entries (red cross)
+					state = match[6]
+					if state == 'off':
+						continue
+
+					pid = match[0]
+					chID = self.lookupCHID(ref)
+					if not chID:
+						continue
+					startTimeSecs = int(match[1])
+					durSecs = int(match[2])
+					chName = decodeEntities(match[3]).strip()
+					title = decodeEntities(match[4]).strip()
+					type = match[5].strip()
+					delURL = self.URL_TIMER_DELETE.replace('$REF', pid) \
+								.replace('$STIME',str(startTimeSecs)) \
+								.replace('$TYPE',type)
+
+					timersList.append([startTimeSecs, chID, durSecs, chName, title, delURL, pid])
+					if DEBUG:
+						print timersList[-1]
+				except:
+					handleException("getTimersOld()")
+
+		debug("< getTimersOld()")
+		return timersList
+
+
+	############################################################################################################
+	def getTimersEnigma(self, doc):
+		debug("> getTimersEnigma()")
+		timersList = []
+
+		regex = '<font color="#000000">(.*?)<.*?timeredit.html.*?sRef=(.*?)&.*?begin=(\d+).*?end=(\d+).*?name=(.*?)&'
+		matches = findAllRegEx(doc, regex)
+		# found, extract details
+		for match in matches:
+			try:
+				if len(match) != 5:
+					debug("rec too short %s " % match)
+					continue
+
+				chName = match[0]
+				pid = match[1]
+				chID = self.lookupCHID(ref)
+				if not chID:
+					continue
+				startTimeSecs = int(match[2])
+				endTimeSecs = int(match[3])
+				durSecs = endTimeSecs - startTimeSecs
+				title = decodeEntities(match[4]).strip()
+				delURL = self.URL_TIMER_DELETE.replace('$REF', pid) \
+							.replace('$STIME', str(startTimeSecs)) \
+							.replace('$ETIME', str(endTimeSecs))
+
+				timersList.append([startTimeSecs, chID, durSecs, chName, title, delURL, pid])
+				if DEBUG:
+					print timersList[-1]
+			except:
+				handleException("getTimersEnigma()")
+
+		debug("< getTimersEnigma()")
+		return timersList
+
 
 	# lookup REF from CHID
 	def lookupREF(self, chid):
@@ -464,20 +516,15 @@ class ConfigSaveProgramme:
 		self.KEY_PASS = 'pwd'
 		self.KEY_PRE_REC = 'pre_rec'
 		self.KEY_POST_REC = 'post_rec'
-		self.KEY_URL_PREFIX = 'url_prefix'
 		self.KEY_IS_ENIGMA = 'isEnigma'
 
-		# LIST TIMERS URL PREFIX - This depends on your IMG installed.
 		# Uncomment the ONE that works for your web server interface
-		TIMER_MODE_PREFIX = 'body?mode=controlTimerList'	# 'body?mode=timers'
-
 		self.configData = [
 			[self.KEY_IP,__language__(812),'192.168.1.3',KBTYPE_IP],
 			[self.KEY_USER,__language__(805),'root',KBTYPE_ALPHA],
 			[self.KEY_PASS,__language__(806),'dreambox',KBTYPE_ALPHA],
 			[self.KEY_PRE_REC,__language__(835),'1',KBTYPE_NUMERIC],
 			[self.KEY_POST_REC,__language__(836),'1',KBTYPE_NUMERIC],
-			[self.KEY_URL_PREFIX,"Timer Mode Prefix:", TIMER_MODE_PREFIX, KBTYPE_ALPHA],
 			[self.KEY_IS_ENIGMA,"Is Model Enigma2?", False, KBTYPE_YESNO]
 			]
 
@@ -515,8 +562,6 @@ class ConfigSaveProgramme:
 		return int(self.getValue(self.KEY_PRE_REC))
 	def getPostRecMins(self):
 		return int(self.getValue(self.KEY_POST_REC))
-	def getTimerModePrefix(self):
-		return self.getValue(self.KEY_URL_PREFIX)
 	def getModel(self):
 		return self.getValue(self.KEY_IS_ENIGMA)
 

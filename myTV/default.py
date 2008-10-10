@@ -27,7 +27,7 @@ import gc
 
 # Script doc constants
 __scriptname__ = "myTV"
-__version__ = '1.0'
+__version__ = '1.18.1'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __date__ = '10-10-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
@@ -47,9 +47,10 @@ sys.path.insert(0, DIR_RESOURCES_LIB)
 try:
     # 'resources' now auto appended onto path
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
-    if not __language__( 0 ): raise
 except:
-	xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language.", "Update your XBMC to a newer version.")
+	print str( sys.exc_info()[ 1 ] )
+	xbmcgui.Dialog().ok("Language Error","Failed to load xbmc.Language builtin.", "'Atlantis' XBMC build required. (after 2008-08-12)")
+	sys.exit(1)
 
 import update                                       # script update module
 from bbbLib import *								# requires __language__ to be defined
@@ -324,7 +325,7 @@ class myTV(xbmcgui.WindowXML):
 		debug("epgX: %s epgY: %s epgW: %s epgH: %s"  % (self.epgX,self.epgY,self.epgW,self.epgH))
 
 		epgTimeBarH = 25
-		self.pageIndicatorH = 15				# the next/prev page available indicators
+		self.pageIndicatorH = 10				# the next/prev page available indicators
 		sideIndicatorW = 13
 		self.epgColGap = 2
 		if useChannelNames:
@@ -4750,9 +4751,6 @@ def downloadLogos():
 	debug("< downloadLogos() True")
 	return True
 
-def messageXBMCOld():
-	messageOK("WindowXML path error","XBMC Build probably too old.", "Upgrade to a post 'Atlantis' (2008-08-12)")
-	
 ######################################################################################    
 # BEGIN !
 ######################################################################################
@@ -4769,19 +4767,17 @@ if not updated:
 		if mytv.ready:
 			mytv.doModal()
 		del mytv
-	except TypeError:
-		messageXBMCOld()
 	except:
 		handleException()
 
-debug("exiting script ...")
+debug("exiting script: " + __script__)
 moduleList = ['mytvLib', 'bbbLib', 'bbbGUILib','smbLib', 'IMDbWin', 'IMDbLib','AlarmClock','FavShows','saveProgramme','datasource','tv.com','mytvFavShows','wol']
 if not updated:
     moduleList += ['update']
 for m in moduleList:
 	try:
 		del sys.modules[m]
-		xbmc.output("del sys.module=%s" % m)
+		xbmc.output("del module=%s" % m)
 	except: pass
 
 # remove other globals

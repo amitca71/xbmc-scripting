@@ -2,23 +2,19 @@
 	<defaultcontrol>130</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<type>dialog</type>
+	<include>DialogFade</include>
 	<coordinates>
 		<system>1</system>
 		<posx>180</posx>
 		<posy>50</posy>
 	</coordinates>
-	<controls>
-	<include>dialogeffect</include>
 
+	<controls>
 	<control type="image">
+		<description>background image</description>
 		<width>900</width>
 		<height>660</height>
-		<texture border="40">DialogBack.png</texture>
-	</control>
-	<control type="image">
-		<width>900</width>
-		<height>660</height>
-		<texture border="40">DialogFront.png</texture>
+		<texture border="24">DialogBG.png</texture>
 	</control>
 
 	<control type="group" id="100">
@@ -90,10 +86,11 @@
 			<posx>35</posx>
 			<posy>255</posy>
 			<width>200</width>
-			<height>15</height>
+			<height>20</height>
 			<align>center</align>
+			<aligny>center</aligny>
 			<label></label>
-			<font>font12</font>
+			<font>special10</font>
 			<textcolor>FFFFFFCC</textcolor>
 			<onleft>103</onleft>
 			<onright>106</onright>
@@ -516,38 +513,38 @@
 			<posx>0</posx>
 			<posy>275</posy>
 			<width>285</width>
-			<height>410</height>
+			<height>320</height>
 			<onleft>107</onleft>
 			<onright>131</onright>
 			<onup>107</onup>
 			<ondown>130</ondown>
 			<viewtype label="list">list</viewtype>
 			<pagecontrol>131</pagecontrol>
-			<itemlayout height="20">
+			<itemlayout height="23">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>255</width>
-					<height>20</height>
-					<texture>button-nofocus.png</texture>
+					<height>23</height>
+					<texture border="3">HomeBladeSubNF2.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
 					<width>255</width>
-					<height>20</height>
+					<height>23</height>
 					<font>font10</font>
 					<aligny>center</aligny>
 					<align>left</align>
 					<selectedcolor>FFe2ff43</selectedcolor>
-					<textcolor>FFFFFFEE</textcolor>
+					<textcolor>Unfocused</textcolor>
 					<info>ListItem.Label</info>
 				</control>
 				<control type="label">
 					<posx>250</posx>
 					<posy>0</posy>
-					<width>250</width>
-					<height>20</height>
+					<width>255</width>
+					<height>23</height>
 					<font>font10</font>
 					<aligny>center</aligny>
 					<align>right</align>
@@ -556,28 +553,21 @@
 					<info>ListItem.Label2</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="20">
+			<focusedlayout height="23">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>255</width>
-					<height>20</height>
-					<visible>!Control.HasFocus(130)</visible>
-					<texture>button-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>255</width>
-					<height>20</height>
+					<height>23</height>
 					<visible>Control.HasFocus(130)</visible>
-					<texture>button-focus.png</texture>
+					<texture border="3">HomeBladeSubFO.png</texture>
+					<aligny>center</aligny>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
 					<width>255</width>
-					<height>20</height>
+					<height>23</height>
 					<font>font10</font>
 					<aligny>center</aligny>
 					<align>left</align>
@@ -589,7 +579,7 @@
 					<posx>250</posx>
 					<posy>0</posy>
 					<width>250</width>
-					<height>20</height>
+					<height>23</height>
 					<font>font10</font>
 					<aligny>center</aligny>
 					<align>right</align>
@@ -607,15 +597,10 @@
 				<posx>255</posx>
 				<posy>275</posy>
 				<width>16</width>
-				<height>300</height>
-				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
-				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
-				<textureslidernib>scrollbar_nib.png</textureslidernib>
-				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<height>330</height>
 				<onleft>130</onleft>
 				<onright>132</onright>
-				<showonepage>false</showonepage>
+				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>
 		</control>

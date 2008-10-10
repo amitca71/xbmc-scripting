@@ -1,6 +1,6 @@
 [SKIN]
 font_epg = special13
-font_chname = special12
+font_chname = special13
 colour_chnames= 0xFFFFFFFF
 colour_title = 0xFFFFFFFF
 colour_title_desc = 0xFFFFFFFF

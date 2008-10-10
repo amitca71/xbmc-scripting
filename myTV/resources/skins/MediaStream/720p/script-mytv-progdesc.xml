@@ -2,15 +2,13 @@
 	<defaultcontrol>6</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<type>dialog</type>
-  <include>DialogFade</include>
+	<include>DialogFade</include>
 	<controls>
 
-    <include>DialogFadeBG</include>
+	<include>DialogFadeBG</include>
 	<control type="group" id="2000">
       <include>InfoDialogPos</include>
-
       <include>InfoDialogBG</include>
-
 
       <control type="group">
         <description>Thumb image</description>

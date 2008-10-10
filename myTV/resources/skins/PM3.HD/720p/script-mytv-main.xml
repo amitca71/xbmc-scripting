@@ -1,6 +1,6 @@
 <window id="4000">
 <!--	<defaultcontrol>1200</defaultcontrol> -->
-	<allowoverlays>false</allowoverlays>
+	<allowoverlays>true</allowoverlays>
 	<controls>
 		<control type="image">
 			<posx>356</posx>
@@ -69,14 +69,6 @@
 		<animation effect="slide" time="200" end="0,-65" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
-<!--		<control type="image">
-			<description>background header image</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>65</height>
-			<texture>header_background.png</texture>
-		</control> -->
-
 		<control type="image" id="1010">
 			<description>LOGO image control</description>
 			<posx>10</posx>
@@ -137,7 +129,7 @@
 			<posx>5r</posx>
 			<posy>10</posy>
 			<align>right</align>
-			<font>font10</font>
+			<font>special11</font>
 			<textcolor>grey2</textcolor>
 			<label>$INFO[Control.GetLabel(1060)] | $INFO[Control.GetLabel(1050)]</label>
 			<visible>Control.IsVisible(1050)</visible>
@@ -169,7 +161,7 @@
 		<control type="list" id="1110">
 			<posx>10</posx>
 			<posy>5</posy>
-			<width>220</width>
+			<width>310</width>
 			<height>132</height>
 			<onleft>1140</onleft>
 			<onright>1111</onright>
@@ -177,19 +169,19 @@
 			<ondown>1110</ondown>
 			<viewtype label="list">list</viewtype>
 			<pagecontrol>1111</pagecontrol>
-			<itemlayout height="25">
+			<itemlayout height="28">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>220</width>
-					<height>25</height>
-					<texture>mytv-list-nofocus.png</texture>
+					<width>310</width>
+					<height>28</height>
+					<texture border="3">button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
-					<width>220</width>
-					<height>25</height>
+					<width>310</width>
+					<height>28</height>
 					<font>special11</font>
 					<aligny>center</aligny>
 					<selectedcolor>FFe2ff43</selectedcolor>
@@ -198,28 +190,20 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="25">
+			<focusedlayout height="28">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>220</width>
-					<height>25</height>
-					<visible>!Control.HasFocus(1110)</visible>
-					<texture>mytv-list-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<height>25</height>
-					<width>220</width>
+					<height>28</height>
+					<width>310</width>
 					<visible>Control.HasFocus(1110)</visible>
-					<texture>mytv-list-focus2.png</texture>
+					<texture border="3">button-focus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
-					<width>220</width>
-					<height>25</height>
+					<width>310</width>
+					<height>28</height>
 					<font>special11</font>
 					<aligny>center</aligny>
 					<selectedcolor>FFe2ff43</selectedcolor>
@@ -233,46 +217,28 @@
 		<!-- SCROLL BAR FOR CHANNELS LIST -->
 		<control type="group">
 			<visible>Control.isVisible(1110)</visible>
-			<control type="button">
-				<posx>230</posx>
+			<control type="scrollbar" id="1111">
+				<posx>320</posx>
 				<posy>5</posy>
 				<width>16</width>
-				<height>16</height>
-				<texturenofocus>mytv-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>mytv-scrollbar-up-arrow-focus.png</texturefocus>
-				<onclick>PageUp(1111)</onclick>
-			</control>
-			<control type="scrollbar" id="1111">
-				<posx>230</posx>
-				<posy>19</posy>
-				<width>16</width>
-				<height>103</height>
-				<texturesliderbackground border="4">mytv-scrollbar-bg.png</texturesliderbackground>
-				<texturesliderbar border="3">mytv-scrollbar-bar-nofocus.png</texturesliderbar>
-				<texturesliderbarfocus border="3">mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
-				<textureslidernib>mytv-scrollbar-nib-nofocus.png</textureslidernib>
-				<textureslidernibfocus>mytv-scrollbar-nib-focus.png</textureslidernibfocus>
+				<height>132</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
 				<onleft>1110</onleft>
 				<onright>1120</onright>
 				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>
-			<control type="button">
-				<posx>230</posx>
-				<posy>120</posy>
-				<width>16</width>
-				<height>16</height>
-				<texturenofocus>mytv-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>mytv-scrollbar-down-arrow-focus.png</texturefocus>
-				<onclick>PageDown(1111)</onclick>
-			</control>
 		</control>
 
 		<!--  DAY-->
 		<control type="list" id="1120">
-			<posx>270</posx>
+			<posx>360</posx>
 			<posy>5</posy>
-			<width>150</width>
+			<width>170</width>
 			<height>132</height>
 			<onleft>1111</onleft>
 			<onright>1121</onright>
@@ -280,19 +246,19 @@
 			<ondown>1120</ondown>
 			<viewtype label="list">list</viewtype>
 			<pagecontrol>1121</pagecontrol>
-			<itemlayout height="25">
+			<itemlayout height="28">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>150</width>
-					<height>25</height>
-					<texture>mytv-list-nofocus.png</texture>
+					<width>170</width>
+					<height>28</height>
+					<texture>button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
-					<width>150</width>
-					<height>25</height>
+					<width>170</width>
+					<height>28</height>
 					<font>special11</font>
 					<aligny>center</aligny>
 					<selectedcolor>FFe2ff43</selectedcolor>
@@ -301,28 +267,20 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="25">
+			<focusedlayout height="28">
 				<control type="image">
-					<width>150</width>
-					<height>25</height>
-					<posx>0</posx>
-					<posy>0</posy>
-					<visible>!Control.HasFocus(1120)</visible>
-					<texture>mytv-list-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<width>150</width>
-					<height>25</height>
+					<width>170</width>
+					<height>28</height>
 					<posx>0</posx>
 					<posy>0</posy>
 					<visible>Control.HasFocus(1120)</visible>
-					<texture>mytv-list-focus2.png</texture>
+					<texture>button-focus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
-					<width>150</width>
-					<height>25</height>
+					<width>170</width>
+					<height>28</height>
 					<font>special11</font>
 					<aligny>center</aligny>
 					<selectedcolor>66FFe2ff43</selectedcolor>
@@ -336,44 +294,26 @@
 		<!-- SCROLL BAR FOR DAY LIST -->
 		<control type="group">
 			<visible>Control.isVisible(1120)</visible>
-			<control type="button">
-				<posx>420</posx>
+			<control type="scrollbar" id="1121">
+				<posx>530</posx>
 				<posy>5</posy>
 				<width>16</width>
-				<height>16</height>
-				<texturenofocus>mytv-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>mytv-scrollbar-up-arrow-focus.png</texturefocus>
-				<onclick>PageUp(1121)</onclick>
-			</control>
-			<control type="scrollbar" id="1121">
-				<posx>420</posx>
-				<posy>19</posy>
-				<width>16</width>
-				<height>103</height>
-				<texturesliderbackground border="4">mytv-scrollbar-bg.png</texturesliderbackground>
-				<texturesliderbar border="3">mytv-scrollbar-bar-nofocus.png</texturesliderbar>
-				<texturesliderbarfocus border="3">mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
-				<textureslidernib>mytv-scrollbar-nib-nofocus.png</textureslidernib>
-				<textureslidernibfocus>mytv-scrollbar-nib-focus.png</textureslidernibfocus>
+				<height>132</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
 				<onleft>1120</onleft>
 				<onright>1130</onright>
 				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>
-			<control type="button">
-				<posx>420</posx>
-				<posy>120</posy>
-				<width>16</width>
-				<height>16</height>
-				<texturenofocus>mytv-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>mytv-scrollbar-down-arrow-focus.png</texturefocus>
-				<onclick>PageDown(1121)</onclick>
-			</control>
 		</control>
 
 		<!-- HOUR -->
 		<control type="list" id="1130">
-			<posx>460</posx>
+			<posx>570</posx>
 			<posy>5</posy>
 			<width>80</width>
 			<height>132</height>
@@ -383,19 +323,19 @@
 			<ondown>1130</ondown>
 			<viewtype label="list">list</viewtype>
 			<pagecontrol>1131</pagecontrol>
-			<itemlayout height="25">
+			<itemlayout height="28">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>80</width>
-					<height>25</height>
-					<texture>mytv-list-nofocus.png</texture>
+					<height>28</height>
+					<texture>button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
 					<width>80</width>
-					<height>25</height>
+					<height>28</height>
 					<font>special11</font>
 					<aligny>center</aligny>
 					<selectedcolor>FFe2ff43</selectedcolor>
@@ -404,28 +344,20 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="25">
+			<focusedlayout height="28">
 				<control type="image">
 					<width>80</width>
-					<height>25</height>
-					<posx>0</posx>
-					<posy>0</posy>
-					<visible>!Control.HasFocus(1130)</visible>
-					<texture>mytv-list-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<width>80</width>
-					<height>25</height>
+					<height>28</height>
 					<posx>0</posx>
 					<posy>0</posy>
 					<visible>Control.HasFocus(1130)</visible>
-					<texture>mytv-list-focus2.png</texture>
+					<texture>button-focus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
 					<posy>0</posy>
 					<width>80</width>
-					<height>25</height>
+					<height>28</height>
 					<font>special11</font>
 					<aligny>center</aligny>
 					<selectedcolor>FFe2ff43</selectedcolor>
@@ -439,52 +371,34 @@
 		<!-- SCROLL BAR FOR HOUR LIST -->
 		<control type="group">
 			<visible>Control.isVisible(1130)</visible>
-			<control type="button">
-				<posx>540</posx>
+			<control type="scrollbar" id="1131">
+				<posx>650</posx>
 				<posy>5</posy>
 				<width>16</width>
-				<height>16</height>
-				<texturenofocus>mytv-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>mytv-scrollbar-up-arrow-focus.png</texturefocus>
-				<onclick>PageUp(1131)</onclick>
-			</control>
-			<control type="scrollbar" id="1131">
-				<posx>540</posx>
-				<posy>19</posy>
-				<width>16</width>
-				<height>103</height>
-				<texturesliderbackground border="4">mytv-scrollbar-bg.png</texturesliderbackground>
-				<texturesliderbar border="3">mytv-scrollbar-bar-nofocus.png</texturesliderbar>
-				<texturesliderbarfocus border="3">mytv-scrollbar-bar-focus.png</texturesliderbarfocus>
-				<textureslidernib>mytv-scrollbar-nib-nofocus.png</textureslidernib>
-				<textureslidernibfocus>mytv-scrollbar-nib-focus.png</textureslidernibfocus>
+				<height>132</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
 				<onleft>1130</onleft>
 				<onright>1140</onright>
 				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
-			</control>
-			<control type="button">
-				<posx>540</posx>
-				<posy>120</posy>
-				<width>16</width>
-				<height>16</height>
-				<texturenofocus>mytv-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>mytv-scrollbar-down-arrow-focus.png</texturefocus>
-				<onclick>PageDown(1131)</onclick>
 			</control>
 		</control>
 
 		<-- Time reset button -->
 		<control type="button" id="1140">
 			<description>Time reset button</description>
-			<posx>570</posx>
+			<posx>690</posx>
 			<posy>5</posy>
 			<width>90</width>
 			<height>30</height>
 			<label>100</label>
 			<onleft>1131</onleft>
 			<onright>1110</onright>
-			<font>font10</font>
+			<font>special11</font>
 			<textcolor>DFFFFFFF</textcolor>
 			<align>center</align>
 		</control>
@@ -524,9 +438,9 @@
 		<control type="image">
 			<description>A button control</description>
 			<posx>6</posx>
-			<posy>7</posy>
+			<posy>5</posy>
 			<width>25</width>
-			<height>25</height>
+			<height>28</height>
 			<visible>true</visible>
 			<texture>abutton.png</texture>
 			<aspectratio>keep</aspectratio>
@@ -534,114 +448,116 @@
 		<control type="label" id="1203">
 			<description>A button label</description>
 			<posx>36</posx>
-			<posy>10</posy>
+			<posy>5</posy>
 			<width>140</width>
-			<height>25</height>
-			<font>font10</font>
+			<height>28</height>
+			<font>special11</font>
 			<label></label>
 			<align>left</align>
 		</control>
 
 		<control type="image" id="1202">
 			<description>B button control</description>
-			<posx>156</posx>
-			<posy>7</posy>
+			<posx>236</posx>
+			<posy>5</posy>
 			<width>25</width>
-			<height>25</height>
+			<height>28</height>
 			<visible>true</visible>
 			<texture>bbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1201">
 			<description>B button label</description>
-			<posx>186</posx>
-			<posy>10</posy>
+			<posx>266</posx>
+			<posy>5</posy>
 			<width>140</width>
-			<height>25</height>
-			<font>font10</font>
+			<height>28</height>
+			<font>special11</font>
 			<label></label>
 			<align>left</align>
 			<visible>Control.IsVisible(1202)</visible>
 		</control>
+
 		<control type="image">
 			<description>X button control</description>
-			<posx>290</posx>
-			<posy>7</posy>
+			<posx>466</posx>
+			<posy>5</posy>
 			<width>25</width>
-			<height>25</height>
+			<height>28</height>
 			<visible>true</visible>
 			<texture>xbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1204">
 			<description>X button label</description>
-			<posx>320</posx>
-			<posy>10</posy>
+			<posx>496</posx>
+			<posy>5</posy>
 			<width>140</width>
-			<height>25</height>
-			<font>font10</font>
+			<height>28</height>
+			<font>special11</font>
 			<label></label>
 			<align>left</align>
 		</control>
+
 		<control type="image">
 			<description>Y button control</description>
-			<posx>440</posx>
-			<posy>7</posy>
+			<posx>696</posx>
+			<posy>5</posy>
 			<width>25</width>
-			<height>25</height>
+			<height>28</height>
 			<visible>true</visible>
 			<texture>ybutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1205">
 			<description>Y button label</description>
-			<posx>470</posx>
-			<posy>10</posy>
+			<posx>726</posx>
+			<posy>5</posy>
 			<width>70</width>
-			<height>25</height>
-			<font>font10</font>
+			<height>28</height>
+			<font>special11</font>
 			<label></label>
 			<align>left</align>
 		</control>
 
 		<control type="image">
 			<description>white button control</description>
-			<posx>580</posx>
-			<posy>7</posy>
+			<posx>926</posx>
+			<posy>5</posy>
 			<width>25</width>
-			<height>25</height>
+			<height>28</height>
 			<visible>true</visible>
 			<texture>whitebutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1206">
 			<description>white button label</description>
-			<posx>610</posx>
-			<posy>10</posy>
+			<posx>956</posx>
+			<posy>5</posy>
 			<width>70</width>
-			<height>25</height>
-			<font>font10</font>
+			<height>28</height>
+			<font>special11</font>
 			<label></label>
 			<align>left</align>
 		</control>
 
 		<control type="image">
 			<description>BACK button control</description>
-			<posx>730</posx>
-			<posy>7</posy>
+			<posx>1156</posx>
+			<posy>5</posy>
 			<width>25</width>
-			<height>25</height>
+			<height>28</height>
 			<visible>true</visible>
 			<texture>backbutton.png</texture>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="label" id="1207">
 			<description>BACK button label</description>
-			<posx>760</posx>
-			<posy>10</posy>
+			<posx>1186</posx>
+			<posy>5</posy>
 			<width>60</width>
-			<height>25</height>
-			<font>font10</font>
+			<height>28</height>		
+			<font>special11</font>
 			<label></label>
 			<align>left</align>
 		</control>
