@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">Apple Movie Trailers</string>
+    <string id="1">xbmc media center</string>
+    <string id="2">Team AMT</string>
+
+    <!-- Dialog Messages -->
+    <string id="36">Oude XML bestanden aan het verwijderen...</string>
+    <string id="37">Genre informatie aan het verversen...</string>
+    <string id="38">Genre en trialer informatie aan het verversen...</string>
+    <string id="39">Speel alles af</string>
+    <string id="40">Alle info is verwerkt, de zoek functie is beschikbaar( 10 - 60 minuten)</string>
+    <string id="41">De info wordt per genre ververst.(1 - 5 minuten)</string>
+    <string id="42"></string>
+    <string id="43">Veranderingn aan database toevoegen...</string>
+    <string id="44">Database aanmaken...</string>
+    <string id="45">Oude genre XML bestand aan het verwijderen...</string>
+    <string id="46">Database verversen mislukt...</string>
+    <string id="47">Huidige tabel</string>
+    <string id="48">Gegevens binnenhalen...</string>
+    <string id="49">*Een complete update  kunt u op elk moment starten.</string>
+    <string id="50">Script opstarten:</string>
+    <string id="51">Modules importeren &amp; klaarmaken...</string>
+    <string id="52">module:</string>
+    <string id="53">Database versie is te oud!</string>
+    <string id="54">U moet de databae opnieuw aanmaken.</string>
+    <string id="55">Skin en uiterlijk laden...</string>
+    <string id="56">Film naar de opslag map aan het verplaatsen...</string>
+    <string id="57">Er is een fout opgetreden bij instellen van het beeldscherm.</string>
+    <string id="58">Controleer de skinfile:</string>
+    <string id="59">Database vereist verniewen...</string>
+    <string id="60">De database is niet geschikt voor deze vesie van AMT.\nHet wordt ververst.</string>
+    <string id="61">Verversen van alle genre en film informatie...</string>
+    <string id="62">Ophalen van nieuwe xml bestanden.</string>
+    <string id="63">Het verversen van kan tussen de 1 - 5 minuten duren.</string>
+    <string id="64">Fout</string>
+    <string id="65">Xml bestanden aanpassen voor alle trailers.</string>
+    <string id="66">Genre informatie ophalen...</string>
+    <string id="67">Een ogenblik geduld a.u.b....</string>
+    <string id="68">Vernversen van de trailer informatie...</string>
+    <string id="69">Fout bij het ophalen van een of meerdere genre informatie.</string>
+    <string id="70">Filminformatie ophalen...</string>
+    <string id="71">Genre:</string>
+    <string id="72">Fout bij het ophalen van een of meerdere film titels.</string>
+    <string id="73">Cache map legen...</string>
+    <string id="74">Als de cache niet opgeschoont wordt zal het verversen sneller gaan, echter niet alle info zal ververst worden.</string>
+    <string id="75">Niet genoeg opslagcapaciteit op de drive.</string>
+    <string id="76">Drive</string>
+    <string id="77">Vrij</string>
+    <string id="78">Benodigde ruimte</string>
+    <string id="79">Downloading...</string>
+    <string id="80">KB/s</string>
+    <string id="81">Alle benodigde modulen konden niet geladen worden!</string>
+    <string id="82">Weet u zeker dat u alle trailers wil verwijderen voor:</string>
+    <string id="83">Database laden...</string>
+    <string id="84">video's</string>
+    <string id="85">Opdracht uitvoeren...</string>
+    <string id="86">bestanden</string>
+    <string id="87">Huidige genre</string>
+    <string id="88">Huidige trailer</string>
+    <string id="89">Er is een fout opgetreden bij het aan maken van de database!</string>
+    <string id="90">Er is een fout opgetreden bij het verplaatsen van de film!</string>
+    <string id="91">tijd nog te gaan</string>
+    <string id="92">*Geen score gevonden</string>
+    <string id="93">Aantal gevonden gegevens door de zoekfunctie</string>
+    <string id="94">*Geen zoekopdracht gegeven</string>
+    <string id="95">Geef zoekterm: losse woorden met and/or/not</string>
+    <string id="96">of</string>
+    <string id="97">Zoekdialoog klaarzetten.</string>
+    <string id="98">Oude trailer xml verwijderen...</string>
+    <string id="99">Trailer</string>
+
+    <!-- Buttons -->
+    <string id="103">Sorteer: Genre</string>
+    <string id="104">Sorteer: Filmstudio</string>
+    <string id="105">Sorteer: Acteur</string>
+    <string id="106">Zoeken</string>
+    <string id="107">Instellingen</string>
+    <string id="108">Laat credits zien</string>
+    <string id="109">Update script</string>
+
+    <string id="113">Genre</string>
+    <string id="114">Filmstudio</string>
+    <string id="115">Acteur</string>
+    <string id="116">Score</string>
+    <string id="117">Trailer kwaliteit</string>
+    <string id="118">Extra Instellingen</string>
+
+    <string id="150">Nieuw!</string>
+    <string id="151">Exclusief bij Apple</string>
+    <string id="152">Favorieten</string>
+    <string id="153">Downloaded</string>
+    <string id="154">Ververs</string>
+    <string id="155">Credits</string>
+    <string id="156">Plot</string>
+    <string id="157">Cast</string>
+    <string id="158">Volledig</string>
+    <string id="159">Minimaal</string>
+    <string id="160">HD Trailers</string>
+    <string id="161">No Trailer Urls</string>
+    <string id="162">Aangepast zoeken</string>
+    <string id="163">Bekeken </string>
+    <string id="164">Recent toegevoegd</string>
+    <string id="165">Meerdere Trailers</string>
+    <string id="166">Film Info</string>
+    <string id="167">In de bios</string>
+    <string id="168">Datum toegevoegd</string>
+
+    <!-- Settings labels -->
+    <string id="200">Kies:</string>
+    <string id="201">Skin</string>
+    <string id="202">Trailer kwaliteit</string>
+    <string id="203">Streamen of opslaan?</string>
+    <string id="204">Opslaan in map...</string>
+    <string id="205">Automatisch alle trailers afspelen</string>
+    <string id="206">Trailerposter:</string>
+    <string id="207">Gebruik bekeken vinkje</string>
+    <string id="208">Opstarten met </string>
+    <string id="209">Snelkoppeling #1</string>
+    <string id="210">Snelkoppeling #2</string>
+    <string id="211">Snelkoppeling #3</string>
+    <string id="212">Ververs "Nieuw!" bij opstarten</string>
+    <string id="213">Eenvoudige zoekkeuze</string>
+    <string id="214">Vergelijk alleen hele woorden</string>
+    <string id="215">Videospeler resolutie</string>
+    <string id="216">Postcode bioscoop (alleen postcode US)</string>
+    <string id="217">Bioscoop zoekmachine</string>
+    <string id="218">Ververs trailers bij sorteren op genre</string>
+    
+    <!-- Settings choices -->
+    <string id="2020">Lage kwaliteit</string>
+    <string id="2021">Medium kwaliteit</string>
+    <string id="2022">Hoge kwaliteit</string>
+    <string id="2030">Stream</string>
+    <string id="2031">Downloaden &amp; afspelen</string>
+    <string id="2032">Downloaden &amp; opslaan in </string>
+    <string id="2050">Internet plaatje gebruiken</string>
+    <string id="2051">Algemeen plaatje gebruiken</string>
+    <string id="2052">Geen plaatje gebruiken</string>
+    <string id="2110">Niet veranderen</string>
+
+    <!-- Settings error messages -->
+    <string id="230">Er is een fout opgetreden bij het opslaan van de instellingen!</string>
+    <string id="231">*Skin afhankelijk</string>
+
+    <!-- Settings restart required message -->
+    <string id="240">Somminge instellingen vereisen een herstart op actief te worden.</string>
+    <string id="241">Opnieuw opstarten?</string>
+    
+    <!-- Settings buttons -->
+    <string id="250">Ok</string>
+    <string id="251">Annuleer</string>
+    <string id="252">Ververs</string>
+    <string id="253">Credits</string>
+    <string id="254">Install plugins</string>
+    <string id="255">Standaard</string>
+
+    <!-- Search buttons -->
+    <string id="257">SQL opslaan</string>
+    <string id="258">SQL legen</string>
+    <string id="259">SQL laden</string>
+
+    <string id="270">Herstart</string>
+    <string id="271">Later</string>
+
+    <string id="290">Pagina</string>
+
+    <string id="2150">Zoek op incomplete gegevens</string>
+    <string id="2151">Zoek op alleen favorieten</string>
+    <string id="2152">Zoek op opgeslagen films</string>
+    <string id="2153">Zoek op gekeken films</string>
+
+    <!-- Plot/Cast Error Information -->
+    <string id="400">*Er is geen plot gevonden voor deze titel.</string>
+    <string id="401">*Geen cast gevonden voor deze titel</string>
+
+    <!-- Context Menu -->
+    <string id="501">Speel Trailer</string>
+    <string id="502">Toevoegen aan favorites</string>
+    <string id="503">Verwijder uit favorites</string>
+    <string id="504">Markeren als gekeken</string>
+    <string id="505">Markeren als niet-gekeken</string>
+    <string id="506">Ververs trailer Info</string>
+    <string id="507">Ververs alle trailer Info</string>
+    <string id="508">Verplaats naar opsla map</string>
+    <string id="509">Verwijder opgeslagen trailer(s)</string>
+    <string id="510">Waar in de bios? (US only)</string>
+    <string id="511">Bekijk genre</string>
+    <string id="512">Ververs genre</string>
+    <string id="513">Ververs alle Genres</string>
+    <string id="521">Bekijk Filmstudio</string>
+    <string id="531">Bekijk Acteur</string>
+    <string id="550">Trailers updaten</string>
+    
+    <!-- Showtimes -->
+    <string id="600">Geen bioscoop info gevonden!</string>
+    <string id="601">Bioscoop data opzoeken, even geduld a.u.b...</string>
+    <string id="602">Datum</string>
+    <string id="603">Plaats</string>
+
+    <!-- Plugin -->
+    <string id="700">This plugin allows you to watch trailers from the videos media window. It still requires the script be installed and up to date for full functionality. It has it's own settings accessed from plugin settings.</string>
+    <string id="701">This plugin plays optional trivia quiz, coming attraction video(s), feature presentation video(s), rating video and 0 - 5 random trailers before playing the selected movie. Then optional end of feature presentation video(s). It still requires the script be installed and up to date for full functionality. It has it's own settings accessed from plugin settings.</string>
+
+    <string id="710">Blader voor thumbnail</string>
+    <string id="711">Installeer</string>
+    <string id="712">Overslaan</string>
+    <string id="713">Plugin</string>
+    <string id="714">Toevoegen</string>
+
+    <string id="720">Vergeet niet de nieuwe plugin source via bestanden toe te voegen</string>
+    <string id="721">Bibliotheekmodus gaat automatisch,</string>
+    <string id="722">er zijn geen andere stappen meer nodig.</string>
+
+    <string id="723">Wilt u een bookmark aan legen voor deze</string>
+    <string id="724">plugin en toevoegen aan sources.xml bestand?</string>
+
+    <string id="725">Installing plugin...</string>
+
+    <string id="730">Er is een fout opgetreden bij het instaleren van de plugin!</string>
+
+    <string id="750">Wilt u deze plugin instaleren?</string>
+    <string id="755">Dit zorgt er voor dat alle plugins worden geinstaleerd.</string>
+
+    <string id="799">Alle plugins</string>
+    
+    <!-- Credits -->
+    <string id="900">Versie</string>
+    <string id="901">Team Credits:</string>
+    <string id="902">Extra Credits:</string>
+    <string id="903">Skin Credits:</string>
+    
+    <!-- Credits headings-->
+    <string id="910">Hoofdontwerper &amp; Coder</string>
+    <string id="911">Coder &amp; Skinning</string>
+    <string id="912">Graphics &amp; Skinning</string>
+    <string id="913">Gebruiksvriendelijkheid</string>
+    <string id="914">Taal bestand</string>
+
+    <!-- Update messages -->
+    <string id="1000">De versie is up-to-date.</string>
+    <string id="1001">Huidige gemarkeerde versie ophalen...</string>
+    <string id="1002">is nieuwer</string>
+    <string id="1003">Wilt uw updaten?</string>
+    <string id="1004">Bestandslijst ophalen...</string>
+    <string id="1005">Even geduld a.u.b....</string>
+    <string id="1006">Versie</string>
+    <string id="1007">Ophalen:</string>
+    <string id="1008">Pad:</string>
+    <string id="1009">Bestand:</string>
+    <string id="1010">De nieuwe versie is opgeslagen als:</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Geen gemarkeerde versies gevonden!</string>
+    <string id="1031">Er is een fout opgetreden bij het updaten van het script!</string>
+
+</strings>
