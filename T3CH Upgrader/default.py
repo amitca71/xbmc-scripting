@@ -12,19 +12,8 @@
 #
 # Many Thanks to Team AMT for code used.
 #
-import sys
-import os
-import xbmc
-import xbmcgui
-import urllib
-from sgmllib import SGMLParser
-import traceback
-from string import lower, capwords
-from shutil import copytree, rmtree, copy
-import filecmp
-import time
-import re
-import zipfile
+import sys, os
+import xbmc, xbmcgui
 
 # Script constants
 __scriptname__ = "T3CH Upgrader"
@@ -32,7 +21,7 @@ __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
 __date__ = '29-09-2008'
-__version__ = "1.7.3"
+__version__ = "1.7.4"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
 # Shared resources
@@ -46,20 +35,31 @@ sys.path.append( DIR_LIB )
 try:
     # 'resources' now auto appended onto path
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
-    if not __language__( 0 ): raise
 except:
-	xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language builtin.", "Update your XBMC to a newer version.")
+	print str( sys.exc_info()[ 1 ] )
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
 
+from sgmllib import SGMLParser
+import urllib
+import traceback
+from string import lower, capwords
+from shutil import copytree, rmtree, copy
+import filecmp
+import time
+import re
+import zipfile
 import update
 import zipstream
 import SFVCheck
 
 dialogProgress = xbmcgui.DialogProgress()
-
 EXIT_SCRIPT = ( 9, 10, 247, 275, 61467, )
 CANCEL_DIALOG = EXIT_SCRIPT + ( 216, 257, 61448, )
-TEXTBOX_XML_FILENAME = "script-bbb-textbox.xml"
+#TEXTBOX_XML_FILENAME = "script-bbb-textbox.xml"	# old custom textbox skins, no longer supplied from v1.7.4 onwards
+TEXTBOX_XML_FILENAME = "DialogScriptInfo.xml"       # xbmc skin supplied textbox viewer
 
+
+#############################################################################################################
 class Parser( SGMLParser ):
 	def reset( self ):
 		self.url = None
@@ -897,7 +897,6 @@ class Main:
 			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
 			tbd.ask(title, doc)
 			del tbd
-#			DialogScriptInfo("DialogScriptInfo.xml", DIR_HOME, "Default").ask(title, doc)
 		else:
 			dialogOK( __language__( 0 ), __language__( 310 ))
 
@@ -1766,7 +1765,9 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 		
 	def onInit( self ):
 		xbmc.output( "TextBoxDialogXML.onInit()" )
-		self.getControl( 3 ).setLabel( self.title )
+		try:
+			self.getControl( 3 ).setLabel( self.title )		# may not have an ID assigned
+		except: pass
 		self.getControl( 5 ).setText( self.text )
 
 	def onClick( self, controlId ):
@@ -1784,31 +1785,6 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 		self.title = title
 		self.text = text
 		self.doModal()		# causes window to be drawn
-
-#class DialogScriptInfo( xbmcgui.WindowXML ):
-#	""" Create a skinned textbox window using XBMC Skin XML """
-#
-#	def __init__( self, *args, **kwargs):
-#		pass
-#		
-#	def onInit( self ):
-#		self.getControl( 5 ).setText( self.text )
-#
-#	def onClick( self, controlId ):
-#		pass
-#
-#	def onFocus( self, controlId ):
-#		pass
-#
-#	def onAction( self, action ):
-#		if action and (action.getButtonCode() in CANCEL_DIALOG or action.getId() in CANCEL_DIALOG):
-#			self.close()
-#
-#	def ask(self, title, text ):
-#		xbmc.output("TextBoxDialogXML().ask()")
-#		self.title = title
-#		self.text = text
-#		self.doModal()		# causes window to be drawn
 
 #################################################################################################################
 def unzip(extract_path, filename, silent=False, msg=""):
@@ -1897,15 +1873,19 @@ try:
 except:
 	runMode = RUNMODE_NORMAL
 
-Main(runMode)
+try:
+	xbmc.output( "__language__ = %s" % __language__ )
+	Main(runMode)
+except:
+	print __scriptname__ + " Exception Main(): " + str( sys.exc_info()[ 1 ] )
 
-xbmc.output("script exit and housekeeping")
+xbmc.output(__scriptname__ + " script exit and housekeeping ...")
 # clean up on exit
 moduleList = ['zipstream','SFVCheck']
 for m in moduleList:
 	try:
 		del sys.modules[m]
-		xbmc.output("removed module: " + m)
+		xbmc.output(__scriptname__ + " removed module: " + m)
 	except: pass
 
 # remove globals

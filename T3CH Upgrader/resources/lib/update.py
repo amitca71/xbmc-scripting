@@ -200,8 +200,11 @@ if __name__ == "__main__":
 		xbmcgui.Dialog().ok("Update error",  "Not enough arguments were passed for update")
 		sys.exit(1)
 
-	lang_path = os.path.join('Q:' + os.sep,'scripts', sys.argv[1])
-	up = Update(xbmc.Language( lang_path ).getLocalizedString, sys.argv[1])
-	up.removeOriginal()
-	up.downloadVersion(sys.argv[2])
-	xbmc.executebuiltin('XBMC.RunScript(%s)'%(up.local_dir+'\\default.py'))
+	try:
+		lang_path = os.path.join('Q:' + os.sep,'scripts', sys.argv[1])
+		up = Update(xbmc.Language( lang_path ).getLocalizedString, sys.argv[1])
+		up.removeOriginal()
+		up.downloadVersion(sys.argv[2])
+		xbmc.executebuiltin('XBMC.RunScript(%s)'%(up.local_dir+'\\default.py'))
+	except:
+		print "failed to start script update from backup copy!"
