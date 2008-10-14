@@ -29,7 +29,7 @@ import gc
 __scriptname__ = "myTV"
 __version__ = '1.18.1'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '10-10-2008'
+__date__ = '14-10-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -49,8 +49,7 @@ try:
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
 	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("Language Error","Failed to load xbmc.Language builtin.", "'Atlantis' XBMC build required. (after 2008-08-12)")
-	sys.exit(1)
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
 
 import update                                       # script update module
 from bbbLib import *								# requires __language__ to be defined
@@ -4762,6 +4761,8 @@ if config.getSystem(config.KEY_SYSTEM_CHECK_UPDATE):
 
 if not updated:
 	try:
+		# check language loaded
+		xbmc.output( "__language__ = %s" % __language__ )
 		# start script main
 		mytv = myTV("script-mytv-main.xml", DIR_HOME, "Default")
 		if mytv.ready:
@@ -4770,14 +4771,14 @@ if not updated:
 	except:
 		handleException()
 
-debug("exiting script: " + __script__)
+debug("exiting script: " + __scriptname__)
 moduleList = ['mytvLib', 'bbbLib', 'bbbGUILib','smbLib', 'IMDbWin', 'IMDbLib','AlarmClock','FavShows','saveProgramme','datasource','tv.com','mytvFavShows','wol']
 if not updated:
     moduleList += ['update']
 for m in moduleList:
 	try:
 		del sys.modules[m]
-		xbmc.output("del module=%s" % m)
+		xbmc.output(__scriptname__ + " del module=%s" % m)
 	except: pass
 
 # remove other globals
