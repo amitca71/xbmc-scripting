@@ -43,7 +43,7 @@
 			<posy>5</posy>
 			<width>110</width>
 			<height>75</height>
-			<texture>..\..\Default\media\script-logo.png</texture>
+			<texture>script-logo.png</texture>
 			<aspectratio>keep</aspectratio>
 			<animation effect="rotate" start="90" end="0" center="0,0" time="300">WindowOpen</animation>
 			<animation effect="rotate" end="90" center="0,0" time="300">WindowClose</animation>
@@ -119,7 +119,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>140</height>
-			<texture>..\..\Default\media\bpr-background.png</texture>
+			<texture>footer_background.png</texture>
 		</control>
 
 		<control type="fadelabel" id="25">
@@ -137,16 +137,16 @@
 
 		<!-- FOOTER - Lists -->
 		<control type="group" id="2100">
-		<posx>0</posx>
-		<posy>10</posy>
-		<height>140</height>
-		<visible>true</visible>
+			<posx>0</posx>
+			<posy>10</posy>
+			<height>140</height>
+			<visible>true</visible>
 
 			<!--  SOURCElist -->
 			<control type="list" id="60">
 				<posx>0</posx>
 				<posy>2</posy>
-				<width>180</width>
+				<width>220</width>
 				<height>140</height>
 				<onleft>80</onleft>
 				<onright>70</onright>
@@ -159,9 +159,9 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>485</width>
+						<width>220</width>
 						<height>35</height>
-						<texture>..\..\Default\media\bpr-list-nofocus.png</texture>
+						<texture border="3">button-nofocus.png</texture>
 					</control>
 					<control type="image">
 						<posx>5</posx>
@@ -173,7 +173,7 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>220</width>
 						<height>35</height>
 						<font>special12</font>
 						<aligny>center</aligny>
@@ -185,20 +185,20 @@
 				</itemlayout>
 				<focusedlayout height="35">
 					<control type="image">
-						<width>485</width>
+						<width>220</width>
 						<height>35</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>!Control.HasFocus(60)</visible>
-						<texture>..\..\Default\media\bpr-list-nofocus.png</texture>
+						<texture border="3">button-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<width>485</width>
+						<width>220</width>
 						<height>35</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>Control.HasFocus(60)</visible>
-						<texture>..\..\Default\media\bpr-list-focus2.png</texture>
+						<texture border="3">button-focus.png</texture>
 					</control>
 					<control type="image">
 						<posx>5</posx>
@@ -210,7 +210,7 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>220</width>
 						<height>35</height>
 						<font>special12</font>
 						<aligny>center</aligny>
@@ -224,9 +224,9 @@
 
 			<!--  DIRECTORY list -->
 			<control type="list" id="70">
-				<posx>200</posx>
+				<posx>240</posx>
 				<posy>2</posy>
-				<width>300</width>
+				<width>340</width>
 				<height>140</height>
 				<onleft>60</onleft>
 				<onright>80</onright>
@@ -239,14 +239,14 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>485</width>
+						<width>340</width>
 						<height>35</height>
-						<texture>..\..\Default\media\bpr-list-nofocus.png</texture>
+						<texture border="3">button-nofocus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>340</width>
 						<height>35</height>
 						<font>special12</font>
 						<aligny>center</aligny>
@@ -258,25 +258,25 @@
 				</itemlayout>
 				<focusedlayout height="35">
 					<control type="image">
-						<width>485</width>
+						<width>220</width>
 						<height>35</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>!Control.HasFocus(70)</visible>
-						<texture>..\..\Default\media\bpr-list-nofocus.png</texture>
+						<texture border="3">button-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<width>485</width>
+						<width>340</width>
 						<height>35</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>Control.HasFocus(70)</visible>
-						<texture>..\..\Default\media\bpr-list-focus2.png</texture>
+						<texture border="3">button-focus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>340</width>
 						<height>35</height>
 						<font>special12</font>
 						<aligny>center</aligny>
@@ -293,9 +293,9 @@
 			<animation effect="slide" time="200" start="0,140" acceleration="-1.1" condition="Control.IsVisible(2200)">conditional</animation>
 
 			<control type="list" id="80">
-				<posx>520</posx>
+				<posx>600</posx>
 				<posy>0</posy>
-				<width>330</width>
+				<width>340</width>
 				<height>140</height>
 				<onleft>70</onleft>
 				<onright>81</onright>
@@ -308,14 +308,14 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>485</width>
+						<width>340</width>
 						<height>24</height>
-						<texture>..\..\Default\media\bpr-list-nofocus.png</texture>
+						<texture border="3">button-nofocus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>340</width>
 						<height>24</height>
 						<font>special11</font>
 						<aligny>center</aligny>
@@ -327,25 +327,25 @@
 				</itemlayout>
 				<focusedlayout height="24">
 					<control type="image">
-						<width>485</width>
-						<height>24</height>
+						<width>220</width>
+						<height>35</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>!Control.HasFocus(80)</visible>
-						<texture>..\..\Default\media\bpr-list-nofocus.png</texture>
+						<texture border="3">button-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<width>485</width>
+						<width>340</width>
 						<height>24</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>Control.HasFocus(80)</visible>
-						<texture>..\..\Default\media\bpr-list-focus2.png</texture>
+						<texture border="3">button-focus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>340</width>
 						<height>24</height>
 						<font>special11</font>
 						<aligny>center</aligny>
@@ -359,20 +359,11 @@
 
 			<!-- SCROLL BAR FOR CAT LIST -->
 			<control type="group">
-				<control type="button">
-					<posx>850</posx>
+				<control type="scrollbar" id="81">
+					<posx>940</posx>
 					<posy>0</posy>
 					<width>16</width>
-					<height>16</height>
-					<texturenofocus>..\..\Default\media\bpr-scrollbar-up-arrow.png</texturenofocus>
-					<texturefocus>..\..\Default\media\bpr-scrollbar-up-arrow-focus.png</texturefocus>
-					<onclick>PageUp(81)</onclick>
-				</control>
-				<control type="scrollbar" id="81">
-					<posx>850</posx>
-					<posy>16</posy>
-					<width>16</width>
-					<height>100</height>
+					<height>132</height>
 					<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
 					<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
 					<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
@@ -380,17 +371,8 @@
 					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
 					<onleft>80</onleft>
 					<onright>90</onright>
-					<showonepage>true</showonepage>
+					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
-				</control>
-				<control type="button">
-					<posx>850</posx>
-					<posy>115</posy>
-					<width>16</width>
-					<height>16</height>
-					<texturenofocus>..\..\Default\media\bpr-scrollbar-down-arrow.png</texturenofocus>
-					<texturefocus>..\..\Default\media\bpr-scrollbar-down-arrow-focus.png</texturefocus>
-					<onclick>PageDown(81)</onclick>
 				</control>
 			</control>  <!-- end group scrollbar -->
 
@@ -402,7 +384,7 @@
 				<posy>-2</posy>
 				<width>124</width>
 				<height>115</height>
-				<texture>..\..\Default\media\bpr-guide.png</texture>
+				<texture>bpr-guide.png</texture>
 			</control>
 
 		</control> <!-- end group  FOOTER -->
@@ -411,10 +393,10 @@
 
 	<!--  STREAM list -->
 	<control type="group" id="3000">
-	<posx>10</posx>
-	<posy>110</posy>
-	<animation effect="zoom" end="0" center="650,250" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-	<animation effect="zoom" start="0" center="650,250" time="200" condition="Control.IsVisible(3000)">conditional</animation>
+		<posx>10</posx>
+		<posy>110</posy>
+		<animation effect="zoom" end="0" center="650,250" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		<animation effect="zoom" start="0" center="650,250" time="200" condition="Control.IsVisible(3000)">conditional</animation>
 
 		<control type="list" id="90">
 			<description>STREAMS list</description>
@@ -437,7 +419,7 @@
 					<height>55</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<texture>..\..\Default\media\bpr-list-nofocus.png</texture>
+					<texture border="3">button-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -480,7 +462,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<visible>true</visible>
-					<texture>..\..\Default\media\bpr-list-focus.png</texture>
+					<texture border="3">button-focus.png</texture>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -519,38 +501,20 @@
 		</control>
 
 		<!-- SCROLL BAR FOR STREAM LIST -->
-		<control type="button">
-				<posx>16r</posx>
-				<posy>0</posy>
-				<width>16</width>
-				<height>16</height>
-				<texturenofocus>..\..\Default\media\bpr-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\bpr-scrollbar-up-arrow-focus.png</texturefocus>
-				<onclick>PageUp(2050)</onclick>
-		</control>
 		<control type="scrollbar" id="91">
-				<posx>16r</posx>
-				<posy>16</posy>
-				<width>16</width>
-				<height>440</height>
-				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
-				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
-				<textureslidernib>scrollbar_nib.png</textureslidernib>
-				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
-				<onleft>90</onleft>
-				<onright>80</onright>
-				<showonepage>true</showonepage>
-				<orientation>vertical</orientation>
-		</control>
-		<control type="button">
-				<posx>16r</posx>
-				<posy>455</posy>
-				<width>16</width>
-				<height>16</height>
-				<texturenofocus>..\..\Default\media\bpr-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>..\..\Default\media\bpr-scrollbar-down-arrow-focus.png</texturefocus>
-				<onclick>PageDown(2050)</onclick>
+			<posx>16r</posx>
+			<posy>0</posy>
+			<width>16</width>
+			<height>472</height>
+			<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+			<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>scrollbar_nib.png</textureslidernib>
+			<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+			<onleft>90</onleft>
+			<onright>80</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
 		</control>
 
 		</control> <!-- end group STREAM LIST -->

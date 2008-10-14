@@ -108,7 +108,7 @@
 			<description>background footer image</description>
 			<posx>0</posx>
 			<posy>20</posy>
-			<texture>bpr-footer.png</texture>
+			<texture>footer_background.png</texture>
 		</control>
 
 		<control type="fadelabel" id="25">
@@ -147,7 +147,7 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>485</width>
+						<width>130</width>
 						<height>29</height>
 						<texture>bpr-list-nofocus.png</texture>
 					</control>
@@ -161,19 +161,19 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>130</width>
 						<height>29</height>
 						<font>special12</font>
 						<aligny>center</aligny>
-									<selectedcolor>FFe2ff43</selectedcolor>
-									<textcolor>DFFFFFFF</textcolor>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>DFFFFFFF</textcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
 				</itemlayout>
 				<focusedlayout height="29">
 					<control type="image">
-						<width>485</width>
+						<width>130</width>
 						<height>29</height>
 						<posx>0</posx>
 						<posy>0</posy>
@@ -181,12 +181,12 @@
 						<texture>bpr-list-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<width>485</width>
+						<width>130</width>
 						<height>29</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>Control.HasFocus(60)</visible>
-						<texture>bpr-list-focus2.png</texture>
+						<texture>bpr-list-focus.png</texture>
 					</control>
 					<control type="image">
 						<posx>5</posx>
@@ -198,12 +198,12 @@
 					<control type="label">
 						<posx>30</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>130</width>
 						<height>29</height>
 						<font>special12</font>
 						<aligny>center</aligny>
 						<selectedcolor>FFe2ff43</selectedcolor>
-						<textcolor>FFFFFFFF</textcolor>
+						<textcolor>FFFFFF99</textcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
@@ -228,26 +228,26 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>485</width>
+						<width>210</width>
 						<height>29</height>
 						<texture>bpr-list-nofocus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>210</width>
 						<height>29</height>
 						<font>special12</font>
 						<aligny>center</aligny>
-									<selectedcolor>FFe2ff43</selectedcolor>
-									<textcolor>DFFFFFFF</textcolor>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>DFFFFFFF</textcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
 				</itemlayout>
 				<focusedlayout height="29">
 					<control type="image">
-						<width>485</width>
+						<width>210</width>
 						<height>29</height>
 						<posx>0</posx>
 						<posy>0</posy>
@@ -255,22 +255,22 @@
 						<texture>bpr-list-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<width>485</width>
+						<width>210</width>
 						<height>29</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>Control.HasFocus(70)</visible>
-						<texture>bpr-list-focus2.png</texture>
+						<texture>bpr-list-focus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>210</width>
 						<height>29</height>
 						<font>special12</font>
 						<aligny>center</aligny>
-									<selectedcolor>FFe2ff43</selectedcolor>
-									<textcolor>FFFFFFFF</textcolor>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>FFFFFF99</textcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
@@ -297,26 +297,26 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>485</width>
+						<width>210</width>
 						<height>23</height>
 						<texture>bpr-list-nofocus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>210</width>
 						<height>23</height>
 						<font>special11</font>
 						<aligny>center</aligny>
-									<selectedcolor>FFe2ff43</selectedcolor>
-									<textcolor>DFFFFFFF</textcolor>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>DFFFFFFF</textcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
 				</itemlayout>
 				<focusedlayout height="23">
 					<control type="image">
-						<width>485</width>
+						<width>210</width>
 						<height>23</height>
 						<posx>0</posx>
 						<posy>0</posy>
@@ -324,22 +324,22 @@
 						<texture>bpr-list-nofocus.png</texture>
 					</control>
 					<control type="image">
-						<width>485</width>
+						<width>210</width>
 						<height>23</height>
 						<posx>0</posx>
 						<posy>0</posy>
 						<visible>Control.HasFocus(80)</visible>
-						<texture>bpr-list-focus2.png</texture>
+						<texture>bpr-list-focus.png</texture>
 					</control>
 					<control type="label">
 						<posx>3</posx>
 						<posy>0</posy>
-						<width>430</width>
+						<width>210</width>
 						<height>23</height>
 						<font>special11</font>
 						<aligny>center</aligny>
-									<selectedcolor>FFe2ff43</selectedcolor>
-									<textcolor>FFFFFFFF</textcolor>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>FFFFFF99</textcolor>
 						<align>left</align>
 						<info>ListItem.Label</info>
 					</control>
@@ -398,16 +398,16 @@
 
 	<!--  STREAM list -->
 	<control type="group" id="3000">
-	<posx>10</posx>
-	<posy>75</posy>
-	<animation effect="zoom" end="0" center="360,200" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-	<animation effect="zoom" start="0" center="360,200" time="200" condition="Control.IsVisible(3000)">conditional</animation>
+		<posx>5</posx>
+		<posy>75</posy>
+		<animation effect="zoom" end="0" center="360,200" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		<animation effect="zoom" start="0" center="360,200" time="200" condition="Control.IsVisible(3000)">conditional</animation>
 
 		<control type="list" id="90">
 			<description>STREAMS list</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>685</width>
+			<width>695</width>
 			<height>360</height>
 			<onleft>80</onleft>
 			<onright>91</onright>
@@ -420,7 +420,7 @@
 			<pagecontrol>91</pagecontrol>
 			<itemlayout height="55">
 				<control type="image">
-					<width>685</width>
+					<width>695</width>
 					<height>55</height>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -462,7 +462,7 @@
 			</itemlayout>
 			<focusedlayout height="55">
 				<control type="image">
-					<width>685</width>
+					<width>695</width>
 					<height>55</height>
 					<posx>0</posx>
 					<posy>0</posy>
@@ -485,7 +485,7 @@
 					<font>font10</font>
 					<aligny>center</aligny>
 					<selectedcolor>FFe2ff43</selectedcolor>
-					<textcolor>FFFFFFFF</textcolor>
+					<textcolor>FFFFFF99</textcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
@@ -499,7 +499,7 @@
 					<aligny>center</aligny>
 					<align>right</align>
 					<selectedcolor>FFe2ff43</selectedcolor>
-					<textcolor>FFFFFFEE</textcolor>
+					<textcolor>FFFFFF99</textcolor>
 					<info>ListItem.Label2</info>
 				</control>
 			</focusedlayout>
@@ -507,7 +507,7 @@
 
 		<!-- SCROLL BAR FOR STREAM LIST -->
 		<control type="button">
-				<posx>688</posx>
+				<posx>18r</posx>
 				<posy>0</posy>
 				<width>16</width>
 				<height>16</height>
@@ -516,7 +516,7 @@
 				<onclick>PageUp(2050)</onclick>
 		</control>
 		<control type="scrollbar" id="91">
-				<posx>688</posx>
+				<posx>18r</posx>
 				<posy>16</posy>
 				<width>16</width>
 				<height>330</height>
@@ -531,7 +531,7 @@
 				<orientation>vertical</orientation>
 		</control>
 		<control type="button">
-				<posx>688</posx>
+				<posx>18r</posx>
 				<posy>345</posy>
 				<width>16</width>
 				<height>16</height>

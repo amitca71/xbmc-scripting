@@ -23,7 +23,7 @@ from string import replace,split,find,capwords
 __scriptname__ = "BBC PodRadio"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/BBC%20PodRadio"
-__date__ = '12-09-2008'
+__date__ = '14-10-2008'
 __version__ = "2.2"
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
@@ -41,9 +41,9 @@ sys.path.insert(0, DIR_RESOURCES_LIB)
 try:
     # 'resources' now auto appended onto path
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
-    if not __language__( 0 ): raise
 except:
-	xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language.", "Update your XBMC to a newer version.")
+	print str( sys.exc_info()[ 1 ] )
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
 
 from bbbLib import *
 from bbbSkinGUILib import TextBoxDialogXML
@@ -930,12 +930,12 @@ class BBCPodRadio(xbmcgui.WindowXML):
 			
 			if selectedPos == 0:
 				fn = getReadmeFilename()
-				tbd = TextBoxDialogXML(TextBoxDialogXML.XML_FILENAME, DIR_HOME, "Default")
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
 				tbd.ask(options[selectedPos], fn=fn)
 				del tbd
 			elif selectedPos == 1:
 				fn = os.path.join( DIR_HOME, "changelog.txt" )
-				tbd = TextBoxDialogXML(TextBoxDialogXML.XML_FILENAME, DIR_HOME, "Default")
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
 				tbd.ask(options[selectedPos], fn=fn)
 				del tbd
 			elif selectedPos == 2:
@@ -991,12 +991,18 @@ if DEBUG:
 else:
     updated = updateScript(True)
 if not updated:
-    if not installPlugin('music', __scriptname__, True):
-        installPlugin('music', __scriptname__, False, __language__(406))
+	try:
+		# check language loaded
+		xbmc.output( "__language__ = %s" % __language__ )
 
-    myscript = BBCPodRadio("script-BBC_PodRadio-main.xml", DIR_HOME, "Default")
-    myscript.doModal()
-    del myscript 
+		if not installPlugin('music', __scriptname__, True):
+			installPlugin('music', __scriptname__, False, __language__(406))
+
+		myscript = BBCPodRadio("script-BBC_PodRadio-main.xml", DIR_HOME, "Default")
+		myscript.doModal()
+		del myscript
+	except:
+		handleException()
 
 # clean up on exit
 moduleList = ['bbbLib','bbbSkinGUILib']
@@ -1005,7 +1011,7 @@ if not updated:
 for m in moduleList:
 	try:
 		del sys.modules[m]
-		xbmc.output("del sys.module=%s" % m)
+		xbmc.output(__scriptname__ + " del sys.module=%s" % m)
 	except: pass
 
 # remove other globals
