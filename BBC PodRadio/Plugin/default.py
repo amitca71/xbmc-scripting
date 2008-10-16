@@ -98,9 +98,10 @@ class BBCPodRadioPlugin:
 					if self.source == self.SOURCE_POD:
 						mediaURL = self.getMediaPodcast(url)
 						if mediaURL:
+							saveFile = (mediaURL[-3:].lower() in ('mp3','m4a','mp4'))
 							# play existing file rather than download
 							fn = self.makeFilenameFromUrl(mediaURL)
-							if not fileExist(fn):
+							if saveFile and not fileExist(fn):
 								fn = self.saveMedia(mediaURL)		# always save anyway
 							if fn:
 								playMedia(fn)
@@ -572,8 +573,6 @@ class BBCPodRadioPlugin:
 					stations.append((title, link))
 		dialogProgress.close()
 
-		print "stations=", stations
-
 		# show menu of stations if reqd
 		if len(stations) > 1:
 			stations.sort()
@@ -637,6 +636,7 @@ class BBCPodRadioPlugin:
 				success = fetchURL(url, fn, isBinary=True)
 				dialogProgress.close()
 				if not success:
+					messageOK("Download Failed!", url, fn)
 					fn = ''
 
 		debug("< saveMedia fn=%s" % fn)

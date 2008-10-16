@@ -1,10 +1,10 @@
  v2.2       ??/09/08   
   Updated: To be xbmc 'Atlantis' compatible. 
   Updated: Supporting libs.
-  Updated: Some Skin tweaks.
+  Updated: Skins.
   Updated: Stream scraping.
   Updated: Language strings
-  New: Prompt to Save or Play stream after selection.
+  New: Prompt to Save or Play (podcast) stream after selection.
   New: More skins. (mediaStream, Default 720p ...)
   New: Menu options 'Clear Cache', 'Play Saved File', 'Stop Playing'
  v2.1.1     20/04/08    

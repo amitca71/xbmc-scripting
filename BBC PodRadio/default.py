@@ -23,7 +23,7 @@ from string import replace,split,find,capwords
 __scriptname__ = "BBC PodRadio"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/BBC%20PodRadio"
-__date__ = '14-10-2008'
+__date__ = '16-10-2008'
 __version__ = "2.2"
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
@@ -244,21 +244,27 @@ class BBCPodRadio(xbmcgui.WindowXML):
 			idx = self.getControl( self.CLST_STREAM ).getSelectedPosition()
 			self.getControl( self.CLBL_DESC).setLabel(__language__(403))
 
-			# check if it always need downloading first
+			# "check if it always need downloading first"
 			mediaURL = self.streamDetails[idx][self.STREAM_DETAILS_STREAMURL]
-			if mediaURL[-3:].lower() in ('mp3','m4a','mp4'):
-				isPodcast = True
-			else:
-				isPodcast = False
-				mediaURL = self.getMediaStreamURL(idx)
+			if mediaURL:
+				if mediaURL[-3:].lower() in ('mp3','m4a','mp4'):
+					isPodcast = True
+				else:
+					isPodcast = False
+					mediaURL = self.getMediaStreamURL(idx)
 
 			if mediaURL:
-				debug(" prompt to save or play ")
-				details = self.streamDetails[idx]
-				title = details[self.STREAM_DETAILS_TITLE]
-				station = details[self.STREAM_DETAILS_STATION]
-				save_fn = ''
-				saveFile = xbmcgui.Dialog().yesno(__language__(104),title,station,"",__language__(409),__language__(410))
+				saveFile = False
+				if (mediaURL[-2:].lower() != 'ra'):
+					debug(" prompt to save or play ")
+					details = self.streamDetails[idx]
+					save_fn = ''
+					saveFile = xbmcgui.Dialog().yesno(__language__(104), \
+									details[self.STREAM_DETAILS_TITLE], details[self.STREAM_DETAILS_STATION], \
+									details[self.STREAM_DETAILS_DATE], \
+									__language__(409),__language__(410))
+
+				debug("saveFile=%s isPodcast=%s" % (saveFile, isPodcast))
 				if saveFile or isPodcast:
 					if not saveFile and isPodcast:
 						save_fn = "podcast" + mediaURL[-4:]	# add correct ext
@@ -716,6 +722,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 
 		if not fn:
 			# show and get save folder
+			debug("lastSaveMediaPath=" + self.lastSaveMediaPath)
 			savePath = xbmcgui.Dialog().browse(3, __language__(103), "files", "", False, False, self.lastSaveMediaPath)
 			fn = os.path.basename(url)
 			removeFile = False
@@ -723,6 +730,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 			savePath = DIR_USERDATA
 			removeFile = True
 
+		debug("fn=%s" % fn)
 		debug("savePath=" + savePath)
 		if savePath:
 			self.lastSaveMediaPath = savePath

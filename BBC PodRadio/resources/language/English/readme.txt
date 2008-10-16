@@ -1,9 +1,9 @@
-BBC PodRadio -  Script to display Podcasts, Radio Listen Again and Live Radio from bbc.co.uk
+BBC PodRadio -  Script to play Podcasts, Radio Listen Again and Live Radio from bbc.co.uk
 
 SETUP:
  Install to \scripts\BBC PodRadio (keep sub folder structure intact)
 
-Script will self install additional Plugin (XBMC post Sept 07 required)
+Script will self install additional Plugin (as required)
 
 USAGE: 
  run default.py
@@ -19,5 +19,21 @@ USAGE:
 
 
 
+Main Menu (white Button)
+========================
+
+Options:
+
+  View script Readme or Changelog.
+  Play a saved mp3 file.
+  Stop playing audio.
+  Clear cache
+
+
+Some streams (not ReadAudio - .ra) will give you the option to Play or Save when selected.
+Selecting Save will allow you to download filefor later playback.
+
 Written By BigBellyBilly - Thanks to others if I've used code from your scripts.
-bigbellybilly AT gmail DOT com - bugs, comments, ideas, help ...
+
+Please send bugs, comments, ideas, language/skin contribution to :
+bigbellybilly AT gmail DOT com 
