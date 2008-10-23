@@ -1,0 +1,633 @@
+<window>
+	<defaultcontrol>130</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<type>dialog</type>
+	<coordinates>
+		<system>1</system>
+		<posx>190</posx>
+		<posy>40</posy>
+	</coordinates>
+	<controls>
+	<include>dialogeffect</include>
+
+	<control type="image">
+		<width>900</width>
+		<height>660</height>
+		<texture border="40">DialogBack.png</texture>
+	</control>
+	<control type="image">
+		<width>900</width>
+		<height>660</height>
+		<texture border="40">DialogFront.png</texture>
+	</control>
+
+	<control type="group" id="100">
+		<posx>35</posx>
+		<posy>40</posy>
+		<width>900</width>
+		<height>660</height>
+		<control type="label" id="101">
+			<description>title</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<align>left</align>
+			<scroll>true</scroll>
+			<label></label>
+			<font>special13</font>
+			<textcolor>FFFFFF33</textcolor>
+		</control>
+		<control type="label" id="102">
+			<description>tag line</description>
+			<posx>0</posx>
+			<posy>25</posy>
+			<width>820</width>
+			<align>left</align>
+			<scroll>true</scroll>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FFFFFF99</textcolor>
+		</control>
+
+		<control type="button" id="103">
+			<description>photos left nav</description>
+			<posx>10</posx>
+			<posy>50</posy>
+			<width>20</width>
+			<height>200</height>
+			<label>&lt;</label>
+			<font>font12</font>
+			<align>center</align>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
+			<onleft>106</onleft>
+			<onright>106</onright>
+			<onup>107</onup>
+			<ondown>107</ondown>
+		</control>
+		<control type="image" id="104">
+			<description>photo</description>
+			<posx>35</posx>
+			<posy>50</posy>
+			<width>200</width>
+			<height>200</height>
+			<texture>imdb-noimage.png</texture>
+		</control>
+		<control type="button" id="106">
+			<description>photos right nav</description>
+			<posx>245</posx>
+			<posy>50</posy>
+			<width>20</width>
+			<height>200</height>
+			<label>&gt;</label>
+			<font>font12</font>
+			<align>center</align>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
+			<onleft>103</onleft>
+			<onright>103</onright>
+			<onup>107</onup>
+			<ondown>107</ondown>
+		</control>
+		<control type="button" id="107">
+			<description>photo title</description>
+			<posx>35</posx>
+			<posy>255</posy>
+			<width>200</width>
+			<height>15</height>
+			<align>center</align>
+			<label></label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
+			<onleft>103</onleft>
+			<onright>106</onright>
+			<onup>103</onup>
+			<ondown>130</ondown>
+		</control>
+
+		<!-- INFO LABELS -->
+		<control type="label">
+			<description>rating</description>
+			<posx>380</posx>
+			<posy>50</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>IMDb Rating:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Directors</description>
+			<posx>380</posx>
+			<posy>65</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Directors:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Creators</description>
+			<posx>380</posx>
+			<posy>80</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Creators:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Writers</description>
+			<posx>380</posx>
+			<posy>95</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Writers:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Released</description>
+			<posx>380</posx>
+			<posy>110</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Released:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Certs</description>
+			<posx>380</posx>
+			<posy>125</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Certs:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Runtime</description>
+			<posx>380</posx>
+			<posy>140</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Runtime:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>SoundMix</description>
+			<posx>380</posx>
+			<posy>155</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>SoundMix:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Aspect</description>
+			<posx>380</posx>
+			<posy>170</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Aspect:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Genres</description>
+			<posx>380</posx>
+			<posy>185</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Genres:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Countries</description>
+			<posx>380</posx>
+			<posy>200</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Countries:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Languages</description>
+			<posx>380</posx>
+			<posy>215</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Languages:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Soundtrack</description>
+			<posx>380</posx>
+			<posy>230</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Soundtrack:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Awards</description>
+			<posx>380</posx>
+			<posy>245</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Awards:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>UserComment</description>
+			<posx>380</posx>
+			<posy>260</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>UserComment:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Trivia</description>
+			<posx>380</posx>
+			<posy>275</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Trivia:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label">
+			<description>Goofs</description>
+			<posx>380</posx>
+			<posy>290</posy>
+			<width>150</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Goofs:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<!-- INFO LABEL DATA -->
+		<control type="label" id="110">
+			<description>rating</description>
+			<posx>385</posx>
+			<posy>50</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>IMDb Rating:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="111">
+			<description>Directors</description>
+			<posx>385</posx>
+			<posy>65</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Directors:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="112">
+			<description>Creators</description>
+			<posx>385</posx>
+			<posy>80</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Creators:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="113">
+			<description>Writers</description>
+			<posx>385</posx>
+			<posy>95</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Writers:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="114">
+			<description>Released</description>
+			<posx>385</posx>
+			<posy>110</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Released:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="115">
+			<description>Certs</description>
+			<posx>385</posx>
+			<posy>125</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Certs:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="116">
+			<description>Runtime</description>
+			<posx>385</posx>
+			<posy>140</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Runtime:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="117">
+			<description>SoundMix</description>
+			<posx>385</posx>
+			<posy>155</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>SoundMix:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="118">
+			<description>Aspect</description>
+			<posx>385</posx>
+			<posy>170</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Aspect:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="119">
+			<description>Genres</description>
+			<posx>385</posx>
+			<posy>185</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Genres:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="120">
+			<description>Countries</description>
+			<posx>385</posx>
+			<posy>200</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Countries:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="121">
+			<description>Languages</description>
+			<posx>385</posx>
+			<posy>215</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Languages:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="122">
+			<description>Soundtrack</description>
+			<posx>385</posx>
+			<posy>230</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Soundtrack:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="123">
+			<description>Awards</description>
+			<posx>385</posx>
+			<posy>245</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Awards:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="124">
+			<description>UserComment</description>
+			<posx>385</posx>
+			<posy>260</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>UserComment:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="125">
+			<description>Trivia</description>
+			<posx>385</posx>
+			<posy>275</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Trivia:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="126">
+			<description>Goofs</description>
+			<posx>385</posx>
+			<posy>290</posy>
+			<width>430</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Goofs:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+
+		<!-- DESCRIPTION -->
+		<control type="textbox" id="132">
+			<description>textarea</description>
+			<posx>280</posx>
+			<posy>305</posy>
+			<width>550</width>
+			<height>260</height>
+			<font>font12</font>
+			<textcolor>FFFFFFEE</textcolor>
+			<spinposx>500</spinposx>
+			<spinposy>260</spinposy>
+			<onleft>131</onleft>
+			<onright>130</onright>
+		</control>
+
+		<!-- CAST LIST -->
+		<control type="list" id="130">
+			<posx>0</posx>
+			<posy>275</posy>
+			<width>285</width>
+			<height>410</height>
+			<onleft>107</onleft>
+			<onright>131</onright>
+			<onup>107</onup>
+			<ondown>130</ondown>
+			<viewtype label="list">list</viewtype>
+			<pagecontrol>131</pagecontrol>
+			<itemlayout height="20">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>255</width>
+					<height>20</height>
+					<texture border="3">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>3</posx>
+					<posy>0</posy>
+					<width>255</width>
+					<height>20</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<selectedcolor>FFe2ff43</selectedcolor>
+					<textcolor>FFFFFFEE</textcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>250</posx>
+					<posy>0</posy>
+					<width>250</width>
+					<height>20</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<align>right</align>
+					<selectedcolor>FFe2ff43</selectedcolor>
+					<textcolor>FFFFFFEE</textcolor>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="20">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>255</width>
+					<height>20</height>
+					<visible>!Control.HasFocus(130)</visible>
+					<texture border="3">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>255</width>
+					<height>20</height>
+					<visible>Control.HasFocus(130)</visible>
+					<texture border="3">button-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>3</posx>
+					<posy>0</posy>
+					<width>255</width>
+					<height>20</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<selectedcolor>FFe2ff43</selectedcolor>
+					<textcolor>FFFFFF99</textcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>250</posx>
+					<posy>0</posy>
+					<width>250</width>
+					<height>20</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<align>right</align>
+					<selectedcolor>FFe2ff43</selectedcolor>
+					<textcolor>FFFFFF99</textcolor>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+
+		<!-- SCROLL BAR FOR CAST LIST -->
+		<control type="group">
+			<visible>Control.isVisible(130)</visible>
+			<control type="scrollbar" id="131">
+				<posx>255</posx>
+				<posy>275</posy>
+				<width>16</width>
+				<height>300</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>130</onleft>
+				<onright>132</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+
+
+	</control>
+
+	</controls>
+</window>

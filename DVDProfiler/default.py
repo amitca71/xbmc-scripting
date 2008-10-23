@@ -1,58 +1,64 @@
 """
  Python XBMC script to view your DVDProfiler collection or somebody elses online collection.
 
- THANKS:
- To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
+	Written By BigBellyBilly
+	bigbellybilly AT gmail DOT com	- bugs, comments, ideas, help ...
 
- Please don't alter or re-publish this script without authors persmission.
+	THANKS:
+	To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
 
-	CHANGELOG: see changelog.txt or view throu Settings Menu
+	CHANGELOG: see ..\resources\changelog.txt or view throu Settings Menu
 	README: see ..\resources\language\<language>\readme.txt or view throu Settings Menu
 
- Additional support may be found on xboxmediacenter forum.	
+    Additional support may be found on xboxmediacenter forum.	
+    Please don't alter or re-publish this script without authors persmission.
+
 """
 
-# Python 2.4 libs
 import xbmc, xbmcgui
-import sys,os.path,re,urlparse,fileinput
+import sys,os.path,re,urlparse,fileinput,time
 from os import path
 from string import find, strip, split, lower, replace
 from shutil import rmtree
 
 # Script doc constants
 __scriptname__ = "DVDProfiler"
-__version__ = '1.6.2'
+__version__ = '1.6.3'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '09-07-2008'
+__date__ = '23-10-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
 DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-DIR_USERDATA = os.path.join( "T:\\script_data", __scriptname__ )
-DIR_GFX = os.path.join( DIR_RESOURCES , "gfx" )             
+DIR_USERDATA = os.path.join( "T:"+os.sep, "script_data", __scriptname__ )
+DIR_GFX = os.path.join(DIR_RESOURCES , "gfx")
 DIR_IMG_CACHE = os.path.join(DIR_USERDATA, "images")
 DIR_CACHE = os.path.join(DIR_USERDATA, "cache")
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
-# Custom libs
-import language
-mylanguage = language.Language()
-__language__ = mylanguage.localized
+# Load Language using xbmc builtin
+try:
+    # 'resources' now auto appended onto path
+    __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
+except:
+	print str( sys.exc_info()[ 1 ] )
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
 
 import update                                       # script update module
 from bbbLib import *								# requires __language__ to be defined
-from bbbGUILib import *
-from IMDbWin import IMDbWin
+#from bbbGUILib import *
+from bbbSkinGUILib import TextBoxDialogXML,DialogSelectXML
+from IMDbWinXML import IMDbWin
 from smbLib import *
-import time
 
 # GLOBALS
 KEYS_FILE = os.path.join( DIR_CACHE , 'keys.dat' )
 COLLECTION_FLAT_FILE = os.path.join( DIR_CACHE, 'collection.dat' )
-BASE_URL_INTER = "www.intervocative.com"
-BASE_URL_INVOS = "www.invelos.com"
+COLLECTION_XML_FILE = os.path.join( DIR_CACHE, 'collection.xml' )
+BASE_URL_INTER = "http://www.intervocative.com"
+BASE_URL_INVOS = "http://www.invelos.com"
 
 # GFX
 NOIMAGE_FILENAME = os.path.join( DIR_GFX , 'noimage.png' )
@@ -62,12 +68,32 @@ FILM_FILENAME = os.path.join( DIR_GFX , 'film.png' )
 QUIT_SCRIPT = -1
 
 #################################################################################################################
-class DVDProfiler(xbmcgui.Window):
+class DVDProfiler(xbmcgui.WindowXML):
+	# control id's
+	CGRP_HEADER = 1000
+	CI_COVER = 1301
+	CLBL_TITLE = 1011
+	CLBL_DESC = 1012
+	CLBL_SCRIPT_VER = 1013
+	CLBL_DATASOURCE = 1014
+	CBTN_SORT_BY = 1111
+	CBTN_SORT_ORDER = 1112
+	CBTN_FILTER = 1113
+	CLBL_MENU_BTN = 1121
+	CLBL_Y_BTN = 1122
+	CLBL_A_BTN = 1123
+	CLBL_X_BTN = 1124
+	CLBL_B_BTN = 1125
+	CLBL_BACK_BTN = 1126
+	CLST_TITLES_LIST = 1321
+	CLST_CAST_LIST = 1331
+	CTB_DETAILS = 1311
+
 	def __init__(self, *args, **kwargs):
 		debug("> DVDProfiler().init")
 
 		self.ready = False
-		setResolution(self)
+		self.isStartup = True
 
 		# settings keys
 		self.SETTING_SMB_USE = "smb_enabled"
@@ -106,27 +132,42 @@ class DVDProfiler(xbmcgui.Window):
 			self.SETTING_LOCAL_MODE_MEDIA_LOC : "F:\Videos"
 			}
 
-		# SETTINGS
-		self.reset()
+		self.settings = {}
+		self._initSettings(forceReset=False)
+		# check for script update
+		if self.settings[self.SETTING_CHECK_UPDATE]:	# check for update ?
+			scriptUpdated = updateScript(False, False)
+		else:
+			scriptUpdated = False
+		if not scriptUpdated:
+			self.reset()
 
 		debug("< DVDProfiler().init ready=%s" % self.ready)
 
+	#################################################################################################################
+	def onInit( self ):
+		debug("> onInit() isStartup=%s" % self.isStartup)
+		if self.isStartup:
+			dialogProgress.create(__scriptname__, __language__(249))
+			self.setupDisplay()
+			self.setupTitles()
+			dialogProgress.close()
+
+			self.isStartup = False
+			self.ready = True
+
+		debug("< onInit()")
+
+
 	######################################################################################
 	def _initSettings( self, forceReset=False ):
-		debug("> _initSettings() forceReset="+str(forceReset))
+		debug("> _initSettings() forceReset=%s" % forceReset)
 		changed = False
 
 		if forceReset:
 			self.settings = {}
 		elif not self.settings:
 			self.settings = loadFileObj( self.SETTINGS_FILENAME, {} )
-
-		# old ver setting used language, delete file and reinit settings
-		try:
-			if self.settings[self.SETTING_START_MODE] not in (0,1,2,3):
-				self.settings[self.SETTING_START_MODE] = ""
-				debug("Old settings start_mode forced reset")
-		except: pass
 
 		# put default values into any settings that are missing
 		for key, defaultValue in self.SETTINGS_DEFAULTS.items():
@@ -147,17 +188,22 @@ class DVDProfiler(xbmcgui.Window):
 
 	###################################################################################################
 	def onAction(self, action):
-		if not action or not self.ready:
-			return
+		try:
+			buttonCode =  action.getButtonCode()
+			actionID   =  action.getId()
+		except: return
 
-		self.ready = False
-		if action in EXIT_SCRIPT:
-			debug("EXIT_SCRIPT")
+		if actionID in EXIT_SCRIPT or buttonCode in EXIT_SCRIPT:
 			self.close()
 
-		elif action in CONTEXT_MENU:
-			debug("CONTEXT_MENU")
+		if not self.ready:
+			return
+		self.ready = False
+		if actionID in CONTEXT_MENU or buttonCode in CONTEXT_MENU:
+			debug("> CONTEXT_MENU")
+			self.fadeBackground(True)
 			success = self.mainMenu()             # restart ?
+			self.fadeBackground(False)
 			if success == QUIT_SCRIPT:
 				self.close()
 			elif success:
@@ -167,27 +213,41 @@ class DVDProfiler(xbmcgui.Window):
 						self.onAction(ACTION_B)
 					else:
 						self.reset()
-		elif action in CLICK_X:
-			debug("CLICK_X")
+						self.setupDisplay()
+						self.setupTitles()
+				else:
+					self.setupDisplay()
+					self.setupTitles()
+			debug("< CONTEXT_MENU")
+		elif actionID in CLICK_X or buttonCode in CLICK_X:
+			debug("> CLICK_X")
 			if self.isOnlineOnly or self.onlineAliasData:
 				aliasData = ManageOnlineCollection().ask()
 				if aliasData:							# only action/save if alias selected
 					self.onlineAliasData = aliasData
 					if not self.startup():
 						self.reset()
+					self.setupDisplay()
+					self.setupTitles()
+
 			elif not self.onlineAliasData:
 				self.doFilters()
-		elif action in CLICK_Y:
-			debug("CLICK_Y")
+			debug("< CLICK_X")
+		elif actionID in CLICK_Y or buttonCode in CLICK_Y:
+			debug("> CLICK_Y")
 			if not self.onlineAliasData:
 				colNo = self.lastCollNo
 			else:
 				colNo = self.lastOnlineCollNo
+
+			self.fadeBackground(True)
 			title = self.dvdCollection.getDVDKey(colNo)[self.dvdCollection.KEYS_DATA_SORTTITLE]
-			win = IMDbWin().ask(title)
-			del win
-		elif action in CLICK_B:			        # B btn
-			debug("CLICK_B")
+			imdbwin = IMDbWin("script-bbb-imdb.xml", DIR_HOME, "Default")
+			imdbwin.ask(title)
+			self.fadeBackground(False)
+			debug("< CLICK_Y")
+		elif actionID in CLICK_B or buttonCode in CLICK_B:			        # B btn
+			debug("> CLICK_B")
 			if not self.isOnlineOnly:
 				if self.selectedGenres or self.selectedTags:
 					self.selectedGenres = []
@@ -198,38 +258,43 @@ class DVDProfiler(xbmcgui.Window):
 					self.onlineAliasData = []
 					if not self.startup():
 						self.reset()
+					self.setupDisplay()
+					self.setupTitles()				# setup lists
+			debug("< CLICK_B")
 
 		self.ready = True
 
 	##############################################################################################
-	def onControl(self, control):
-		if not self.ready:
-			return
+	def onClick(self, controlID):
 		self.ready = False
 
-		if control == self.titlesCL:				# select title
+		if controlID == self.getControl(self.CLST_TITLES_LIST).getId():				# select title
 			debug("titlesCL")
 			# if selecting same title, attempt playback
-			colNo = self.titlesCL.getSelectedItem().getLabel2()
+			colNo = self.getControl(self.CLST_TITLES_LIST).getSelectedItem().getLabel2()
 			if not self.onlineAliasData and colNo == self.lastCollNo:
 				self.playback()
 			elif not self.showDVD():
 				self.reset()
-		elif control == self.sortColCB:				# sort by column btn
+		elif controlID == self.getControl(self.CBTN_SORT_BY).getId():				# sort by column btn
 			debug("sortColCB")
 			self.sortByTitle = not self.sortByTitle
 			if not self.setupTitles():
 				self.reset()
-		elif control == self.sortDirCB:				# sort asc/desc btn
+		elif controlID == self.getControl(self.CBTN_SORT_ORDER).getId():				# sort asc/desc btn
 			debug("sortDirCB")
 			self.sortAsc = not self.sortAsc
 			if not self.setupTitles():
 				self.reset()
-		elif control == self.filtersCB:				# filters btn
+		elif controlID == self.getControl(self.CBTN_FILTER).getId():				# filters btn
 			debug("filtersCB")
 			self.doFilters()
 
 		self.ready = True
+
+	###################################################################################################################
+	def onFocus(self, controlID):
+		debug("onFocus(): controlID=%i" % controlID)
 
 	###################################################################################################
 	def playback(self):
@@ -276,21 +341,13 @@ class DVDProfiler(xbmcgui.Window):
 		self.onlineAliasData = []
 		self.selectedGenres = {}
 		self.selectedTags = {}
-		self.settings = {}
-		self.localCollectionFilename = os.path.join(DIR_CACHE,"collection.xml")
+		self.localCollectionFilename = COLLECTION_XML_FILE
 
-		self._initSettings(forceReset=False)
-
-		# check for script update
-		scriptUpdated = False
-		if self.settings[self.SETTING_CHECK_UPDATE]:	# check for update ?
-			scriptUpdated = updateScript(False, False)
-
-		if not scriptUpdated and self.startupMenu():
-			self.ready = True
-		else:
+		if not self.startupMenu():
 			self.ready = False
 			self.close()
+		else:
+			self.ready = True
 		debug("< reset()")
 
 
@@ -306,14 +363,11 @@ class DVDProfiler(xbmcgui.Window):
 			self.onlineAliasData = []
 
 			if startMode == 0:                            		# self.START_MODE_MENU:
-				selectDialog = DialogSelect()
-				selectDialog.setup(__language__(553), width=300, rows=len(menu),banner=LOGO_FILENAME)
-				startMode, action = selectDialog.ask(menu, startMode)
-				del selectDialog
-				if startMode <= 0:
-					break
+				startMode = xbmcgui.Dialog().select("%s: %s" % (__scriptname__,__language__(553)), menu)
 			
 			# start according to startupMode
+			if startMode <= 0:
+				break
 			if startMode == 1:								    # SMB
 				self.settings[self.SETTING_SMB_USE] = True
 				success = self.startup()
@@ -363,12 +417,6 @@ class DVDProfiler(xbmcgui.Window):
 			if not success:
 				dialogOK(__language__(101),__language__(103), self.localCollectionFilename)
 
-		# final check
-		if success:
-			dialogProgress.create(__scriptname__, __language__(249))
-			self.setupDisplay()
-			self.setupTitles()
-			dialogProgress.close()
 		debug("< startup() success=%s" % success)
 		return success
 
@@ -433,99 +481,10 @@ class DVDProfiler(xbmcgui.Window):
 	def setupDisplay(self):
 		debug("> setupDisplay()")
 
-		# SKIN HEADER SZ
-		mc360 = isMC360()
-		if mc360:
-			headerH = 70
-		else:
-			headerH = 40
+		# version
+		self.getControl(self.CLBL_SCRIPT_VER).setLabel("v"+__version__)
 
-		# DRAW AREA DIMS
-		displayX = 1
-		displayY = headerH
-		displayH = (REZ_H - displayY)
-		displayW = REZ_W
-		debug("displayX=%s displayY=%s displayW=%s displayH=%s" % (displayX,displayY,displayW,displayH))
-
-		self.animTimeOn = "250"
-		self.animTimeOff = "200"
-		animHeaderWO = 'effect=slide start=0,-%s acceleration=-1.1 time=%s' % (headerH, self.animTimeOn)
-		animHeaderWC = 'effect=slide end=0,-%s acceleration=1.1 time=%s' % (headerH, self.animTimeOff)
-		animZoomWO = 'effect=zoom start=0 center=auto time=%s' % self.animTimeOn
-		animZoomWC = 'effect=zoom end=0 center=auto time=%s' % self.animTimeOff
-		animSlideRightWO = 'effect=slide start=%s,0 acceleration=-1.1 time=%s' % (REZ_W, self.animTimeOn)
-		animSlideRightWC = 'effect=slide end=%s,0 acceleration=1.1 time=%s' % (REZ_W, self.animTimeOff)
-
-		xbmcgui.lock()
-
-		if mc360:
-			# gfx files come with actual MC360 installation
-			try:
-				self.addControl(xbmcgui.ControlImage(0,0, REZ_W, REZ_H, 'background-blue.png'))
-				self.addControl(xbmcgui.ControlImage(70, 0, 16, 54, 'bkgd-whitewash-glass-top-left.png'))
-				self.addControl(xbmcgui.ControlImage(86, 0, 667, 54, 'bkgd-whitewash-glass-top-middle.png'))
-				self.addControl(xbmcgui.ControlImage(753, 0, 16, 54, 'bkgd-whitewash-glass-top-right.png'))
-				self.addControl(xbmcgui.ControlImage(70, 427, 16, 54, 'bkgd-whitewash-glass-bottom-left.png'))
-				self.addControl(xbmcgui.ControlImage(86, 427, 667, 54, 'bkgd-whitewash-glass-bottom-middle.png'))
-				self.addControl(xbmcgui.ControlImage(753, 427, 667, 54, 'bkgd-whitewash-glass-bottom-right.png'))
-				self.addControl(xbmcgui.ControlImage(60, 0, 32, REZ_H, 'background-overlay-whitewash-left.png'))
-				self.addControl(xbmcgui.ControlImage(92, 0, 628, REZ_H, 'background-overlay-whitewash-centertile.png'))
-				self.addControl(xbmcgui.ControlImage(-61, 0, 128, REZ_H, 'blades-runner-left.png'))
-				self.addControl(xbmcgui.ControlImage(18, 0, 80, REZ_H, 'blades-size4-header.png'))
-				self.addControl(xbmcgui.ControlLabel(75, 200, 0, 0, __language__(0), \
-													 font=FONT18,textColor='0xFF000000',angle=270))
-			except:
-				xbmcgui.unlock()
-				messageOK("MC360 Skin Error","Failed loading graphic files.","Ensure XBMC is using MC360 skin.")
-		else:
-			# NON MC360
-			# BACKG
-			try:
-				self.removeControl(self.backgroundCI)
-			except: pass
-			try:
-				self.backgroundCI = xbmcgui.ControlImage(0,0, displayW, displayH, BACKGROUND_FILENAME)
-				self.addControl(self.backgroundCI)
-			except: pass
-
-			# HEADER
-			try:
-				self.removeControl(self.headerCI)
-			except: pass
-			try:
-				self.headerCI = xbmcgui.ControlImage(0, 0,  displayW, headerH, HEADER_FILENAME)
-				self.addControl(self.headerCI)
-				self.headerCI.setAnimations([('WindowOpen', animHeaderWO),
-											 ('WindowClose', animHeaderWC)])
-			except: pass
-
-		# LOGO
-		logoW = 166
-		logoH = headerH -2
-		try:
-			self.removeControl(self.logo)
-		except: pass
-		try:
-			self.logo = xbmcgui.ControlImage(0, 0, logoW, logoH, LOGO_FILENAME)#, aspectRatio=2)
-			self.addControl(self.logo)
-			self.logo.setAnimations([('WindowOpen', 'effect=rotate start=90 center=0,0 time='+self.animTimeOn),
-									 ('WindowClose', 'effect=rotate end=90 center=0,0 time='+self.animTimeOn)])
-		except: pass
-
-		# VERSION
-		try:
-			self.removeControl(self.versionLbl)
-		except: pass
-		self.versionLbl = xbmcgui.ControlLabel(REZ_W, 0, 0, 0, "v"+__version__, \
-									FONT10, "0xFFC0C0C0",alignment=XBFONT_RIGHT)
-		self.addControl(self.versionLbl)
-		self.versionLbl.setAnimations([('WindowOpen', animHeaderWO),
-									 ('WindowClose', animHeaderWC)])
-
-		# DATA SOURCE
-		try:
-			self.removeControl(self.datasourceCL)
-		except: pass
+		# datasource
 		if self.onlineAliasData:
 			user, host = self.onlineAliasData
 			text = "%s (%s)" % (user, host)
@@ -533,290 +492,40 @@ class DVDProfiler(xbmcgui.Window):
 			text = self.settings[self.SETTING_SMB_PC_IP]
 		else:
 			text = self.START_MODE_LOCAL
-		dataSourceW = 210
-		self.datasourceCL = xbmcgui.ControlLabel(REZ_W, 20, dataSourceW, 10, text, \
-												FONT10, '0xFFFFFFCC', alignment=XBFONT_RIGHT)
-		self.addControl(self.datasourceCL)
-		self.datasourceCL.setAnimations([('WindowOpen', animHeaderWO),
-										('WindowClose', animHeaderWC)])
+		self.getControl(self.CLBL_DATASOURCE).setLabel(text)
 
 		# TITLE
-		try:
-			self.removeControl(self.title)
-		except: pass
-		x = displayX + logoW + 5
-		w = displayW - x
-		self.title = xbmcgui.ControlLabel(x, 5, w, 25, '', FONT14, '0xFFFFFF33')
-		self.addControl(self.title)
-		self.title.setAnimations([('WindowOpen', animHeaderWO),
-								('WindowClose', animHeaderWC)])
+		self.getControl(self.CLBL_TITLE).setLabel("")
+#		self.getControl(self.CLBL_DESC).setLabel("")
+		self.getControl(self.CLBL_MENU_BTN).setLabel(__language__(431))			# menu
+		self.getControl(self.CLBL_Y_BTN).setLabel(__language__(432))			# imdb
+		self.getControl(self.CLBL_BACK_BTN).setLabel(__language__(500))			# exit
 
-		# IMAGE BACKG
-		try:
-			self.removeControl(self.coverBackCI)
-		except: pass
-		try:
-			imageW = 160
-			imageH = 250
-			ypos = displayY+5
-			self.coverBackCI = xbmcgui.ControlImage(displayX, ypos, \
-											imageW+4, imageH+4, FRAME_NOFOCUS_LRG_FILENAME)
-			self.addControl(self.coverBackCI)
-			self.coverBackCI.setAnimations([('WindowOpen', animZoomWO),('WindowClose', animZoomWC)])
-		except: pass
-
-		# IMAGE
-		try:
-			self.removeControl(self.coverCI)
-		except: pass
-		try:
-			self.coverCI = xbmcgui.ControlImage(displayX+2, ypos+2, \
-											imageW, imageH, FRAME_NOFOCUS_FILENAME,aspectRatio=2)
-			self.addControl(self.coverCI)
-			self.coverCI.setAnimations([('WindowOpen', animZoomWO),('WindowClose', animZoomWC)])
-		except: pass
-
-		# TITLES LIST BACKG
-		try:
-			self.removeControl(self.titlesBackCI)
-		except: pass
-		try:
-			sortBtnH = 15
-			ypos += imageH + 5
-			listSpinH = 20
-			listW = int(displayW /2) -2
-			listH = (REZ_H - ypos - sortBtnH) -2
-			listY = ypos
-			self.titlesBackCI = xbmcgui.ControlImage(displayX, listY, listW, \
-											listH, FRAME_NOFOCUS_LRG_FILENAME)
-			self.addControl(self.titlesBackCI)
-			animWO = 'effect=slide start=-%s,0 acceleration=-1.1 time=%s' % (listW, self.animTimeOn)
-			animWC = 'effect=slide end=-%s,0 acceleration=1.1 time=%s' % (listW, self.animTimeOff)
-			titlesAnim = [('WindowOpen', animWO), ('WindowClose', animWC)]
-			self.titlesBackCI.setAnimations(titlesAnim)
-		except: pass
-
-		# TITLES LIST
-		try:
-			self.removeControl(self.titlesCL)
-		except: pass
-		try:
-			self.titlesCL = xbmcgui.ControlList(displayX+2, listY+2, listW-4, listH+listSpinH, \
-												space=0,itemHeight=19,font=FONT10, \
-												itemTextXOffset=0, itemTextYOffset=0, alignmentY=XBFONT_CENTER_Y)
-			self.addControl(self.titlesCL)
-			self.titlesCL.setPageControlVisible(False)
-			self.titlesCL.setAnimations(titlesAnim)
-		except: pass
-
-		# SORT BY COLUMN 
-		try:
-			self.removeControl(self.sortColCB)
-		except: pass
-		xpos = displayX
-		ypos += listH
-		btnW = int(listW/3)-5
-		# lbl indicates 'what it will do' by pressing it
-		self.sortColCB = xbmcgui.ControlButton(xpos, ypos, btnW, sortBtnH, '', \
-											   font=FONT10, alignment=XBFONT_CENTER_X|XBFONT_CENTER_Y)
-		self.addControl(self.sortColCB)
-		bottomBtnAnim = [('WindowOpen', 'effect=slide start=0,15 acceleration=-1.1 time=%s' % self.animTimeOn),
-							('WindowClose', 'effect=slide end=0,15 acceleration=1.1 time=%s' % self.animTimeOn)]
-		self.sortColCB.setAnimations(bottomBtnAnim)
-
-		# SORT DIRECTION
-		try:
-			self.removeControl(self.sortDirCB)
-		except: pass
-		xpos += btnW + 5
-		# lbl indicates 'what it will do' by pressing it
-		self.sortDirCB = xbmcgui.ControlButton(xpos, ypos, btnW, sortBtnH, '',\
-											   font=FONT10, alignment=XBFONT_CENTER_X|XBFONT_CENTER_Y)
-		self.addControl(self.sortDirCB)
-		self.sortDirCB.setAnimations(bottomBtnAnim)
-
-		# FILTERS
-		try:
-			self.removeControl(self.filtersCB)
-		except: pass
-		xpos += btnW + 5
-		# lbl indicates 'what it will do' by pressing it
-		self.filtersCB = xbmcgui.ControlButton(xpos, ypos, btnW, sortBtnH, '',\
-											   font=FONT10, alignment=XBFONT_CENTER_X|XBFONT_CENTER_Y)
-		self.addControl(self.filtersCB)
-		self.filtersCB.setAnimations(bottomBtnAnim)
-
-		# OVERVIEW - lbl
-		try:
-			self.removeControl(self.overviewLbl)
-		except: pass
-		xpos = displayX + imageW +10
-		ypos = displayY +10
-		overviewW = REZ_W - xpos
-		overviewLblH = 20
-		self.overviewLbl = xbmcgui.ControlLabel(xpos, ypos, overviewW, overviewLblH, __language__(400), FONT10, '0xFFFFFFFF')
-		self.addControl(self.overviewLbl)
-		overviewAnim = [('WindowOpen', animSlideRightWO), ('WindowClose', animSlideRightWC)]
-		self.overviewLbl.setAnimations(overviewAnim)
-
-		# OVERVIEW - data
-		try:
-			self.removeControl(self.overviewCTB)
-		except: pass
-		ypos += overviewLblH
-		overviewH = imageH - 30
-		self.overviewCTB = xbmcgui.ControlTextBox(xpos, ypos, overviewW, overviewH, FONT10, '0xFFFFFFAA')
-		self.addControl(self.overviewCTB)
-		self.overviewCTB.setAnimations(bottomBtnAnim)
-		self.overviewCTB.setAnimations(overviewAnim)
-
-		# CAST/CREDITS LIST BACKG
-		try:
-			self.removeControl(self.castBackCI)
-		except: pass
-		ypos = listY
-		xpos = displayX + listW + 2
-		self.castBackCI = xbmcgui.ControlImage(xpos, ypos, listW, listH, FRAME_NOFOCUS_LRG_FILENAME)
-		self.addControl(self.castBackCI)
-		castAnim = [('WindowOpen', animSlideRightWO), ('WindowClose', animSlideRightWC)]
-		self.castBackCI.setAnimations(castAnim)
-
-		# CAST/CREDITS LIST
-		try:
-			self.removeControl(self.castCL)
-		except: pass
-		try:
-			self.castCL = xbmcgui.ControlList(xpos+2, ypos+2, listW-4, listH+listSpinH, \
-												space=0,itemHeight=19,font=FONT10, \
-												itemTextXOffset=0, itemTextYOffset=0, alignmentY=XBFONT_CENTER_Y)
-			self.addControl(self.castCL)
-			self.castCL.setPageControlVisible(False)
-			self.castCL.setAnimations(castAnim)
-		except: pass
-
-		# MENU BTNS at bottom of screen
-		ypos += listH +2
-		btnW = 15
-		btnH = 15
-		# white - MENU
-		try:
-			self.removeControl(self.whiteCI)
-		except: pass
-		self.whiteCI = xbmcgui.ControlImage(xpos, ypos, btnW, btnW, BTN_WHITE_FILENAME)
-		self.addControl(self.whiteCI)
-		self.whiteCI.setAnimations(bottomBtnAnim)
-
-		try:
-			self.removeControl(self.whiteLbl)
-		except: pass
-		xpos += btnW +1
-		lblW = 38
-		self.whiteLbl = xbmcgui.ControlLabel(xpos, ypos, lblW, 10, __language__(431), \
-											FONT10, '0xFF00FFFF', alignment=XBFONT_CENTER_Y|XBFONT_LEFT)
-		self.addControl(self.whiteLbl)
-		self.whiteLbl.setAnimations(bottomBtnAnim)
-
-		# Y - IMDb
-		try:
-			self.removeControl(self.yCI)
-		except: pass
-		xpos += lblW
-		self.yCI = xbmcgui.ControlImage(xpos, ypos, btnW, btnH, BTN_Y_FILENAME)
-		self.addControl(self.yCI)
-		self.yCI.setAnimations(bottomBtnAnim)
-
-		try:
-			self.removeControl(self.yLbl)
-		except: pass
-		xpos += btnW +1
-		self.yLbl = xbmcgui.ControlLabel(xpos, ypos, lblW, 10, __language__(432), \
-										FONT10, '0xFF00FFFF', alignment=XBFONT_CENTER_Y|XBFONT_LEFT)
-		self.addControl(self.yLbl)
-		self.yLbl.setAnimations(bottomBtnAnim)
-
-		# A - SELECT/PLAYBACK - if not online viewing
-		try:
-			self.removeControl(self.aCI)
-		except: pass
-		xpos += lblW
-		self.aCI = xbmcgui.ControlImage(xpos, ypos, btnW, btnH, BTN_A_FILENAME)
-		self.addControl(self.aCI)
-		self.aCI.setAnimations(bottomBtnAnim)
-
-		try:
-			self.removeControl(self.aLbl)
-		except: pass
-		xpos += btnW +1
-		lblW = 75
 		if self.isOnlineOnly or self.onlineAliasData:
 			text = __language__(427)    # select
 		else:
 			text = __language__(428)    # play
-		self.aLbl = xbmcgui.ControlLabel(xpos, ypos, lblW, 10, text, \
-										FONT10, '0xFF00FFFF', alignment=XBFONT_CENTER_Y|XBFONT_LEFT)
-		self.addControl(self.aLbl)
-		self.aLbl.setAnimations(bottomBtnAnim)
+		self.getControl(self.CLBL_A_BTN).setLabel(text)
 
-		# X - ONLINE or FILTERS - depends on startup mode
-		try:
-			self.removeControl(self.xCI)
-		except: pass
-		xpos += lblW +1
-		self.xCI = xbmcgui.ControlImage(xpos, ypos, btnW, btnH, BTN_X_FILENAME)
-		self.addControl(self.xCI)
-		self.xCI.setAnimations(bottomBtnAnim)
-
-		try:
-			self.removeControl(self.xLbl)
-		except: pass
-		xpos += btnW +1
-		lblW = 60
+		# " X - ONLINE or FILTERS - depends on startup mode"
 		if self.isOnlineOnly or self.onlineAliasData:
 			text = __language__(433)    # alias
 		else:
 			text = __language__(434)    # filters
-		self.xLbl = xbmcgui.ControlLabel(xpos, ypos, lblW, 10, text, \
-										FONT10, '0xFF00FFFF', alignment=XBFONT_CENTER_Y|XBFONT_LEFT)
-		self.addControl(self.xLbl)
-		self.xLbl.setAnimations(bottomBtnAnim)
-
-		# B btn only displayed when currently viewing an online collection
-		try:
-			self.removeControl(self.bCI)
-		except: pass
-		xpos += lblW +1
-		self.bCI = xbmcgui.ControlImage(xpos, ypos, btnW, btnH, BTN_B_FILENAME)
-		self.addControl(self.bCI)
-		self.bCI.setVisible(False)
-		self.bCI.setAnimations(bottomBtnAnim)
-
-		try:
-			self.removeControl(self.bLbl)
-		except: pass
-		xpos += btnW +1
-		lblW = 70
-		self.bLbl = xbmcgui.ControlLabel(xpos, ypos, lblW, 10, '', \
-										FONT10, '0xFF00FFFF', alignment=XBFONT_CENTER_Y|XBFONT_LEFT)
-		self.addControl(self.bLbl)
-		self.bCI.setVisible(False)
-		self.bLbl.setAnimations(bottomBtnAnim)
-
-		# navigation
-		self.titlesCL.setNavigation(self.overviewCTB, self.sortColCB, self.sortColCB, self.castCL)
-		self.overviewCTB.setNavigation(self.titlesCL, self.titlesCL, self.castCL, self.titlesCL)
-		self.castCL.setNavigation(self.overviewCTB, self.sortColCB, self.titlesCL, self.overviewCTB)
-		self.sortColCB.setNavigation(self.titlesCL, self.titlesCL, self.titlesCL, self.sortDirCB)
-		self.sortDirCB.setNavigation(self.titlesCL, self.titlesCL, self.sortColCB, self.filtersCB)
-		self.filtersCB.setNavigation(self.titlesCL, self.titlesCL, self.sortDirCB, self.castCL)
-
-		self.setFocus(self.titlesCL)
-		xbmcgui.unlock()
+		self.getControl(self.CLBL_X_BTN).setLabel(text)
+		self.getControl(self.CLBL_B_BTN).setVisible(False)
 
 		debug("< setupDisplay()")
 
 	###################################################################################################
+	def fadeBackground(self, fade):
+		self.getControl(self.CGRP_HEADER).setEnabled(not fade)
+
+	###################################################################################################
 	def doFilters(self):
 		debug("> doFilters()")
+
+		self.fadeBackground(True)
 
 		# make dict - set enabled items from last time filters was shown
 		genresDict = {}
@@ -827,42 +536,45 @@ class DVDProfiler(xbmcgui.Window):
 		for tag in self.dvdCollection.filterTags:
 			tagsDict[tag] = (tag in self.selectedTags)
 
-		win = Filters()
-		self.selectedGenres, self.selectedTags = win.ask(genresDict, tagsDict)
-		del win
+		filters = Filters("script-dvdpro-filters.xml", DIR_HOME, "Default")
+		self.selectedGenres, self.selectedTags = filters.ask(genresDict, tagsDict)
 		# ALL is same as no filter selecting for genres.
 		if len(self.selectedGenres) == len(self.dvdCollection.filterGenres):
 			self.selectedGenres = []
+		del filters
 
 		self.setupTitles()		# setup lists
+		self.fadeBackground(False)
 		debug("< doFilters()")
 
 	###################################################################################################
 	def updateFilterBtn(self, filterCount):
-		debug("> updateFilterBtn()")
+		debug("> updateFilterBtn() filterCount=%s" % filterCount)
 		isEnabled = ( not self.onlineAliasData and self.dvdCollection.keys != {} )
-		self.filtersCB.setVisible(isEnabled)
-		self.filtersCB.setEnabled(isEnabled)
+		ctrl = self.getControl(self.CBTN_FILTER)
+		ctrl.setVisible(isEnabled)
+		ctrl.setEnabled(isEnabled)
 		if isEnabled:
-			text = 'Filters: '+ str(filterCount) + '\\' + str(len(self.dvdCollection.keys))
-			self.filtersCB.setLabel(text)
+			text = "%s: %s\\%s" % (__language__(434), filterCount, len(self.dvdCollection.keys))
+			ctrl.setLabel(text)
 		debug("< updateFilterBtn()")
 
 	##############################################################################################
 	def setupTitles(self):
 		debug("> setupTitles()")
+#		xbmcgui.lock()
 
 		if self.sortByTitle:
 			text = __language__(423)    # sort by #
 		else:
 			text = __language__(424)    # sort by title
-		self.sortColCB.setLabel(text)
+		self.getControl(self.CBTN_SORT_BY).setLabel(text)
 
 		if self.sortAsc:
 			text = __language__(425)    # desc
 		else:
 			text = __language__(426)    # asc
-		self.sortDirCB.setLabel(text)
+		self.getControl(self.CBTN_SORT_ORDER).setLabel(text)
 
 		filterCount = self.loadTitlesCL(self.sortByTitle, self.sortAsc)
 		self.updateFilterBtn(filterCount)
@@ -877,7 +589,7 @@ class DVDProfiler(xbmcgui.Window):
 			text = __language__(427)    # select
 		else:
 			text = "%s/%s" % (__language__(427),__language__(428))    # select/play
-		self.aLbl.setLabel(text)
+		self.getControl(self.CLBL_A_BTN).setLabel(text)
 
 		# update B btn label
 		if self.selectedGenres or self.selectedTags:
@@ -886,9 +598,9 @@ class DVDProfiler(xbmcgui.Window):
 			text = __language__(430)    # My profile
 		else:
 			text = ''
-		self.bLbl.setLabel(text)
-		self.bCI.setVisible(text != '')
-		self.bLbl.setVisible(text != '')
+		self.getControl(self.CLBL_B_BTN).setLabel(text)
+		self.getControl(self.CLBL_B_BTN).setVisible((text != ''))
+#		xbmcgui.unlock()
 
 		debug("< setupTitles()")
 		return success
@@ -903,7 +615,7 @@ class DVDProfiler(xbmcgui.Window):
 		def sortItemsDesc(x, y):
 			return cmp(y[1],x[1])
 
-		self.titlesCL.reset()
+		self.getControl(self.CLST_TITLES_LIST).reset()
 
 		# FILTERS -  make a dict just containing those matching filter
 		filterDict = {}
@@ -946,7 +658,7 @@ class DVDProfiler(xbmcgui.Window):
 					filterDict[int(key)] = data
 
 		if filterDict:
-			self.title.setLabel(__language__(249))
+			self.getControl(self.CLBL_TITLE).setLabel(__language__(249))
 			selectedPos = 0
 			if not sortByTitles:
 				sortList = filterDict.keys()
@@ -955,6 +667,7 @@ class DVDProfiler(xbmcgui.Window):
 					sortList.reverse()
 
 				# [collnum]
+				ctrl = self.getControl(self.CLST_TITLES_LIST)
 				for i in range(len(sortList)):
 					collnum = sortList[i]
 					title = self.dvdCollection.getDVDKey(collnum)[self.dvdCollection.KEYS_DATA_SORTTITLE]
@@ -965,7 +678,8 @@ class DVDProfiler(xbmcgui.Window):
 						img = FILM_FILENAME
 					except:
 						img = ''
-					self.titlesCL.addItem(xbmcgui.ListItem(title, str(collnum), img, img))
+
+					ctrl.addItem(xbmcgui.ListItem(title, str(collnum), img, img))
 					if not self.onlineAliasData and collnum == self.lastCollNo:
 						selectedPos = i
 			else:
@@ -976,6 +690,7 @@ class DVDProfiler(xbmcgui.Window):
 					sortList.sort(sortItemsDesc)
 
 				# [(collnum, ['sorttitle','id',title,genres,tags)]
+				ctrl = self.getControl(self.CLST_TITLES_LIST)
 				for i in range(len(sortList)):
 					collnum = sortList[i][0]
 					title = sortList[i][1][self.dvdCollection.KEYS_DATA_SORTTITLE]
@@ -986,17 +701,14 @@ class DVDProfiler(xbmcgui.Window):
 						img = FILM_FILENAME
 					except:
 						img = ''
-					self.titlesCL.addItem(xbmcgui.ListItem(title, str(collnum), img, img))
+					ctrl.addItem(xbmcgui.ListItem(title, str(collnum), img, img))
 					if not self.onlineAliasData and collnum == self.lastCollNo:
 						selectedPos = i
 
-#			if selectedPos >= len(filterDict):
-#				selectedPos = 0
-#			debug("selectedPos=" +str(selectedPos))
-			self.titlesCL.selectItem(0)
+			self.getControl(self.CLST_TITLES_LIST).selectItem(0)
 
 		filterCount = len(filterDict)
-		debug ("< loadTitlesCL() filerCount=" + str(filterCount))
+		debug ("< loadTitlesCL() filerCount=%s" % filterCount)
 		return filterCount
 
 	##############################################################################################
@@ -1009,16 +721,15 @@ class DVDProfiler(xbmcgui.Window):
 	##############################################################################################
 	def clearControls(self, clearTitles=False):
 		debug("> clearControls() clearTitles=%s" % clearTitles)
-		self.title.setLabel('')
-#		self.coverCI.setImage(FRAME_NOFOCUS_FILENAME)
-		self.coverCI.setVisible(False)
-		self.overviewCTB.reset()
-		self.overviewCTB.setText('')
-		self.castCL.reset()
+		self.getControl(self.CLBL_TITLE).setLabel('')
+#		self.getControl(self.CLBL_DESC).setLabel('')
+		self.getControl(self.CI_COVER).setImage(NOIMAGE_FILENAME)
+#		self.getControl(self.CI_COVER).setImage('')
+		self.getControl(self.CTB_DETAILS).reset()
+		self.getControl(self.CLST_CAST_LIST).reset()
 		if clearTitles:
-			self.titlesCL.reset()
-			self.datasourceCL.setLabel('')
-		self.castCL.reset()
+			self.getControl(self.CLST_TITLES_LIST).reset()
+			self.getControl(self.CLBL_DATASOURCE).setLabel('')
 		debug("< clearControls()")
 
 	###################################################################################################
@@ -1059,9 +770,9 @@ class DVDProfiler(xbmcgui.Window):
 	def showDVD(self):
 		debug ("> showDVD()")
 
-		selectedPos = self.titlesCL.getSelectedPosition()
-#		title = self.titlesCL.getSelectedItem().getLabel()
-		collNum = self.titlesCL.getSelectedItem().getLabel2()
+		ctrl = self.getControl(self.CLST_TITLES_LIST)
+		selectedPos = ctrl.getSelectedPosition()
+		collNum = ctrl.getSelectedItem().getLabel2()
 		if not self.onlineAliasData:
 			self.lastCollNo = collNum
 		else:
@@ -1072,9 +783,10 @@ class DVDProfiler(xbmcgui.Window):
 		self.clearControls()
 
 		# load data into controls
-		self.title.setLabel(__language__(200))
+		self.getControl(self.CLBL_TITLE).setLabel(__language__(200))
 		success = self.dvdCollection.parseDVD(collNum)
 		if not success:
+			self.getControl(self.CLBL_TITLE).setLabel("Failed to parse DVD")
 			debug ("< showDVD() failed to parseDVD")
 			return False
 
@@ -1112,12 +824,13 @@ class DVDProfiler(xbmcgui.Window):
 		#######################################################
 
 		xbmcgui.lock()
-		self.title.setLabel(self.dvdCollection.getDVDKey(collNum)[self.dvdCollection.KEYS_DATA_SORTTITLE])
+		self.getControl(self.CLBL_TITLE).setLabel(self.dvdCollection.getDVDKey(collNum)[self.dvdCollection.KEYS_DATA_SORTTITLE])
 
 		# cast list
 		debug("build cast list")
-		self.castCL.addItem(xbmcgui.ListItem(__language__(417)))
-		self.castCL.addItem(xbmcgui.ListItem(__language__(418),__language__(419)))
+		ctrl = self.getControl(self.CLST_CAST_LIST)
+		ctrl.addItem(xbmcgui.ListItem(__language__(417)))
+		ctrl.addItem(xbmcgui.ListItem(__language__(418),__language__(419)))
 		try:
 			for items in self.dvdCollection.getDVDData(self.dvdCollection.ACTORS):
 				if items:
@@ -1132,16 +845,16 @@ class DVDProfiler(xbmcgui.Window):
 					else:
 						name = items
 						role = ''
-					self.castCL.addItem(xbmcgui.ListItem(name, role))
+					ctrl.addItem(xbmcgui.ListItem(name, role))
 		except:
-			self.castCL.addItem(xbmcgui.ListItem('N/A'))
+			ctrl.addItem(xbmcgui.ListItem('-'))
 		else:
 			debug("cast done OK")
 
 		# append credits
 		debug("build credits")
-		self.castCL.addItem(xbmcgui.ListItem(__language__(420)))
-		self.castCL.addItem(xbmcgui.ListItem(__language__(421),__language__(422)))
+		ctrl.addItem(xbmcgui.ListItem(__language__(420)))
+		ctrl.addItem(xbmcgui.ListItem(__language__(421),__language__(422)))
 		try:
 			for items in self.dvdCollection.getDVDData(self.dvdCollection.CREDITS):
 				if items:
@@ -1156,15 +869,16 @@ class DVDProfiler(xbmcgui.Window):
 					else:
 						name = items
 						role = ''
-					self.castCL.addItem(xbmcgui.ListItem(name, role))
+					ctrl.addItem(xbmcgui.ListItem(name, role))
 		except:
-			self.castCL.addItem(xbmcgui.ListItem('N/A'))
+			ctrl.addItem(xbmcgui.ListItem('-'))
 		else:
 			debug("credits done OK")
 
 		# overview (also incorp additional information)
 		debug("build OVERVIEW")
-		self.overviewCTB.reset()
+		details = self.getControl(self.CTB_DETAILS)
+		details.reset()
 		text = ''
 		notAvail = '-'
 
@@ -1187,7 +901,7 @@ class DVDProfiler(xbmcgui.Window):
 		try:
 			text += '\n%s:  ' % __language__(403)
 			mins = _getItemsText(self.dvdCollection.RUNNINGTIME)
-			if mins and mins != 'N/A' and find(mins,'min') == -1:
+			if mins and mins != '-' and find(mins,'min') == -1:
 				mins += ' mins'
 			text += mins
 		except: text += notAvail
@@ -1268,16 +982,16 @@ class DVDProfiler(xbmcgui.Window):
 			text += _getItemsText(self.dvdCollection.LOCATION)
 		except: text += notAvail
 
-		self.overviewCTB.setText(text)
+		details.setText(text)
 
 		# cover image
 		id = self.dvdCollection.getDVDKey(int(collNum))[self.dvdCollection.KEYS_DATA_ID]
 		fn = self.fetchCover(id)
-		self.coverCI.setImage(fn)
-		self.coverCI.setVisible(True)
-		self.setFocus(self.titlesCL)
+		self.getControl(self.CI_COVER).setImage(fn)
+		self.getControl(self.CI_COVER).setVisible(True)
+		self.setFocus(self.getControl(self.CLST_TITLES_LIST))
 		xbmcgui.unlock()
-		debug ("< showDVD() collNum: " + collNum)
+		debug ("< showDVD() collNum: %s" % collNum)
 		return True
 
 	###################################################################################################
@@ -1288,17 +1002,21 @@ class DVDProfiler(xbmcgui.Window):
 
 		coverFilename = coverID + 'f.jpg'
 		localFile = os.path.join(DIR_IMG_CACHE, coverFilename)
+		debug("localFile="+ localFile)
 		success = fileExist(localFile)
-		if not success:
+		if success:
+			debug("cover file exists ")
+		else:
+			debug("cover file NOT exist ")
 			if self.onlineAliasData:
 				alias, aliasURL = self.onlineAliasData
 				if aliasURL == BASE_URL_INTER:
 					url = "%s/cgi-bin/data/myprofiler/images/%s" % (aliasURL, coverFilename)
 				else:
 					url = "%s/mpimages/%s/%s" % (aliasURL, coverFilename[:2],coverFilename)
-				dialogProgress.create(__language__(216), coverFilename)
+#				dialogProgress.create(__language__(216), coverFilename)
 				success = fetchCookieURL(url, localFile, isBinary=True)
-				dialogProgress.close()
+#				dialogProgress.close()
 			elif self.settings[self.SETTING_SMB_USE]:
 				smbPath = "%s/%s/%s/%s" % (self.settings[self.SETTING_SMB_PATH],
 										   self.settings[self.SETTING_SMB_DVDPRO_SHARE],
@@ -1311,7 +1029,7 @@ class DVDProfiler(xbmcgui.Window):
 			if not success:
 				localFile = NOIMAGE_FILENAME
 
-		debug ("< fetchCover() success="+str(success))
+		debug("< fetchCover() success=%s" % success)
 		return localFile
 
 	###################################################################################################
@@ -1369,20 +1087,18 @@ class DVDProfiler(xbmcgui.Window):
 		restart = False
 		selectedPos = 0	# start on exit
 		while not restart:
-			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(501), width=310, rows=len(menuOptions),banner=LOGO_FILENAME)
-			selectedPos, action = selectDialog.ask(menuOptions, selectedPos)
+			selectedPos = xbmcgui.Dialog().select(__language__(501), menuOptions)
 			if selectedPos <= 0:				# exit selected
 				break
 
-			if menuOptions[selectedPos] == MENU_VIEW_IMDB:
+			elif menuOptions[selectedPos] == MENU_VIEW_IMDB:
 				if not self.onlineAliasData:
 					colNo = self.lastCollNo
 				else:
 					colNo = self.lastOnlineCollNo
 				title = self.dvdCollection.getDVDKey(colNo)[self.dvdCollection.KEYS_DATA_SORTTITLE]
-				win = IMDbWin().ask(title)
-				del win
+				imdbwin = IMDbWin("script-bbb-imdb.xml", DIR_HOME, "Default")
+				imdbwin.ask(title)
 			elif menuOptions[selectedPos] == MENU_VIEW_ONLINE:
 				aliasData = ManageOnlineCollection().ask()
 				if aliasData:							# if text entered
@@ -1397,19 +1113,17 @@ class DVDProfiler(xbmcgui.Window):
 				self.doFilters()
 				break
 			elif menuOptions[selectedPos] == MENU_CONFIG_MENU:
-				restart = self.configMenu()
+				restart = self.settingsMenu()
 			elif menuOptions[selectedPos] == MENU_FETCH_ALL_IMAGES:
 				self.fetchAllImages()
-
-			del selectDialog
 
 		debug ("< mainMenu() restart: " + str(restart))
 		return restart
 
 
 	###################################################################################################
-	def configMenu(self):
-		debug("> configMenu() init()")
+	def settingsMenu(self):
+		debug("> settingsMenu() init()")
 
 		# menu choices
 		OPT_VIEW_README = __language__(521)
@@ -1442,12 +1156,13 @@ class DVDProfiler(xbmcgui.Window):
 		# show this dialog and wait until it's closed
 		selectedPos = 0
 		restart = False
+		title = "%s: %s" % (__language__(0), __language__(502))
 		while restart == False:
 			menu = _makeMenu()
-			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(502),width=450, rows=len(menu))
-			selectedPos, action = selectDialog.ask(menu, selectedPos)
-			if selectedPos <= 0:				# exit selected
+			selectDialog = DialogSelectXML("script-bbb-dialogselect.xml", DIR_HOME, "Default")
+			selectedPos, action = selectDialog.ask(title, menu, selectedPos)
+			del selectDialog
+			if action in EXIT_SCRIPT or selectedPos <= 0:				# exit selected
 				break
 
 			selectedOpt = menu[selectedPos].getLabel()
@@ -1459,33 +1174,33 @@ class DVDProfiler(xbmcgui.Window):
 			elif selectedOpt == OPT_UPDATE_SCRIPT:
 				if updateScript(False, True):							# never silent from config menu
 					xbmc.output("update issued - exit script")
-#					dialogOK(__language__(0), __language__(1010))
-#					xbmc.executebuiltin('XBMC.RunScript(%s)'%(os.path.join(DIR_HOME, 'default.py')))
-#					sys.exit(0)	# end current instance
 					restart = QUIT_SCRIPT
-				else:
-					print "user chosen NOT to update script"
 			elif selectedOpt == OPT_CLEAR_CACHE:
 				restart = self.clearCache()
 			elif selectedOpt == OPT_START_MODE:
 				menuStartMode = [ __language__(500) ] + self.startModeNames
-				selectDialogStartMode = DialogSelect()
-				selectDialogStartMode.setup(__language__(527),width=350, rows=len(menuStartMode))
-				selectedPosStartMode, action = selectDialogStartMode.ask(menuStartMode)
+				selectedPosStartMode = xbmcgui.Dialog().select(__language__(527), menuStartMode)
 				if selectedPosStartMode > 0:
 					# translate selectedPos into startMode
 					selectedPosStartMode -=1 # allow for exit opt
 					self.settings[self.SETTING_START_MODE] = selectedPosStartMode
 					saveFileObj(self.SETTINGS_FILENAME, self.settings)
-				del selectDialogStartMode
 			elif selectedOpt == OPT_VIEW_README:
-				fn = getReadmeFilename(mylanguage)
-				textBoxDialog = TextBoxDialog()
-				textBoxDialog.ask(title=OPT_VIEW_README, file=fn, panel=DIALOG_PANEL)
+				fn = getReadmeFilename()
+				doc = readFile(fn)
+				if not doc:
+					doc = "Readme not found: " + fn
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
+				tbd.ask(OPT_VIEW_README, doc)
+				del tbd
 			elif selectedOpt == OPT_VIEW_CHANGELOG:
 				fn = os.path.join(DIR_HOME, "Changelog.txt")
-				textBoxDialog = TextBoxDialog()
-				textBoxDialog.ask(title=OPT_VIEW_CHANGELOG, file=fn, panel=DIALOG_PANEL)
+				doc = readFile(fn)
+				if not doc:
+					doc = "Changelog not found: " + fn
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
+				tbd.ask(OPT_VIEW_CHANGELOG, doc)
+				del tbd
 			elif selectedOpt == OPT_LOCAL_MODE_MEDIA_LOC:
 				value = self.settings[self.SETTING_LOCAL_MODE_MEDIA_LOC]
 				value = doKeyboard(value, OPT_LOCAL_MODE_MEDIA_LOC)
@@ -1493,9 +1208,7 @@ class DVDProfiler(xbmcgui.Window):
 					self.settings[self.SETTING_LOCAL_MODE_MEDIA_LOC] = value
 					saveFileObj(self.SETTINGS_FILENAME, self.settings)
 
-			del selectDialog
-
-		debug ("< configMenu().ask() restart="+str(restart))
+		debug ("< settingsMenu().ask() restart=%s" % restart)
 		return restart
 
 	#################################################################################################################
@@ -1533,11 +1246,11 @@ class DVDProfiler(xbmcgui.Window):
 
 		changed = False
 		selectedPos = 0	# start on exit
+		title = "%s: %s" % (__language__(0), __language__(527))
 		while True:
 			menu = _makeMenu()
-			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(527), width=620, rows=len(menu))
-			selectedPos, action = selectDialog.ask(menu, selectedPos)
+			selectDialog = DialogSelectXML("script-bbb-dialogselect.xml", DIR_HOME, "Default")
+			selectedPos, action = selectDialog.ask(title, menu, selectedPos)
 			if selectedPos <= 0:
 				break # exit selected
 
@@ -1962,10 +1675,7 @@ class DVDCollectionXML:
 					keyCount = line.count(key+'|')		# how many of this key stored ?
 					subSplits = value.decode('latin-1','replace').split('^')
 					if not self.dvdDict.has_key(key):
-						if keyCount == 1:
-							self.dvdDict[key] = subSplits
-						else:
-							self.dvdDict[key] = [subSplits]
+						self.dvdDict[key] = [subSplits]
 					else:
 						try:
 							self.dvdDict[key].append(subSplits)
@@ -1973,7 +1683,6 @@ class DVDCollectionXML:
 #							print "ignored 2nd subSplits=", subSplits
 
 				break
-
 
 		if self.dvdDict:
 			self.dvdDict[self.COLLNUM] = [collNum]
@@ -2113,21 +1822,21 @@ class DVDCollectionOnline:
 
 	###################################################################################################
 	def fetchDVD(self, collNum):
-		debug ("> fetchDVD() collNum="+str(collNum))
+		debug ("> fetchDVD() collNum=%s" % collNum)
 
 		deleteFile(self.FILENAME_DVD)
 		title = self.getDVDKey(int(collNum))[self.KEYS_DATA_SORTTITLE]
 		id = self.getDVDKey(int(collNum))[self.KEYS_DATA_ID]
 
+		url = self.URL_DVD + id
 		dialogProgress.create(__language__(229), self.alias, title)
-		if fetchCookieURL(self.URL_DVD + id, self.FILENAME_DVD):
+		if fetchCookieURL(url, self.FILENAME_DVD):
 			success = True
 		else:
 			success = False
-
 		dialogProgress.close()
 
-		debug ("< fetchDVD() success="+str(success))
+		debug ("< fetchDVD() success=%s" % success)
 		return success
 
 	##############################################################################################
@@ -2216,15 +1925,13 @@ class DVDCollectionOnline:
 #######################################################################################################################    
 class ManageOnlineCollection:
 	def __init__(self):
-		debug("> ManageOnlineCollection() init()")
+		debug("ManageOnlineCollection() init()")
 
 		self.ONLINE_FILENAME = os.path.join( DIR_USERDATA, 'online_users.dat' )
 		self.TITLE = __language__(504)
 
-		debug("< ManageOnlineCollection() init()")
-
 	def load(self):
-		debug("> load()")
+		debug("> ManageOnlineCollection.load()")
 		users = []
 		if fileExist(self.ONLINE_FILENAME):
 			for line in file(self.ONLINE_FILENAME).readlines():
@@ -2235,11 +1942,11 @@ class ManageOnlineCollection:
 		else:
 			debug("file missing: " + self.ONLINE_FILENAME)
 
-		debug("< load() sz: " + str(len(users)))
+		debug("< ManageOnlineCollection.load() sz=%s" % len(users))
 		return users
 
 	def save(self, users):
-		debug("> save()")
+		debug("> ManageOnlineCollection.save()")
 		if not users:
 			deleteFile(self.ONLINE_FILENAME)
 		else:
@@ -2254,32 +1961,26 @@ class ManageOnlineCollection:
 
 		selectedPos = 0	# start on exit
 		users = self.load()
-		isMove = False
+		users.sort()
+		users.insert(0, [__language__(500),""])
 		while True:
 			aliasData = []
-			selectDialog = DialogSelect()
-			if isMove:
-				title = "%s" % __language__(566)
-			else:
-				title = "%s - (A=%s, Y=%s, X=%s)" % \
+			title = "%s - (A=%s, Y=%s, X=%s)" % \
 						(self.TITLE,__language__(565),__language__(560),__language__(563))
-			selectDialog.setup(title=title, width=500, rows=len(users), \
-								isMove=isMove, useX=True, useY=True)
-			users.sort()
 
-			selectedPos, action = (selectDialog.ask(users, selectedPos))
-			if action in CANCEL_DIALOG or selectedPos < 0:
+			selectDialog = DialogSelectXML("script-bbb-dialogselect.xml", DIR_HOME, "Default")
+			selectedPos, action = selectDialog.ask(title, users, selectedPos, "User","Host", useX=True, useY=True)
+			if action in EXIT_SCRIPT or selectedPos <= 0:
 				break
-			elif action == ACTION_Y: 	# add new
+			elif action in CLICK_Y: 	# add new
 				debug("add user")
 				# ALIAS
 				user = doKeyboard("",__language__(241))
 
 				# HOST URL
 				if user:
-					if xbmcgui.Dialog().yesno(__language__(242), \
-									__language__(350) + " = " + BASE_URL_INTER, \
-									__language__(351) + " = " + BASE_URL_INVOS):
+					if xbmcgui.Dialog().yesno(__language__(242), "","", "", \
+									__language__(356), __language__(355)):
 						host = BASE_URL_INTER
 					else:
 						host = BASE_URL_INVOS
@@ -2293,12 +1994,12 @@ class ManageOnlineCollection:
 						users.append(aliasData)
 						self.save(users)
 
-			elif action == ACTION_X: 	# delete
+			elif action in CLICK_X: 			# delete
 				user, host = users[selectedPos]
 				if xbmcgui.Dialog().yesno(__language__(304), user, host):
 					del users[selectedPos]
 					self.save(users)
-			elif selectedPos >= 0:				# select
+			elif selectedPos >= 1:				# select
 				user, host = users[selectedPos]
 				aliasData = [user, host]
 				break
@@ -2313,161 +2014,147 @@ class ManageOnlineCollection:
 #######################################################################################################################    
 #
 #######################################################################################################################    
-class Filters(xbmcgui.WindowDialog):
-	def __init__(self):
-		debug("> Filters.init()")
+class Filters(xbmcgui.WindowXMLDialog):
+	# control id's
+	CLBL_TITLE = 1401
+	CLBL_GENRES = 1411
+	CLST_GENRES = 1412
+	CLBL_TAGS = 1421
+	CLST_TAGS = 1422
 
-		setResolution(self)
+	def __init__(self, *args, **kwargs):
+		debug("Filters().__ init__")
+		self.isStartup = True
 
-		# center on screen
-		excess = 17
-		panelW = 550
-		panelH = 450
-		panelX = int((REZ_W /2) - (panelW /2))
-		panelY = int((REZ_H /2) - (panelH /2)) + excess
+	#################################################################################################################
+	def onInit( self ):
+		debug("> Filters.onInit() isStartup=%s" % self.isStartup)
+		if self.isStartup:
+			xbmcgui.lock()
 
-		xbmcgui.lock()
+			self.getControl(self.CLBL_TITLE).setLabel(__language__(243))
+			self.setupList(self.CLST_GENRES, self.genresDict)
+			self.setupList(self.CLST_TAGS, self.tagsDict)
 
-		# BACKG
-		try:
-			self.addControl(xbmcgui.ControlImage(panelX, panelY, panelW, panelH, PANEL_FILENAME))
-		except: pass
-		# shrink panel sz to allow for transparency on left/bottom that makes it bigger than it actually is
-		panelW -= excess
-		panelX += excess
-		panelY += 8
+			xbmcgui.unlock()
+			self.isStartup = False
 
-		# TITLES/HEADINGS
-		titleH = 28
-		headingH = 20 
-
-		# list dims
-		listW = int(panelW/2)
-		listH = int(panelH-titleH-headingH)-excess
-		itemH = 20
-
-		# TITLE
-		xpos = panelX +10
-		ypos = panelY
-		self.addControl(xbmcgui.ControlLabel(xpos, ypos, 0, titleH,
-										__language__(243), FONT14, '0xFFFFFF00'))
-
-		# GENRES
-		ypos += titleH
-		self.genresHeading = xbmcgui.ControlLabel(xpos, ypos, 0, headingH,'', FONT12, '0xFFFFFF99')
-		self.addControl(self.genresHeading)
-
-		# GENRE LIST
-		ypos += headingH
-		self.genresCL = xbmcgui.ControlList(panelX, ypos, listW, listH, itemHeight=itemH)
-		self.addControl(self.genresCL)
-		try:
-			self.genresCL.setPageControlVisible(False)
-		except: pass
-
-		# TAGS
-		ypos = panelY + titleH
-		xpos = panelX + listW - 5
-		self.tagsHeading = xbmcgui.ControlLabel(xpos +10, ypos, 0, headingH,'', FONT12, '0xFFFFFF99')
-		self.addControl(self.tagsHeading)
-
-		# TAGS LIST
-		ypos += headingH
-		self.tagsCL = xbmcgui.ControlList(xpos, ypos, listW, listH, itemHeight=itemH)
-		self.addControl(self.tagsCL)
-		try:
-			self.tagsCL.setPageControlVisible(False)
-		except: pass
-
-		# LISTS - control navigation
-		self.genresCL.controlLeft(self.tagsCL)
-		self.genresCL.controlRight(self.tagsCL)
-		self.tagsCL.controlLeft(self.genresCL)
-		self.tagsCL.controlRight(self.genresCL)
-		self.setFocus(self.genresCL)
-
-		xbmcgui.unlock()
-
-		debug("< Filters.init()")
+		debug("< Filters.onInit()")
 
 	##############################################################################################
 	def onAction(self, action):
-		if action in CANCEL_DIALOG + EXIT_SCRIPT:
+		try:
+			buttonCode =  action.getButtonCode()
+			actionID   =  action.getId()
+		except: return
+		if actionID in EXIT_SCRIPT or buttonCode in EXIT_SCRIPT:
 			self.close()
 
 	##############################################################################################
-	def onControl(self, control):
-		if isinstance(control, xbmcgui.ControlList):
+	def onClick(self, controlID):
+		control = self.getControl(controlID)
+		if controlID in (self.CLST_GENRES, self.CLST_TAGS):
 			lbl1 = control.getSelectedItem().getLabel()
+			selectedItem = control.getSelectedItem()
 			pos = control.getSelectedPosition()
 
-		exit = False
-		if control == self.genresCL:					# genre CL
-			if pos == 0:								# exit
-				exit = True
-			elif pos == 1:								# select ALL
-				self.setListState(self.genresDict, True)
-			elif pos == 2:								# select NONE
-				self.setListState(self.genresDict, False)
-			elif pos == 3:								# select NONE for both filters
-				self.setListState(self.tagsDict, False)
-				self.setupList(self.tagsCL, self.tagsDict)
-				self.setListState(self.genresDict, False)
-			else:										# indivudual
-				isSelected = self.genresDict[lbl1]
-				isSelected = not isSelected
-				self.genresDict[lbl1] = isSelected
-			if not exit:
-				self.setupList(self.genresCL, self.genresDict)
-		elif control == self.tagsCL:					# tags CL
-			if pos == 0:								# exit
-				exit = True
-			elif pos == 1:								# select ALL
-				self.setListState(self.tagsDict, True)
-			elif pos == 2:								# select NONE
-				self.setListState(self.tagsDict, False)
-			elif pos == 3:								# select NONE for both filters
-				self.setListState(self.genresDict, False)
-				self.setupList(self.genresCL, self.genresDict)
-				self.setListState(self.tagsDict, False)
-			else:										# indivudual
-				isSelected = self.tagsDict[lbl1]
-				isSelected = not isSelected
-				self.tagsDict[lbl1] = isSelected
-			if not exit:
-				self.setupList(self.tagsCL, self.tagsDict)
+			exit = False
+			if controlID == self.CLST_GENRES:
+				if pos == 0:								# exit
+					exit = True
+				elif pos == 1:								# select ALL
+					self.setListAllStates(self.genresDict, True)
+					pos = -1
+					isSelected = True
+				elif pos == 2:								# select NONE
+					self.setListAllStates(self.genresDict, False)
+					pos = -1
+					isSelected = False
+				elif pos == 3:								# select NONE for both filters
+					self.setListAllStates(self.tagsDict, False)
+					self.setListAllStates(self.genresDict, False)
+					pos = -1
+					isSelected = False
+					self.setListItemIcon(self.getControl(self.CLST_TAGS), pos, isSelected)
+				else:										# indivudual
+					isSelected = self.genresDict[lbl1]
+					isSelected = not isSelected				# toggle state
+					self.genresDict[lbl1] = isSelected		# re-save
+			elif controlID == self.CLST_TAGS:				# tags CL
+				if pos == 0:								# exit
+					exit = True
+				elif pos == 1:								# select ALL
+					self.setListAllStates(self.tagsDict, True)
+					pos = -1
+					isSelected = True
+				elif pos == 2:								# select NONE
+					self.setListAllStates(self.tagsDict, False)
+					pos = -1
+					isSelected = False
+				elif pos == 3:								# select NONE for both filters
+					self.setListAllStates(self.genresDict, False)
+					self.setListAllStates(self.tagsDict, False)
+					pos = -1
+					isSelected = False
+					self.setListItemIcon(self.getControl(self.CLST_GENRES), pos, isSelected)
+				else:										# indivudual
+					isSelected = self.tagsDict[lbl1]
+					isSelected = not isSelected
+					self.tagsDict[lbl1] = isSelected
 
-		if exit:
-			self.close()
-		else:
-			try:
-				if isinstance(control, xbmcgui.ControlList):
-					self.setFocus(control)
-					control.selectItem(pos)
-			except: pass
+			if exit:
+				self.close()
+			else:
+				self.setListItemIcon(control, pos, isSelected)
+				self.updateTagsHeading()
+				self.updateGenresHeading()
 
 	##############################################################################################
-	def setListState(self, dataDict, newState):
-		debug("setListState() newState=" +str(newState))
+	def setListAllStates(self, dataDict, newState):
+		debug("setListAllStates() newState=%s" % newState)
 		for key in dataDict.keys():
 			dataDict[key] = newState
 
 	##############################################################################################
+	def setListItemIcon(self, control, pos, newState):
+		debug("Filters.setListItemIcon() pos=%s newState=%s" % (pos, newState))
+		xbmcgui.lock()
+		if pos != -1:
+			fromPos = pos
+			toPos = pos+1
+		else:
+			fromPos = 4		# first real option after a hardcoded options
+			toPos = control.size()
+
+		if newState:
+			fn = TICK_FILENAME
+		else:
+			fn = ''
+		for pos in range(fromPos,toPos):
+			li = control.getListItem(pos)
+			li.setIconImage(fn)
+			li.setThumbnailImage(fn)
+		xbmcgui.unlock()
+
+	##############################################################################################
 	def updateTagsHeading(self):
+		debug("Filters.updateTagsHeading()")
 		enabledCount = self.tagsDict.values().count(True)			# count enabled
-		self.tagsHeading.setLabel(__language__(244) + str(enabledCount) + '\\' + str(len(self.tagsDict)))
+		text = "%s %s\\%s" % (__language__(244), enabledCount, len(self.tagsDict))
+		self.getControl(self.CLBL_TAGS).setLabel(text)
 
 	##############################################################################################
 	def updateGenresHeading(self):
+		debug("Filters.updateGenresHeading()")
 		enabledCount = self.genresDict.values().count(True)			# count enabled
-		self.genresHeading.setLabel(__language__(245) + str(enabledCount) + '\\' + str(len(self.genresDict)))
+		text = "%s %s\\%s" % (__language__(245), enabledCount, len(self.genresDict))
+		self.getControl(self.CLBL_GENRES).setLabel(text)
 
 	##############################################################################################
-	def setupList(self, controlList, dataDict):
-		debug("setupList()")
-		def sortItemsAsc(x, y):
-			return cmp(x[1],y[1])
+	def setupList(self, controlListID, dataDict):
+		debug("> Filters.setupList() controlListID=%s" % controlListID)
 
+		controlList = self.getControl(controlListID)
 		controlList.reset()
 
 		sortList = dataDict.keys()
@@ -2485,15 +2172,14 @@ class Filters(xbmcgui.WindowDialog):
 
 		self.updateTagsHeading()
 		self.updateGenresHeading()
+		debug("< Filters.setupList()")
 
 	##############################################################################################
 	def ask(self, genres, tags):
-		debug ("> ask()")
+		debug ("> Filters.ask()")
 		self.genresDict = genres
 		self.tagsDict = tags
 
-		self.setupList(self.genresCL, self.genresDict)
-		self.setupList(self.tagsCL, self.tagsDict)
 		self.doModal()
 
 		# just return selected list from each filter dict
@@ -2507,8 +2193,10 @@ class Filters(xbmcgui.WindowDialog):
 			if state:
 				selectedTags.append(tag)
 
-		debug ("< ask()")
+		debug ("< Filters.ask()")
 		return selectedGenres, selectedTags
+
+
 
 ######################################################################################
 def updateScript(silent=False, notifyNotFound=False):
@@ -2535,6 +2223,7 @@ def updateScript(silent=False, notifyNotFound=False):
 	debug( "< updateScript() updated=%s" % updated)
 	return updated
 
+
 #############################################################################################
 # BEGIN !
 #############################################################################################
@@ -2542,22 +2231,33 @@ makeScriptDataDir()
 makeDir(DIR_IMG_CACHE)
 makeDir(DIR_CACHE)
 
-myscript = DVDProfiler()
-if myscript.isReady():
-	myscript.doModal()
-#	dialogProgress.close()
-del myscript
+# check for script update
+if DEBUG:
+    updated = False
+else:
+    updated = updateScript(True)
+if not updated:
+	try:
+		# check language loaded
+		xbmc.output( "__language__ = %s" % __language__ )
 
-debug("exiting script ...")
-# housekeep on exit
+		myscript = DVDProfiler("script-dvdpro-main.xml", DIR_HOME, "Default")
+		if myscript.ready:
+			myscript.doModal()
+		del myscript
+	except:
+		handleException()
+
+# clean up on exit
 deleteFile(os.path.join(DIR_HOME, "temp.xml"))
 deleteFile(os.path.join(DIR_HOME, "temp.html"))
-
 moduleList = ['bbbLib', 'bbbGUILib', 'smbLib', 'IMDbWin', 'IMDbLib']
+if not updated:
+    moduleList += ['update']
 for m in moduleList:
 	try:
 		del sys.modules[m]
-		debug("del sys.module: " + m)
+		xbmc.output(__scriptname__ + " del sys.module=%s" % m)
 	except: pass
 
 # remove other globals

@@ -17,13 +17,14 @@ Changelog:
 09/07/07 Fix: Seach for title. caused by site change
 11/12/07 Fix: Scraping regex (see date comments)
 18/01/08 Fix: regex for Cast
-04/04/08 Fix: looks for Popular and Exact matches
+29/08/08 Fix: looks for Popular and Exact , Approx matches, fix unicode lookups
+03/10/08 Change: Improved title name cleaning.
 """
 
-import os,sys,re,urllib,string, urlparse
-from string import find
+import os,sys,re,urllib,string, urlparse,traceback,unicodedata
+from string import find, translate
 
-DEBUG = False
+DEBUG = True
 def log(s):
     if DEBUG:
         print s
@@ -266,17 +267,31 @@ class IMDb:
 ###########################################################################################################
 class IMDbSearch:
 	def __init__(self, findStr):
-		log("IMDbSearch() " + findStr)
+		log("IMDbSearch()")
 		self.YEAR = 0
 		self.TITLE = 1
 		self.URL = 2
 		try:
-			lookupStr = findStr.strip().translate(string.maketrans('',''),'~!@#$%^&*()_+`-={}|[]\:";\'<>?,./').replace(' ','+')
+			trantab = string.maketrans('','')
+			lookupStr = findStr.strip().translate(trantab,'~!@#$%^&*()_+`-={}|[]\:";\'<>?,./').replace(' ','+')
 		except:
-			lookupStr = findStr.replace(' ','+')
+			try:
+				lookupStr = findStr.replace(' ','+')
+			except:
+				lookupStr = findStr
+				log( "lookupStr assigned" )
 
 		self.SearchResults = None
+#		url = 'http://www.imdb.com/find?s=tt&q='
 		url = 'http://www.imdb.com/find?s=tt&q=' + lookupStr
+#		if isinstance(lookupStr,unicode):
+#			try:
+#				url += lookupStr.encode('latin-1')
+#			except:
+#				url += lookupStr
+#		else:
+#			url += lookupStr
+
 		page = readPage(url)
 		if not page:
 			return
@@ -284,15 +299,16 @@ class IMDbSearch:
 
 		if string.find(page, 'No Matches') != -1:
 			log( "found 'No Matches'" )
-		elif string.find(page, '>Popular') != -1 or string.find(page, 'Exact Matches') != -1:
-			log( "found 'Popular' and/or 'Exact Matches'" )
+		elif string.find(page, '>Popular') != -1 or string.find(page, 'Exact Matches') != -1 \
+			  or string.find(page, 'Approx Matches') != -1:
+			log( "found 'Popular' and/or 'Exact' or 'Approx' matches" )
 			# title code, title, year
 			search = re.compile('href="/title/([t0-9]*)/">(.*?)</a> *\(([0-9]*)')		# updated 11/12/2007
 			matches = search.findall(page)
 			if matches:
 				for a in matches:
 					url = "http://www.imdb.com/title/%s/" % (a[0])
-					title = urlTextToASCII(a[1])
+					title = clean(a[1])
 					year = a[2]
 					self.SearchResults.append((year, title, url))
 
@@ -300,6 +316,16 @@ class IMDbSearch:
 				if self.SearchResults:
 					self.SearchResults.sort()
 					self.SearchResults.reverse()
+			else:
+				log( "no matches on page" )
+		elif string.find(page, '<h1>'+findStr) or string.find(page, '>User Rating:<'):
+			log("exact match")
+			search = re.compile('/Years/([0-9]*).*?/title/([t0-9]*)/', re.DOTALL + re.MULTILINE + re.IGNORECASE)
+			matches = search.findall(page)
+			if matches:
+				year = matches[0][0]
+				url = "http://www.imdb.com/title/%s/" % (matches[0][1])
+				self.SearchResults.append((year, findStr, url))
 			else:
 				log( "no matches on page" )
 		else:
@@ -424,10 +450,12 @@ class IMDbGallery:
 
 ###########################################################################################################
 def readPage(url, readLines=False):
-	log("readPage() readLines=%s %s " % (readLines, url))
+	log("readPage() readLines=%s" % readLines)
 	page = None
 	try:
-		sock = urllib.urlopen(url)
+		safe_url = urllib.quote_plus(url,'/:&?=+#@')
+		log("readPage() " + safe_url)
+		sock = urllib.urlopen(safe_url)
 		if not readLines:
 			page = sock.read()
 		else:
@@ -436,7 +464,9 @@ def readPage(url, readLines=False):
 		if not page:
 			log("page not found")
 	except:
-		log("urlopen() exception")
+		log("urlopen() except")
+		e=sys.exc_info()
+		print traceback.format_exception(e[0],e[1],e[2],3)
 		page = None
 	return page
 
@@ -475,4 +505,3 @@ def urlTextToASCII(text):
 
 	except: pass
 	return text
-

@@ -1,4 +1,6 @@
 Version     Date        Change
+ 1.6.3      23/10/08    New: Whole script now skinned. PMIII PAL and PM3.HD 720p included.
+                        Change: XBMC Atlantis compatible and required.
  1.6.2      09/07/08    Fix: Update from Settings Menu would cause hang. (Was OK from a startup check).
  1.6.1      08/07/08    Fix: Better handling of non-english XML and language.
                         Fix: Better decoding of non-ascii characters.

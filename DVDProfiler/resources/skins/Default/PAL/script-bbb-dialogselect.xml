@@ -1,0 +1,200 @@
+<window type="dialog" id="2000">
+	<defaultcontrol always="true">3</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>80</posx>
+		<posy>80</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="group">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>560</width>
+			<height>460</height>
+
+			<control type="image">
+				<description>background image</description>
+				<posx>-15</posx>
+				<posy>-15</posy>
+				<width>560</width>
+				<height>460</height>
+				<texture>dialog-panel2.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>heading label</description>
+				<posx>20</posx>
+				<posy>0</posy>
+				<width>500</width>
+				<align>left</align>
+				<label></label>
+				<textcolor>dialogheader</textcolor>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>25</posy>
+				<width>540</width>
+				<height>5</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="label" id="6">
+				<description>column 1 heading label</description>
+				<posx>20</posx>
+				<posy>33</posy>
+				<width>250</width>
+				<height>15</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<label></label>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="7">
+				<description>column 2 heading label</description>
+				<posx>45r</posx>
+				<posy>33</posy>
+				<width>250</width>
+				<height>15</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<label></label>
+				<textcolor>grey</textcolor>
+			</control>
+
+			<control type="list" id="3">
+				<posx>20</posx>
+				<posy>50</posy>
+				<width>500</width>
+				<height>330</height>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<onleft>61</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="30">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>500</width>
+						<height>28</height>
+						<texture border="3">input-nofocus.png</texture>
+					</control>
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>500</width>
+						<height>28</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>white</textcolor>
+						<info>ListItem.Label</info> 
+					</control>
+					<control type="label">
+						<posx>495</posx>
+						<posy>0</posy>
+						<width>250</width>
+						<height>28</height>
+						<font>special11</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>white</textcolor>
+						<info>ListItem.Label2</info>
+					</control> 
+				</itemlayout>
+				<focusedlayout height="30">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>500</width>
+						<height>28</height>
+						<visible>!Control.HasFocus(3)</visible>
+						<texture border="3">input-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>500</width>
+						<height>28</height>
+						<visible>Control.HasFocus(3)</visible>
+						<texture border="3">input-focus.png</texture>
+					</control>
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>500</width>
+						<height>28</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>green</textcolor>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>495</posx>
+						<posy>0</posy>
+						<width>250</width>
+						<height>28</height>
+						<font>special11</font>
+						<aligny>center</aligny>
+						<textcolor>green</textcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control> 
+				</focusedlayout>
+			</control>
+			<control type="button">
+				<posx>35r</posx>
+				<posy>50</posy>
+				<width>15</width>
+				<height>15</height>
+				<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+				<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+				<onclick>PageUp(61)</onclick>
+			</control>
+			<control type="scrollbar" id="61">
+				<posx>35r</posx>
+				<posy>65</posy>
+				<width>15</width>
+				<height>300</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>3</onleft>
+				<onright>3</onright>
+				<ondown>61</ondown>
+				<onup>61</onup>
+				<showonepage>true</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="button">
+				<posx>35r</posx>
+				<posy>365</posy>
+				<width>15</width>
+				<height>15</height>
+				<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+				<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+				<onclick>PageUp(61)</onclick>
+			</control>
+			<control type="label">
+				<description>number of files/pages in list text label</description>
+				<posx>35r</posx>
+				<posy>380</posy>
+				<width>300</width>
+				<height>30</height>
+				<font>font12b</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<textcolor>white</textcolor>
+				<label>($INFO[Container(3).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages])</label>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -40,7 +40,7 @@ def smbConnect(hostIP, smbPath):
 	if not hostIP or not smbPath:
 		messageOK(__language__(951), __language__(959), __language__(950))
 	else:
-		dialogProgress.create(__language__(960), __language__(964))
+#		dialogProgress.create(__language__(960), __language__(964))
 		remoteInfo = parseSMBPath(smbPath)
 		if DEBUG: print "remoteInfo=", remoteInfo
 		if not remoteInfo:
@@ -70,7 +70,7 @@ def smbConnect(hostIP, smbPath):
 							success = True
 				else:
 					success = True
-		dialogProgress.close()
+#		dialogProgress.close()
 
 		if not success:
 			remote = None
@@ -132,7 +132,8 @@ def smbFetchFile(smbPath, localPath, remote=None, hostIP='', silent=True):
 				remote.retr_file(service, remotePath, f.write)
 				f.close()
 			except smb.SessionError, ex:
-				handleExceptionSMB(ex, __language__(951), remotePath)
+				if not silent or (ex[1] != 1 and ex[2] != 2):	# not found
+					handleExceptionSMB(ex, __language__(951), remotePath)
 			except:
 				handleException()
 			else:
@@ -313,7 +314,7 @@ def selectSMB(currentValue=''):
 	returnValue = ''
 	doc = ''
 
-	doc = readFile('Q:\\UserData\\sources.xml')
+	doc = readFile(os.path.join('Q:' + os.sep,'UserData','sources.xml'))
 	if doc:
 		# extract SMB paths from XBMC config file
 		menuList = []
