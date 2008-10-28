@@ -1,3 +1,7 @@
+ v2.2.1     27/10/08  
+  Fix: Live Radio regex now shows more streams (also in plugin).
+  Fix: Plugin updater.
+  Change: Skins updated to use included skin graphics.
  v2.2       ??/09/08   
   Updated: To be xbmc 'Atlantis' compatible. 
   Updated: Supporting libs.

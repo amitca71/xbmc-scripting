@@ -23,8 +23,8 @@ from string import replace,split,find,capwords
 __scriptname__ = "BBC PodRadio"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/BBC%20PodRadio"
-__date__ = '16-10-2008'
-__version__ = "2.2"
+__date__ = '28-10-2008'
+__version__ = "2.2.1"
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -460,7 +460,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 					# PICK LIVE RADIO BY STATION
 					startStr = '>CHOOSE A RADIO STATION<'
 					endStr = '</ul>'
-					regex = '^<li><a href="(.*?)".*?>(.*?)</a'
+					regex = '<li><a href="(.*?)".*?>(.*?)</a'
 				else:
 					print "unknown source", self.source
 
@@ -769,6 +769,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 						   self.streamDetails[idx][self.STREAM_DETAILS_STATION])
 		mediaURL = ''
 		rpmURL = ''
+		doc = ''
 		url = self.streamDetails[idx][self.STREAM_DETAILS_STREAMURL]
 		if url[-3:].lower() in ('mp3','m4a','mp4'):
 			debug("url is a media file - download required")
@@ -855,7 +856,7 @@ class BBCPodRadio(xbmcgui.WindowXML):
 					if not mediaURL:
 						mediaURL = searchRegEx(rtspDoc, '(rtsp.*?)\?')
 
-		if not mediaURL:
+		if not mediaURL and doc:
 			if find(doc, "no episodes") != -1:
 				messageOK(__language__(302),__language__(303))
 			else:
@@ -1002,9 +1003,7 @@ if not updated:
 	try:
 		# check language loaded
 		xbmc.output( "__language__ = %s" % __language__ )
-
-		if not installPlugin('music', __scriptname__, True):
-			installPlugin('music', __scriptname__, False, __language__(406))
+		installPlugin('music', __scriptname__, False, __language__(406))
 
 		myscript = BBCPodRadio("script-BBC_PodRadio-main.xml", DIR_HOME, "Default")
 		myscript.doModal()

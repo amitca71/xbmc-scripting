@@ -2,6 +2,22 @@
 	<defaultcontrol>60</defaultcontrol>
 	<allowoverlays>true</allowoverlays>
 	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>70</posy>
+			<width>1280</width>
+			<height>500</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="image">
+			<description>background header image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>80</height>
+			<texture>background-apps.png</texture>
+		</control>
 
 <!--	<control type="image">
 		<description>background image</description>
@@ -13,537 +29,537 @@
 		<texture>background-scripts.jpg</texture>
 	</control> -->
 
-	<!-- HEADER GROUP -->
-	<control type="group" id="1000">
-		<description>group header</description>
-		<posx>0</posx>
-		<posy>0</posy>
-		<height>65</height>
-		<visible>true</visible>
-		<animation effect="slide" time="200" start="0,-65" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-		<animation effect="slide" time="200" end="0,-65" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-
-		<control type="image">
-			<description>background header image</description>
+		<!-- HEADER GROUP -->
+		<control type="group" id="1000">
+			<description>group header</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>1280</width>
 			<height>65</height>
-			<aspectratio>scale</aspectratio>
-			<texture>bpr-header.png</texture>
-		</control>
-		<control type="image">
-			<description>background logo</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>95</width>
-			<height>63</height>
-			<texture>script-logo.png</texture>
-			<aspectratio>keep</aspectratio>
-			<animation effect="rotate" start="90" end="0" center="0,0" time="300">WindowOpen</animation>
-		</control>
-		<!-- DO NOT CHANGE -->
-		<control type="label" id="20">
-			<description>clock label</description>
-			<posx>2r</posx>
-			<posy>5</posy>
-			<width>50</width>
-			<align>right</align>
-			<info>System.Time</info>
-			<textcolor>grey</textcolor>
-			<font>font10</font>
-		</control>
-		<control type="label" id="21">
-			<description>source label</description>
-			<posx>2r</posx>
-			<posy>45</posy>
-			<align>right</align>
-			<label></label>
-			<textcolor>FFFFFFEE</textcolor>
-			<font>font10</font>
-		</control>
-		<control type="label" id="22">
-			<description>version label</description>
-			<posx>2r</posx>
-			<posy>25</posy>
-			<align>right</align>
-			<label></label>
-			<textcolor>grey</textcolor>
-			<font>font10</font>
-		</control>
-		<control type="label" id="23">
-			<description>title label</description>
-			<posx>110</posx>
-			<posy>5</posy>
-			<align>left</align>
-			<label></label>
-			<width>1000</width>
-			<textcolor>FFFFFF66</textcolor>
-			<font>special12</font>
-			<wrapmultiline>false</wrapmultiline>
-			<scroll>true</scroll>
-		</control>
-		<control type="label" id="24">
-			<description>description label</description>
-			<posx>110</posx>
-			<posy>35</posy>
-			<align>left</align>
-			<label></label>
-			<width>1000</width>
-			<textcolor>FFFFFFF99</textcolor>
-			<font>special12</font>
-			<wrapmultiline>false</wrapmultiline>
-			<scroll>true</scroll>
-		</control>
-	</control> <!-- end group header -->
-
-
-	<!-- FOOTER -->
-	<control type="group" id="2000">
-		<posx>0</posx>
-		<posy>560</posy>
-		<height>140</height>
-		<visible>true</visible>
-		<animation effect="slide" time="200" start="0,136" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
-		<animation effect="slide" time="200" end="0,136" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-
-		<control type="image">
-			<description>background footer image</description>
-			<posx>0</posx>
-			<posy>20</posy>
-			<width>1280</width>
-			<height>140</height>
-			<texture>footer_background.png</texture>
-		</control>
-
-		<control type="fadelabel" id="25">
-			<description>nowplaying label</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>20</height>
-			<width>1280</width>
-			<align>left</align>
-			<label></label>
-			<textcolor>FFFFFFF99</textcolor>
-			<font>font10</font>
-			<scroll>true</scroll>
-		</control>
-
-		<!-- FOOTER - Lists -->
-		<control type="group" id="2100">
-		<posx>0</posx>
-		<posy>25</posy>
-		<height>140</height>
-		<visible>true</visible>
-
-			<!--  SOURCElist -->
-			<control type="list" id="60">
-				<posx>0</posx>
-				<posy>2</posy>
-				<width>220</width>
-				<height>140</height>
-				<onleft>80</onleft>
-				<onright>70</onright>
-				<onup>60</onup>
-				<ondown>60</ondown>
-				<viewtype label="list">list</viewtype>
-				<scrolltime>200</scrolltime>
-				<itemlayout height="32">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>220</width>
-						<height>32</height>
-						<texture>bpr-list-nofocus.png</texture>
-					</control>
-					<control type="image">
-						<posx>5</posx>
-						<posy>0</posy>
-						<width>22</width>
-						<height>32</height>
-						<info>ListItem.Icon</info>
-					</control>
-					<control type="label">
-						<posx>30</posx>
-						<posy>0</posy>
-						<width>220</width>
-						<height>32</height>
-						<font>special12</font>
-						<aligny>center</aligny>
-						<selectedcolor>FFe2ff43</selectedcolor>
-						<textcolor>DFFFFFFF</textcolor>
-						<align>left</align>
-						<info>ListItem.Label</info>
-					</control>
-				</itemlayout>
-				<focusedlayout height="32">
-					<control type="image">
-						<width>220</width>
-						<height>32</height>
-						<posx>0</posx>
-						<posy>0</posy>
-						<visible>!Control.HasFocus(60)</visible>
-						<texture>bpr-list-nofocus.png</texture>
-					</control>
-					<control type="image">
-						<width>220</width>
-						<height>32</height>
-						<posx>0</posx>
-						<posy>0</posy>
-						<visible>Control.HasFocus(60)</visible>
-						<texture>bpr-list-focus.png</texture>
-					</control>
-					<control type="image">
-						<posx>5</posx>
-						<posy>0</posy>
-						<width>22</width>
-						<height>32</height>
-						<info>ListItem.Icon</info>
-					</control>
-					<control type="label">
-						<posx>30</posx>
-						<posy>0</posy>
-						<width>220</width>
-						<height>32</height>
-						<font>special12</font>
-						<aligny>center</aligny>
-						<selectedcolor>FFe2ff43</selectedcolor>
-						<textcolor>FFFFFF99</textcolor>
-						<align>left</align>
-						<info>ListItem.Label</info>
-					</control>
-				</focusedlayout>
-			</control>
-
-
-			<!--  DIRECTORY list -->
-			<control type="list" id="70">
-				<posx>240</posx>
-				<posy>2</posy>
-				<width>300</width>
-				<height>140</height>
-				<onleft>60</onleft>
-				<onright>80</onright>
-				<onup>70</onup>
-				<ondown>70</ondown>
-				<viewtype label="list">list</viewtype>
-				<scrolltime>200</scrolltime>
-				<animation effect="slide" time="200" start="0,140" acceleration="-1.1" condition="Control.IsVisible(70)">conditional</animation>
-				<itemlayout height="32">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>300</width>
-						<height>32</height>
-						<texture>bpr-list-nofocus.png</texture>
-					</control>
-					<control type="label">
-						<posx>3</posx>
-						<posy>0</posy>
-						<width>300</width>
-						<height>32</height>
-						<font>special12</font>
-						<aligny>center</aligny>
-						<selectedcolor>FFe2ff43</selectedcolor>
-						<textcolor>DFFFFFFF</textcolor>
-						<align>left</align>
-						<info>ListItem.Label</info>
-					</control>
-				</itemlayout>
-				<focusedlayout height="32">
-					<control type="image">
-						<width>300</width>
-						<height>32</height>
-						<posx>0</posx>
-						<posy>0</posy>
-						<visible>!Control.HasFocus(70)</visible>
-						<texture>bpr-list-nofocus.png</texture>
-					</control>
-					<control type="image">
-						<width>300</width>
-						<height>32</height>
-						<posx>0</posx>
-						<posy>0</posy>
-						<visible>Control.HasFocus(70)</visible>
-						<texture>bpr-list-focus.png</texture>
-					</control>
-					<control type="label">
-						<posx>3</posx>
-						<posy>0</posy>
-						<width>300</width>
-						<height>32</height>
-						<font>special12</font>
-						<aligny>center</aligny>
-						<selectedcolor>FFe2ff43</selectedcolor>
-						<textcolor>FFFFFF99</textcolor>
-						<align>left</align>
-						<info>ListItem.Label</info>
-					</control>
-				</focusedlayout>
-			</control>
-
-			<!--  CATEGORY list -->
-			<control type="group" id="2200">
-			<animation effect="slide" time="200" start="0,140" acceleration="-1.1" condition="Control.IsVisible(2200)">conditional</animation>
-
-			<control type="list" id="80">
-				<posx>560</posx>
-				<posy>0</posy>
-				<width>300</width>
-				<height>140</height>
-				<onleft>70</onleft>
-				<onright>81</onright>
-				<onup>80</onup>
-				<ondown>80</ondown>
-				<viewtype label="list">list</viewtype>
-				<scrolltime>200</scrolltime>
-				<pagecontrol>81</pagecontrol>
-				<itemlayout height="23">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>300</width>
-						<height>23</height>
-						<texture>bpr-list-nofocus.png</texture>
-					</control>
-					<control type="label">
-						<posx>3</posx>
-						<posy>0</posy>
-						<width>300</width>
-						<height>23</height>
-						<font>special11</font>
-						<aligny>center</aligny>
-						<selectedcolor>FFe2ff43</selectedcolor>
-						<textcolor>DFFFFFFF</textcolor>
-						<align>left</align>
-						<info>ListItem.Label</info>
-					</control>
-				</itemlayout>
-				<focusedlayout height="23">
-					<control type="image">
-						<width>300</width>
-						<height>23</height>
-						<posx>0</posx>
-						<posy>0</posy>
-						<visible>!Control.HasFocus(80)</visible>
-						<texture>bpr-list-nofocus.png</texture>
-					</control>
-					<control type="image">
-						<width>300</width>
-						<height>23</height>
-						<posx>0</posx>
-						<posy>0</posy>
-						<visible>Control.HasFocus(80)</visible>
-						<texture>bpr-list-focus.png</texture>
-					</control>
-					<control type="label">
-						<posx>3</posx>
-						<posy>0</posy>
-						<width>300</width>
-						<height>23</height>
-						<font>special11</font>
-						<aligny>center</aligny>
-						<selectedcolor>FFe2ff43</selectedcolor>
-						<textcolor>FFFFFF99</textcolor>
-						<align>left</align>
-						<info>ListItem.Label</info>
-					</control>
-				</focusedlayout>
-			</control>
-
-			<!-- SCROLL BAR FOR CAT LIST -->
-			<control type="button">
-						<posx>860</posx>
-						<posy>0</posy>
-						<width>16</width>
-						<height>16</height>
-						<texturenofocus>bpr-scrollbar-up-arrow.png</texturenofocus>
-						<texturefocus>bpr-scrollbar-up-arrow-focus.png</texturefocus>
-						<onclick>PageUp(81)</onclick>
-			</control>
-			<control type="scrollbar" id="81">
-						<posx>860</posx>
-						<posy>16</posy>
-						<width>16</width>
-						<height>105</height>
-						<texturesliderbackground border="4">bpr-scrollbar-bg.png</texturesliderbackground>
-						<texturesliderbar border="3">bpr-scrollbar-bar-nofocus.png</texturesliderbar>
-						<texturesliderbarfocus border="3">bpr-scrollbar-bar-focus.png</texturesliderbarfocus>
-						<textureslidernib>bpr-scrollbar-nib-nofocus.png</textureslidernib>
-						<textureslidernibfocus>bpr-scrollbar-nib-focus.png</textureslidernibfocus>
-						<onleft>80</onleft>
-						<onright>90</onright>
-						<showonepage>true</showonepage>
-						<orientation>vertical</orientation>
-			</control>
-			<control type="button">
-						<posx>860</posx>
-						<posy>120</posy>
-						<width>16</width>
-						<height>16</height>
-						<texturenofocus>bpr-scrollbar-down-arrow.png</texturenofocus>
-						<texturefocus>bpr-scrollbar-down-arrow-focus.png</texturefocus>
-						<onclick>PageDown(81)</onclick>
-			</control>
-
-			</control> <!-- end group CAT -->
+			<visible>true</visible>
+			<animation effect="slide" time="200" start="0,-65" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" end="0,-65" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<animation effect="fade" time="100" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
 			<control type="image">
-				<description>instructions image</description>
-				<posx>125r</posx>
-				<posy>-2</posy>
-				<width>124</width>
-				<height>115</height>
-				<texture>bpr-guide.png</texture>
+				<description>background logo</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>95</width>
+				<height>63</height>
+				<texture>script-logo.png</texture>
+				<aspectratio>keep</aspectratio>
+				<animation effect="rotate" start="90" end="0" center="0,0" time="300">WindowOpen</animation>
+			</control>
+			<!-- DO NOT CHANGE -->
+			<control type="label" id="20">
+				<description>clock label</description>
+				<posx>2r</posx>
+				<posy>5</posy>
+				<width>50</width>
+				<align>right</align>
+				<info>System.Time</info>
+				<textcolor>grey</textcolor>
+				<font>font10</font>
+			</control>
+			<control type="label" id="21">
+				<description>source label</description>
+				<posx>2r</posx>
+				<posy>45</posy>
+				<align>right</align>
+				<label></label>
+				<textcolor>FFFFFFEE</textcolor>
+				<font>font10</font>
+			</control>
+			<control type="label" id="22">
+				<description>version label</description>
+				<posx>2r</posx>
+				<posy>25</posy>
+				<align>right</align>
+				<label></label>
+				<textcolor>grey</textcolor>
+				<font>font10</font>
+			</control>
+			<control type="label" id="23">
+				<description>title label</description>
+				<posx>110</posx>
+				<posy>5</posy>
+				<align>left</align>
+				<label></label>
+				<width>1000</width>
+				<textcolor>FFFFFF66</textcolor>
+				<font>special12</font>
+				<wrapmultiline>false</wrapmultiline>
+				<scroll>true</scroll>
+			</control>
+			<control type="label" id="24">
+				<description>description label</description>
+				<posx>110</posx>
+				<posy>35</posy>
+				<align>left</align>
+				<label></label>
+				<width>1000</width>
+				<textcolor>FFFFFFF99</textcolor>
+				<font>special12</font>
+				<wrapmultiline>false</wrapmultiline>
+				<scroll>true</scroll>
+			</control>
+		</control> <!-- end group header -->
+
+
+		<!-- FOOTER -->
+		<control type="group" id="2000">
+			<posx>0</posx>
+			<posy>560</posy>
+			<height>140</height>
+			<visible>true</visible>
+			<animation effect="slide" time="200" start="0,136" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" end="0,136" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<animation effect="fade" time="100" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+
+			<control type="image">
+				<description>background footer image</description>
+				<posx>0</posx>
+				<posy>20</posy>
+				<width>1280</width>
+				<height>140</height>
+				<texture>footer_background.png</texture>
 			</control>
 
-		</control> <!-- end group  FOOTER -->
-
-	</control>  <!-- end group footer outer -->
-
-	<!--  STREAM list -->
-	<control type="group" id="3000">
-	<posx>10</posx>
-	<posy>75</posy>
-	<animation effect="zoom" end="0" center="650,250" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-	<animation effect="zoom" start="0" center="650,250" time="200" condition="Control.IsVisible(3000)">conditional</animation>
-
-		<control type="list" id="90">
-			<description>STREAMS list</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1270</width>
-			<height>490</height>
-			<onleft>80</onleft>
-			<onright>91</onright>
-			<onup>90</onup>
-			<ondown>90</ondown>
-			<viewtype label="list">list</viewtype>
-			<orientation>vertical</orientation>
-			<scrolltime>200</scrolltime>
-			<visible>true</visible>
-			<pagecontrol>91</pagecontrol>
-			<itemlayout height="55">
-				<control type="image">
-					<width>1255</width>
-					<height>55</height>
-					<posx>0</posx>
-					<posy>0</posy>
-					<texture>bpr-list-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<posx>5</posx>
-					<posy>2</posy>
-					<width>51</width>
-					<height>51</height>
-					<info>ListItem.Icon</info>
-				</control>
-				<control type="label">
-					<posx>60</posx>
-					<posy>0</posy>
-					<width>900</width>
-					<height>55</height>
-					<scroll>true</scroll>
-					<font>font11</font>
-					<aligny>center</aligny>
-					<selectedcolor>FFe2ff43</selectedcolor>
-					<textcolor>DFFFFFFF</textcolor>
-					<align>left</align>
-					<info>ListItem.Label</info>
-				</control>
-				<control type="label">
-					<posx>1230</posx>
-					<posy>0</posy>
-					<width>430</width>
-					<height>55</height>
-					<scroll>false</scroll>
-					<font>font10</font>
-					<aligny>center</aligny>
-					<align>right</align>
-					<selectedcolor>FFe2ff43</selectedcolor>
-					<textcolor>9FFFFFEE</textcolor>
-					<info>ListItem.Label2</info>
-				</control>
-			</itemlayout>
-			<focusedlayout height="55">
-				<control type="image">
-					<width>1255</width>
-					<height>55</height>
-					<posx>0</posx>
-					<posy>0</posy>
-					<visible>true</visible>
-					<texture>bpr-list-focus.png</texture>
-				</control>
-				<control type="image">
-					<posx>5</posx>
-					<posy>2</posy>
-					<width>51</width>
-					<height>51</height>
-					<info>ListItem.Icon</info>
-				</control>
-				<control type="label">
-					<posx>60</posx>
-					<posy>0</posy>
-					<width>900</width>
-					<height>55</height>
-					<scroll>true</scroll>
-					<font>font11</font>
-					<aligny>center</aligny>
-					<selectedcolor>FFe2ff43</selectedcolor>
-					<textcolor>FFFFFFFF</textcolor>
-					<align>left</align>
-					<info>ListItem.Label</info>
-				</control>
-				<control type="label">
-					<posx>1230</posx>
-					<posy>0</posy>
-					<width>430</width>
-					<height>55</height>
-					<scroll>false</scroll>
-					<font>font10</font>
-					<aligny>center</aligny>
-					<align>right</align>
-					<selectedcolor>FFe2ff43</selectedcolor>
-					<textcolor>FFFFFF99</textcolor>
-					<info>ListItem.Label2</info>
-				</control>
-			</focusedlayout>
-		</control>
-
-		<!-- SCROLL BAR FOR STREAM LIST -->
-		<control type="button">
-				<posx>16r</posx>
+			<control type="fadelabel" id="25">
+				<description>nowplaying label</description>
+				<posx>0</posx>
 				<posy>0</posy>
-				<width>16</width>
-				<height>16</height>
-				<texturenofocus>bpr-scrollbar-up-arrow.png</texturenofocus>
-				<texturefocus>bpr-scrollbar-up-arrow-focus.png</texturefocus>
-				<onclick>PageUp(2050)</onclick>
-		</control>
-		<control type="scrollbar" id="91">
-				<posx>16r</posx>
-				<posy>16</posy>
-				<width>16</width>
-				<height>470</height>
-				<texturesliderbackground border="4">bpr-scrollbar-bg.png</texturesliderbackground>
-				<texturesliderbar border="3">bpr-scrollbar-bar-nofocus.png</texturesliderbar>
-				<texturesliderbarfocus border="3">bpr-scrollbar-bar-focus.png</texturesliderbarfocus>
-				<textureslidernib>bpr-scrollbar-nib-nofocus.png</textureslidernib>
-				<textureslidernibfocus>bpr-scrollbar-nib-focus.png</textureslidernibfocus>
-				<onleft>90</onleft>
-				<onright>80</onright>
-				<showonepage>true</showonepage>
+				<height>20</height>
+				<width>1280</width>
+				<align>left</align>
+				<label></label>
+				<textcolor>FFFFFFF99</textcolor>
+				<font>font10</font>
+				<scroll>true</scroll>
+			</control>
+
+			<!-- FOOTER - Lists -->
+			<control type="group" id="2100">
+			<posx>0</posx>
+			<posy>25</posy>
+			<height>140</height>
+			<visible>true</visible>
+
+				<!--  SOURCElist -->
+				<control type="list" id="60">
+					<posx>0</posx>
+					<posy>2</posy>
+					<width>220</width>
+					<height>140</height>
+					<onleft>80</onleft>
+					<onright>70</onright>
+					<onup>60</onup>
+					<ondown>60</ondown>
+					<viewtype label="list">list</viewtype>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="32">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>220</width>
+							<height>32</height>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>22</width>
+							<height>32</height>
+							<info>ListItem.Icon</info>
+						</control>
+						<control type="label">
+							<posx>30</posx>
+							<posy>0</posy>
+							<width>220</width>
+							<height>32</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="32">
+						<control type="image">
+							<width>220</width>
+							<height>32</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>!Control.HasFocus(60)</visible>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<width>220</width>
+							<height>32</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(60)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="image">
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>22</width>
+							<height>32</height>
+							<info>ListItem.Icon</info>
+						</control>
+						<control type="label">
+							<posx>30</posx>
+							<posy>0</posy>
+							<width>220</width>
+							<height>32</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+
+
+				<!--  DIRECTORY list -->
+				<control type="list" id="70">
+					<posx>240</posx>
+					<posy>2</posy>
+					<width>300</width>
+					<height>140</height>
+					<onleft>60</onleft>
+					<onright>80</onright>
+					<onup>70</onup>
+					<ondown>70</ondown>
+					<viewtype label="list">list</viewtype>
+					<scrolltime>200</scrolltime>
+					<animation effect="slide" time="200" start="0,140" acceleration="-1.1" condition="Control.IsVisible(70)">conditional</animation>
+					<itemlayout height="32">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>300</width>
+							<height>32</height>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>300</width>
+							<height>32</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="32">
+						<control type="image">
+							<width>300</width>
+							<height>32</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>!Control.HasFocus(70)</visible>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<width>300</width>
+							<height>32</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(70)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>300</width>
+							<height>32</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+
+				<!--  CATEGORY list -->
+				<control type="group" id="2200">
+				<animation effect="slide" time="200" start="0,140" acceleration="-1.1" condition="Control.IsVisible(2200)">conditional</animation>
+
+				<control type="list" id="80">
+					<posx>560</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>140</height>
+					<onleft>70</onleft>
+					<onright>81</onright>
+					<onup>80</onup>
+					<ondown>80</ondown>
+					<viewtype label="list">list</viewtype>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>81</pagecontrol>
+					<itemlayout height="23">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>300</width>
+							<height>23</height>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>300</width>
+							<height>23</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="23">
+						<control type="image">
+							<width>300</width>
+							<height>23</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>!Control.HasFocus(80)</visible>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<width>210</width>
+							<height>23</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(80)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="image">
+							<width>300</width>
+							<height>23</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(80)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>300</width>
+							<height>23</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+
+				<!-- SCROLL BAR FOR CAT LIST -->
+				<control type="button">
+					<posx>860</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+				</control>
+				<control type="scrollbar" id="81">
+					<posx>860</posx>
+					<posy>16</posy>
+					<width>16</width>
+					<height>105</height>
+					<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+					<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>80</onleft>
+					<onright>90</onright>
+					<showonepage>true</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="button">
+					<posx>860</posx>
+					<posy>120</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+					<onclick>PageDown(81)</onclick>
+				</control>
+
+				</control> <!-- end group CAT -->
+
+				<control type="image">
+					<description>instructions image</description>
+					<posx>125r</posx>
+					<posy>-2</posy>
+					<width>124</width>
+					<height>115</height>
+					<texture>bpr-guide.png</texture>
+				</control>
+
+			</control> <!-- end group  FOOTER -->
+
+		</control>  <!-- end group footer outer -->
+
+		<!--  STREAM list -->
+		<control type="group" id="3000">
+			<posx>10</posx>
+			<posy>75</posy>
+			<animation effect="zoom" end="0" center="650,250" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<animation effect="zoom" start="0" center="650,250" time="200" condition="Control.IsVisible(3000)">conditional</animation>
+
+			<control type="list" id="90">
+				<description>STREAMS list</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1270</width>
+				<height>490</height>
+				<onleft>80</onleft>
+				<onright>91</onright>
+				<onup>90</onup>
+				<ondown>90</ondown>
+				<viewtype label="list">list</viewtype>
 				<orientation>vertical</orientation>
-		</control>
-		<control type="button">
-				<posx>16r</posx>
-				<posy>485</posy>
-				<width>16</width>
-				<height>16</height>
-				<texturenofocus>bpr-scrollbar-down-arrow.png</texturenofocus>
-				<texturefocus>bpr-scrollbar-down-arrow-focus.png</texturefocus>
-				<onclick>PageDown(2050)</onclick>
-		</control>
+				<scrolltime>200</scrolltime>
+				<visible>true</visible>
+				<pagecontrol>91</pagecontrol>
+				<itemlayout height="55">
+					<control type="image">
+						<width>1255</width>
+						<height>55</height>
+						<posx>0</posx>
+						<posy>0</posy>
+						<texture border="3">input-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>2</posy>
+						<width>51</width>
+						<height>51</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<posy>0</posy>
+						<width>900</width>
+						<height>55</height>
+						<scroll>true</scroll>
+						<font>font11</font>
+						<aligny>center</aligny>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>DFFFFFFF</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>1230</posx>
+						<posy>0</posy>
+						<width>430</width>
+						<height>55</height>
+						<scroll>false</scroll>
+						<font>font10</font>
+						<aligny>center</aligny>
+						<align>right</align>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>9FFFFFEE</textcolor>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="55">
+					<control type="image">
+						<width>1255</width>
+						<height>55</height>
+						<posx>0</posx>
+						<posy>0</posy>
+						<visible>true</visible>
+						<texture border="3">input-focus.png</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>2</posy>
+						<width>51</width>
+						<height>51</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<posy>0</posy>
+						<width>900</width>
+						<height>55</height>
+						<scroll>true</scroll>
+						<font>font11</font>
+						<aligny>center</aligny>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>FFFFFFFF</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>1230</posx>
+						<posy>0</posy>
+						<width>430</width>
+						<height>55</height>
+						<scroll>false</scroll>
+						<font>font10</font>
+						<aligny>center</aligny>
+						<align>right</align>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>FFFFFF99</textcolor>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+
+			<!-- SCROLL BAR FOR STREAM LIST -->
+			<control type="button">
+					<posx>16r</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+					<onclick>PageUp(2050)</onclick>
+			</control>
+			<control type="scrollbar" id="91">
+					<posx>16r</posx>
+					<posy>16</posy>
+					<width>16</width>
+					<height>470</height>
+					<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+					<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>90</onleft>
+					<onright>80</onright>
+					<showonepage>true</showonepage>
+					<orientation>vertical</orientation>
+			</control>
+			<control type="button">
+					<posx>16r</posx>
+					<posy>485</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+					<onclick>PageDown(2050)</onclick>
+			</control>
 
 		</control> <!-- end group STREAM LIST -->
 

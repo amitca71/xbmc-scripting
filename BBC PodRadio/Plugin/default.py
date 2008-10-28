@@ -11,15 +11,15 @@
 """
 
 __plugin__ = "BBC PodRadio"
-__version__ = '1.4.1'
+__version__ = '1.4.2'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '09-09-2008'
+__date__ = '28-10-2008'
 
 import sys, os.path
 import xbmc, xbmcgui, xbmcplugin
 import re, os, traceback, urllib, urllib2
 from string import replace,split,find,capwords
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parse, parseString 
 
 if os.name=='posix':    
     DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
@@ -199,7 +199,7 @@ class BBCPodRadioPlugin:
 			elif self.source == self.SOURCE_RADIO_LIVE:
 				startStr = '>CHOOSE A RADIO STATION<'
 				endStr = '</ul>'
-				regex = '^<li><a href="(.*?)".*?>(.*?)</a'
+				regex = '<li><a href="(.*?)".*?>(.*?)</a'
 			else:
 				print "unknown source - stopping", self.source
 

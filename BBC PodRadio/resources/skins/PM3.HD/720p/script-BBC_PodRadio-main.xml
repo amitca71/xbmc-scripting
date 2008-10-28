@@ -2,8 +2,8 @@
 	<defaultcontrol>60</defaultcontrol>
 	<allowoverlays>true</allowoverlays>
 	<controls>
-
 		<control type="image">
+			<description>background image overlay</description>
 			<posx>356</posx>
 			<posy>100</posy>
 			<width>924</width>
@@ -12,6 +12,7 @@
 			<include>backgroundfade</include>
 		</control>
 		<control type="image">
+			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
@@ -20,6 +21,7 @@
 			<visible>true</visible>
 		</control> 	
 		<control type="image">
+			<description>background header image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
@@ -36,6 +38,7 @@
 		<visible>true</visible>
 		<animation effect="slide" time="200" start="0,-65" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 		<animation effect="slide" time="200" end="0,-65" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		<animation effect="fade" time="100" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
 		<control type="image">
 			<description>background logo</description>
@@ -112,6 +115,7 @@
 		<visible>true</visible>
 		<animation effect="slide" time="200" start="0,140" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 		<animation effect="slide" time="200" end="0,140" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		<animation effect="fade" time="100" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
 		<control type="image">
 			<description>background footer image</description>
@@ -397,6 +401,7 @@
 		<posy>110</posy>
 		<animation effect="zoom" end="0" center="650,250" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		<animation effect="zoom" start="0" center="650,250" time="200" condition="Control.IsVisible(3000)">conditional</animation>
+		<animation effect="fade" time="100" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
 		<control type="list" id="90">
 			<description>STREAMS list</description>
