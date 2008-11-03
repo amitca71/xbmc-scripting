@@ -1,0 +1,279 @@
+<window>
+	<defaultcontrol>1412</defaultcontrol> 
+	<type>dialog</type>
+	<animation effect="fade" time="200">WindowOpen</animation>
+	<animation effect="fade" time="200">WindowClose</animation>
+	<controls>
+		<control type="group">
+			<posx>25</posx>
+			<posy>55</posy>
+			<width>650</width>
+			<height>500</height>
+
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>650</width>
+				<height>500</height>
+				<texture>dialog-panel.png</texture>
+			</control>
+
+			<!-- dialog title -->
+			<control type="label" id="1401">
+				<posx>30</posx>
+				<posy>10</posy>
+				<width>500</width>
+				<height>28</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<include>DialogTitle</include>
+			</control>
+
+			<!-- GENRES LIST GROUP -->
+			<control type="group" id="1410">
+				<posx>30</posx>
+				<posy>45</posy>
+				<width>300</width>
+				<height>380</height>
+
+				<control type="label" id="1411">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>230</width>
+					<height>28</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>0xFFFFFF99</textcolor>
+					<label></label>
+					<font>font11</font>
+				</control>
+
+				<control type="image">
+					<posx>0</posx>
+					<posy>30</posy>
+					<width>300</width>
+					<height>380</height>
+					<texture border="3">frame.png</texture>
+					<visible>Control.HasFocus(1412)|Control.HasFocus(1413)</visible>
+				</control>
+				<control type="list" id="1412">
+					<posx>8</posx>
+					<posy>32</posy>
+					<width>282</width>
+					<height>355</height>
+					<onleft>1423</onleft>
+					<onright>1413</onright>
+					<onup>1412</onup>
+					<ondown>1412</ondown>
+					<viewtype label="list">list</viewtype>
+					<pagecontrol>1413</pagecontrol>
+					<itemlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>282</width>
+							<height>25</height>
+							<texture>iconlist-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>25</width>
+							<height>25</height>
+							<info>ListItem.Icon</info>
+						</control>
+						<control type="label">
+							<posx>25</posx>
+							<posy>0</posy>
+							<width>282</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<textcolor>TextcolorBlack</textcolor>
+							<selectedcolor>listselectedcolor</selectedcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<height>25</height>
+							<width>282</width>
+							<visible>!Control.HasFocus(1412)</visible>
+							<texture>iconlist-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<height>25</height>
+							<width>282</width>
+							<visible>Control.HasFocus(1412)</visible>
+							<texture>iconlist-focus.png</texture>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>25</width>
+							<height>25</height>
+							<info>ListItem.Icon</info>
+						</control>
+						<control type="label">
+							<posx>25</posx>
+							<posy>0</posy>
+							<width>282</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<textcolor>TextcolorBlack</textcolor>
+							<selectedcolor>listselectedcolor</selectedcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="spincontrol" id="1413">
+					<description>Next page button</description>
+					<posx>260</posx>
+					<posy>390</posy>
+					<subtype>page</subtype>
+					<font>font12</font>
+					<onleft>1412</onleft>
+					<onright>1422</onright>
+					<ondown>1412</ondown>
+					<onup>1412</onup>
+					<textcolor>TextcolorBlack</textcolor>
+					<showonepage>true</showonepage>
+				</control>
+
+			</control> <!-- end group genres -->
+
+			<!-- TAGS LIST GROUP -->
+			<control type="group" id="1420">
+				<posx>310r</posx>
+				<posy>45</posy>
+				<width>300</width>
+				<height>380</height>
+
+				<control type="label" id="1421">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>230</width>
+					<height>28</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>0xFFFFFF99</textcolor>
+					<label></label>
+					<font>font11</font>
+				</control>
+
+				<control type="image">
+					<posx>0</posx>
+					<posy>30</posy>
+					<width>300</width>
+					<height>380</height>
+					<texture border="5">frame.png</texture>
+					<visible>Control.HasFocus(1422)|Control.HasFocus(1423)</visible>
+					<visible>true</visible>
+				</control>
+				<control type="list" id="1422">
+					<posx>8</posx>
+					<posy>32</posy>
+					<width>282</width>
+					<height>355</height>
+					<onleft>1413</onleft>
+					<onright>1423</onright>
+					<onup>1422</onup>
+					<ondown>1422</ondown>
+					<viewtype label="list">list</viewtype>
+					<pagecontrol>1423</pagecontrol>
+					<itemlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>25</width>
+							<height>25</height>
+							<info>ListItem.Icon</info>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>282</width>
+							<height>25</height>
+							<texture>iconlist-nofocus.png</texture>
+						</control>
+						<control type="label">
+							<posx>25</posx>
+							<posy>0</posy>
+							<width>282</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<textcolor>TextcolorBlack</textcolor>
+							<selectedcolor>listselectedcolor</selectedcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>25</width>
+							<height>25</height>
+							<info>ListItem.Icon</info>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<height>25</height>
+							<width>282</width>
+							<visible>!Control.HasFocus(1422)</visible>
+							<texture>iconlist-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<height>25</height>
+							<width>282</width>
+							<visible>Control.HasFocus(1422)</visible>
+							<texture>iconlist-focus.png</texture>
+						</control>
+						<control type="label">
+							<posx>25</posx>
+							<posy>0</posy>
+							<width>282</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<textcolor>TextcolorBlack</textcolor>
+							<selectedcolor>listselectedcolor</selectedcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="spincontrol" id="1423">
+					<description>Next page button</description>
+					<posx>45r</posx>
+					<posy>390</posy>
+					<subtype>page</subtype>
+					<font>font12</font>
+					<onleft>1422</onleft>
+					<onright>1412</onright>
+					<ondown>1422</ondown>
+					<onup>1422</onup>
+					<textcolor>TextcolorBlack</textcolor>
+					<showonepage>true</showonepage>
+				</control>
+
+			</control> <!-- end group tags -->
+
+		</control>
+
+
+	</controls>
+
+</window>

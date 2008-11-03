@@ -23,9 +23,9 @@ from shutil import rmtree
 
 # Script doc constants
 __scriptname__ = "DVDProfiler"
-__version__ = '1.6.3'
+__version__ = '1.6.4'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '23-10-2008'
+__date__ = '03-11-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -44,11 +44,10 @@ try:
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
 	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.")
 
 import update                                       # script update module
 from bbbLib import *								# requires __language__ to be defined
-#from bbbGUILib import *
 from bbbSkinGUILib import TextBoxDialogXML,DialogSelectXML
 from IMDbWinXML import IMDbWin
 from smbLib import *
@@ -461,14 +460,12 @@ class DVDProfiler(xbmcgui.WindowXML):
 						isNewSMBFile(smbPath, self.localCollectionFilename, \
 							self.remote, self.settings[self.SETTING_SMB_PC_IP]):
 					success = self.fetchCollectionSMB(True)
-					if not success:
-						title = __language__(953)
 				else:
 					success = True
 
 			# report failure reason
 			if not success:
-				if xbmcgui.Dialog().yesno(title, __language__(214)):
+				if xbmcgui.Dialog().yesno(__language__(953), __language__(214)):
 					forceConfig = True
 				else:
 					self.settings[self.SETTING_SMB_USE] = False
@@ -2047,12 +2044,14 @@ class Filters(xbmcgui.WindowXMLDialog):
 			buttonCode =  action.getButtonCode()
 			actionID   =  action.getId()
 		except: return
+		print "onAction() action=", action
 		if actionID in EXIT_SCRIPT or buttonCode in EXIT_SCRIPT:
 			self.close()
 
 	##############################################################################################
 	def onClick(self, controlID):
 		control = self.getControl(controlID)
+		print "onClick() control=", control
 		if controlID in (self.CLST_GENRES, self.CLST_TAGS):
 			lbl1 = control.getSelectedItem().getLabel()
 			selectedItem = control.getSelectedItem()
@@ -2251,7 +2250,7 @@ if not updated:
 # clean up on exit
 deleteFile(os.path.join(DIR_HOME, "temp.xml"))
 deleteFile(os.path.join(DIR_HOME, "temp.html"))
-moduleList = ['bbbLib', 'bbbGUILib', 'smbLib', 'IMDbWin', 'IMDbLib']
+moduleList = ['bbbLib', 'bbbSkinGUILib', 'smbLib', 'IMDbWin', 'IMDbLib']
 if not updated:
     moduleList += ['update']
 for m in moduleList:

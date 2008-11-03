@@ -16,7 +16,7 @@ import xbmc, xbmcgui
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "smbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '29-05-2008'
+__date__ = '27-10-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 import smb, nmb
@@ -24,7 +24,6 @@ import os.path
 import re
 from string import find
 from bbbLib import *
-from bbbGUILib import *
 
 __language__ = sys.modules[ "__main__" ].__language__
 
@@ -338,9 +337,7 @@ def selectSMB(currentValue=''):
 		except:
 			currentIdx = 0
 		# select from list
-		selectDialog = DialogSelect()
-		selectDialog.setup(__language__(971), rows=len(menuList), width=620)
-		selectedPos, action = selectDialog.ask(menuList, currentIdx)
+		selectedPos = xbmcgui.Dialog().select(__language__(971), menuList)
 		if selectedPos >= 0:
 			returnValue = menuList[selectedPos]
 

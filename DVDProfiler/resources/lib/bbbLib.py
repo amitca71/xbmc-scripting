@@ -18,7 +18,7 @@ import cookielib
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '01-09-2008'
+__date__ = '28-10-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -1487,7 +1487,7 @@ def prefixDirPath(fn, dirPath):
 
 #############################################################################################################
 # pluginType = music, video, pictures
-def installPlugin(pluginType, scriptname, checkOnly=True, msg=""):
+def installPlugin(pluginType, scriptname, checkOnly=True, successMsg=""):
 	debug("> installPlugin() %s %s checkOnly=%s"  % (pluginType, scriptname, checkOnly))
 	exists = False
 	name = scriptname + " Plugin"
@@ -1495,29 +1495,55 @@ def installPlugin(pluginType, scriptname, checkOnly=True, msg=""):
 	try:
 		copyFromPath = xbmc.translatePath( os.path.join( DIR_HOME, "Plugin" ) )
 		copyFromFile = os.path.join( copyFromPath, 'default.py')
-		copyToPath = xbmc.translatePath( os.path.join( "Q:", "plugins", pluginType, name ) )
+		copyToPath = xbmc.translatePath( os.path.join( "Q:", os.sep, "plugins", pluginType, name ) )
 		copyToFile = os.path.join( copyToPath, 'default.py')
+		debug("%s -> %s" % (copyFromPath, copyToPath))
 
 		# set not exist if; path/file missing or previous installed is older
 		copyFromFileSecs = os.path.getmtime(copyFromFile)
 		copyToFileSecs = os.path.getmtime(copyToFile)
 		debug( "comparing fromSecs %d  toSecs %d"  % (copyFromFileSecs, copyToFileSecs))
-		exists = fileExist(copyToFile) and copyFromFileSecs <= copyToFileSecs
+		exists = (fileExist(copyToFile) and copyFromFileSecs <= copyToFileSecs)
 	except:
-		debug( "paths dont exist." )
+		debug( str(sys.exc_info()[ 1 ]))
 
-	if not checkOnly:
+	if not checkOnly and not exists:
 		debug("do plugin installation...")
-		try:
-			from shutil import copytree, rmtree
+		dialogProgress.create("Installing Plugin ...", copyToPath)
+		from shutil import copytree, rmtree
+		installed = False
+
+		RETRY_MAX = 5
+		for retry in range(RETRY_MAX):
+			errMsg = ''
 			try:
 				rmtree( copyToPath,ignore_errors=True )
-			except: pass
-			copytree( copyFromPath, copyToPath )
-			dialogOK(name, msg)
-		except:
-			msg = "Plugin Failed\n" + str(sys.exc_info()[ 1 ])
-			dialogOK(__scriptname__, msg)
+				debug("existing plugin path removed: " + copyToPath)
+			except:
+				errMsg = "rmtree error:\n" + str(sys.exc_info()[ 1 ])
+			else:
+				try:
+					xbmc.sleep(1000)
+					copytree( copyFromPath, copyToPath )
+					installed = True
+					break
+				except:
+					errMsg = "copytree error:\n" + str(sys.exc_info()[ 1 ])
+
+			if errMsg:
+				debug(errMsg)
+				if retry <= RETRY_MAX:
+					percent = int( retry * 100.0 / RETRY_MAX )
+					dialogProgress.update(percent, copyToPath, errMsg)
+				xbmc.sleep(1000)
+
+			retry += 1
+		dialogProgress.close()
+
+		if installed:
+			dialogOK(name, successMsg)
+		else:
+			dialogOK("Failed to install plugin!", copyToPath, errMsg)
 
 	debug("< installPlugin() exists=%s" % exists)
 	return exists
@@ -1592,4 +1618,3 @@ def getLanguagePath():
 		language = 'English'
 	debug("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
 	return base_path, language
-
