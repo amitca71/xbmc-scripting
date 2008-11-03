@@ -20,7 +20,7 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '29-09-2008'
+__date__ = '03-11-2008'
 __version__ = "1.7.4"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
@@ -1088,7 +1088,7 @@ class Main:
 			handleException("_copy_folder()", __language__( 308 ))
 
 	######################################################################################
-	def _copy_includes(self):
+	def _copy_includes(self): 
 		xbmc.output( "_copy_includes() ")
 
 		TOTAL = len(self.includes)
