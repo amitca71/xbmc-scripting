@@ -103,7 +103,7 @@ class GUI( xbmcgui.WindowXMLDialog ):
 
     def change_settings( self ):
         import settings
-        settings = settings.GUI( "script-KCP-settings.xml", resource_path, "Default", language=_ )
+        settings = settings.GUI( "script-KCP-settings.xml", os.getcwd(), "Default", language=_ )
         settings.doModal()
         if ( settings.changed ):
             self.wrt54g._get_settings()
