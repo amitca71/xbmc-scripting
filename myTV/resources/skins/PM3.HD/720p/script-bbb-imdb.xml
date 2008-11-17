@@ -4,8 +4,8 @@
 	<type>dialog</type>
 	<coordinates>
 		<system>1</system>
-		<posx>180</posx>
-		<posy>50</posy>
+		<posx>190</posx>
+		<posy>40</posy>
 	</coordinates>
 	<controls>
 	<include>dialogeffect</include>
@@ -58,6 +58,8 @@
 			<label>&lt;</label>
 			<font>font12</font>
 			<align>center</align>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<onleft>106</onleft>
 			<onright>106</onright>
 			<onup>107</onup>
@@ -80,6 +82,8 @@
 			<label>&gt;</label>
 			<font>font12</font>
 			<align>center</align>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<onleft>103</onleft>
 			<onright>103</onright>
 			<onup>107</onup>
@@ -93,8 +97,10 @@
 			<height>15</height>
 			<align>center</align>
 			<label></label>
-			<font>font12</font>
+			<font>font10</font>
 			<textcolor>FFFFFFCC</textcolor>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<onleft>103</onleft>
 			<onright>106</onright>
 			<onup>103</onup>
@@ -529,7 +535,7 @@
 					<posy>0</posy>
 					<width>255</width>
 					<height>20</height>
-					<texture>button-nofocus.png</texture>
+					<texture border="3">button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>
@@ -563,7 +569,7 @@
 					<width>255</width>
 					<height>20</height>
 					<visible>!Control.HasFocus(130)</visible>
-					<texture>button-nofocus.png</texture>
+					<texture border="3">button-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<posx>0</posx>
@@ -571,7 +577,7 @@
 					<width>255</width>
 					<height>20</height>
 					<visible>Control.HasFocus(130)</visible>
-					<texture>button-focus.png</texture>
+					<texture border="3">button-focus.png</texture>
 				</control>
 				<control type="label">
 					<posx>3</posx>

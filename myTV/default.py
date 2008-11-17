@@ -49,7 +49,7 @@ try:
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
 	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.")
 
 import update                                       # script update module
 from bbbLib import *								# requires __language__ to be defined
@@ -60,7 +60,8 @@ from wol import WakeOnLan,CheckHost
 from smbLib import *
 from AlarmClock import AlarmClock
 from IMDbWinXML import IMDbWin
- 
+from bbbSkinGUILib import TextBoxDialogXML
+
 # GLOBALS
 global timerthread, dataSource, saveProgramme, config, mytvFavShows
 dataSource = None
@@ -2133,7 +2134,7 @@ def viewReadme():
 	doc = readFile(fn)
 	if not doc:
 		doc = "Readme not found: " + fn
-	tbd = TextBoxDialogXML("script-bbb-textbox.xml", DIR_HOME, "Default")
+	tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
 	tbd.ask(__language__(550), doc)
 	del tbd
 	debug("< viewReadme()")
@@ -2146,7 +2147,7 @@ def viewChangelog():
 	if not doc:
 		doc = "Changelog not found: " + fn
 
-	tbd = TextBoxDialogXML("script-bbb-textbox.xml", DIR_HOME, "Default")
+	tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
 	tbd.ask(__language__(551), doc)
 	del tbd
 	debug("< viewChangelog()")
@@ -4569,40 +4570,6 @@ def updateScript(silent=False):
 #################################################################################################################
 def validProgramme(title):
     return (title and title not in (__language__(204), __language__(203)))
-
-#################################################################################################################
-class TextBoxDialogXML( xbmcgui.WindowXML ):
-	""" Create a skinned textbox window """
-	def __init__( self, *args, **kwargs):
-		pass
-		
-	def onInit( self ):
-		xbmc.output( "TextBoxDialogXML.onInit()" )
-		self.getControl( 3 ).setLabel( self.title )
-		self.getControl( 5 ).setText( self.text )
-
-	def onClick( self, controlId ):
-		pass
-
-	def onFocus( self, controlId ):
-		pass
-
-	def onAction( self, action ):
-		try:
-			actionID = action.getId()
-			if not actionID:
-				actionID = action.getButtonCode()
-		except: return
-
-		if actionID in CANCEL_DIALOG + EXIT_SCRIPT:
-			self.close()
-
-	def ask(self, title, text ):
-		xbmc.output("TextBoxDialogXML().ask()")
-		self.title = title
-		self.text = text
-		self.doModal()		# causes window to be drawn
-
 
 #################################################################################################################
 def downloadLogos():
