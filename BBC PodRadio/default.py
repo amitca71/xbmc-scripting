@@ -43,7 +43,7 @@ try:
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
 	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.")
 
 from bbbLib import *
 from bbbSkinGUILib import TextBoxDialogXML
