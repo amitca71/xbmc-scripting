@@ -35,6 +35,8 @@
     <string id="318">Alle FTP Server unerreichbar!</string>
     <string id="319">Keine Web Builds gefunden!</string>
     <string id="320">SFV Eingangs-Dateiname nicht gefunden![CR]Fortfahren?</string>
+    <string id="321">Kein Datum im Archivnamen gefunden!</string>
+    <string id="322">RAR ist sehr groß und wird dadurch oft nicht entpackt![CR](Tipp: Erneut packen, ohne Zusatz-Skins. ~ 60mb)[CR]Trotzdem fortfahren ?</string>
 
     <!-- Yes/No buttons -->
     <string id="400">Download</string>
@@ -89,6 +91,8 @@
     <string id="531">Freemem=%sMB  Empfohlen=%sMB</string>
     <string id="532">Fortfahren?</string>
     <string id="533">Nur runterladen oder runterladen und installieren?</string>
+    <string id="534">Jetzt prüfen</string>
+    <string id="535">Datum eingeben</string>
 
     <!-- Menu Titles -->
     <string id="600">Hauptmenü</string>
@@ -105,6 +109,7 @@
     <string id="619">Nach Script-Updates suchen</string>
     <string id="620">Installiere lokale RAR:</string>
     <string id="621">Installiere altes Build aus dem Web</string>
+    <string id="622">Nach neuem T3CH Build suchen</string>
 
     <!-- Settings Options -->
     <string id="630">Laufwerk der Dashverknüpfung:</string>
@@ -117,6 +122,7 @@
     <string id="637">Lösch- und Kopierlisten zurücksetzen</string>
     <string id="638">Vor dem Löschen der RAR nachfragen?</string>
     <string id="639">Script Readme/Changelog anzeigen</string>
+    <string id="640">Beim Script-Start nach neuem T3CH suchen?</string>
 
     <!-- Misc Menu Options Options -->
     <string id="650">Beenden</string>
