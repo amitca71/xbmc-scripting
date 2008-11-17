@@ -35,6 +35,8 @@
     <string id="318">All FTP servers unavailable!</string>
     <string id="319">No Web Builds found!</string>
     <string id="320">SFV filename entry not found![CR]Continue anyway?</string>
+    <string id="321">Unable to find a date in archive filename!</string>
+    <string id="322">RAR is very large and probably won't unpack![CR](Tip: Repack without unwanted skin. ~ 60mb)[CR]Continue anyway ?</string>
 
     <!-- Yes/No buttons -->
     <string id="400">Download</string>
@@ -89,6 +91,8 @@
     <string id="531">Freemem=%sMB  Recommended=%sMB</string>
     <string id="532">Continue ?</string>
     <string id="533">Download Only or Download and Install ?</string>
+    <string id="534">Check Now</string>
+    <string id="535">Enter a date</string>
   
     <!-- Menu Titles -->
     <string id="600">Menu</string>
@@ -105,6 +109,7 @@
     <string id="619">Check For Script Update</string>
     <string id="620">Install From Local:</string>
     <string id="621">Install Old Build From Web</string>
+    <string id="622">Check For New T3CH Build</string>
 
     <!-- Settings Options -->
     <string id="630">Dash Shortcut Drive:</string>
@@ -117,6 +122,7 @@
     <string id="637">Reset Custom Copy and Delete Lists</string>
     <string id="638">Prompt Before Deleting T3CH Archive file?</string>
     <string id="639">View Script Readme/Changelog</string>
+    <string id="640">Check For New T3CH on Script Startup?</string>
 
     <!-- Misc Menu Options/Prompts -->
     <string id="650">Exit</string>
