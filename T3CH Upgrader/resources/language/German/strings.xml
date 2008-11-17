@@ -36,7 +36,7 @@
     <string id="319">Keine Web Builds gefunden!</string>
     <string id="320">SFV Eingangs-Dateiname nicht gefunden![CR]Fortfahren?</string>
     <string id="321">Kein Datum im Archivnamen gefunden!</string>
-    <string id="322">RAR ist sehr groß und wird dadurch oft nicht entpackt![CR](Tipp: Erneut packen, ohne Zusatz-Skins. ~ 60mb)[CR]Trotzdem fortfahren ?</string>
+    <string id="322">RAR ist sehr groß und wird dadurch oft nicht entpackt![CR](Tipp: Erneut packen, ohne zusätzliche Skins. ~ 60mb)[CR]Trotzdem fortfahren ?</string>
 
     <!-- Yes/No buttons -->
     <string id="400">Download</string>
