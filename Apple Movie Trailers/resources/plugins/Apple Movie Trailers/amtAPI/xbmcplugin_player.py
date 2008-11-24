@@ -43,7 +43,7 @@ class _Info:
 
 class Main:
     # base paths
-    BASE_CACHE_PATH = xbmc.translatePath( os.path.join( "P:\\Thumbnails", "Video" ) )
+    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Video" )
 
     def __init__( self ):
         self._get_settings()

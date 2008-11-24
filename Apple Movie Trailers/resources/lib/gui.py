@@ -227,7 +227,7 @@ class GUI( xbmcgui.WindowXML ):
                             title = category.title
                         thumbnail = "amt-generic-%s%s.png" % ( ( "genre", "studio", "actor", )[ abs( self.category_id ) - 1 ], ( "-i", "", )[ category.completed ], )
                         if ( self.main_category == ACTORS ):
-                            actor_path = xbmc.translatePath( os.path.join( "P:\\Thumbnails", "Video", xbmc.getCacheThumbName( "actor" + category.title )[ 0 ], xbmc.getCacheThumbName( "actor" + category.title ) ) )
+                            actor_path = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Video", xbmc.getCacheThumbName( "actor" + category.title )[ 0 ], xbmc.getCacheThumbName( "actor" + category.title ) )
                             thumbnail = ( thumbnail, actor_path, )[ os.path.isfile( actor_path ) ]
                         count = "(%d)" % ( category.count, )
                         list_item = xbmcgui.ListItem( title, count, thumbnail, thumbnail )
@@ -389,7 +389,7 @@ class GUI( xbmcgui.WindowXML ):
             thumbnail = "amt-generic-%sactor.png" % ( "no", "" )[ self.trailers.movies[ self.trailer_pos ].cast != [] ]
             if ( self.cast_exists ):
                 for actor in self.trailers.movies[ self.trailer_pos ].cast:
-                    actor_path = xbmc.translatePath( os.path.join( "P:\\Thumbnails", "Video", xbmc.getCacheThumbName( "actor" + actor[ 0 ] )[ 0 ], xbmc.getCacheThumbName( "actor" + actor[ 0 ] ) ) )
+                    actor_path = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Video", xbmc.getCacheThumbName( "actor" + actor[ 0 ] )[ 0 ], xbmc.getCacheThumbName( "actor" + actor[ 0 ] ) )
                     actor_thumbnail = ( thumbnail, actor_path, )[ os.path.isfile( actor_path ) ]
                     actual_icon = ( "", actor_thumbnail, )[ actor_thumbnail != thumbnail ]
                     self.getControl( self.CONTROL_CAST_LIST ).addItem( xbmcgui.ListItem( actor[ 0 ], "", actual_icon, actor_thumbnail ) )

@@ -12,7 +12,7 @@ __version__ = "pre-0.99.7.1"
 __svn_revision__ = 0
 
 # Shared resources
-BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join( os.getcwd(), "resources" ) )
+BASE_RESOURCE_PATH = os.path.join( os.getcwd(), "resources" )
 sys.path.append( os.path.join( BASE_RESOURCE_PATH, "lib" ) )
 # append the proper platforms folder to our path, xbox is the same as win32
 env = ( os.environ.get( "OS", "win32" ), "win32", )[ os.environ.get( "OS", "win32" ) == "xbox" ]

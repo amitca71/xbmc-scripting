@@ -32,9 +32,9 @@ RECENTLY_ADDED = -11
 MULTIPLE_TRAILERS = -12
 CUSTOM_SEARCH = -99
 # base paths
-BASE_DATA_PATH = xbmc.translatePath( os.path.join( "T:\\script_data", __scriptname__ ) )
-BASE_SETTINGS_PATH = xbmc.translatePath( os.path.join( "P:\\script_data", os.path.basename( os.getcwd() ), "settings.txt" ) )
-BASE_DATABASE_PATH = xbmc.translatePath( os.path.join( "P:\\script_data", os.path.basename( os.getcwd() ), "AMT.db" ) )
+BASE_DATA_PATH = os.path.join( xbmc.translatePath( "T:\\script_data" ), __scriptname__ )
+BASE_SETTINGS_PATH = os.path.join( xbmc.translatePath( "P:\\script_data" ), os.path.basename( os.getcwd() ), "settings.txt" )
+BASE_DATABASE_PATH = os.path.join( xbmc.translatePath( "P:\\script_data" ), os.path.basename( os.getcwd() ), "AMT.db" )
 BASE_RESOURCE_PATH = sys.modules[ "__main__" ].BASE_RESOURCE_PATH
 # special button codes
 SELECT_ITEM = ( 11, 256, 61453, )
@@ -91,14 +91,14 @@ def install_plugin( plugin_list, message=False ):
                 dialog.update(-1, _( 725 ), "", _( 67 ) )
                 from shutil import copytree, rmtree, copyfile
                 # the main plugin path to install to
-                plugin_install_path = xbmc.translatePath( os.path.join( drive + "plugins", "video", plugins[ plugin ] ) )
+                plugin_install_path = os.path.join( xbmc.translatePath( drive + "plugins" ), "video", plugins[ plugin ] )
                 # path where plugin is copied from
-                plugin_copy_path = xbmc.translatePath( os.path.join( BASE_RESOURCE_PATH, "plugins", plugins[ plugin ] ) )
+                plugin_copy_path = os.path.join( BASE_RESOURCE_PATH, "plugins", plugins[ plugin ] )
                 # we need pysqlite2 for database access
-                pysqlite2_install_path = xbmc.translatePath( os.path.join( drive + "plugins", "video", plugins[ plugin ], "pysqlite2" ) )
+                pysqlite2_install_path = os.path.join( xbmc.translatePath( drive + "plugins" ), "video", plugins[ plugin ], "pysqlite2" )
                 # path where pysqlite2 is copied from
                 env = ( os.environ.get( "OS", "win32" ), "win32", )[ os.environ.get( "OS", "win32" ) == "xbox" ]
-                pysqlite2_copy_path = xbmc.translatePath( os.path.join( BASE_RESOURCE_PATH, "platform_libraries", env, "pysqlite2" ) )
+                pysqlite2_copy_path = os.path.join( BASE_RESOURCE_PATH, "platform_libraries", env, "pysqlite2" )
                 # remove an existing install if it exists
                 if ( os.path.isdir( plugin_install_path ) ):
                     rmtree( plugin_install_path )
@@ -107,17 +107,17 @@ def install_plugin( plugin_list, message=False ):
                 # copy pysqlite2
                 copytree( pysqlite2_copy_path, pysqlite2_install_path )
                 # default.tbn install path
-                thumbnail_install_path = xbmc.translatePath( os.path.join( drive + "plugins", "video", plugins[ plugin ], "default.tbn" ) )
+                thumbnail_install_path = os.path.join( xbmc.translatePath( drive + "plugins" ), "video", plugins[ plugin ], "default.tbn" )
                 # folder.jpg install path (probably not needed)
-                folderjpg_install_path = xbmc.translatePath( os.path.join( drive + "plugins", "video", plugins[ plugin ], "folder.jpg" ) )
+                folderjpg_install_path = os.path.join( xbmc.translatePath( drive + "plugins" ), "video", plugins[ plugin ], "folder.jpg" )
                 # get the cached thumb name
                 cached_thumbnail = xbmc.getCacheThumbName( os.path.join( drive + "plugins", "video", plugins[ plugin ] + "\\" ) )
                 # cached thumb path (we delete the existing, so our plugin re-caches the new thumb)
-                cached_thumbnail_path = xbmc.translatePath( os.path.join( "P:\\Thumbnails", "Programs", cached_thumbnail ) )
+                cached_thumbnail_path = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Programs", cached_thumbnail )
                 # get the root cached thumb name
                 root_cached_thumbnail = xbmc.getCacheThumbName( "plugin://video/"+ plugins[ plugin ] + "/" )
                 # root cached thumb path (deleting does not work, so we overwrite the existing)
-                root_cached_thumbnail_path = xbmc.translatePath( os.path.join( "P:\\Thumbnails", "Programs", root_cached_thumbnail ) )
+                root_cached_thumbnail_path = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Programs", root_cached_thumbnail )
                 # copy default.tbn
                 copyfile( thumbnail_copy_path, thumbnail_install_path )
                 # copy folder.jpg (probably not needed)
@@ -276,7 +276,7 @@ class Settings:
             "skin": "Default",
             "trailer_quality": 2,
             "mode": 0,
-            "save_folder": xbmc.translatePath( "Q:\\" ),
+            "save_folder": xbmc.translatePath( "U:\\" ),
             "thumbnail_display": 0,
             "fade_thumb": True,
             "startup_category_id": 10,

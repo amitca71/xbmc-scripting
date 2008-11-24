@@ -206,8 +206,8 @@ class Trivia( xbmcgui.WindowXML ):
 
 class Main:
     # base paths
-    BASE_CACHE_PATH = xbmc.translatePath( os.path.join( "P:\\Thumbnails", "Video" ) )
-    BASE_DATA_PATH = xbmc.translatePath( os.path.join( "T:\\script_data", sys.modules[ "__main__" ].__script__ ) )
+    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Video" )
+    BASE_DATA_PATH = os.path.join( xbmc.translatePath( "T:\\script_data" ), sys.modules[ "__main__" ].__script__ )
 
     def __init__( self ):
         self._get_settings()

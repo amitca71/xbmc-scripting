@@ -14,7 +14,7 @@ from pysqlite2 import dbapi2 as sqlite
 
 class Main:
     # base paths
-    BASE_SKIN_THUMBNAIL_PATH = xbmc.translatePath( os.path.join( "Q:\\skin", xbmc.getSkinDir(), "media", sys.modules[ "__main__" ].__plugin__ ) )
+    BASE_SKIN_THUMBNAIL_PATH = os.path.join( xbmc.translatePath( "Q:\\skin" ), xbmc.getSkinDir(), "media", sys.modules[ "__main__" ].__plugin__ )
     # TODO: remove all references
     #BASE_PLUGIN_THUMBNAIL_PATH = os.path.join( sys.modules[ "__main__" ].BASE_PATH, "thumbnails" )
 
@@ -32,10 +32,12 @@ class Main:
         msg3 = xbmc.getLocalizedString( 30602 )
         # no database was found so notify XBMC we're finished, false so no blank list is shown
         xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=False )
+        # we use "U:\\" for linux, windows and osx for platform mode
+        drive = ( "U:\\", "Q:\\", )[ os.environ.get( "OS", "xbox" ) == "xbox" ]
         # ask to run script to create the database
-        if ( os.path.isfile( xbmc.translatePath( os.path.join( "Q:\\scripts", sys.modules[ "__main__" ].__script__, "default.py" ) ) ) ):
+        if ( os.path.isfile( os.path.join( xbmc.translatePath( drive + "scripts" ), sys.modules[ "__main__" ].__script__, "default.py" ) ) ):
             if ( xbmcgui.Dialog().yesno( sys.modules[ "__main__" ].__plugin__, msg1, msg3 ) ):
-                xbmc.executebuiltin( "XBMC.RunScript(%s)" % ( xbmc.translatePath( os.path.join( "Q:\\scripts", sys.modules[ "__main__" ].__script__, "default.py" ) ), ) )
+                xbmc.executebuiltin( "XBMC.RunScript(%s)" % ( os.path.join( xbmc.translatePath( drive + "scripts" ), sys.modules[ "__main__" ].__script__, "default.py" ) ), )
         else:
             ok = xbmcgui.Dialog().ok( sys.modules[ "__main__" ].__plugin__, msg1, msg2, sys.modules[ "__main__" ].__svn_url__ )
 
