@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <string id="0">T3CH XBMC-päivitys</string>
-    <!--  Finnish v.15.7.2008 -->
+    <!--  Finnish v.24.11.2008 -->
+
     <!-- Browse dialog headings -->
     <string id="200">Asennuspolku (esim. E:\apps)</string>
     <string id="201">Käynnistyvän dashin nimi:</string>
     <string id="202">Valitse käynnistyvä asema:</string>
     <string id="203">Valitse tiedosto:</string>
     <string id="204">Valitse polku:</string>
-    <string id="205">Valitse T3CH:</string>
-    <string id="206">Poista vanha T3CH:</string>
+    <string id="205">Valitse T3CH-asennuspaketti:</string>
+    <string id="206">Poista  T3CH-asennuspaketti:</string>
     <string id="207">Anna tiedostonimi:</string>
 
     <!-- Error messages -->
@@ -28,16 +29,18 @@
     <string id="312">Purkupolkua ei löydy! Yritä uudelleen.</string>
     <string id="313">Rajoitettu tiedosto tai kansio!</string>
     <string id="314">Purku kansio on jo olemassa, kirjoitetaanko sen päälle ?</string>
-    <string id="315">RAR-paketin SFV tarkistusluvussa on virhe![CR]Paketti on mahdollisesti vioittunut, yritä ladata se uudelleen.</string>
-    <string id="316">Asennus asemassa ei ole tarpeeksi tyhjää tilaa!</string>
+    <string id="315">RAR-paketin SFV tarkistuksessa on virhe![CR]Paketti on mahdollisesti vioittunut, yritä ladata se uudelleen.</string>
+    <string id="316">Asennus asemassa ei ole tarpeeksi vapaata tilaa!</string>
     <string id="317">Vapaata muistia on liian vähän, paketin purku saattaa epäonnistua.</string>
     <string id="318">Yhtään FTP-palvelinta ei ole käytettävissä!</string>
     <string id="319">Verkosta ei löydy T3ch-pakettia!</string>
     <string id="320">SFV tiedostonimeä ei löydy![CR]Jatketaanko joka tapauksessa?</string>
+    <string id="321">Paketin nimestä ei löydy päiväystä</string>
+    <string id="322">RAR-paketti on erittäin suuri eikä sitä välttättä pystytä purkamaan![CR](Vinkki: pakkaa uudelleen ilman ylimääräisiä skinejä. ~ 60Mb)[CR]Jatketaanko kuitenkin ?</string>
 
     <!-- Yes/No buttons -->
     <string id="400">Lataa</string>
-    <string id="401">Ohita</string>
+    <string id="401">Peru</string>
     <string id="402">Kyllä</string>
     <string id="403">Ei</string>
     <string id="404">Vaihda</string>
@@ -88,7 +91,9 @@
     <string id="531">Muistia vapaana=%sMB  Suositus=%sMB</string>
     <string id="532">Jatketaanko ?</string>
     <string id="533">Pelkkä lataus vai lataus ja asennus ?</string>
-    
+    <string id="534">Tarkista</string>
+    <string id="535">Anna päivämäärä</string>
+
     <!-- Menu Titles -->
     <string id="600">Päävalikko</string>
     <string id="601">Asetukset</string>
@@ -104,18 +109,20 @@
     <string id="619">Päivitä skripti</string>
     <string id="620">Asenna paikallisesta sijainnista:</string>
     <string id="621">Asenna vanha versio internetistä</string>
-      
+    <string id="622">Nouda uusi T3CH-asennuspaketti</string>
+
    <!-- Settings Options -->
     <string id="630">Dashin sijainti asema:</string>
     <string id="631">Dashin kynnistysnimi:</string>
     <string id="632">Asennuspolku:</string>
     <string id="633">Ilmoita uudesta T3CH-paketista?</string>
-    <string id="634">Tarkista päivitykset käynnistyessä?</string>
+    <string id="634">Tarkista päivitykset käynnistyessä</string>
     <string id="635">Siirrä UserData T3CH-kansioon?</string>
     <string id="636">Oletus asetukset</string>
     <string id="637">Palauta oletus tiedostokopio ja -poisto luettelot</string>
     <string id="638">Kysy ennen T3CH varmuuskopion poistoa?</string>
     <string id="639">Näytä skriptin ohje/muutoshistoria</string>
+    <string id="640">Tarkistaanko päivitykset käynnistyessä?</string>
 
     <!-- Misc Menu Options Options -->
     <string id="650">Poistu</string>
