@@ -119,13 +119,25 @@ class LyricsFetcher:
             #exec jsonSource
             # Create sorted return list
             songs = re.findall( "<item>(.*)</item>", jsonSource )
-            songs.sort()
+            
+            songs = self._remove_dupes( songs )
+            artist = urllib.unquote( artist )
             song_list = []
             for song in songs:
                 song_list += [ [ song, ( artist, song, ) ] ]
             return song_list
         except:
             return None
+
+    def _remove_dupes( self, song_list ):
+        """ Returns a sorted list with duplicates removed """
+        # this is apparently the fastest method
+        dupes = {}
+        for x in song_list:
+            dupes[ x ] = x
+        new_song_list = dupes.values()
+        new_song_list.sort()
+        return new_song_list
 
     def _format_param( self, param, exception=True ):
         """ Converts param to the form expected by www.lyricwiki.org """
@@ -142,10 +154,13 @@ debugWrite = False
 
 if ( __name__ == "__main__" ):
     # used to test get_lyrics() 
-    artist = [ "Iron & Wine", "The Charlie Daniels Band", "ABBA", "Jem","Stealers Wheel","Paul McCartney & Wings","ABBA","AC/DC", "Tom Jones", "Kim Mitchell", "Ted Nugent", "Blue Öyster Cult", "The 5th Dimension", "Big & Rich", "Don Felder" ]
-    song = [ "On Your Wings", "(What This World Needs Is) A Few More Rednecks", "S.O.S","24","Stuck in the middle with you","Band on the run", "Dancing Queen", "T.N.T.", "She's A Lady", "Go for Soda", "Free-for-all", "(Don't Fear) The Reaper", "Age of Aquarius", "Save a Horse (Ride a Cowboy)", "Heavy Metal (Takin' a Ride)" ]
-    for cnt in range( 2,3 ):
-        lyrics = LyricsFetcher().get_lyrics( artist[ cnt ], song[ cnt ] )
+    artists = [ "Iron & Wine", "The Charlie Daniels Band", "ABBA", "Jem","Stealers Wheel","Paul McCartney & Wings","ABBA","AC/DC", "Tom Jones", "Kim Mitchell", "Ted Nugent", "Blue Öyster Cult", "The 5th Dimension", "Big & Rich", "Don Felder" ]
+    songs = [ "On Your Wings", "(What This World Needs Is) A Few More Rednecks", "S.O.S","24","Stuck in the middle with you","Band on the run", "Dancing Queen", "T.N.T.", "She's A Lady", "Go for Soda", "Free-for-all2", "(Don't Fear) The Reaper", "Age of Aquarius", "Save a Horse (Ride a Cowboy)", "Heavy Metal (Takin' a Ride)" ]
+    for cnt in range( 1, 2 ):
+        lyrics = LyricsFetcher().get_lyrics( artists[ cnt ], songs[ cnt ] )
+        print "__________________________________"
+        print "%s - %s" % ( artists[ cnt ], songs[ cnt ], )
+        print "__________________________________"
     
         # print the results
         if ( isinstance( lyrics, list ) ):
@@ -154,6 +169,5 @@ if ( __name__ == "__main__" ):
                 print song
             print "\nSong 1 lyrics:\n____________________"
             lyrics = LyricsFetcher().get_lyrics_from_list( lyrics[ 0 ][ 1 ] )
-            print lyrics.encode( "utf-8", "ignore" )
-        else:
-            print lyrics.encode( "utf-8", "ignore" )
+        print lyrics#.encode( "utf-8", "ignore" )
+        print

@@ -14,7 +14,7 @@ __version__ = "1.6.0"
 __svn_revision__ = 0
 
 # Shared resources 
-BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join( os.getcwd(), "resources" ) )
+BASE_RESOURCE_PATH = os.path.join( os.getcwd(), "resources" )
 __language__ = xbmc.Language( os.getcwd() ).getLocalizedString
 
 # Main team credits 
