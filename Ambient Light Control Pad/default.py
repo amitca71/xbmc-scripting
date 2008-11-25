@@ -33,6 +33,7 @@ from PIL import Image
 
 class windowOverlay(xbmcgui.WindowDialog):
     def __init__(self):
+        xbmcgui.WindowDialog.__init__(self)
         self.setupGUI()
         if (not self.SUCCEEDED): self.close()
         else:
@@ -272,9 +273,9 @@ class windowOverlay(xbmcgui.WindowDialog):
 
 class demo(threading.Thread):
     def __init__(self, win):
+        threading.Thread.__init__(self)
         self.win         = win
         self.switch     = False
-        threading.Thread.__init__(self)
         self.start()
 
     def run(self):
@@ -340,3 +341,4 @@ def main():
 
 if (__name__ == '__main__'):
     main()
+    sys.modules.clear()
