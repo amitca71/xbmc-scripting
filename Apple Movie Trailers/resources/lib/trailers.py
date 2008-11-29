@@ -546,7 +546,7 @@ class Trailers:
                 actors = list()
                 for i in range( 5, 10 ):
                     actor = SetFontStyles[ i ].text.replace( "(The voice of)", "" ).title().strip()
-                    if ( len( actor ) and not actor.startswith( "." ) and actor != "1:46" and not actor.startswith( "Posted:" ) and not actor.startswith( "Runtime:" ) and not actor == "Available Clips" and not actor == "Official Website" and not actor == "Trailer" ) :
+                    if ( len( actor ) and not actor.startswith( "." ) and actor != "1:46" and not actor.startswith( "Posted:" ) and not actor.startswith( "Runtime:" ) and not actor == "Available Clips" and not actor == "Official Website" and not actor.startswith( "Trailer" ) ) :
                         actors += [ ( actor, ) ]
                         actor_id = records.fetch( self.query[ "actor_exists" ], ( actor, ) )
                         if ( actor_id is None ): idActor = records.add( "actors", ( actor, ) )
