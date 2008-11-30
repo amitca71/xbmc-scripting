@@ -15,10 +15,10 @@
     <string id="108">Ohjelman data on hukassa![CR]Mahdollisesti ohjelma mallin kääntövirhe?</string>
     <string id="109">Ohelmatietojen tallennus epäonnistui</string>
     <string id="110">Viallinen mallitiedosto[CR]Sisältää tuntemattomia arvoja.</string>
-    <string id="111">DataSource virhe!</string>
+    <string id="111">Ohjelmien tietolähde virhe!</string>
     <string id="112">Kanavalistaa ei voida ladata</string>
     <string id="113">Kanavia ei löydy!</string>
-    <string id="115">DataSourcen tuonti epäonnistui</string>
+    <string id="115">Ohjelmien tietolähteen tuonti epäonnistui</string>
     <string id="116">Tallennuksen tuonti epäonnistui</string>
     <string id="117">Sopivia ei löydy!</string>
     <string id="118">URL:ia ei löydy!</string>
@@ -41,9 +41,9 @@
     <string id="137">Ohjelman tallennusvirhe!</string>
 
     <!-- Status messages -->
-    <string id="200">Poista listat?</string>
-    <string id="201">Poista kanavalista?</string>
-    <string id="202">Video tiedostojen paikantaminen</string>
+    <string id="200">Poistetaanko listat?</string>
+    <string id="201">Poistetaanko kanavalista?</string>
+    <string id="202">Videotiedostojen paikantaminen</string>
     <string id="203">Kanava ei ole käytettävissä</string>
     <string id="204">Ei ohjelmaa</string>
     <string id="205">Ei tietoja</string>
@@ -53,11 +53,11 @@
     <string id="209">Ladataan kuva</string>
     <string id="210">Viikko: %s -> %s (valitse tiedoista)</string>
     <string id="211">Päivä: %s (valitse tiedoista)</string>
-    <string id="212">Ladataan kanava listausta</string>
+    <string id="212">Ladataan kanavalistausta</string>
     <string id="213">Ei suosikkiohjelmia</string>
     <string id="214"></string>
     <string id="215">Valittu teema: %s</string>
-    <string id="216">Asenneus ei ole toimiva, asennetaanko nyt?</string>
+    <string id="216">Asennus ei ole toimiva, asennetaanko nyt?</string>
 
     <!-- script common messages -->
     <string id="300">Odota hetki ...</string>
@@ -108,39 +108,39 @@
     <string id="420">Valitse/Näytä</string>
     <string id="421">HD kanavat</string>
     <string id="422">Nauhoita</string>
-    <string id="423">Navigointi listat</string>
+    <string id="423">Valintalista</string>
     <string id="424">IMDb</string>
     <string id="425">Valikko</string>
     <string id="426">Keskeytä nauhoitus</string>
     <string id="427">SD kanavat</string>
 
     <!-- menu options -->
-    <string id="500">Lopeta</string>
+    <string id="500">Poistu</string>
     <string id="501">Päävalikko</string>
     <string id="502">Asetukset</string>
     <string id="503">Toista nauhoitus</string>
     <string id="504">Näytä HD-kanavat</string>
     <string id="505">Näytä kaikki kanavat</string>
     <string id="506">Toista video SMB-sijainnista</string>
-    <string id="507">Lisää suosikki</string>
+    <string id="507">Lisää suosikiksi</string>
     <string id="508">Näytä suosikki ohjelmat</string>
     <string id="509">Aseta manuaalinen nauhoitus ajastus</string>
     <string id="510">Muuta suosikkeja</string>
     <string id="511">Muuta ajastuksia</string>
-    <string id="512">Toista soittolista välimuistista</string>
+    <string id="512">Toista strm lähetys välimuistista</string>
     <string id="513">TV.com haku</string>
     <string id="514">IMDb haku</string>
     <string id="515">IMDb manuaalinen haku</string>
-    <string id="516">Aseta hälytyskello</string>
-    <string id="517">Muuta hälytyskelloa</string>
+    <string id="516">Aseta herätyskello</string>
+    <string id="517">Muuta herätyskelloa</string>
     <string id="518">TVRage.com</string>
     <string id="519">LiveSportOnTV.com (UK)</string>
     <string id="520">Peru suosikki</string>
 
     <!-- config menu options -->
-    <string id="530">Tyhjennä listausten välimuisti</string>
-    <string id="531">Valitse DataSource</string>
-    <string id="532">DataSource asetukset</string>
+    <string id="530">Tyhjennä listauksen välimuisti</string>
+    <string id="531">Valitse ohjelmien tietolähde</string>
+    <string id="532">Ohjelmien tietolähteen asetukset</string>
     <string id="533">Valitse TV-kortti</string>
     <string id="534">TV-kortin asetukset</string>
     <string id="535">Nouda etäajastimet käynnistyessä?</string>
@@ -155,17 +155,17 @@
     <string id="544">Fontti</string>
     <string id="545">EPG rivin korkeus</string>
     <string id="546">SMB-asetukset</string>
-    <string id="547">Muokkaa tallennusdatan malleja</string>
-    <string id="548">Näytä tallennusdatan malleja</string>
+    <string id="547">Muokkaa tallennusdatan mallia</string>
+    <string id="548">Näytä tallennusdatan mallit</string>
     <string id="549">LiveSportOnTV (UK) valinta käytössä?</string>
     <string id="550">Näytä skriptin ohje</string>
     <string id="551">Näytä skriptin muutokset</string>
-    <string id="552">Palauta kaikki astukset</string>
+    <string id="552">Palauta kaikki asetukset</string>
     <string id="553">Tarkista skriptin päivitykset käynnistyksessä?</string>
     <string id="554">Tarkista skriptin päivitykset</string>
     <string id="555">LAN-herätys MAC:</string>
     <string id="556">Lataa puuttuvat logot</string>
-    <string id="557">Näytä Datasource nimi?</string>
+    <string id="557">Näytä ohjelmien tietolähteen nimi?</string>
 
     <!-- misc menu/prompts -->
     <string id="560">Kanavan nimi ainoastaan</string>
@@ -199,7 +199,7 @@
     <string id="594">Ohjelman selite: </string>
     <string id="595">Kanavanimi: </string>
     <string id="596">EPG teksti: </string>
-    <string id="597">Valittu kanava siirretään (A)</string>
+    <string id="597">Valitse siirrettävä kanava (A)</string>
     <string id="598">Siirrä kanava (Aseta=A)</string>
     <string id="599">Valitse taustan ja tekstin väri:</string>
     <string id="600">Valitse taustan väri:</string>
@@ -211,16 +211,16 @@
     <string id="606">Pois päältä</string>
     <string id="607">LAN käynnistys</string>
     <string id="608">Käytä valittua TV-Korttia ?</string>
-    <string id="609">Piilota? (X)</string>
+    <string id="609">Piilotetaan? (X)</string>
     <string id="610">Noudetaan maakoodeja ...</string>
     <string id="611">Valitse maa</string>
     <string id="612">Noudetaan käytettäviä logo nimiä ...</string>
-    <string id="613">Tarkitetaan puuttuvat logot ...</string>
+    <string id="613">Tarkistetaan puuttuvat logot ...</string>
     <string id="614">Ohita Logo</string>
     <string id="615">Valitse Logo: </string>
     <string id="616">Valitse kieli: </string>
     <string id="617">Käytössä? (A)</string>
-    <string id="618">Asetetaan navigointi listoja ...</string>
+    <string id="618">Määritetään valintalistaa ...</string>
 
 
     <!-- Datasource Common -->
@@ -297,9 +297,9 @@
     <string id="976">SMB-asetukset</string>
 
     <!-- imdbWin lib -->
-    <string id="980">IMDb haku</string>
-    <string id="981">IMDb  manuaalinen haku</string>
-    <string id="982">Haetaan IMDb ...</string>
+    <string id="980">IMDb tietojen haku</string>
+    <string id="981">IMDb manuaalinen haku</string>
+    <string id="982">Haetaan IMDb tietoja ...</string>
     <string id="983">IMDb haku epäonnistui</string>
     <string id="984">Muokkaa nimeä?</string>
     <string id="985">Valitse nimi</string>
