@@ -8,20 +8,24 @@ import xbmc, xbmcgui, sys
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbSkinGUILib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '28-02-2008'
+__date__ = '14-10-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
-TEXTBOX_DIALOG_XML = "script-bbb-fullscreen-textbox.xml"
 
 #################################################################################################################
 class TextBoxDialogXML( xbmcgui.WindowXML ):
 	""" Create a skinned textbox window """
+
+	XML_FILENAME = "DialogScriptInfo.xml"
+	
 	def __init__( self, *args, **kwargs):
 		self.EXIT_CODES = (9, 10, 216, 257, 275, 216, 61506, 61467,)
 		
 	def onInit( self ):
 		xbmc.output( "TextBoxDialogXML.onInit()" )
-		self.getControl( 3 ).setLabel( self.title )
+		try:
+			self.getControl( 3 ).setLabel( self.title )
+		except: pass
 		self.getControl( 5 ).setText( self.text )
 
 	def onClick( self, controlId ):
@@ -35,12 +39,11 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 			return
 		buttonCode =  action.getButtonCode()
 		actionID   =  action.getId()
-#		print( "TextBoxDialogXML.onAction(): actionID=%i buttonCode=%i " % ( actionID, buttonCode) )
 		if actionID in self.EXIT_CODES or buttonCode in self.EXIT_CODES:
 			self.close()
 
 	def ask(self, title="", text="", fn=None ):
-		xbmc.output("> TextBoxDialogXML.ask()")
+		xbmc.output("TextBoxDialogXML.ask()")
 		self.title = title
 		if fn:
 			try:
@@ -51,5 +54,4 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 			self.text = text
 
 		self.doModal()		# causes window to be drawn
-		xbmc.output("< TextBoxDialogXML.ask()")
 

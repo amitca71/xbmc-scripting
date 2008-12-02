@@ -1,10 +1,9 @@
  Ver    Date        Change
- 1.5.2  24/05/08    Updated Libs, some minor changes.
-                    Added www.rockymagasin.se to MyComics.xml                    
+ 1.5.2 01/12/08
+                    Fix: XBMC Atlantis language compatible.
+                    Updated: Supporting libs.
  1.5.1  10/04/08    Updated: Language strings.
                     New: Comic feed for Little-gamers added to MyComics.xml
-                    New: Finnish language translation.
-                    Fix: Script update would hang whilst createding backup.
  1.5    28/02/08    New: Skinned
                     New: Language support  (english, german, swedish suppied) - Can you help translate the strings.xml ?
                     Code overhauled.

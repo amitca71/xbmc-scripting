@@ -1,6 +1,6 @@
 <window>
 	<defaultcontrol>2110</defaultcontrol>
-	<allowoverlays>false</allowoverlays>
+	<allowoverlays>true</allowoverlays>
 	<controls>
 
 	<control type="image"id="100">
@@ -8,17 +8,18 @@
 		<posx>0</posx>
 		<posy>0</posy>
 		<texture>background.png</texture>
-		<width>720</width>
-		<height>576</height>
-        <visible>false</visible>
+		<width>1280</width>
+		<height>720</height>
+		<include>backgroundfade</include>
+<!--        <visible>false</visible> -->
 	</control>
 
 	<control type="image" id="110">
 		<description>windowed comic image</description>
 		<posx>0</posx>
 		<posy>50</posy>
-		<width>720</width>
-		<height>390</height>
+		<width>1280</width>
+		<height>530</height>
 		<aspectratio>keep</aspectratio>
         <visible>true</visible>
         <animation effect="zoom" end="0" center="auto" time="200">WindowClose</animation>
@@ -27,7 +28,7 @@
 	<control type="image" id="120">
 		<description>fullscreen guide image</description>
 		<posx>190r</posx>
-		<posy>514</posy>
+		<posy>570</posy>
 		<texture>comics-fullscreen-guide.png</texture>
 		<visible>!Control.IsVisible(1000)</visible>
 		<animation effect="rotate" start="180" end="0" center="720,576" time="200">VisibleChange</animation>
@@ -49,9 +50,11 @@
 		<description>group header</description>
 		<posx>0</posx>
 		<posy>0</posy>
+		<width>1280</width>
+		<height>55</height>
 		<visible>true</visible> 
-		<animation effect="slide" time="200" start="0,-50" acceleration="-1.1">WindowOpen</animation>
-        <animation effect="slide" time="200" end="0,-50" acceleration="1.1">WindowClose</animation>
+		<animation effect="slide" time="200" start="0,-55" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+		<animation effect="slide" time="200" end="0,-55" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
         <animation effect="slide" time="200" start="0,-50" acceleration="-1.1" condition="Control.IsVisible(1000)">conditional</animation>
         <animation effect="slide" time="200" end="0,-50" acceleration="1.1" condition="!Control.IsVisible(1000)">conditional</animation>
 
@@ -59,8 +62,9 @@
 			<description>background header image</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<height>50</height>
-			<texture>bbb-header.png</texture>
+			<width>1280</width>
+			<height>55</height>
+			<texture>Header.png</texture>
 		</control>
 
         <control type="image">
@@ -77,7 +81,7 @@
         <!-- DO NOT CHANGE -->
 		<control type="label" id="21">
 			<description>version label</description>
-			<posx>2r</posx>
+			<posx>4r</posx>
 			<posy>2</posy>
 			<align>right</align>
 			<label></label>
@@ -86,12 +90,12 @@
 		</control>
 		<control type="label" id="22">
 			<description>source label</description>
-			<posx>2r</posx>
-			<posy>25</posy>
+			<posx>4r</posx>
+			<posy>22</posy>
 			<align>right</align>
 			<label></label>
 			<textcolor>white</textcolor>
-			<font>font12</font>
+			<font>font11</font>
 		</control>
 		<control type="label" id="23">
 			<description>title label</description>
@@ -123,9 +127,9 @@
 	<control type="group" id="2000">
 		<description>group footer</description>
 		<posx>0</posx>
-		<posy>440</posy>
+		<posy>590</posy>
 		<height>136</height>
-		<width>720</width>
+		<width>1280</width>
 		<visible>true</visible>
 		<animation effect="slide" time="200" start="0,136" acceleration="-1.1">WindowOpen</animation>
 		<animation effect="slide" time="200" end="0,136" acceleration="1.1">WindowClose</animation>
@@ -135,11 +139,12 @@
         <control type="image" id="2001">
 			<description>background footer image</description>
 			<texture>bbb-footer.png</texture>
+			<width>1280</width>
 		</control>
 
 		<control type="image" id="2400">
 			<description>guide image</description>
-			<posx>120r</posx>
+			<posx>130r</posx>
 			<posy>15</posy>
 			<width>124</width>
 			<height>97</height>
@@ -155,7 +160,7 @@
 			<visible>true</visible>
 
             <control type="list" id="2110">
-                <width>165</width>
+                <width>265</width>
                 <height>116</height>
                 <onleft>2110</onleft>
                 <onright>2111</onright>
@@ -168,14 +173,14 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>155</width>
+                        <width>255</width>
                         <height>29</height>
-                        <texture border="3">input-nofocus.png</texture>
+                        <texture border="3">button-nofocus.png</texture>
                     </control>
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>155</width>
+                        <width>255</width>
                         <height>29</height>
                         <font>special12</font>
                         <aligny>center</aligny>
@@ -189,23 +194,23 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>155</width>
+                        <width>255</width>
                         <height>29</height>
                         <visible>!Control.HasFocus(2110)</visible>
-                        <texture border="3">input-nofocus.png</texture>
+                        <texture border="3">button-nofocus.png</texture>
                     </control>
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>155</width>
+                        <width>255</width>
                         <height>29</height>
                         <visible>Control.HasFocus(2110)</visible>
-                        <texture border="3">input-focus.png</texture>
+                        <texture border="3">button-focus.png</texture>
                     </control>
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>155</width>
+                        <width>255</width>
                         <height>29</height>
                         <font>special12</font>
                         <aligny>center</aligny>
@@ -218,24 +223,14 @@
             </control>
             
             <!-- SCROLL BAR LISTS -->
-            <control type="button">
-                <posx>155</posx>
-                <posy>0</posy>
-                <width>16</width>
-                <height>16</height>
-				<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
-				<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
-                <onclick>PageUp(2111)</onclick>
-                <visible>Control.IsVisible(2111)</visible>
-            </control>
             <control type="scrollbar" id="2111">
-                <posx>155</posx>
+                <posx>255</posx>
                 <posy>16</posy>
                 <width>16</width>
                 <height>83</height>
-				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>scrollbar_nib.png</textureslidernib>
 				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
                 <onleft>2110</onleft>
@@ -243,28 +238,18 @@
                 <showonepage>false</showonepage>
                 <orientation>vertical</orientation>
             </control>
-            <control type="button">
-                <posx>155</posx>
-                <posy>97</posy>
-                <width>16</width>
-                <height>16</height>
-				<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
-				<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
-                <onclick>PageDown(2111)</onclick>
-                <visible>Control.IsVisible(2111)</visible>
-            </control>
 
         </control> <!-- end group ITEMS list -->
 
         <!--  ITEMS list -->
         <control type="group" id="2200">
-            <posx>185</posx>
+            <posx>285</posx>
             <posy>5</posy>
             <animation effect="slide" time="200" start="0,136" end="0,0" acceleration="-1.1" condition="Control.IsVisible(2200)">conditional</animation>
 	    	<visible>true</visible>
 
             <control type="list" id="2210">
-                <width>210</width>
+                <width>310</width>
                 <height>116</height>
                 <onleft>2110</onleft>
                 <onright>2211</onright>
@@ -277,14 +262,14 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>210</width>
+                        <width>310</width>
                         <height>29</height>
-                        <texture border="3">input-nofocus.png</texture>
+                        <texture border="3">button-nofocus.png</texture>
                     </control>
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>210</width>
+                        <width>310</width>
                         <height>29</height>
                         <font>special12</font>
                         <aligny>center</aligny>
@@ -298,23 +283,23 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>210</width>
+                        <width>310</width>
                         <height>29</height>
                         <visible>!Control.HasFocus(2210)</visible>
-                        <texture border="3">input-nofocus.png</texture>
+                        <texture border="3">button-nofocus.png</texture>
                     </control>
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>210</width>
+                        <width>310</width>
                         <height>29</height>
                         <visible>Control.HasFocus(2210)</visible>
-                        <texture border="3">input-focus.png</texture>
+                        <texture border="3">button-focus.png</texture>
                     </control>
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>210</width>
+                        <width>310</width>
                         <height>29</height>
                         <font>special12</font>
                         <aligny>center</aligny>
@@ -327,24 +312,14 @@
             </control>
             
             <!-- SCROLL BAR LISTS -->
-            <control type="button">
-                <posx>210</posx>
-                <posy>0</posy>
-                <width>16</width>
-                <height>16</height>
-				<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
-				<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
-                <onclick>PageUp(2211)</onclick>
-                <visible>Control.IsVisible(2211)</visible>
-            </control>
             <control type="scrollbar" id="2211">
-                <posx>210</posx>
+                <posx>310</posx>
                 <posy>16</posy>
                 <width>16</width>
                 <height>83</height>
-				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>scrollbar_nib.png</textureslidernib>
 				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
                 <onleft>2210</onleft>
@@ -352,28 +327,18 @@
                 <showonepage>false</showonepage>
                 <orientation>vertical</orientation>
             </control>
-            <control type="button">
-                <posx>210</posx>
-                <posy>97</posy>
-                <width>16</width>
-                <height>16</height>
-				<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
-				<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
-                <onclick>PageDown(2211)</onclick>
-                <visible>Control.IsVisible(2211)</visible>
-            </control>
 
         </control> <!-- end group ITEMS list -->
 
         <!--  ITEM IMAGES list -->
         <control type="group" id="2300">
-            <posx>420</posx>
+            <posx>620</posx>
             <posy>5</posy>
             <animation effect="slide" time="200" start="0,136" end="0,0" acceleration="-1.1" condition="Control.IsVisible(2300)">conditional</animation>
-	    		<visible>true</visible>
+			<visible>true</visible>
 
             <control type="list" id="2310">
-                <width>165</width>
+                <width>265</width>
                 <height>116</height>
                 <onleft>2210</onleft>
                 <onright>2311</onright>
@@ -386,14 +351,14 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>160</width>
+                        <width>260</width>
                         <height>29</height>
-                        <texture border="3">input-nofocus.png</texture>
+                        <texture border="3">button-nofocus.png</texture>
                     </control>
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>160</width>
+                        <width>260</width>
                         <height>29</height>
                         <font>special12</font>
                         <aligny>center</aligny>
@@ -407,23 +372,23 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>160</width>
+                        <width>260</width>
                         <height>29</height>
                         <visible>!Control.HasFocus(2310)</visible>
-                        <texture border="3">input-nofocus.png</texture>
+                        <texture border="3">button-nofocus.png</texture>
                     </control>
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>160</width>
+                        <width>260</width>
                         <height>29</height>
                         <visible>Control.HasFocus(2310)</visible>
-                        <texture border="3">input-focus.png</texture>
+                        <texture border="3">button-focus.png</texture>
                     </control>
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>160</width>
+                        <width>260</width>
                         <height>29</height>
                         <font>special12</font>
                         <aligny>center</aligny>
@@ -436,40 +401,20 @@
             </control>
             
             <!-- SCROLL BAR LISTS -->
-            <control type="button">
-                <posx>160</posx>
-                <posy>0</posy>
-                <width>16</width>
-                <height>16</height>
-				<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
-				<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
-                <onclick>PageUp(2311)</onclick>
-                <visible>Control.IsVisible(2311)</visible>
-            </control>
             <control type="scrollbar" id="2311">
-                <posx>160</posx>
+                <posx>260</posx>
                 <posy>16</posy>
                 <width>16</width>
                 <height>83</height>
-				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>scrollbar_nib.png</textureslidernib>
 				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
                 <onleft>2310</onleft>
                 <onright>2110</onright>
                 <showonepage>false</showonepage>
                 <orientation>vertical</orientation>
-            </control>
-            <control type="button">
-                <posx>160</posx>
-                <posy>97</posy>
-                <width>16</width>
-                <height>16</height>
-				<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
-				<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
-                <onclick>PageDown(2311)</onclick>
-                <visible>Control.IsVisible(2311)</visible>
             </control>
 
         </control> <!-- end group ITEM IMAGES list -->

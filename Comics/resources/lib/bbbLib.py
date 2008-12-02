@@ -18,7 +18,7 @@ import cookielib
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '23-05-2008'
+__date__ = '28-10-2008'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -78,8 +78,8 @@ PAD_DPAD_LEFT                = 272
 PAD_DPAD_RIGHT               = 273
 PAD_START                    = 274
 PAD_BACK                     = 275
-PAD_LEFT_STICK          = 276
-PAD_RIGHT_STICK         = 277
+PAD_LEFT_STICK              = 276
+PAD_RIGHT_STICK             = 277
 PAD_LEFT_ANALOG_TRIGGER      = 278
 PAD_RIGHT_ANALOG_TRIGGER= 279
 PAD_LEFT_STICK_UP           = 280 # left thumb stick  directions
@@ -104,7 +104,7 @@ KEYBOARD_PLUS          = 61627
 KEYBOARD_PG_UP         = 61473 
 KEYBOARD_PG_DOWN        = 61474
 KEYBOARD_INSERT         = 61485
-KEYBOARD_X              = 61524
+KEYBOARD_X              = 61528
 KEYBOARD_A              = 61505
 KEYBOARD_B              = 61506
 KEYBOARD_Y              = 61529
@@ -117,15 +117,20 @@ KEYBOARD_DEL_BACK       = 61448
 
 
 # ACTION CODE GROUPS
-SELECT_ITEM = ( ACTION_A, PAD_A, KEYBOARD_A, KEYBOARD_RETURN, )
+CLICK_A = ( ACTION_A, PAD_A, KEYBOARD_A, KEYBOARD_RETURN, )
+CLICK_B = ( ACTION_B, PAD_B, KEYBOARD_B, )
+CLICK_X = ( ACTION_X, PAD_X, KEYBOARD_X, ACTION_REMOTE_STOP, )
+CLICK_Y = ( ACTION_Y, PAD_Y, KEYBOARD_Y, )
+SELECT_ITEM = CLICK_A
 EXIT_SCRIPT = ( ACTION_BACK, PAD_BACK, REMOTE_BACK, KEYBOARD_ESC, )
-CANCEL_DIALOG = EXIT_SCRIPT + (ACTION_B, PAD_B, KEYBOARD_B, )
-CONTEXT_MENU = ( ACTION_WHITE, PAD_WHITE, ACTION_REMOTE_INFO, REMOTE_INFO, KEYBOARD_HOME, ACTION_REMOTE_STOP,)
+CANCEL_DIALOG = CLICK_B
+CONTEXT_MENU = ( ACTION_WHITE, PAD_WHITE, ACTION_REMOTE_INFO, REMOTE_INFO, KEYBOARD_HOME,)
 LEFT_STICK_CLICK = (ACTION_LEFT_STICK, PAD_LEFT_STICK, )
 RIGHT_STICK_CLICK = (ACTION_RIGHT_STICK, PAD_RIGHT_STICK, )
 MOVEMENT_DPAD = ( ACTION_MOVE_LEFT, ACTION_MOVE_RIGHT, ACTION_MOVE_UP, ACTION_MOVE_DOWN, )
 MOVEMENT_RIGHT_STICK = (PAD_RIGHT_STICK_UP, PAD_RIGHT_STICK_DOWN, PAD_RIGHT_STICK_LEFT, PAD_RIGHT_STICK_RIGHT, ACTION_RIGHT_STICK_UP,ACTION_RIGHT_STICK_DOWN,ACTION_RIGHT_STICK_LEFT,ACTION_RIGHT_STICK_RIGHT, )
 MOVEMENT_LEFT_STICK = (PAD_LEFT_STICK_UP, PAD_LEFT_STICK_DOWN, PAD_LEFT_STICK_LEFT, PAD_LEFT_STICK_RIGHT, )
+MOVEMENT_STICKS = MOVEMENT_RIGHT_STICK + MOVEMENT_LEFT_STICK
 MOVEMENT_SCROLL_UP = ( ACTION_LEFT_TRIGGER, PAD_LEFT_ANALOG_TRIGGER, ACTION_SCROLL_UP, KEYBOARD_PG_UP, PAD_LEFT_TRIGGER, ACTION_REMOTE_PREV_ITEM, )
 MOVEMENT_SCROLL_DOWN = ( ACTION_RIGHT_TRIGGER, PAD_RIGHT_ANALOG_TRIGGER, ACTION_SCROLL_DOWN, KEYBOARD_PG_DOWN, PAD_RIGHT_TRIGGER, ACTION_REMOTE_NEXT_ITEM, )
 MOVEMENT_SCROLL = MOVEMENT_SCROLL_UP + MOVEMENT_SCROLL_DOWN
@@ -148,6 +153,8 @@ KBTYPE_NUMERIC = 0
 KBTYPE_DATE = 1
 KBTYPE_TIME = 2
 KBTYPE_IP = 3
+KBTYPE_SMB = 4      # not a real kbtype, just a common value
+KBTYPE_YESNO = 5    # not a real kbtype, just a common value
 
 # xbmc skin FONT NAMES
 FONT10 = 'font10'
@@ -166,15 +173,15 @@ ALL_FONTS = (FONT10,FONT11,FONT12,FONT13,FONT14,FONT16,FONT18,FONT_SPECIAL_10,FO
 
 REGEX_URL_PREFIX = '^((?:http://|www).+?)[/?]'
 
+global dialogProgress
 dialogProgress = xbmcgui.DialogProgress()
-
 REZ_W = 720
 REZ_H = 576
 
 #######################################################################################################################    
 # DEBUG - display indented information
 #######################################################################################################################    
-DEBUG = False
+DEBUG = True
 debugIndentLvl = 0	# current indentation level
 def debug( value ):
 	global debugIndentLvl
@@ -215,17 +222,21 @@ def handleException(txt=''):
 #################################################################################################################
 def makeScriptDataDir():
 	try:
-		scriptPath = os.path.join("T:\script_data", __scriptname__)
+		scriptPath = os.path.join("T:"+os.sep,"script_data", __scriptname__)
 		os.makedirs(scriptPath)
 		debug("makeScriptDataDir() created=%s" % scriptPath )
-	except: pass
+		return True
+	except:
+		return False
 
 #############################################################################################################
 def makeDir(dir):
 	try:
 		os.makedirs( dir )
 		debug("bbbLib.created dir: " + dir)
-	except: pass
+		return True
+	except:
+		return False
 
 #############################################################################################################
 def removeDir(dir, title="", msg="", msg2="", force=False):
@@ -233,7 +244,10 @@ def removeDir(dir, title="", msg="", msg2="", force=False):
 		try:
 			rmtree(dir,ignore_errors=True)
 			debug("removeDir() done %s" % dir)
-		except: pass
+			return True
+		except:
+			handleException()
+	return False
 	
 #################################################################################################################
 # delete a single file
@@ -319,18 +333,19 @@ def setResolution(win):
 
 #######################################################################################################################    
 def parseDocList(doc, regex, startStr='', endStr=''):
+	if not doc: return []
 	# find section
 	startPos = -1
 	endPos = -1
 	if startStr:
 		startPos = find(doc,startStr)
 		if startPos == -1:
-			print "parseDocList() start not found"
+			print "parseDocList() start not found " + startStr
 
 	if endStr:
 		endPos = find(doc, endStr, startPos+1)
 		if endPos == -1:
-			print "parseDocList() end not found"
+			print "parseDocList() end not found " + endStr
 
 	if startPos < 0:
 		startPos = 0
@@ -348,13 +363,16 @@ def parseDocList(doc, regex, startStr='', endStr=''):
 		sz = len(matchList)
 	else:
 		sz = 0
-	debug( "parseDocList() matches = " +str(sz))
+	debug( "parseDocList() matches=%s" % sz)
 	return matchList
 
 #################################################################################################################
 # look for html between < and > chars and remove it
-def cleanHTML(data):
+def cleanHTML(data, breaksToNewline=False):
+	if not data: return ""
 	try:
+		if breaksToNewline:
+			data = data.replace('<br>','\n').replace('<p>','\n')
 		reobj = re.compile('<.+?>', re.IGNORECASE+re.DOTALL+re.MULTILINE)
 		return (re.sub(reobj, '', data)).strip()
 	except:
@@ -380,7 +398,6 @@ def ErrorCode(e):
 			txt = e[1]
 		except:
 			txt = 'Unknown reason'
-	print "%s = %s" % (title, txt)
 	messageOK(title, str(txt))
 	debug("< ErrorCode()")
 
@@ -391,62 +408,29 @@ def ErrorCode(e):
 class FontAttr:
 	def __init__(self):
 		# w/s rez multiplier, 0 - 1080i (1920x1080), 1 - 720p (1280x720)
-		self.rezAdjust = {0 : 2.65, 1 : 1.77}	
-		self.adjust = {'font10':-4, 'font11':-3, 'font12':-3, 'font13':-2, 'font14':0, 'font18':4, \
-					   'special10':-3, 'special11':-2, 'special12':-2, 'special13':0, 'special14':2}
-
-		# base widths based on font14
-		self.width = [ \
-			0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-			0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-			0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-			#       SP   !   "   #   $   %   &   '
-			0,  0,  6,  6,  8, 14, 10, 19, 13,  4,
-			#(   )   *   +   ,   -   .   /   0   1
-			7,  7, 24, 14,  6,  7,  6,  7, 10, 10,
-			#2   3   4   5   6   7   8   9   :  ;
-			10, 10, 10, 10, 10, 10, 10, 10,  7,  7,
-			#<   =   >   ?   @   A   B   C   D   E
-			14, 14, 14,  9, 17, 11, 11, 11, 13, 11,
-			#F   G   H   I   J   K   L   M   N   O
-			10, 13, 13,  7,  8, 11,  9, 15, 13, 13,
-			#P   Q   R   S   T   U   V   W   X   Y
-			10, 13, 12, 11, 11, 12, 11, 17, 11, 11,
-			#Z   [   \   ]   ^   _   `   a   b   c
-			11,  7,  7,  7, 14, 10, 10, 10, 11,  9,
-			#d   e   f   g   h   i   j   k   l   m
-			11, 10,  6, 11, 11,  4,  5,  9,  4, 16,
-			#n   o   p   q   r   s   t   u   v   w
-			11, 10, 11, 11,  7,  8,  6, 11,  9, 14,
-			#x   y   z   {   |   }   ~
-			9,  9,  8,  9,  7,  9, 14
-		]
-
-	def getWidth( self, c, font ):
-		try:
-			w = self.width[ord(c)] + self.adjust[font]
-		except:
-			w = 14			# unknown ch, use avg width
-		return w
-
-	def getTextWidth(self, txt, font):
-		len = 0
-		for c in txt:
-			len += self.getWidth(c, font) +1
-		return len
-
+		self.rezAdjust = {0 : 2.65, 1 : 1.77}
+		self.fonts = {'font10': 9, 'font11':9, 'font12':10, 'font13':11, 'font14':12, 'font16':13, 'font18': 13, \
+					  'special10':9, 'special11':9, 'special12':11, 'special13':12, 'special14':12, 'special16':13, 'special18':13}
+		
 	def truncate(self, maxWidth, text, font, rez = 6):
-		chCount = len(text)
-		maxWidth = int(maxWidth)
-		font = font.lower()
+#		print "FontAttr() orig maxWidth=%s %s %s %s" % (maxWidth, font, rez, text)
 		try:
 			maxWidth *= self.rezAdjust[rez]
 		except: pass
-			
-		newText = ''
-		for i in range(chCount, 0, -1):
-			if self.getTextWidth(text[0:i], font) <= maxWidth:
-				newText = text[0:i]
+		try:
+			fontW =  self.fonts[font.lower()]
+		except:
+			fontW = 11
+		shortFontW = 8
+
+		for i in range(len(text), 0, -1):
+			newText = text[:i]
+			shortChCount = newText.count('i')+ newText.count('l') + newText.count('t') + newText.count(' ') + \
+						   newText.count('r')
+			otherChCount = len(newText) - shortChCount
+			strW = (otherChCount * fontW) + (shortChCount * shortFontW)
+			if strW <= maxWidth:
+#				print "FontAttr() %s %s maxWidth=%s  strW=%s  shortChCount=%s otherChCount=%s" % (fontW, newText, maxWidth, strW, shortChCount,otherChCount)
 				break
 
 		return newText
@@ -455,6 +439,7 @@ class FontAttr:
 # Convert a text string containing &#x<hex_value> to ascii ch
 #################################################################################################################
 def urlTextToASCII(text):
+	if not text: return ""
 	try:
 		compile_obj = re.compile('(&#x(.*?);)',  re.IGNORECASE + re.MULTILINE + re.DOTALL)
 		match_obj = compile_obj.findall(text)
@@ -475,18 +460,20 @@ def urlTextToASCII(text):
 #################################################################################################################
 # Thanks to Arboc for this
 #################################################################################################################
-def unicodeToAscii(txt, charset='utf8'):
+def unicodeToAscii(text, charset='utf8'):
+	if not text: return ""
 	try:
-		newtxt = txt.decode(charset)
+		newtxt = text.decode(charset)
 		newtxt = unicodedata.normalize('NFKD', newtxt).encode('ASCII','replace')
 		return newtxt
 	except:
-		return txt
+		return text
 
 #################################################################################################################
 # Thanks to Arboc for contributing most of the translation in this function. 
 #################################################################################################################
 def decodeEntities(txt, removeNewLines=True):
+	if not txt: return ""
 	txt = txt.replace('\t','')
 
 # % values
@@ -982,21 +969,20 @@ def isInt(s):
 # else: return -1 for Exception None for HTTP timeout, '' for empty page otherwise page data
 #################################################################################################################
 def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True):
+	debug("> bbbLib.fetchURL() isBinary=%s encodeURL=%s" % (isBinary, encodeURL))
 	if encodeURL:
 		safe_url = urllib.quote_plus(url,'/:&?=+#@')
 	else:
 		safe_url = url
-	if not safe_url.startswith('http://'):
-		safe_url = 'http://' + safe_url
-	debug("> bbbLib.fetchURL()")
 
 	def _report_hook( count, blocksize, totalsize ):
 		# just update every x%
-		if count:
+		if count and totalsize:
 			percent = int( float( count * blocksize * 100) / totalsize )
 			if (percent % 5) == 0:
 				dialogProgress.update( percent )
 		if ( dialogProgress.iscanceled() ):
+			debug("fetchURL() iscanceled()")
 			raise "Cancel"
 
 	success = False
@@ -1024,7 +1010,6 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 			print "file=%s" % file
 			print "params=%s" % params
 			print "headers=%s" % headers
-			print "isBinary=%s" % isBinary
 
 		if params:
 			fn, resp = opener.retrieve(safe_url, file, _report_hook, data=params)
@@ -1037,7 +1022,7 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 
 		content_type = resp["Content-Type"].lower()
 		# fail if expecting an image but not corrent type returned
-		if isBinary and (find(content_type,"image") == -1 and find(content_type,"audio") == -1):
+		if isBinary and (find(content_type,"text") != -1):
 			raise "Not Binary"
 
 		opener.close()
@@ -1048,9 +1033,9 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 	except "Not Binary":
 		debug("Returned Non Binary content")
 		data = False
-		success = False
 	except "Cancel":
 		debug("download cancelled")
+		data = None
 	except:
 		handleException("fetchURL()")
 	else:
@@ -1069,13 +1054,11 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 # fetch using urllib2 and Cookies
 #################################################################################################################
 def fetchCookieURL(url, fn='', params=None, headers={}, isBinary=False, encodeURL=True, newRequest=True):
-	debug("> bbbLib.fetchCookieURL() ")
+	debug("> bbbLib.fetchCookieURL() isBinary=%s encodeURL=%s newRequest=%s" % (isBinary, encodeURL,newRequest))
 	if encodeURL:
 		safe_url = urllib.quote_plus(url,'/:&?=+#@')
 	else:
 		safe_url = url
-	if not safe_url.startswith('http://'):
-		safe_url = 'http://' + safe_url
 
 	data = None
 	handle = None
@@ -1088,7 +1071,6 @@ def fetchCookieURL(url, fn='', params=None, headers={}, isBinary=False, encodeUR
 			print "fn=%s" % fn
 			print "params=%s" % params
 			print "headers=%s" % headers
-			print "isBinary=%s" % isBinary
 
 		if newRequest:
 			debug("create new Request")
@@ -1182,15 +1164,22 @@ def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
 		sz = len(matchList)
 	else:
 		sz = 0
-#	debug ("findAllRegEx() matches= " + str(sz))
+	debug ("findAllRegEx() matches=%s" % sz)
 	return matchList
 
 #############################################################################################################
 def safeFilename(path, replaceCh='_'):
-#	head, tail = os.path.split(path.replace( "\\", "/" ))
 	head, tail = os.path.split(path)
 	name, ext = os.path.splitext(tail)
-	return  os.path.join(head, re.sub(r'[\'\";:?*<>|+\\/,=!\.]', replaceCh, name) + ext)
+	return  os.path.join(head, cleanPunctuation(name, replaceCh) + ext)
+
+#################################################################################################################
+def cleanPunctuation(text, replaceCh='_'):
+	try:
+		return re.sub(r'[\'\";:?*<>|+\\/,=!\.]', replaceCh, text)
+	except:
+		debug("cleanPunctuation() re failed")
+		return text
 
 #################################################################################################################
 # Does a direct image URL exist in string ?
@@ -1272,8 +1261,7 @@ def listDir(path, ext='', fnRE='', getFullFilename=False, lower=False, upper=Fal
 					else:
 						fileList.append(filename)
 
-	sz = len(fileList)
-	debug("< bbbLib.listDir() file count="+str(sz))
+	debug("< bbbLib.listDir() file count=%s" % len(fileList))
 	return fileList
 
 
@@ -1360,15 +1348,21 @@ class RSSParser2:
 				debug("__parseString() UnicodeDecodeError, try unicodeToAscii")
 				self.dom = parseString(unicodeToAscii(xmlDocument))
 			except:
-				debug("__parseString() unicodeToAscii failed")
-				self.dom = parseString(xmlDocument)
+				try:
+					debug("__parseString() unicodeToAscii failed - try without encoding")
+					self.dom = parseString(xmlDocument)
+				except:
+					debug("__parseString() failure - give up!")
+					handleException()
+					success = False
 		except:
 			success = False
 
 		if not self.dom:
 			messageOK("XML Parser Failed","Empty/Bad XML file","Unable to parse data.")
+			success = False
 
-		debug("< RSSParser2().__parseString() success: " + str(success))
+		debug("< RSSParser2().__parseString() success=%s" % success)
 		return success
 
 
@@ -1422,11 +1416,11 @@ class RSSParser2:
 #				else:
 #					debug("Tag: %s No Data found" % (elTagName, )
 
-			if DEBUG:
-				print "%s %s" % (index, dict)
+#			if DEBUG:
+#				print "%s %s" % (index, dict)
 			objectsList.append(RSSNode(dict))
 
-		debug("< RSSParser2().__parseElements() No. objects= %s" % len(objectsList))
+		debug("< RSSParser2().__parseElements() No. objects=%s" % len(objectsList))
 		return objectsList
 
 
@@ -1463,14 +1457,6 @@ class RSSNode:
 		return self.elements.has_key(element)
 
 #############################################################################################################
-# detect if using MC360 style skin - any theme
-def isMC360():
-	skinName = getSkinName()
-	is360 = (find(skinName,'360') >= 0)
-	debug("bbbLib.isMC360() " +str(is360))
-	return is360
-
-#############################################################################################################
 def getSkinName():
 	skinName = os.path.basename(xbmc.getSkinDir())
 	debug("bbbLib.getSkinName() skinName="+skinName)
@@ -1482,14 +1468,13 @@ def isIP(host):
 	return re.match('^\d+\.\d+\.\d+\.\d+$', host)
 
 #################################################################################################################
-def getReadmeFilename(mylanguage):
+def getReadmeFilename():
     debug("> getReadmeFilename()")
-    base_path = mylanguage.get_base_path()
-    language = xbmc.getLanguage().lower()
-    debug("language= %s " % language)
-    fn = os.path.join( base_path, language, "readme.txt" )
-    if ( not fileExist( fn ) ):
-        fn = os.path.join( base_path, "english", "readme.txt" )
+    filename = "readme.txt"
+    base_path, language = getLanguagePath()
+    fn = os.path.join( base_path, language, filename)
+    if not fileExist( fn ):
+        fn = os.path.join( base_path, "English", filename )
 
     debug("< getReadmeFilename() %s" % fn)
     return fn
@@ -1502,39 +1487,63 @@ def prefixDirPath(fn, dirPath):
 
 #############################################################################################################
 # pluginType = music, video, pictures
-def installPlugin(pluginType, name='', checkOnly=True):
-	debug("> installPlugin() %s %s checkOnly=%s"  % (pluginType, name, checkOnly))
+def installPlugin(pluginType, scriptname, checkOnly=True, successMsg=""):
+	debug("> installPlugin() %s %s checkOnly=%s"  % (pluginType, scriptname, checkOnly))
 	exists = False
-	if not name:
-		name = __scriptname__
-	name += " Plugin"
+	name = scriptname + " Plugin"
 
 	try:
 		copyFromPath = xbmc.translatePath( os.path.join( DIR_HOME, "Plugin" ) )
 		copyFromFile = os.path.join( copyFromPath, 'default.py')
-		copyToPath = xbmc.translatePath( os.path.join( "Q:\\", "plugins", pluginType, name ) )
+		copyToPath = xbmc.translatePath( os.path.join( "Q:", os.sep, "plugins", pluginType, name ) )
 		copyToFile = os.path.join( copyToPath, 'default.py')
+		debug("%s -> %s" % (copyFromPath, copyToPath))
 
 		# set not exist if; path/file missing or previous installed is older
 		copyFromFileSecs = os.path.getmtime(copyFromFile)
 		copyToFileSecs = os.path.getmtime(copyToFile)
 		debug( "comparing fromSecs %d  toSecs %d"  % (copyFromFileSecs, copyToFileSecs))
-		exists = fileExist(copyToFile) and copyFromFileSecs <= copyToFileSecs
+		exists = (fileExist(copyToFile) and copyFromFileSecs <= copyToFileSecs)
 	except:
-		debug( "paths dont exist. This is OK if we're just checking" )
+		debug( str(sys.exc_info()[ 1 ]))
 
-	if not checkOnly:
-		# do installation
-		try:
-			from shutil import copytree, rmtree
+	if not checkOnly and not exists:
+		debug("do plugin installation...")
+		dialogProgress.create("Installing Plugin ...", copyToPath)
+		from shutil import copytree, rmtree
+		installed = False
+
+		RETRY_MAX = 5
+		for retry in range(RETRY_MAX):
+			errMsg = ''
 			try:
 				rmtree( copyToPath,ignore_errors=True )
-			except: pass
-			copytree( copyFromPath, copyToPath )
-			dialogOK(__scriptname__, "In plugins 'Add Source' to complete installation.", name)
-		except:
-			msg = "Plugin Failed\n" + str(sys.exc_info()[ 1 ])
-			dialogOK(__scriptname__, msg)
+				debug("existing plugin path removed: " + copyToPath)
+			except:
+				errMsg = "rmtree error:\n" + str(sys.exc_info()[ 1 ])
+			else:
+				try:
+					xbmc.sleep(1000)
+					copytree( copyFromPath, copyToPath )
+					installed = True
+					break
+				except:
+					errMsg = "copytree error:\n" + str(sys.exc_info()[ 1 ])
+
+			if errMsg:
+				debug(errMsg)
+				if retry <= RETRY_MAX:
+					percent = int( retry * 100.0 / RETRY_MAX )
+					dialogProgress.update(percent, copyToPath, errMsg)
+				xbmc.sleep(1000)
+
+			retry += 1
+		dialogProgress.close()
+
+		if installed:
+			dialogOK(name, successMsg)
+		else:
+			dialogOK("Failed to install plugin!", copyToPath, errMsg)
 
 	debug("< installPlugin() exists=%s" % exists)
 	return exists
@@ -1543,29 +1552,69 @@ def installPlugin(pluginType, name='', checkOnly=True):
 def validMAC(mac):
     valid = False
     if mac and len(mac) >= 11 and len(mac) <= 17:
-        if find(mac,':') != -1 and len(mac.split(':')) == 6:
+        if ':' in mac:
+            ch = ':'
+        elif '-' in mac:
+            ch = '-'
+        elif '.' in mac:
+            ch = '.'
+        else:
+            ch = ''
+            debug("mac seperator missing")
+        if ch and len(mac.split(ch)) == 6:
             valid = True
-    debug("validMAC=%s" % validMAC)
+    debug("validMAC() %s" % valid)
     return valid
 
 ##############################################################################################################    
 def playMedia(filename):
 	debug("> playMedia() " + filename)
-	success = True
+	success = False
 
 	try:
 		xbmc.Player().play(filename)
-	except:
-		debug('xbmc.Player().play() failed trying xbmc.PlayMedia() ')
+		success = xbmc.Player().isPlaying()
+	except: pass
+
+	if not success:
+		debug('xbmc.Player().play() failed, trying xbmc.PlayMedia() ')
 		try:
 			cmd = 'xbmc.PlayMedia(%s)' % filename
-			xbmc.executebuiltin(cmd)
+			result = xbmc.executebuiltin(cmd)
+			success = True
 		except:
 			handleException('xbmc.PlayMedia()')
-			success = False
+
 	debug("< playMedia() success=%s" % success)
 	return success
 
 ##############################################################################################################    
 def logFreeMem(msg=""):
-    debug( "Freemem=%sMB  %s" % (xbmc.getFreeMem(), msg))
+    mem = xbmc.getFreeMem()
+    debug( "Freemem=%sMB  %s" % (mem, msg))
+    return mem
+
+##############################################################################################################    
+# sub all non-alpha chars for '-'
+def alphaOnlyText(text, subChar='-'):
+	newText = ''
+	for ch in text:
+		if not ch.isalpha():
+			newText += subChar
+		else:
+			newText += ch
+	return newText
+
+##############################################################################################################    
+def getLanguagePath():
+	try:
+		base_path = os.path.join( os.getcwd().replace(';',''), 'resources', 'language' )
+		language = xbmc.getLanguage()
+		langPath = os.path.join( base_path, language )
+		if not os.path.exists(langPath):
+			debug("getLanguagePath() not exist: " + langPath)
+			raise
+	except:
+		language = 'English'
+	debug("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
+	return base_path, language

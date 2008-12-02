@@ -7,7 +7,9 @@
 	THANKS:
 	To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
 
-	CHANGELOG: see ..\resources\changelog.txt or view throu Settings Menu
+    Please don't alter or re-publish this script without authors persmission.
+
+	CHANGELOG: see changelog.txt or view throu Settings Menu
 	README: see ..\resources\language\<language>\readme.txt or view throu Settings Menu
 
     Additional support may be found on xboxmediacenter forum.	
@@ -19,32 +21,35 @@ import Image, re, os, time
 from os import path
 from string import find, strip, replace, rjust
 from urlparse import urljoin
-from shutil import rmtree
 
 # Script doc constants
 __scriptname__ = "Comics"
 __version__ = '1.5.2'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '24-05-2008'
+__svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/Comics"
+__date__ = '01-12-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
 DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-#DIR_USERDATA = os.path.join( "T:\\script_data", __scriptname__ )
+DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )
 DIR_GFX = os.path.join(DIR_RESOURCES,'gfx')
 DIR_CACHE = os.path.join(DIR_HOME, "cache")
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
-# Custom libs
-import language
-mylanguage = language.Language()
-__language__ = mylanguage.localized
+# Load Language using xbmc builtin
+try:
+    # 'resources' now auto appended onto path
+    __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
+except:
+	print str( sys.exc_info()[ 1 ] )
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.")
 
-import update                                       # script update module
 from bbbLib import *
 from bbbSkinGUILib import TextBoxDialogXML
+import update                                       # script update module
 
 ELEMENT_TITLE = 'title'
 ELEMENT_LINK = 'link'
@@ -52,13 +57,10 @@ ELEMENT_DESC = 'description'
 ELEMENT_RE_ITEM = 'reItem'
 ELEMENT_RE_IMAGE = 'reImage'
 
-# dialog object for the whole app
-dialogProgress = xbmcgui.DialogProgress()
-
 #################################################################################################################
 # MAIN
 #################################################################################################################
-class GUI(xbmcgui.WindowXML):
+class ComicsGUI(xbmcgui.WindowXML):
 	# control id's
 	CLBL_VERSION = 21
 	CLBL_SOURCE = 22
@@ -86,89 +88,83 @@ class GUI(xbmcgui.WindowXML):
 
 	#################################################################################################################
 	def __init__(self, *args, **kwargs):
-		debug("> __init__")
+		debug("> Comics().__init__")
 
+		self.ready = False
 		self.startup = True
-		# check for script update on SVN
-		self.scriptUpdated = update_script(True, False)
-		if not self.scriptUpdated:
-			self.reset()
+		self.reset()
 
-		debug("< __init__")
+		debug("< Comics().__init__")
 
 	#################################################################################################################
 	def onInit( self ):
 		debug("> onInit() startup=%s" % self.startup)
 		if self.startup:
 			self.startup = False
-			xbmcgui.lock()
 			self.getControl(self.CI_COMIC).setVisible(False)
 			self.getControl( self.CLBL_VERSION ).setLabel( "v" + __version__ )
 			self.clearAll()
-			xbmcgui.unlock()
 
-			if not self.scriptUpdated:
-				# display area windowed
-				image_control = self.getControl( self.CI_COMIC )
-				x, y = image_control.getPosition()
-				w = image_control.getWidth()
-				h = image_control.getHeight()
-				windowedDisplayDims = (x, y, w, h)
+			# display area windowed
+			image_control = self.getControl( self.CI_COMIC )
+			x, y = image_control.getPosition()
+			w = image_control.getWidth()
+			h = image_control.getHeight()
+			windowedDisplayDims = (x, y, w, h)
 
-				# display area fullscreen
-				fullscreenDisplayDims = (0, 0, self.getControl(self.CI_BACKGROUND).getWidth(), \
-											  self.getControl(self.CI_BACKGROUND).getHeight())
+			# display area fullscreen
+			fullscreenDisplayDims = (0, 0, self.getControl(self.CI_BACKGROUND).getWidth(), \
+										  self.getControl(self.CI_BACKGROUND).getHeight())
 
-				self.displayAreaDims = { False : windowedDisplayDims,
-										 True : fullscreenDisplayDims }
-				debug("disp dims=%s" % self.displayAreaDims)
+			self.displayAreaDims = { False : windowedDisplayDims,
+									 True : fullscreenDisplayDims }
+			debug("disp dims=%s" % self.displayAreaDims)
 
-				while not self.ready:
-					if not self.selectSource():
-						debug("onInit() close()")
-						self.close()
-						break
-					else:
-						self.ready = self.switchSource()
+			while not self.ready:
+				if not self.selectSource():
+					debug("onInit() close()")
+					self.close()
+					break
+				else:
+					self.ready = self.switchSource()
 
 # uncomment during dev only!
 #				self.filename = os.path.join(DIR_HOME, "comic.jpg")
 #				self.showImage()
-			else:
-				print "script updating, close script"
-				self.close()
 
-		debug("< onInit() self.ready="+str(self.ready))
+		self.ready = True
+		debug("< onInit()")
 
 	#################################################################################################################
 	def onAction(self, action):
-		debug( "onAction() self.ready=%s" % self.ready )
-		if not action or not self.ready:
+		try:
+			actionID   =  action.getId()
+			buttonCode =  action.getButtonCode()
+		except: return
+
+		if not self.ready:
 			return
-		buttonCode =  action.getButtonCode()
-		actionID   =  action.getId()
-		debug( "onAction(): actionID=%i  buttonCode=%i" % (actionID, buttonCode) )
-		if not buttonCode or buttonCode in [1991528071, 11109936]:
-			return
-		if not actionID and buttonCode:
-			actionID = buttonCode
 
 		self.ready = False
-		if actionID in CONTEXT_MENU:
+		if actionID in CONTEXT_MENU or buttonCode in CONTEXT_MENU:
 			self.mainMenu()
-		elif actionID == ACTION_X or buttonCode == KEYBOARD_X:
+		elif actionID in CLICK_X or buttonCode in CLICK_X:
 			if self.comicImage:
 				self.toggleFullscreen()
-		elif actionID in CANCEL_DIALOG and self.IS_FULLSCREEN:
+		elif (actionID in CANCEL_DIALOG or buttonCode in CANCEL_DIALOG) and self.IS_FULLSCREEN:
 			self.toggleFullscreen()
-		elif actionID in [ACTION_Y, PAD_Y, ACTION_REMOTE_PAUSE] or buttonCode == KEYBOARD_Y:
+		elif actionID in CLICK_Y or buttonCode in CLICK_Y:
 			if self.selectSource():
 				self.switchSource()
-		elif actionID in EXIT_SCRIPT and not self.IS_FULLSCREEN:
+		elif (actionID in EXIT_SCRIPT or buttonCode in EXIT_SCRIPT) and not self.IS_FULLSCREEN:
 			self.close()
 		elif self.IS_FULLSCREEN:
 			if actionID in MOVEMENT_LEFT_STICK + MOVEMENT_RIGHT_STICK + LEFT_STICK_CLICK:
 				self.moveImage(actionID)
+			elif buttonCode in MOVEMENT_LEFT_STICK + MOVEMENT_RIGHT_STICK + LEFT_STICK_CLICK:
+				self.moveImage(buttonCode)
+			elif buttonCode in MOVEMENT_DPAD:
+				self.onActionFullscreen(buttonCode)
 			elif actionID in MOVEMENT_DPAD:
 				self.onActionFullscreen(actionID)
 
@@ -176,7 +172,6 @@ class GUI(xbmcgui.WindowXML):
 
 	#################################################################################################################
 	def onClick(self, controlID):
-		debug( "onClick() self.ready=%s" % self.ready )
 		if not controlID or not self.ready:
 			return
 		debug( "onclick(): control %i" % controlID )
@@ -290,23 +285,22 @@ class GUI(xbmcgui.WindowXML):
 	def mainMenu(self):
 		debug("> mainMenu()")
 
+		menuTitle = "%s - %s" % (__language__(0), __language__(501))
 		options = [__language__(500), __language__(503), __language__(504)]
 		while True:
-			selectDialog = xbmcgui.Dialog()
-			selectedPos = selectDialog.select( __language__(501), options )
-			del selectDialog
+			selectedPos = xbmcgui.Dialog().select( __language__(501), options )
 			if selectedPos <= 0:
 				break
 			elif selectedPos == 1:
-				title = "%s: %s" % (__language__(0), __language__(503))
-				fn = getReadmeFilename(mylanguage)
+				fn = getReadmeFilename()
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
+				tbd.ask(options[selectedPos], fn=fn)
+				del tbd
 			elif selectedPos == 2:
-				title = "%s: %s" % (__language__(0), __language__(504))
 				fn = os.path.join( DIR_HOME, "changelog.txt" )
-
-			tbd = TextBoxDialogXML("script-bbb-fullscreen-textbox.xml", DIR_RESOURCES, "Default")
-			tbd.ask(title, fn=fn)
-			del tbd
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
+				tbd.ask(options[selectedPos], fn=fn)
+				del tbd
 
 		debug ("< mainMenu()")
 
@@ -418,15 +412,19 @@ class GUI(xbmcgui.WindowXML):
 		debug("> getListsSelected()")
 
 		info = {}
-		label = self.getControl(self.CLST_FEEDS).getSelectedItem().getLabel()
-		pos = self.getControl(self.CLST_FEEDS).getSelectedPosition()
-		size = self.getControl(self.CLST_FEEDS).size()
-		info[self.CLST_FEEDS] = (label, pos, size)
+		try:
+			label = self.getControl(self.CLST_FEEDS).getSelectedItem().getLabel()
+			pos = self.getControl(self.CLST_FEEDS).getSelectedPosition()
+			size = self.getControl(self.CLST_FEEDS).size()
+			info[self.CLST_FEEDS] = (label, pos, size)
+		except: pass
 
-		label = self.getControl(self.CLST_ITEMS).getSelectedItem().getLabel()
-		pos = self.getControl(self.CLST_ITEMS).getSelectedPosition()
-		size = self.getControl(self.CLST_ITEMS).size()
-		info[self.CLST_ITEMS] = (label, pos, size)
+		try:
+			label = self.getControl(self.CLST_ITEMS).getSelectedItem().getLabel()
+			pos = self.getControl(self.CLST_ITEMS).getSelectedPosition()
+			size = self.getControl(self.CLST_ITEMS).size()
+			info[self.CLST_ITEMS] = (label, pos, size)
+		except: pass
 
 		try:
 			label = self.getControl(self.CLST_ITEM_IMAGES).getSelectedItem().getLabel()
@@ -444,60 +442,68 @@ class GUI(xbmcgui.WindowXML):
 
 		if actionID:
 			# FORCE NAVIGATION OF ITEM AND?OR IMAGE LISTS
-			listsInfo = self.getListsSelected()
-			itemsLabel, itemsPos, itemsCount = listsInfo[self.CLST_ITEMS]
-			imagesLabel, imagesPos, imagesCount = listsInfo[self.CLST_ITEM_IMAGES]
-			if actionID == ACTION_MOVE_RIGHT:			# next image
-				debug( "ACTION_MOVE_RIGHT" )
-				if imagesPos + 1 < imagesCount:
-					imagesPos += 1
-					self.getControl(self.CLST_ITEM_IMAGES).selectItem(imagesPos)
-					self.itemImageSelected()
+			try:
+				listsInfo = self.getListsSelected()
+				itemsLabel, itemsPos, itemsCount = listsInfo[self.CLST_ITEMS]
+				imagesLabel, imagesPos, imagesCount = listsInfo[self.CLST_ITEM_IMAGES]
+				if actionID in MOVEMENT_RIGHT:			# next image
+					debug( "ACTION_MOVE_RIGHT" )
+					if imagesPos + 1 < imagesCount:
+						imagesPos += 1
+						self.getControl(self.CLST_ITEM_IMAGES).selectItem(imagesPos)
+						self.itemImageSelected()
+						self.showImage()
+					else:
+						actionID = ACTION_MOVE_DOWN
+
+				elif actionID in MOVEMENT_LEFT:			# prev image
+					debug( "ACTION_MOVE_LEFT" )
+					if imagesPos > 0:
+						imagesPos -= 1
+						self.getControl(self.CLST_ITEM_IMAGES).selectItem(imagesPos)
+						self.itemImageSelected()
+						self.showImage()
+					else:
+						# force prev item action
+						actionID = ACTION_MOVE_UP
+
+				if actionID in MOVEMENT_UP:
+					debug( "ACTION_MOVE_UP" )
+					if itemsPos > 0:
+						itemsPos -= 1
+					else:
+						itemsPos = itemsCount-1			# goto last item in list
+						
+					self.getControl(self.CLST_ITEMS).selectItem(itemsPos)
+					self.itemSelected()
+					self.itemImageSelected(0)
 					self.showImage()
-				else:
-					actionID = ACTION_MOVE_DOWN
 
-			elif actionID == ACTION_MOVE_LEFT:			# prev image
-				debug( "ACTION_MOVE_LEFT" )
-				if imagesPos > 0:
-					imagesPos -= 1
-					self.getControl(self.CLST_ITEM_IMAGES).selectItem(imagesPos)
-					self.itemImageSelected()
+				if actionID in MOVEMENT_DOWN:
+					debug( "ACTION_MOVE_DOWN" )
+					if itemsPos + 1 < itemsCount:
+						itemsPos += 1
+					else:
+						itemsPos = 0						# goto first item in list
+
+					self.getControl(self.CLST_ITEMS).selectItem(itemsPos)
+					self.itemSelected()
+					self.itemImageSelected(0)
 					self.showImage()
-				else:
-					# force prev item action
-					actionID = ACTION_MOVE_UP
-
-			if actionID == ACTION_MOVE_UP:
-				debug( "ACTION_MOVE_UP" )
-				if itemsPos > 0:
-					itemsPos -= 1
-				else:
-					itemsPos = itemsCount-1			# goto last item in list
-					
-				self.getControl(self.CLST_ITEMS).selectItem(itemsPos)
-				self.itemSelected()
-				self.itemImageSelected(0)
-				self.showImage()
-
-			if actionID == ACTION_MOVE_DOWN:
-				debug( "ACTION_MOVE_DOWN" )
-				if itemsPos + 1 < itemsCount:
-					itemsPos += 1
-				else:
-					itemsPos = 0						# goto first item in list
-
-				self.getControl(self.CLST_ITEMS).selectItem(itemsPos)
-				self.itemSelected()
-				self.itemImageSelected(0)
-				self.showImage()
+			except:
+				print "failed to unpack listsInfo=", listsInfo
 
 		# get new lists selected labels, pos and size
 		listsInfo = self.getListsSelected()
-		label, pos, size = listsInfo[self.CLST_FEEDS]
-		title = "%s (%s/%s)" % (label, pos+1, size)
-		label, pos, size = listsInfo[self.CLST_ITEMS]
-		title += " -> %s (%s/%s)" % (label, pos+1, size)
+		title = ""
+		try:
+			label, pos, size = listsInfo[self.CLST_FEEDS]
+			title = "%s (%s/%s)" % (label, pos+1, size)
+		except: pass
+		try:
+			label, pos, size = listsInfo[self.CLST_ITEMS]
+			title += " -> %s (%s/%s)" % (label, pos+1, size)
+		except: pass
 		try:
 			label, pos, size = listsInfo[self.CLST_ITEM_IMAGES]
 			title += " -> %s (%s/%s)" % (label, pos+1, size)
@@ -516,9 +522,8 @@ class GUI(xbmcgui.WindowXML):
 		for source in self.sources:
 			options.append(source.getName())
 
-		selectDialog = xbmcgui.Dialog()
 		header = "%s: %s" % (__language__(0), __language__(561))
-		selectedPos = selectDialog.select( header, options )       
+		selectedPos = xbmcgui.Dialog().select( header, options )       
 		debug( "selectedPos=%s" % selectedPos)
 		if selectedPos > 0:
 			selectedPos -= 1											# allow for exit
@@ -526,7 +531,7 @@ class GUI(xbmcgui.WindowXML):
 				self.COMIC_SOURCE_IDX = selectedPos
 				success = True
 
-		debug ("< selectSource() success="+str(success))
+		debug ("< selectSource() success=%s" % success)
 		return success
 
 	###################################################################################################
@@ -548,7 +553,7 @@ class GUI(xbmcgui.WindowXML):
 			self.setAllFooterListsVisible(True, False, False)
 			self.setFocus(self.getControl( self.CLST_FEEDS ))
 		else:
-			messageOK(self.sourceName, __language__(104))
+			messageOK(sourceName, __language__(104))
 			self.COMIC_SOURCE_IDX = self.lastSourcePos
 
 		debug("< switchSource() success="+str(success))
@@ -973,12 +978,11 @@ class Tapestry:
 		debug("> prefixURL() " + origURL)
 		newURL = origURL
 		if not origURL.startswith('http') and not origURL.startswith('www'):
+			debug ("  NO url prefix, get FEED prefix and add to URL")
 			url = self.feeds[self.lastFeedsPos].getElement(ELEMENT_LINK)
-			if url[-1] != '/':
-				url += '/'
-			prefix = searchRegEx(url, REGEX_URL_PREFIX, re.IGNORECASE)
+			prefix = searchRegEx(url, REGEX_URL_PREFIX, re.MULTILINE + re.IGNORECASE)
 			if prefix:
-				newURL = urljoin(prefix,origURL)
+				newURL = prefix + origURL
 		debug("< prefixURL() "+newURL)
 		return newURL
 
@@ -1135,24 +1139,23 @@ class MyComics:
 			errTxt = "Regular Expression(s) missing."
 			errTxt += "\nProvide: BOTH 'reItem' and 'reImage' if giving a page containing page links to images."
 			errTxt += "\nProvide: JUST 'reImage' if giving a page containing image."
-			errTxt += "\nSee script readme for examples."
+			errTxt += "\nSee script header for examples."
+			debug(errTxt)
 			messageOK("Comics - Error",errTxt)
 		else:
 			html = fetchURL(url)
 			if html:
-				debug("finding re matches")
+				debug("finding reItem matches")
 				findRe = re.compile(regex, re.MULTILINE + re.IGNORECASE)
 				matches = findRe.findall(html)
-				# must have title & link - so make title if missing one
 				for match in matches:
-					if isinstance(match, str):
-						title = os.path.basename(match)
-						link = match
-					else:
-						link = match[0]
-						title = decodeEntities(match[1])
-
-					self.items.append(Items(title, link))
+					# must have title & link
+					if len(match) < 2:
+						debug("  ITEM ignored, not enough data in regex match")
+						continue
+					debug ("0: " + match[0] + "  1: " + match[1])
+					title = decodeEntities(match[1])
+					self.items.append(Items(title, match[0]))
 					self.itemsList.append(title)
 
 		sz = len(self.itemsList)
@@ -1165,11 +1168,10 @@ class MyComics:
 		newURL = origURL
 		if not origURL.startswith('http') and not origURL.startswith('www'):
 			url = self.feeds[self.lastFeedsPos].getElement(ELEMENT_LINK)
-			if url[-1] != '/':
-				url += '/'
+			debug ("  NO url prefix, get FEED prefix and add to URL " + url)
 			prefix = searchRegEx(url, REGEX_URL_PREFIX, re.MULTILINE + re.IGNORECASE)
 			if prefix:
-				newURL = urljoin(prefix,origURL)
+				newURL = prefix + origURL	
 		debug("< prefixURL() "+newURL)
 		return newURL
 
@@ -1226,50 +1228,61 @@ class MyComics:
 
 
 ######################################################################################
-def update_script(quite=False, notifyNotFound=False):
-	xbmc.output( "> update_script() quite=%s" %quite)
+def updateScript(silent=False):
+	xbmc.output( "> updateScript() silent=%s" % silent)
 
 	updated = False
 	up = update.Update(__language__, __scriptname__)
-	version = up.getLatestVersion(quite)
+	version = up.getLatestVersion(silent)
 	xbmc.output("Current Version: " + __version__ + " Tag Version: " + version)
 	if version != "-1":
 		if __version__ < version:
-			# do update ?
-			if xbmcgui.Dialog().yesno( __language__(0), 
+			if xbmcgui.Dialog().yesno( __language__(0), \
 								"%s %s %s." % ( __language__(1006), version, __language__(1002) ), \
-								__language__(1003)):
+								__language__(1003 )):
 				updated = True
 				up.makeBackup()
 				up.issueUpdate(version)
-		elif notifyNotFound:
-			dialogOK(__language__(0), __language__(1000))           # upto date
-#	elif not quite:
+		elif not silent:
+			dialogOK(__language__(0), __language__(1000))
+#	elif not silent:
 #		dialogOK(__language__(0), __language__(1030))				# no tagged ver found
 
 	del up
-	xbmc.output( "< _update_script() updated=%s" % updated)
+	xbmc.output( "< updateScript() updated=%s" % updated)
 	return updated
 
 
 #############################################################################################
 # BEGIN !
 #############################################################################################
+makeScriptDataDir() 
 makeDir(DIR_CACHE)
-comics = GUI("script-Comics-main.xml", DIR_RESOURCES, "Default")
-if not comics.scriptUpdated:
-    comics.doModal()
-del comics
 
+# check for script update
+if DEBUG:
+    updated = False
+else:
+    updated = updateScript(False)
+if not updated:
+	try:
+		# check language loaded
+		xbmc.output( "__language__ = %s" % __language__ )
+		myscript = ComicsGUI("script-Comics-main.xml", DIR_HOME, "Default")
+		myscript.doModal()
+		del myscript
+	except:
+		handleException()
+
+# clean up on exit
 debug("exiting script, housekeeping ...")
+from shutil import rmtree
 rmtree( DIR_CACHE, ignore_errors=True )
-
-# remove modules/globals
 moduleList = ['bbbLib', 'bbbSkinGUILib']
 for m in moduleList:
 	try:
 		del sys.modules[m]
-		xbmc.output("del sys.module: " + m)
+		xbmc.output(__scriptname__ + " del sys.module=%s" % m)
 	except: pass
 
 # remove other globals
@@ -1278,6 +1291,6 @@ try:
 except: pass
 
 # goto xbmc home window
-try:
-	xbmc.executebuiltin('XBMC.ReplaceWindow(0)')
-except: pass
+#try:
+#	xbmc.executebuiltin('XBMC.ReplaceWindow(0)')
+#except: pass
