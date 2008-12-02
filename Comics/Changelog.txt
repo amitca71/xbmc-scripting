@@ -1,7 +1,8 @@
  Ver    Date        Change
  1.5.2 01/12/08
                     Fix: XBMC Atlantis language compatible.
-                    Updated: Supporting libs.
+                    Updated: Supporting libs and PMIII skin.
+                    New: Skins PM3.HD and Vision2
  1.5.1  10/04/08    Updated: Language strings.
                     New: Comic feed for Little-gamers added to MyComics.xml
  1.5    28/02/08    New: Skinned
