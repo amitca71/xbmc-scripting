@@ -1,8 +1,9 @@
 T3CH Upgrader Changelog:
 ========================
-v1.8 17/11/2008
+v1.7.5 07/12/2008
  Change: Improved detection of new build archives with alternative filenames.
  Change: Online build archive filenames found without a date will prompt for a date before download.
+ Change: settings changed to use bool type instead of str Yes, No - (converts old settings on strtup)
  New: Setting "Check For New T3CH on Script Startup?" - If disabled, instead of checking online, MainMenu shows "Check For New T3CH Build"
          This enables the script to be used without having to remove network cable.
 v1.7.4 13/10/2008

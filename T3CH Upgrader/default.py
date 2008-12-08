@@ -20,8 +20,8 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '17-11-2008'
-__version__ = "1.8"
+__date__ = '07-12-2008'
+__version__ = "1.7.5"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
 # Shared resources
@@ -55,7 +55,6 @@ import SFVCheck
 dialogProgress = xbmcgui.DialogProgress()
 EXIT_SCRIPT = ( 9, 10, 247, 275, 61467, )
 CANCEL_DIALOG = EXIT_SCRIPT + ( 216, 257, 61448, )
-#TEXTBOX_XML_FILENAME = "script-bbb-textbox.xml"	# old custom textbox skins, no longer supplied from v1.7.4 onwards
 TEXTBOX_XML_FILENAME = "DialogScriptInfo.xml"       # xbmc skin supplied textbox viewer
 
 
@@ -66,12 +65,22 @@ class Parser( SGMLParser ):
 		SGMLParser.reset( self )
 
 	def start_a( self, attrs ):
+		# check for SVN build
 		for key, value in attrs:
-			if key == "href" and value.find( "/repository/" ) != -1 \
-				and value.find( "/XBMC-" ) != -1 and value.find( ".rar" ) != -1:
+			if ( key == "href" and value.find( "/STABLE/" ) == -1 and value.find( "ARCHIVE/" ) == -1 \
+				and value.find( "/t3ch/XBMC-SVN" ) != -1 and value.find( ".rar" ) != -1 ):
 				self.url = value
-				xbmc.output("T3CH build archive found! " + value)
+				xbmc.output("SVN T3CH build archive found! " + self.url)
 				break
+
+		if not self.url:
+			# check for other build - maybe a stable?
+			for key, value in attrs:
+				if key == "href" and value.find( "/repository/" ) != -1 and value.find( "ARCHIVE/" ) == -1 \
+					and value.find( "/XBMC-" ) != -1 and value.find( ".rar" ) != -1:
+					self.url = value
+					xbmc.output("STABLE T3CH build archive found! " + self.url)
+					break
 
 #############################################################################################################
 class Main:
@@ -114,7 +123,7 @@ class Main:
 
 		self._check_settings()
 		scriptUpdated = False
-		if self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP] == __language__(402):	# check for update ?
+		if self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]:	# check for update ?
 #			if self.isSilent:
 #				showNotification(__language__(0), __language__(619), 3)
 			scriptUpdated = self._update_script(True)
@@ -124,7 +133,7 @@ class Main:
 			remote_short_build_name = ""
 			url = ""
 			# only check for online new build if settings allow OR autoexec launched
-			if (self.runMode != RUNMODE_NORMAL) or self.settings[self.SETTING_CHECK_NEW_BUILD]  == __language__(402):
+			if (self.runMode != RUNMODE_NORMAL) or self.settings[self.SETTING_CHECK_NEW_BUILD]:
 				url = self._get_latest_version()										# discover latest build
 #				url = "http://somehost/XBMC-SVN_2008-01-27_rev11426-T3CH.rar"			# DEV ONLY!!, saves DL it
 				if url:
@@ -139,7 +148,7 @@ class Main:
 
 	######################################################################################
 	def _check_settings( self, forceSetup=False ):
-		xbmc.output( "_check_settings()" )
+		xbmc.output( "_check_settings() forceSetup=%s" % forceSetup)
 		while forceSetup or not self._set_default_settings(False):
 			self.isSilent = False							# come out of silent inorder to setup
 			self._settings_menu()							# enter settings
@@ -150,24 +159,33 @@ class Main:
 		""" set settings to default values if not exist """
 		xbmc.output( "> _set_default_settings() forceReset="+str(forceReset) )
 		success = True
+		# __language__(402), # yes
+		# __language__(403), # no
 
 		items = {
-			self.SETTING_CHECK_NEW_BUILD : __language__(403), # yes
+			self.SETTING_CHECK_NEW_BUILD : True,
 			self.SETTING_SHORTCUT_DRIVE : "C:\\",
 			self.SETTING_SHORTCUT_NAME : "xbmc",
 			self.SETTING_UNRAR_PATH : "E:\\apps",
-			self.SETTING_NOTIFY_NOT_NEW :  __language__(402), # yes
-			self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP : __language__(403),	# No
-			self.SETTING_XFER_USERDATA : __language__(402),	# yes
-			self.SETTING_PROMPT_DEL_RAR : __language__(402)	# yes
+			self.SETTING_NOTIFY_NOT_NEW :  False,
+			self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP : True,
+			self.SETTING_XFER_USERDATA : True,
+			self.SETTING_PROMPT_DEL_RAR : True
 			}
 
 		for key, defaultValue in items.items():
-			if forceReset or not self.settings.has_key( key ) or not self.settings[key]:
+			if forceReset or not self.settings.has_key( key ) or self.settings[key] in ("",None):
 				self.settings[key] = defaultValue
 				if not forceReset:
-					xbmc.output( "missing setting: " + key )
+					xbmc.output( "Using default value for setting: %s" % key )
 					success = False
+			elif key in (self.SETTING_CHECK_NEW_BUILD, self.SETTING_NOTIFY_NOT_NEW, \
+						 self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP, self.SETTING_XFER_USERDATA, self.SETTING_PROMPT_DEL_RAR):
+				# convert old settings that used YES, NO to True, False
+				if not isinstance(self.settings[key], bool) or self.settings[key] not in (True, False):
+					self.settings[key] = (self.settings[key] == __language__(402))	# yes = True
+					xbmc.output("translated old setting to bool. %s %s" % (key, self.settings[key]))
+					success = False													# will force a save from menu
 
 		xbmc.output( "< _set_default_settings() success=%s" % success)
 		return success
@@ -180,6 +198,8 @@ class Main:
 			load_obj = eval( file_handle.read() )
 			file_handle.close()
 		except:
+			handleException()
+			xbmc.output( "_load_file_obj() failed to load, using data type default as empty.")
 			if isinstance(dataType, dict):
 				load_obj = {}
 			elif isinstance(dataType, list):
@@ -287,7 +307,7 @@ class Main:
 				if curr_build_date_secs >= found_build_date_secs:							# No new build
 					short_build_name = ''
 					archive_name = ''
-					if self.settings[self.SETTING_NOTIFY_NOT_NEW] == __language__(402):		# YES, show notification
+					if self.settings[self.SETTING_NOTIFY_NOT_NEW]:		# YES, show notification
 						dialogOK( __language__( 0 ), __language__( 517 ), isSilent=True )	# always use xbmc.notification
 				elif self.runMode != RUNMODE_NORMAL:										# new build
 					dialogOK( __language__( 0 ), __language__( 518 ), short_build_name, isSilent=True )	# always use xbmc.notification
@@ -346,7 +366,7 @@ class Main:
 			# else show Not Found
 			if remote_archive_name:
 				self.opt_download = "%s  %s"  % (__language__(612), remote_archive_name)# download w/ rar name
-			elif self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP] == __language__(402):	# yes
+			elif self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]:	# yes
 				self.opt_download = "%s  %s"  % (__language__(612),__language__(517))	# no new build
 			else:
 				self.opt_download = "%s"  % __language__(622)							# Check Now
@@ -376,7 +396,7 @@ class Main:
 				options.remove(self.opt_local)
 
 			# remove Update Script option if check enabled at startup
-			if self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP] == __language__(402): # yes
+			if self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]: # yes
 				options.remove(self.opt_update_script)
 
 			return options
@@ -648,7 +668,7 @@ class Main:
 						if not self.isSilent:
 							dialogProgress.create( __language__( 0 ) )
 
-						if self.settings[self.SETTING_XFER_USERDATA] == __language__(402):
+						if self.settings[self.SETTING_XFER_USERDATA]:
 							self._copy_user_data(extract_path)
 
 						# do Custom Copies
@@ -661,13 +681,12 @@ class Main:
 							dialogProgress.close()
 
 					# update shortcuts ?
-#					if self.isSilent or dialogYesNo( __language__(0), __language__(529), yesButton=__language__( 402 ), noButton=__language__( 403 )):
 					success = self._update_shortcut(extract_path)		# create shortcut
 
 					# del rar according to del setting
 					if fileExist(archive_file):
 						# always del if no prompt reqd or isSilent
-						if self.isSilent or self.settings[self.SETTING_PROMPT_DEL_RAR] == __language__(403) or \
+						if self.isSilent or not self.settings[self.SETTING_PROMPT_DEL_RAR] or \
 							dialogYesNo( __language__( 0 ), __language__( 528 ), archive_file, \
 										yesButton=__language__( 412 ), noButton=__language__( 413 )):
 							deleteFile(archive_file)					# remove RAR
@@ -1228,7 +1247,7 @@ class Main:
 						except:
 							self.includes.append(path)
 
-			# save options to file
+			# save to file
 			self._save_file_obj(self.INCLUDES_FILENAME, self.includes)
 		except:
 			handleException("_maintain_includes()")
@@ -1327,7 +1346,7 @@ class Main:
 						except:
 							self.excludes.append(path)
 
-			# save options to file
+			# save to file
 			self._save_file_obj(self.EXCLUDES_FILENAME, self.excludes)
 		except:
 			handleException("_maintain_excludes()")
@@ -1443,6 +1462,10 @@ class Main:
 			buildName = searchRegEx(f, "(T3CH_\d+-\d+-\d+)")
 			if buildName and buildName != curr_build_date:
 				dirList.append(buildName)
+			else:
+				buildName = searchRegEx(f, "(T3CH_\d\d\d\d\d\d\d\d)")
+				if buildName and buildName != curr_build_date:
+					dirList.append(buildName)
 
 		xbmc.output( "< _find_local_t3ch_dirs() dir count=%s" % len(dirList))
 		return dirList
@@ -1550,24 +1573,24 @@ class Main:
 	def _settings_menu(self):
 		xbmc.output( "_settings_menu() ")
 
-		def _set_yes_no(key, prompt):
-			if dialogYesNo( __language__( 0 ), prompt ):
-				self.settings[key] = __language__( 402 )	# YES
+		def _translate_bool(value):
+			if value:
+				return __language__( 402 )	# YES
 			else:
-				self.settings[key] = __language__( 403 )	# NO
+				return __language__( 403 )	# NO
 
 
 		def _make_menu(settings):
 			options = [__language__(650),
 						__language__(639),
-						"%s -> %s" %(__language__(640),self.settings[self.SETTING_CHECK_NEW_BUILD]),
+						"%s -> %s" %(__language__(640),_translate_bool(self.settings[self.SETTING_CHECK_NEW_BUILD])),
 						"%s -> %s" %(__language__(630),self.settings[self.SETTING_SHORTCUT_DRIVE]),
 						"%s -> %s" %(__language__(631),self.settings[self.SETTING_SHORTCUT_NAME]),
 						"%s -> %s" %(__language__(632),self.settings[self.SETTING_UNRAR_PATH]),
-						"%s -> %s" %(__language__(633),self.settings[self.SETTING_NOTIFY_NOT_NEW]),
-						"%s -> %s" %(__language__(634),self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]),
-						"%s -> %s" %(__language__(635),self.settings[self.SETTING_XFER_USERDATA]),
-						"%s -> %s" %(__language__(638),self.settings[self.SETTING_PROMPT_DEL_RAR]),
+						"%s -> %s" %(__language__(633),_translate_bool(self.settings[self.SETTING_NOTIFY_NOT_NEW])),
+						"%s -> %s" %(__language__(634),_translate_bool(self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP])),
+						"%s -> %s" %(__language__(635),_translate_bool(self.settings[self.SETTING_XFER_USERDATA])),
+						"%s -> %s" %(__language__(638),_translate_bool(self.settings[self.SETTING_PROMPT_DEL_RAR])),
 						__language__(636),
 						__language__(637)
 						]
@@ -1589,7 +1612,8 @@ class Main:
 					self._view_script_doc(False)		# changelog
 
 			elif selected == 2:														# check for new build
-				_set_yes_no(self.SETTING_CHECK_NEW_BUILD, __language__( 640 ))
+				self.settings[self.SETTING_CHECK_NEW_BUILD] = not self.settings[self.SETTING_CHECK_NEW_BUILD]
+#				_set_yes_no(self.SETTING_CHECK_NEW_BUILD, __language__( 640 ))
 
 			elif selected == 3:															# shortcut drive
 				value = self._pick_shortcut_drive()
@@ -1607,18 +1631,18 @@ class Main:
 					self.settings[self.SETTING_UNRAR_PATH] = value
 
 			elif selected == 6:															# notify when not new
-				_set_yes_no(self.SETTING_NOTIFY_NOT_NEW, __language__( 633 ))
+				self.settings[self.SETTING_NOTIFY_NOT_NEW] = not self.settings[self.SETTING_NOTIFY_NOT_NEW]
 
 			elif selected == 7:															# check for update
-				_set_yes_no(self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP, __language__( 634 ))
+				self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP] = not self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]
 
 			elif selected == 8:															# xfer userdata
-				_set_yes_no(self.SETTING_XFER_USERDATA, __language__( 635 ))
+				self.settings[self.SETTING_XFER_USERDATA] = not self.settings[self.SETTING_XFER_USERDATA]
 
 			elif selected == 9:															# prompt del rar
-				_set_yes_no(self.SETTING_PROMPT_DEL_RAR, __language__( 638 ))
+				self.settings[self.SETTING_PROMPT_DEL_RAR] = not self.settings[self.SETTING_PROMPT_DEL_RAR]
 
-			elif selected == 10:															# reset settings
+			elif selected == 10:														# reset settings
 				if dialogYesNo(__language__(0), __language__( 636 ) + " ?"):
 					self._set_default_settings(forceReset=True)
 
@@ -1629,7 +1653,6 @@ class Main:
 		# DO SOME POST SETTINGS MENU checks
 		# ensure unrar path exists
 		makeDir(self.settings[ self.SETTING_UNRAR_PATH ])
-
 		self._save_file_obj( self.SETTINGS_FILENAME, self.settings )
 
 
