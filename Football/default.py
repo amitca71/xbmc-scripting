@@ -15,23 +15,23 @@
 
 import xbmc, xbmcgui
 import sys, os.path
-import re, os, time, datetime, traceback
 from string import rjust,replace,split, upper, lower, capwords,find
+import re, os, time, datetime, traceback
 from datetime import date
 from threading import Thread
 
 # Script doc constants
 __scriptname__ = "Football"
-__version__ = '1.5.1'
+__version__ = '1.6'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '22-08-2008'
+__date__ = '25-11-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
 DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-DIR_USERDATA = os.path.join( "T:\\script_data", __scriptname__ )
+DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )
 DIR_CACHE = os.path.join(DIR_USERDATA, "cache")
 DIR_GFX = os.path.join(DIR_RESOURCES,'gfx')
 DIR_TEAM_GFX = os.path.join(DIR_RESOURCES,'team_gfx')
@@ -43,11 +43,11 @@ try:
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
     if not __language__( 0 ): raise
 except:
-	print "failed to get builtin xbmc.Language() or strings not parsed from path - upgrade XBMC"
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.")
 
+from bbbLib import *
+from bbbSkinGUILib import TextBoxDialogXML
 import update                                       # script update module
-from bbbLib import *								# requires __language__ to be defined
-from bbbGUILib import *
 
 INIT_NONE = 0
 INIT_DISPLAY = 1
@@ -63,40 +63,41 @@ timerthread = None
 #################################################################################################################
 # MAIN
 #################################################################################################################
-class Football(xbmcgui.Window):
+class Football(xbmcgui.WindowXML):
+	# control id's
+	CID_GRP_HEADER = 1000
+	CID_LOGO = 1010
+	CID_CLUB_LOGO = 1011
+	CID_TITLE_LEAGUE = 1012
+	CID_TITLE_LEAGUE_VIEW = 1013
+	CID_SCRIPT_VER = 1014
+	CID_DATASOURCE = 1015
+	CID_GRP_FOOTER = 2000
+	CID_LIST_LEAGUES = 2011
+	CID_LIST_LEAGUE_VIEWS = 2021
+	CID_LIST_TEAMS = 2031
+	CID_LIST_TEAM_VIEWS = 2041
+	CID_GRP_CONTENT = 3000
+	CID_LIST_CONTENT = 3010
+
 	def __init__(self, *args, **kwargs):
 		debug("> Football()__init__")
-
-		setResolution(self)
 
 		self.SETTINGS_LEAGUES_FILENAME = os.path.join( DIR_USERDATA, "league_%s.txt" )
 		self.SETTINGS_FILENAME = os.path.join( DIR_USERDATA, "settings.txt" )
 		# settings keys
 		self.SETTING_START_MODE = "start_mode"
 		self.SETTING_CHECK_UPDATE = "check_update"
-		self.SETTING_CONTENT_FONT = "content_font"
 		# setting default values
 		self.SETTING_VALUE_START_MODE_MENU = "MENU"
-		self.SETTING_VALUE_CONTENT_FONT = FONT11
 		# settings defaults
 		self.SETTINGS_DEFAULTS = {
 			self.SETTING_CHECK_UPDATE : False,	# No
-			self.SETTING_START_MODE : self.SETTING_VALUE_START_MODE_MENU,
-			self.SETTING_CONTENT_FONT : self.SETTING_VALUE_CONTENT_FONT
+			self.SETTING_START_MODE : self.SETTING_VALUE_START_MODE_MENU
 			}
 
-		self.ready = False
 		self.settings = {}
 		self._initSettings(forceReset=False)
-
-		# check for script update
-		scriptUpdated = False
-		if self.settings[self.SETTING_CHECK_UPDATE]:	# check for update ?
-			scriptUpdated = updateScript(True, False)
-
-		if scriptUpdated:
-			self.exit()
-			return
 
 		self.DATASOURCE_BBC = __language__(330)
 		self.DATASOURCE_SOCSTND = __language__(331)
@@ -117,19 +118,14 @@ class Football(xbmcgui.Window):
 		self.CONTENT_REC_CONTROL = 0		# rec of contentControls [ctrl, data]
 		self.CONTENT_REC_DATA = 1
 
-		self.NAV_LISTS_DATA_REC_X = 0
-		self.NAV_LISTS_DATA_REC_Y = 1
-		self.NAV_LISTS_DATA_REC_W = 2
-		self.NAV_LISTS_DATA_REC_H = 3
-		self.NAV_LIST_ATTRIBS = 'ATTRIBS'
 		self.NAV_LIST_MENU = 'MENU'
 		self.NAV_LISTS_ITEM_REC_NAME = 0	# all navlists data store have name in this pos
 
 		# KEYS TO NAV LISTS DICT
-		self.LEAGUES_KEY = 'Leagues'
-		self.LEAGUE_VIEW_KEY = 'League Views'
-		self.TEAMS_KEY = 'Teams'
-		self.TEAM_VIEW_KEY = 'Team Views'
+		self.CID_LIST_LEAGUES = self.CID_LIST_LEAGUES
+		self.CID_LIST_LEAGUE_VIEWS = self.CID_LIST_LEAGUE_VIEWS
+		self.CID_LIST_TEAMS = self.CID_LIST_TEAMS
+		self.CID_LIST_TEAM_VIEWS = self.CID_LIST_TEAM_VIEWS
 
 		self.LEAGUE_ITEM_REC_LEAGUE_ID = 0
 		self.LEAGUE_ITEM_REC_TABLE_PATH = 1
@@ -164,7 +160,6 @@ class Football(xbmcgui.Window):
 		self.MAINMENU_SELECTED = ''
 		self.MAINMENU_REC_TITLE = 0
 		self.MAINMENU_REC_URL = 1
-		self.MAINMENU_OPT_PHOTO_GALLERY = __language__(545)
 		self.MAINMENU_OPT_FFOCUS = __language__(546)
 		self.MAINMENU_OPT_INTERVIEWS = __language__(547)
 		self.MAINMENU_OPT_MOTD_INTERVIEWS = __language__(548)
@@ -178,7 +173,6 @@ class Football(xbmcgui.Window):
 		self.MAINMENU_OPT_GOSSIP =  __language__(556)
 		self.MAINMENU_OPT_CONFIG_MENU = __language__(505)
 		self.MAINMENU_URL = {
-			self.MAINMENU_OPT_PHOTO_GALLERY:'http://newsrss.bbc.co.uk/rss/sportonline_uk_edition/photo_galleries/rss.xml',
 			self.MAINMENU_OPT_FFOCUS:'http://newsrss.bbc.co.uk/rss/sportplayer_uk_edition/football_focus/rss.xml',
 			self.MAINMENU_OPT_INTERVIEWS:'http://news.bbc.co.uk/sol/ukfs_sport/hi/av/football/bb_wm_default.stm',
 			self.MAINMENU_OPT_MOTD_INTERVIEWS:'http://news.bbc.co.uk/sol/ukfs_sport/hi/av/match_of_the_day/bb_wm_default.stm',
@@ -192,7 +186,6 @@ class Football(xbmcgui.Window):
 			self.MAINMENU_OPT_CONFIG_MENU:None
 			}
 		self.MAINMENU = [__language__(500), 	# exit
-						self.MAINMENU_OPT_PHOTO_GALLERY,
 						 self.MAINMENU_OPT_FFOCUS,
 						 self.MAINMENU_OPT_INTERVIEWS,
 						 self.MAINMENU_OPT_MOTD_INTERVIEWS,
@@ -217,22 +210,30 @@ class Football(xbmcgui.Window):
 		self.teams606 = {}
 		self.URL_606 = 'http://www.bbc.co.uk/dna/606/ArticleSearchPhrase?phrase=$PHRASE&contenttype=-1&articlesortby=DateUploaded&show=50'
 
+		self.animZoomWC = 'effect=zoom end=0 center=auto time=200'
+
 		# SETTINGS
 		self.dataSource = self.startupMenu()
 		if self.dataSource:
 			self.ready = True
-			# setup data and draw screen accordingly
-			self.reset()
-
-			# clock thread
-			global timerthread
-			timerthread=Timer(self)
-			if timerthread:
-				timerthread.start()
 		else:
 			self.ready = False
-
+		self.startup = True
 		debug("< Football()__init__")
+
+	#################################################################################################################
+	def onInit( self ):
+		debug("> onInit() startup=%s" % self.startup)
+		if self.startup:
+			self.startup = False
+			# setup data and draw screen accordingly
+			self.reset()
+			# countdown clock thread
+			global timerthread
+			timerthread=CountdownTimer(self)
+			self.ready = True
+
+		debug("< onInit()")
 
 	##############################################################################################
 	def isReady(self):
@@ -242,194 +243,31 @@ class Football(xbmcgui.Window):
 	def setupDisplay(self):
 		debug("> setupDisplay()")
 
-		mc360 = isMC360()
-		if mc360:
-			self.headerH = 70
-			self.footerH = 80
-			self.contentX = 90
-		else:
-			self.headerH = 70
-			self.footerH = 100
-			self.contentX = 0
-		self.footerY = REZ_H -self.footerH
-
-		# DRAW AREA DIMS
-		self.contentY = self.headerH + 1
-		self.contentH = REZ_H - (self.contentY + self.footerH)
-		self.contentW = REZ_W - self.contentX
-		debug("contentX=%s contentY=%s contentW=%s contentH=%s" % (self.contentX,self.contentY,self.contentW,self.contentH) )
-		debug("headerH=%s footerH=%s footerY=%s" % (self.headerH, self.footerH, self.footerY))
-
-		self.navListsH = self.footerH
-		self.navListsY = self.footerY + 1
-		debug("navListsY=%s navListsH=%s" % (self.navListsY, self.navListsH))
-
-		self.contentCenterX = int(self.contentW/2)
-		self.contentCenterY = self.headerH + int(self.contentH/2)
-		debug("contentCenterX=%s contentCenterY=%s" % (self.contentCenterX, self.contentCenterY))
-		self.animTimeOn = "250"
-		self.animTimeOff = "200"
-		self.animHeaderWO = 'effect=slide start=0,-%s acceleration=-1.1 time=%s' % (self.headerH, self.animTimeOn)
-		self.animHeaderWC = 'effect=slide end=0,-%s acceleration=-1.1 time=%s' % (self.headerH, self.animTimeOff)
-		self.animFooterWO = 'effect=slide start=0,%s acceleration=-1.1 time=%s' % (self.footerH, self.animTimeOn)
-		self.animFooterWC = 'effect=slide end=0,%s acceleration=1.1 time=%s' % (self.footerH, self.animTimeOff)
-		self.animZoomWC = 'effect=zoom end=0 center=auto time=%s' % self.animTimeOff
-
 		xbmcgui.lock()
 
-		if mc360:
-			# gfx files come with actual MC360 installation
-			try:
-				debug("drawing mc360 specific gfx")
-				self.addControl(xbmcgui.ControlImage(0,0, REZ_W, REZ_H, 'background-blue.png'))
-				self.addControl(xbmcgui.ControlImage(70,0, 16,54, 'bkgd-whitewash-glass-top-left.png'))
-				self.addControl(xbmcgui.ControlImage(86,0, 667,54, 'bkgd-whitewash-glass-top-middle.png'))
-				self.addControl(xbmcgui.ControlImage(753,0, 16,54, 'bkgd-whitewash-glass-top-right.png'))
-				self.addControl(xbmcgui.ControlImage(70, 427, 16,54, 'bkgd-whitewash-glass-bottom-left.png'))
-				self.addControl(xbmcgui.ControlImage(86, 427, 667,54, 'bkgd-whitewash-glass-bottom-middle.png'))
-				self.addControl(xbmcgui.ControlImage(753, 427, 667,54, 'bkgd-whitewash-glass-bottom-right.png'))
-				self.addControl(xbmcgui.ControlImage(60,0, 32, REZ_H, 'background-overlay-whitewash-left.png'))
-				self.addControl(xbmcgui.ControlImage(92,0, 628, REZ_H, 'background-overlay-whitewash-centertile.png'))
-				self.addControl(xbmcgui.ControlImage(-61,0, 128, REZ_H, 'blades-runner-left.png'))
-				self.addControl(xbmcgui.ControlImage(18,0, 80, REZ_H, 'blades-size4-header.png'))
-				self.addControl(xbmcgui.ControlLabel(75,200,0, 0, __language__(0),
-													font=FONT18,textColor='0xFF000000',angle=270))
-			except:
-				xbmcgui.unlock()
-				messageOK("MC360 Skin Error","Failed loading graphic files.","Ensure XBMC is using MC360 skin.")
-		else:
-			# NON MC360
-			# BACKGROUND
-			try:
-				self.removeControl(self.backgroundCI)
-			except: pass
-			try:
-				self.backgroundCI = xbmcgui.ControlImage(0,0, REZ_W, REZ_H, BACKGROUND_FILENAME)
-				self.addControl(self.backgroundCI)
-			except: pass
+		# DRAW AREA DIMS
+		self.contentX, self.contentY = self.getControl( self.CID_GRP_CONTENT ).getPosition()
+		self.contentW = self.getControl( self.CID_GRP_CONTENT ).getWidth()
+		self.contentH = self.getControl( self.CID_GRP_CONTENT ).getHeight()
+		debug("contentX=%s contentY=%s contentW=%s contentH=%s" % (self.contentX,self.contentY,self.contentW,self.contentH) )
 
-			# HEADER
-			try:
-				self.removeControl(self.headerCI)
-			except: pass
-			try:
-				self.headerCI = xbmcgui.ControlImage(0, 0, REZ_W, self.headerH, HEADER_FILENAME)
-				self.addControl(self.headerCI)
-				self.headerCI.setAnimations([('WindowOpen', self.animHeaderWO),
-											 ('WindowClose', self.animHeaderWC)])
-
-			except: pass
-
-			# FOOTER
-			try:
-				self.removeControl(self.footerCI)
-			except: pass
-			try:
-				self.footerCI = xbmcgui.ControlImage(0, self.footerY, self.contentW, self.footerH, FOOTER_FILENAME)
-				self.addControl(self.footerCI)
-				self.footerCI.setAnimations([('WindowOpen', self.animFooterWO),
-											('WindowClose', self.animFooterWC) ])
-			except: pass
+		self.contentCenterX = int(self.contentW/2)
+		self.contentCenterY = self.contentY + int(self.contentH/2)
+		debug("contentCenterX=%s contentCenterY=%s" % (self.contentCenterX, self.contentCenterY))
 
 		# remove content controls & other stuff
 		self.clearContentControls()
-
-		# CLOCK
-		try:
-			self.removeControl(self.clockLbl)
-		except: pass
-		xpos = REZ_W
-		ypos = 0
-		self.clockLbl = xbmcgui.ControlLabel(xpos, ypos, 0, 0, \
-							time.strftime("%H:%M:%S",time.localtime()), \
-							FONT10, "0xFFC0C0C0",alignment=XBFONT_RIGHT)
-		self.addControl(self.clockLbl)
-		self.clockLbl.setAnimations([('WindowOpen', self.animHeaderWO),
-									 ('WindowClose', self.animHeaderWC)])
-
-		# VERSION
-		try:
-			self.removeControl(self.versionLbl)
-		except: pass
-		ypos += 20
-		self.versionLbl = xbmcgui.ControlLabel(xpos, ypos, 0, 0, "v"+__version__, \
-							FONT10, "0xFFC0C0C0",alignment=XBFONT_RIGHT)
-		self.addControl(self.versionLbl)
-		self.versionLbl.setAnimations([('WindowOpen', self.animHeaderWO),
-									 ('WindowClose', self.animHeaderWC)])
-
-		# DATASOURCE
-		try:
-			self.removeControl(self.datasourceLbl)
-		except: pass
-		ypos += 20
-		self.datasourceLbl = xbmcgui.ControlLabel(xpos, ypos, 0, 0, self.dataSource, \
-							FONT10, "0xFFFFFF99",alignment=XBFONT_RIGHT)
-		self.addControl(self.datasourceLbl)
-		self.datasourceLbl.setAnimations([('WindowOpen', self.animHeaderWO),
-										('WindowClose', self.animHeaderWC)])
-
-		# LIVE TEXT LIST - created seperatly so the update thread can add data to it.
-		# seperate class timer can create controls and add them to self.
-		try:
-			self.removeControl(self.liveTextCL)
-		except: pass
-		self.liveTextCL = xbmcgui.ControlList(self.contentX, self.contentY, self.contentW, self.contentH, \
-							font=FONT12, itemHeight=28, \
-							buttonFocusTexture=BUTTON_FOCUS_LONG, alignmentY=XBFONT_CENTER_Y)
-		self.addControl(self.liveTextCL)
-		self.liveTextCL.setVisible(False)
-		self.liveTextCL.setEnabled(False)
-		self.liveTextCL.setAnimations([('WindowClose', self.animZoomWC)])
-		try:
-			self.liveTextCL.setPageControlVisible(False)
-		except: pass
-
-		# remove all nav lists
-		for navListData in self.navLists.itervalues():
-			try:
-				self.removeControl(navListData[self.NAV_LISTS_VALUE_CONTROL])
-			except: pass
-
-		# change xpos,ypos held for nav lists
-		# LEAGUES
-		xpos = 0
-		self.setNavListAttrib(self.LEAGUES_KEY, self.NAV_LISTS_DATA_REC_X, xpos)
-		self.setNavListAttrib(self.LEAGUES_KEY, self.NAV_LISTS_DATA_REC_Y, self.navListsY+2)
-
-		# LEAGUE VIEWS
-		xpos += self.getNavListAttrib(self.LEAGUES_KEY, self.NAV_LISTS_DATA_REC_W)
-		self.setNavListAttrib(self.LEAGUE_VIEW_KEY, self.NAV_LISTS_DATA_REC_X, xpos)
-		self.setNavListAttrib(self.LEAGUE_VIEW_KEY, self.NAV_LISTS_DATA_REC_Y, self.navListsY+2)
-
-		# TEAMS
-		xpos += self.getNavListAttrib(self.LEAGUE_VIEW_KEY, self.NAV_LISTS_DATA_REC_W)
-		self.setNavListAttrib(self.TEAMS_KEY, self.NAV_LISTS_DATA_REC_X, xpos)
-		self.setNavListAttrib(self.TEAMS_KEY, self.NAV_LISTS_DATA_REC_Y, self.navListsY+2)
-
-		# TEAM VIEWS
-		xpos += self.getNavListAttrib(self.TEAMS_KEY, self.NAV_LISTS_DATA_REC_W)
-		self.setNavListAttrib(self.TEAM_VIEW_KEY, self.NAV_LISTS_DATA_REC_X, xpos)
-		self.setNavListAttrib(self.TEAM_VIEW_KEY, self.NAV_LISTS_DATA_REC_Y, self.navListsY+2)
-
-		# setup home screen
-		self.selectedNavListKey = self.LEAGUES_KEY
-		self.createNavList(self.LEAGUES_KEY)
-		self.loadNavListMenu(self.LEAGUES_KEY)
-		self.createNavList(self.LEAGUE_VIEW_KEY)
-		self.createNavList(self.TEAMS_KEY)
-		self.createNavList(self.TEAM_VIEW_KEY)
-
-		self.setupNavListsNav()
-		self.getNavListDictValue(self.LEAGUES_KEY, self.NAV_LISTS_VALUE_CONTROL).setVisible(True)
-		self.getNavListDictValue(self.LEAGUES_KEY, self.NAV_LISTS_VALUE_CONTROL).setEnabled(True)
-		self.getNavListDictValue(self.LEAGUE_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL).setVisible(False)
-		self.getNavListDictValue(self.LEAGUE_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL).setEnabled(False)
-		self.getNavListDictValue(self.TEAMS_KEY, self.NAV_LISTS_VALUE_CONTROL).setVisible(False)
-		self.getNavListDictValue(self.TEAMS_KEY, self.NAV_LISTS_VALUE_CONTROL).setEnabled(False)
-		self.getNavListDictValue(self.TEAM_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL).setVisible(False)
-		self.getNavListDictValue(self.TEAM_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL).setEnabled(False)
+		self.getControl( self.CID_SCRIPT_VER ).setLabel( "v" + __version__ )
+		self.getControl( self.CID_DATASOURCE ).setLabel( self.dataSource )
 		self.setLeagueLogo()
+
+		self.selectedNavListKey = self.CID_LIST_LEAGUES
+		self.loadNavListMenu(self.CID_LIST_LEAGUES)
+
+		self.getControl(self.CID_LIST_LEAGUES).setVisible(True)
+		self.getControl(self.CID_LIST_LEAGUE_VIEWS).setVisible(False)
+		self.getControl(self.CID_LIST_TEAMS).setVisible(False)
+		self.getControl(self.CID_LIST_TEAM_VIEWS).setVisible(False)
 		self.toggleNavListFocus(True)		# switch to nav lists
 
 		xbmcgui.unlock()
@@ -439,22 +277,20 @@ class Football(xbmcgui.Window):
 	def exit(self):
 		debug ("exit()")
 		self.clearContentControls()
-		global timerthread
-		if timerthread:
-			timerthread.stop()
 		self.close()
 
 ########################################################################################################################
 	def onAction(self, action):
-		debug ("onAction() action=%s" % action)
-		if not action:
-			return
+		if not action: return
+		try:
+			actionID   =  action.getId()
+			buttonCode =  action.getButtonCode()
+		except: return
 
-		if action == ACTION_BACK:		# exit directly
-			debug("ACTION_BACK")
+		if actionID in EXIT_SCRIPT or buttonCode in EXIT_SCRIPT:		# exit directly
 			self.exit()
-		elif action == ACTION_B:		# GO BACK
-			debug("ACTION_B")
+		elif actionID in CLICK_B or buttonCode in CLICK_B:				# GO BACK
+			debug("CLICK_B")
 			if self.MAINMENU_SELECTED:
 				debug("MAINMENU_SELECTED")
 				# MAINMENU active
@@ -465,25 +301,22 @@ class Football(xbmcgui.Window):
 					debug("onAction MAINMENU_OPT_606_THREAD")
 					if self.setup606():
 						self.MAINMENU_SELECTED = self.MAINMENU_OPT_606
-				elif self.MAINMENU_SELECTED == self.MAINMENU_OPT_PHOTO_GALLERY:
-					debug("onAction MAINMENU_OPT_PHOTO_GALLERY")
-					self.getPhotoGalley()
 			else:
 				# NOT MAINMENU
 				debug("not MAINMENU_SELECTED")
 				if not self.focusNavLists:
-					if self.selectedNavListKey == self.TEAM_VIEW_KEY:
+					if self.selectedNavListKey == self.CID_LIST_TEAM_VIEWS:
 						debug("not MAINMENU_SELECTED - TEAM_VIEW_KEY")
-						teamSelectedID, teamSelectedItem = self.getNavListSelectedItem(self.TEAM_VIEW_KEY)
+						teamSelectedID, teamSelectedItem = self.getNavListSelectedItem(self.CID_LIST_TEAM_VIEWS)
 						if teamSelectedID == self.TEAM_VIEW_SQUAD:
 							debug("not MAINMENU_SELECTED - TEAM_VIEW_KEY - TEAM_VIEW_SQUAD")
 							self.toggleNavListFocus(True)		# switch to nav lists
 							self.navListSelected()				# causes refetch
 							self.toggleNavListFocus(False)		# switch back to content
-		elif action == ACTION_X:
-			debug("ACTION_X")
-			self.toggleNavListFocus(isLiveText=timerthread.isCountDownRunning())
-		elif action in CONTEXT_MENU:
+		elif actionID in CLICK_X or buttonCode in CLICK_X:
+			debug("CLICK_X")
+			self.toggleNavListFocus(isLiveText=timerthread.isRunning())
+		elif actionID in CONTEXT_MENU or buttonCode in CONTEXT_MENU:
 			debug("CONTEXT_MENU")
 			self.MAINMENU_SELECTED, reInitLevel = self.mainMenu()
 			if reInitLevel == INIT_FULL:
@@ -492,27 +325,33 @@ class Football(xbmcgui.Window):
 				self.setupDisplay()
 
 ########################################################################################################################
-	def onControl(self, control):
-		debug("onControl()")
+	def onClick(self, controlID):
+		if not controlID or not self.ready:
+			return
+		debug("onClick() controlID=%s" % controlID)
+		self.ready = False
 
 		# is it a NAV LISTS
 		if self.focusNavLists:
 			debug("NAV LIST CONTROL")
-			for key, data in self.navLists.items():
-				if control == data[self.NAV_LISTS_VALUE_CONTROL]:
-					debug("navlistkey=" + key)
-					self.MAINMENU_SELECTED = ''		# reset
-					self.selectedNavListKey = key
-					self.navListSelected()
-					self.setLeagueLogo()
-					# set focus to newly selected navlist that may have been changed in navListSelected()
-					self.setFocus(self.getNavListDictValue(self.selectedNavListKey, self.NAV_LISTS_VALUE_CONTROL))
-					break
+			if controlID in (self.CID_LIST_LEAGUES,self.CID_LIST_LEAGUE_VIEWS,self.CID_LIST_TEAMS,self.CID_LIST_TEAM_VIEWS):
+				self.MAINMENU_SELECTED = ''		# reset
+				self.selectedNavListKey = controlID
+				self.setLeagueLogo()
+				self.navListSelected()
+				# set focus to newly selected navlist
+				self.setFocus(self.getControl(self.selectedNavListKey))
 		else:
 			debug("CONTENT CONTROL")
 			self.contentSelected()
 
 		self.getNavListSelectedItem(self.selectedNavListKey)
+		self.ready = True
+
+	###################################################################################################################
+	def onFocus(self, controlID):
+		debug("onFocus(): controlID %i" % controlID)
+		self.controlID = controlID
 
 	######################################################################################
 	def _initSettings( self, forceReset=False ):
@@ -533,7 +372,7 @@ class Football(xbmcgui.Window):
 		if changed or not fileExist(self.SETTINGS_FILENAME):
 			saveFileObj(self.SETTINGS_FILENAME, self.settings)
 
-		debug( "< _initSettings() changed="+str(changed))
+		debug( "< _initSettings() changed=%s" % changed)
 		return changed
 
 	##############################################################################################
@@ -545,13 +384,18 @@ class Football(xbmcgui.Window):
 		# start according to startupMode
 		if self.dataSource == self.DATASOURCE_BBC:								# BBC
 			self.sourceBBC()
-		elif self.dataSource == self.DATASOURCE_SOCSTND:						# SOCER
+		elif self.dataSource == self.DATASOURCE_SOCSTND:						# SOCCER STAND
 			self.sourceSoccerStand()
 
 		self.loadLeagueTeamsConfig()		# load known team in leagues
 
 		# dict of nav lists - which can only be done after datasource selected
-		self.setupNavListDict()
+		self.navLists = {
+			self.CID_LIST_LEAGUES : self.LEAGUES_DATA,
+			self.CID_LIST_LEAGUE_VIEWS : self.LEAGUE_VIEW_DATA,
+			self.CID_LIST_TEAMS : self.TEAMS_DATA,
+			self.CID_LIST_TEAM_VIEWS : self.TEAM_VIEW_DATA
+			}
 		self.setupDisplay()
 
 		debug("< reset()")
@@ -563,15 +407,13 @@ class Football(xbmcgui.Window):
 		selectedPos = 0
 		dataSource = self.settings[self.SETTING_START_MODE]
 		if dataSource == self.SETTING_VALUE_START_MODE_MENU:
-			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(523), width=300, rows=len(menu),banner=LOGO_FILENAME)
-			selectedPos, action = selectDialog.ask(menu, selectedPos)
+			selectedPos = xbmcgui.Dialog().select(__scriptname__ + ": " + __language__(523), menu)
 			if selectedPos <= 0:
 				dataSource = None
 			else:
 				dataSource = menu[selectedPos]
 
-		debug("< startupMenu()")
+		debug("< startupMenu() %s" % dataSource)
 		return dataSource
 
 
@@ -629,7 +471,7 @@ class Football(xbmcgui.Window):
 
 		# LEAGUES data store
 		self.LEAGUES_DATA = {
-			self.NAV_LIST_ATTRIBS : [0, 0, 190, 120, self.LEAGUE_VIDEPRINTER], # x,y,w,h,selectedItem
+#			self.NAV_LIST_ATTRIBS : [self.LEAGUE_VIDEPRINTER], # selectedItem
 			self.NAV_LIST_MENU : LEAGUES_MENU,
 			LEAGUE_PREM : ['eng_prem','table','fixtures','results','top_scorers',True,True],
 			LEAGUE_CHAMP : ['eng_div_1','table','fixtures','results','top_scorers',True,True],
@@ -672,7 +514,7 @@ class Football(xbmcgui.Window):
 							self.LEAGUE_VIEW_FIX, self.LEAGUE_VIEW_RES, self.LEAGUE_VIEW_LIVE_SCORES,
 							self.LEAGUE_VIEW_TOP_SCORERS]
 		self.LEAGUE_VIEW_DATA = {
-			self.NAV_LIST_ATTRIBS : [0, 0, 150, 120, ''],	# x,y,w,h,selectedItem
+#			self.NAV_LIST_ATTRIBS : [''],	        # selectedItem
 			self.NAV_LIST_MENU : [],				# created according to league selected
 			self.LEAGUE_VIEW_TABLE : 'http://news.bbc.co.uk/sport1/hi/football/$LEAGUE/$TABLE/default.stm',
 			self.LEAGUE_VIEW_TEAMS : 'http://news.bbc.co.uk/sport1/hi/football/$LEAGUE/$TABLE/default.stm',
@@ -685,13 +527,13 @@ class Football(xbmcgui.Window):
 
 		# TEAMS
 		self.TEAMS_DATA = {
-					self.NAV_LIST_ATTRIBS : [0, 0, 150, 120,''] # x,y,w,h,selectedItem
+#					self.NAV_LIST_ATTRIBS : [''] # selectedItem
 					}
 
 		self.TEAM_VIEWS_MENU = [self.TEAM_VIEW_NEWS,self.TEAM_VIEW_FIX,self.TEAM_VIEW_RES,
 						   self.TEAM_VIEW_LIVE_TEXT,self.TEAM_VIEW_SQUAD]
 		self.TEAM_VIEW_DATA = {
-			self.NAV_LIST_ATTRIBS : [0, 0, 150, 120,''], # x,y,w,h,selectedItem
+#			self.NAV_LIST_ATTRIBS : [''],       # selectedItem
 			self.NAV_LIST_MENU : [],
 			self.TEAM_VIEW_NEWS : 'http://newsrss.bbc.co.uk/rss/sportonline_uk_edition/football/teams/$AZ/$TEAM/rss.xml',
 			self.TEAM_VIEW_FIX : 'http://news.bbc.co.uk/sport1/hi/football/teams/$AZ/$TEAM/fixtures/default.stm',
@@ -729,7 +571,7 @@ class Football(xbmcgui.Window):
 		menu = teamsDict.keys()
 		menu.sort()
 		self.LEAGUES_DATA = {
-			self.NAV_LIST_ATTRIBS : [0, 0, 180, 120, ''],	# name,x,y,w,h,selectedItem
+#			self.NAV_LIST_ATTRIBS : [''],	    # selectedItem
 			self.NAV_LIST_MENU : menu			# menu of names
 			}
 
@@ -740,21 +582,21 @@ class Football(xbmcgui.Window):
 		# LEAGUES VIEW MENU & DATA
 		self.LEAGUE_VIEW_MENU = [self.LEAGUE_VIEW_RES]		# limited menu just of results
 		self.LEAGUE_VIEW_DATA = {
-			self.NAV_LIST_ATTRIBS : [0, 0, 150, 120, ''],	# name,x,y,w,h,selectedItem
+#			self.NAV_LIST_ATTRIBS : [''],	# selectedItem
 			self.NAV_LIST_MENU : [],		# created according to league selected
 			self.LEAGUE_VIEW_RES :  'http://www.soccerstand.com/cache/soccer.live.d$RES.xml'
 			}
 
 		# TEAMS
 		self.TEAMS_DATA = {
-					self.NAV_LIST_ATTRIBS : [0, 0, 125, 120,''], # x,y,w,h
+#					self.NAV_LIST_ATTRIBS : [''],   # selectedItem
 					self.NAV_LIST_MENU : []
 					}
 
 		# TEAMS VIEW
 		self.TEAM_VIEWS_MENU = []
 		self.TEAM_VIEW_DATA = {
-			self.NAV_LIST_ATTRIBS : [0, 0, 125, 120,''], # x,y,w,h
+#			self.NAV_LIST_ATTRIBS : [''],           # selectedItem
 			self.NAV_LIST_MENU : []
 			}
 
@@ -762,8 +604,7 @@ class Football(xbmcgui.Window):
 
 ########################################################################################################################
 	def contentSelected(self):
-		debug("> contentSelected()")
-		debug("contentFocusIdx=%s MAINMENU_SELECTED=%s" % (self.contentFocusIdx, self.MAINMENU_SELECTED))
+		debug("> contentSelected() contentFocusIdx=%s MAINMENU_SELECTED=%s" % (self.contentFocusIdx, self.MAINMENU_SELECTED))
 
 		# get content control
 		ctrl = self.contentControls[self.contentFocusIdx][self.CONTENT_REC_CONTROL]
@@ -777,7 +618,7 @@ class Football(xbmcgui.Window):
 		# MENU
 		if self.MAINMENU_SELECTED:
 			debug("content created from MainMenu")
-			self.logoViewCLbl.setLabel(self.MAINMENU_SELECTED)
+			self.getControl(self.CID_TITLE_LEAGUE).setLabel(self.MAINMENU_SELECTED)
 			contentDataRec = self.contentData[contentSelectedPos]
 			try:
 				title = ''
@@ -795,21 +636,7 @@ class Football(xbmcgui.Window):
 			except:
 				debug("contentDataRec not fully unpacked")
 
-			if self.MAINMENU_SELECTED == self.MAINMENU_OPT_PHOTO_GALLERY:
-				debug("self.MAINMENU_OPT_PHOTO_GALLERY")
-				# determine if this is a selection from a list of galleries or a list of images
-				if lower(url).endswith('.jpg'):						# IMAGE, display it
-					self.logoViewCLbl.setLabel(desc)
-					self.displayGalleryPhoto(url)
-				elif self.getGalleryPhotoLinks(guid):			# list of photos
-					self.clearContentControls()
-					self.drawContentList(__language__(358), width=350, x=0)
-					# force selection of 1st photo
-					self.contentSelected()
-				try:
-					self.setFocus(self.contentControls[self.contentFocusIdx][self.CONTENT_REC_CONTROL])
-				except: pass
-			elif self.MAINMENU_SELECTED in [self.MAINMENU_OPT_INTERVIEWS, \
+			if self.MAINMENU_SELECTED in [self.MAINMENU_OPT_INTERVIEWS, \
 											self.MAINMENU_OPT_MOTD_INTERVIEWS, \
 											self.MAINMENU_OPT_SCORE_INTERVIEWS, \
 											self.MAINMENU_OPT_GRANDSTAND_INTERVIEWS]:
@@ -864,11 +691,11 @@ class Football(xbmcgui.Window):
 			navListSelectedID, navListSelectedItem = self.getNavListSelectedItem(self.selectedNavListKey)
 
 			# nav list LEAGUES
-			if self.selectedNavListKey == self.LEAGUES_KEY:
+			if self.selectedNavListKey == self.CID_LIST_LEAGUES:
 				debug("LEAGUES_KEY")
 
 			# nav list LEAGUE_VIEWS
-			elif self.selectedNavListKey == self.LEAGUE_VIEW_KEY:
+			elif self.selectedNavListKey == self.CID_LIST_LEAGUE_VIEWS:
 				debug("LEAGUE_VIEWS_KEY")
 				if navListSelectedID == self.LEAGUE_VIEW_TABLE:
 					debug("LEAGUE_VIEWS_KEY - LEAGUE_VIEW_TABLE")
@@ -883,7 +710,7 @@ class Football(xbmcgui.Window):
 						debug("SELECTED A TEAM")
 						# setup TEAMS
 						# set item in TEAMS to that selected from TABLE
-						ctrl = self.getNavListDictValue(self.TEAMS_KEY, self.NAV_LISTS_VALUE_CONTROL)
+						ctrl = self.getControl(self.CID_LIST_TEAMS)
 						found = False
 						idx = 0
 						teamName = ''
@@ -899,7 +726,7 @@ class Football(xbmcgui.Window):
 							debug("calling TEAMS")
 							# set LEAGUE_VIEW to TEAMS option selected
 							# set TEAMS to selected teamname
-							self.selectedNavListKey = self.TEAMS_KEY
+							self.selectedNavListKey = self.CID_LIST_TEAMS
 							ctrl.setVisible(True)
 							ctrl.setEnabled(True)
 							self.navListSelected()
@@ -914,7 +741,7 @@ class Football(xbmcgui.Window):
 					self.showNewsItem(link, title)
 
 			# nav list TEAM_VIEWS
-			elif self.selectedNavListKey == self.TEAM_VIEW_KEY:
+			elif self.selectedNavListKey == self.CID_LIST_TEAM_VIEWS:
 				debug("TEAM_VIEWS_KEY navListSelectedID=%s" % navListSelectedID)
 				if navListSelectedID == self.TEAM_VIEW_NEWS:
 					debug("TEAM_VIEW_NEWS")
@@ -948,7 +775,7 @@ class Football(xbmcgui.Window):
 	########################################################################################################################
 	def getNavListSelected(self, navListKey):
 		debug("> getNavListSelected navListKey=%s" % navListKey)
-		pos = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_CONTROL).getSelectedPosition()
+		pos = self.getControl(navListKey).getSelectedPosition()
 		id, name = self.getNavListSelectedItem(navListKey, pos)
 		debug("< getNavListSelected id=%s name=%s pos=%" % (id,name,pos))
 		return id, name, pos
@@ -960,14 +787,11 @@ class Football(xbmcgui.Window):
 		id = ''
 		try:
 			if selectedPos < 0:
-#				ctrl = (self.navLists[navListKey])[self.NAV_LISTS_VALUE_CONTROL]
-				ctrl = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_CONTROL)
-				selectedPos = ctrl.getSelectedPosition()
+				selectedPos = self.getControl(navListKey).getSelectedPosition()
 				debug("actual selectedPos=%s" % selectedPos)
 			if selectedPos >= 0:
-				menu = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_DATA)[self.NAV_LIST_MENU]
-#				debug("menu=%s" % menu)
-				id = menu[selectedPos]
+				# get menu item (which could be a language id)
+				id = self.getNavListDictValue(navListKey, self.NAV_LIST_MENU)[selectedPos]
 				if isinstance(id, int):
 					name = __language__(id)
 				else:
@@ -982,36 +806,28 @@ class Football(xbmcgui.Window):
 		debug("> **** navListSelected() NAV LIST KEY = %s" % self.selectedNavListKey)
 
 		success = False
-		# cancel liveText timer thread if running
-		if timerthread.isCountDownRunning():
-			timerthread.disableCountDown()
-			self.liveTextCL.reset()
-			self.liveTextCL.setVisible(False)
-			self.liveTextCL.setEnabled(False)
-
-		self.clearContentControls()
-
 		dataMissing = False
+		self.clearContentControls()
 #		xbmcgui.lock()
 
 		# LEAGUE or LEAGUE_VIEWS
-		if self.selectedNavListKey in [self.LEAGUES_KEY,self.LEAGUE_VIEW_KEY]:
+		if self.selectedNavListKey in (self.CID_LIST_LEAGUES, self.CID_LIST_LEAGUE_VIEWS):
 			debug("LEAGUES_KEY or LEAGUE_VIEWS_KEY - remove other lists etc")
-			self.clearNavList(self.TEAMS_KEY)
-			self.clearNavList(self.TEAM_VIEW_KEY)
+			self.clearNavList(self.CID_LIST_TEAMS)
+			self.clearNavList(self.CID_LIST_TEAM_VIEWS)
 
 		# GET NAV LIST SELECTED ITEMS
-		leagueSelectedID, leagueSelectedItem, = self.getNavListSelectedItem(self.LEAGUES_KEY)
-		leagueViewSelectedID, leagueViewSelectedItem = self.getNavListSelectedItem(self.LEAGUE_VIEW_KEY)
-		teamSelectedID, teamSelectedItem = self.getNavListSelectedItem(self.TEAMS_KEY)
-		teamViewSelectedID, teamViewSelectedItem = self.getNavListSelectedItem(self.TEAM_VIEW_KEY)
+		leagueSelectedID, leagueSelectedItem, = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
+		leagueViewSelectedID, leagueViewSelectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUE_VIEWS)
+		teamSelectedID, teamSelectedItem = self.getNavListSelectedItem(self.CID_LIST_TEAMS)
+		teamViewSelectedID, teamViewSelectedItem = self.getNavListSelectedItem(self.CID_LIST_TEAM_VIEWS)
 
 		# data item LEAGUE NAME
-		leagueID = self.getNavListItem(self.LEAGUES_KEY, self.LEAGUE_ITEM_REC_LEAGUE_ID, leagueSelectedID)
+		leagueID = self.getNavListItem(self.CID_LIST_LEAGUES, self.LEAGUE_ITEM_REC_LEAGUE_ID, leagueSelectedID)
 		debug("leagueID=%s" % leagueID)
 
 		# data item LEAGUE TABLE
-		leagueTableID = self.getNavListItem(self.LEAGUES_KEY, self.LEAGUE_ITEM_REC_TABLE_PATH, leagueSelectedID)
+		leagueTableID = self.getNavListItem(self.CID_LIST_LEAGUES, self.LEAGUE_ITEM_REC_TABLE_PATH, leagueSelectedID)
 		debug("leagueTableID=%s" % leagueTableID)
 		if leagueTableID:
 			leagueDictKey = (leagueID+'_'+leagueTableID).replace('/','_')
@@ -1027,23 +843,23 @@ class Football(xbmcgui.Window):
 		debug("teamID=%s" % teamID)
 
 		# LEAGUES
-		if self.selectedNavListKey == self.LEAGUES_KEY:
+		if self.selectedNavListKey == self.CID_LIST_LEAGUES:
 			if leagueSelectedID == self.LEAGUE_VIDEPRINTER:
 				debug("LEAGUES_KEY - LEAGUE_VIDEPRINTER")
-				self.clearNavList(self.LEAGUE_VIEW_KEY)
+				self.clearNavList(self.CID_LIST_LEAGUE_VIEWS)
 				self.liveTextUpdateURL = leagueID	# league ID in this case holds the url
-				timerthread.enableCountDown()
+				timerthread.run()
 			else:
 				debug("LEAGUES_KEY - OTHER")
 				self.updateNavListLeagueViews(leagueSelectedID)			# rebuild leagueView menu
 				# all other options from LEAGUES need focus to move to LEAGUE_VIEWS
-				self.selectedNavListKey = self.LEAGUE_VIEW_KEY
+				self.selectedNavListKey = self.CID_LIST_LEAGUE_VIEWS
 
 		# LEAGUE VIEWS
-		elif self.selectedNavListKey == self.LEAGUE_VIEW_KEY:
+		elif self.selectedNavListKey == self.CID_LIST_LEAGUE_VIEWS:
 			debug("LEAGUE_VIEWS_KEY")
 			# get URL from selected LEAGUE_VIEWS
-			url = self.getNavListItem(self.LEAGUE_VIEW_KEY, item=leagueViewSelectedID)
+			url = self.getNavListItem(self.CID_LIST_LEAGUE_VIEWS, item=leagueViewSelectedID)
 			url =  url.replace('$LEAGUE',leagueID)
 
 			# setup teams list if chosen
@@ -1060,7 +876,7 @@ class Football(xbmcgui.Window):
 						success = self.loadNavListTeams(leagueDictKey)		# load navlist TEAMS
 
 				if success:
-					self.selectedNavListKey = self.TEAMS_KEY				# set to next navlist
+					self.selectedNavListKey = self.CID_LIST_TEAMS				# set to next navlist
 				else:
 					url = None
 
@@ -1097,7 +913,7 @@ class Football(xbmcgui.Window):
 
 			elif leagueViewSelectedID == self.LEAGUE_VIEW_FIX:
 				debug("LEAGUE_VIEWS_KEY - LEAGUE_VIEW_FIX")
-				replaceStr = self.getNavListItem(self.LEAGUES_KEY, self.LEAGUE_ITEM_REC_FIX_PATH, leagueSelectedID)
+				replaceStr = self.getNavListItem(self.CID_LIST_LEAGUES, self.LEAGUE_ITEM_REC_FIX_PATH, leagueSelectedID)
 				if replaceStr:
 					# could be empty, so remove '//'
 					url = url.replace('$FIX',replaceStr).replace('///','/')
@@ -1110,7 +926,7 @@ class Football(xbmcgui.Window):
 
 			elif leagueViewSelectedID == self.LEAGUE_VIEW_RES:
 				debug("LEAGUE_VIEWS_KEY - LEAGUE_VIEW_RES")
-				replaceStr = self.getNavListItem(self.LEAGUES_KEY, self.LEAGUE_ITEM_REC_RES_PATH, leagueSelectedID)
+				replaceStr = self.getNavListItem(self.CID_LIST_LEAGUES, self.LEAGUE_ITEM_REC_RES_PATH, leagueSelectedID)
 				if replaceStr:
 					# could be empty, so remove '//'
 					url = url.replace('$RES',replaceStr).replace('///','/')
@@ -1131,11 +947,11 @@ class Football(xbmcgui.Window):
 				else:
 					self.liveTextUpdateURL = url
 				# start the countdown timer, does an update at startup
-				timerthread.enableCountDown()
+				timerthread.run()
 
 			elif leagueViewSelectedID == self.LEAGUE_VIEW_TOP_SCORERS:
 				debug("LEAGUE_VIEWS_KEY - LEAGUE_VIEW_TOP_SCORERS")
-				replaceStr = self.getNavListItem(self.LEAGUES_KEY, self.LEAGUE_ITEM_REC_SCORERS_PATH, leagueSelectedID)
+				replaceStr = self.getNavListItem(self.CID_LIST_LEAGUES, self.LEAGUE_ITEM_REC_SCORERS_PATH, leagueSelectedID)
 				if not replaceStr:
 					url = None
 				else:
@@ -1145,25 +961,25 @@ class Football(xbmcgui.Window):
 						dataMissing = True
 
 		# TEAMS
-		if self.selectedNavListKey == self.TEAMS_KEY:
+		if self.selectedNavListKey == self.CID_LIST_TEAMS:
 			debug("TEAMS_KEY teamID=" + teamID)
 			if teamSelectedItem:
 				# prevent TEAM_VIEWS if no teamID, means theres no urls
 				if teamID:
 					debug("load TEAMS_VIEW navlist with menu")
-					self.selectedNavListKey = self.TEAM_VIEW_KEY
-					self.setNavListMenu(self.TEAM_VIEW_KEY, self.TEAM_VIEWS_MENU)
+					self.selectedNavListKey = self.CID_LIST_TEAM_VIEWS
+					self.setNavListMenu(self.CID_LIST_TEAM_VIEWS, self.TEAM_VIEWS_MENU)
 				else:
 					debug("no teamViews information")
-					ctrl = self.getNavListDictValue(self.TEAM_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL)
+					ctrl = self.getControl(self.CID_LIST_TEAM_VIEWS)
 					ctrl.setVisible(False)
 					ctrl.setEnabled(False)
 
 		# TEAM VIEWS
-		if self.selectedNavListKey == self.TEAM_VIEW_KEY and teamViewSelectedID and teamSelectedItem:
+		if self.selectedNavListKey == self.CID_LIST_TEAM_VIEWS and teamViewSelectedID and teamSelectedItem:
 			debug("TEAM_VIEWS_KEY")
 			# get URL from selected LEAGUE_VIEWS
-			url = self.getNavListItem(self.TEAM_VIEW_KEY, item=teamViewSelectedID)
+			url = self.getNavListItem(self.CID_LIST_TEAM_VIEWS, item=teamViewSelectedID)
 			url = url.replace('$AZ',teamSelectedItem[0]).replace('$TEAM',teamID)
 
 			if teamViewSelectedID == self.TEAM_VIEW_NEWS:
@@ -1184,11 +1000,11 @@ class Football(xbmcgui.Window):
 					dataMissing = True
 			elif teamViewSelectedID == self.TEAM_VIEW_LIVE_TEXT:
 				debug("TEAM_VIEWS_KEY - TEAM_VIEW_LIVE_TEXT")
-				hasLiveScore = self.getNavListItem(self.LEAGUES_KEY, self.LEAGUE_ITEM_REC_HAS_LIVESCORE, leagueSelectedID)
+				hasLiveScore = self.getNavListItem(self.CID_LIST_LEAGUES, self.LEAGUE_ITEM_REC_HAS_LIVESCORE, leagueSelectedID)
 				if hasLiveScore:
 					# start the countdown timer, does an update at startup
 					self.liveTextUpdateURL = url
-					timerthread.enableCountDown()
+					timerthread.run()
 				else:
 					messageOK(__language_(351),__language__(101))
 					self.liveTextUpdateURL = ''
@@ -1206,63 +1022,31 @@ class Football(xbmcgui.Window):
 		debug("< **** navListSelected()")
 
 
-########################################################################################################################
-	def createNavList(self, navListKey):
-		debug("> createNavList() navListKey=%s" % navListKey)
-
-		data = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_DATA)
-		attribs = data[self.NAV_LIST_ATTRIBS]
-
-		# get list dims
-		xpos = self.contentX + attribs[self.NAV_LISTS_DATA_REC_X]
-		ypos = attribs[self.NAV_LISTS_DATA_REC_Y]
-		width = attribs[self.NAV_LISTS_DATA_REC_W]
-		height = attribs[self.NAV_LISTS_DATA_REC_H]
-
-		# create list with items
-		control = xbmcgui.ControlList(xpos, ypos, width, height, itemTextXOffset=0, \
-							itemHeight=22,selectedColor='0xFFFFFFFF', space=1, \
-							buttonFocusTexture=BUTTON_FOCUS, alignmentY=XBFONT_CENTER_Y)
-		self.addControl(control)
-		control.setAnimations([('WindowOpen', self.animFooterWO),
-							   ('WindowClose', self.animFooterWC)])
-		control.selectItem(-1)
-		try:
-			control.setPageControlVisible(False)
-		except: pass
-		control.setVisible(False)
-		control.setEnabled(False)
-
-		# save controllist to nav list dict
-		self.setNavListDictValue(navListKey, self.NAV_LISTS_VALUE_CONTROL, control)
-		debug("< createNavList()")
-
-
 	########################################################################################################################
 	def loadNavListMenu(self, navListKey):
-		debug("> loadNavListMenu() navListKey: " + navListKey)
+		debug("> loadNavListMenu() navListKey: %s" % navListKey)
+		xbmcgui.lock()
 
 		# add menu items
 		isVisible = False
 		try:
-			controlList = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_CONTROL)
-			controlList.reset()
-			menu = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_DATA)[self.NAV_LIST_MENU]
-
+			ctrl = self.getControl(navListKey)
+			ctrl.reset()
+			menu = self.getNavListDictValue(navListKey,self.NAV_LIST_MENU)
 			if menu:
 				for item in menu:
 					if isinstance(item, int):		# language string ID
-						controlList.addItem(__language__(item))
+						ctrl.addItem(__language__(item))
 					else:
-						controlList.addItem(item)
+						ctrl.addItem(item)
 
-				controlList.selectItem(0)
+				ctrl.selectItem(0)
 				isVisible = True
 		except:
-			debug("no such navListKey=%s" % navListKey)
+			debug("no such navListKey")
 
-		controlList.setVisible(isVisible)
-		controlList.setEnabled(isVisible)
+		ctrl.setVisible(isVisible)
+		xbmcgui.unlock()
 		debug("< loadNavListMenu()")
 
 	########################################################################################################################
@@ -1273,7 +1057,7 @@ class Football(xbmcgui.Window):
 
 		try:
 			if leagueSelectedID != self.LEAGUE_VIDEPRINTER:
-				leagueData = self.getNavListDictValue(self.LEAGUES_KEY, self.NAV_LISTS_VALUE_DATA)[leagueSelectedID]
+				leagueData = self.getNavListDictValue(self.CID_LIST_LEAGUES, leagueSelectedID)
 				leagueViewMenu = self.LEAGUE_VIEW_MENU[:]	# shallow copy of full menu
 
 				# remove menu item from leagueViews if no league option
@@ -1313,155 +1097,65 @@ class Football(xbmcgui.Window):
 			handleException()
 
 		# save amended menu
-		self.setNavListMenu(self.LEAGUE_VIEW_KEY, leagueViewMenu)
+		self.setNavListMenu(self.CID_LIST_LEAGUE_VIEWS, leagueViewMenu)
 		debug("< updateNavListLeagueViews()")
 
 	########################################################################################################################
 	def setNavListMenu(self, navListKey, menu=[]):
-		debug("setNavListMenu() navListKey=%s menu=%s" % (navListKey, menu))
+		debug("> setNavListMenu() navListKey=%s" % navListKey)
 
-		(self.navLists[navListKey])[self.NAV_LISTS_VALUE_DATA][self.NAV_LIST_MENU] = menu
+		(self.navLists[navListKey])[self.NAV_LIST_MENU] = menu
 		if menu:
 			self.loadNavListMenu(navListKey)
 
 		debug("< setNavListMenu()")
 
-	########################################################################################################################
-	def setupNavListDict(self):
-		debug("> setupNavListDict()")
-		self.NAV_LISTS_VALUE_DATA = 0
-		self.NAV_LISTS_VALUE_CONTROL = 1
-		self.navLists = {
-			self.LEAGUES_KEY : [self.LEAGUES_DATA, None],
-			self.LEAGUE_VIEW_KEY : [self.LEAGUE_VIEW_DATA, None],
-			self.TEAMS_KEY : [self.TEAMS_DATA, None],
-			self.TEAM_VIEW_KEY : [self.TEAM_VIEW_DATA, None]
-			}
-		debug("< setupNavListDict()")
-
-	########################################################################################################################
-	def setupNavListsNav(self):
-		debug("> setupNavListsNav()")
-
-		# RIGHT
-		self.navLists[self.LEAGUES_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlRight(self.getNavListDictValue(self.LEAGUE_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		self.navLists[self.LEAGUE_VIEW_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlRight(self.getNavListDictValue(self.TEAMS_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		self.navLists[self.TEAMS_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlRight(self.getNavListDictValue(self.TEAM_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		self.navLists[self.TEAM_VIEW_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlRight(self.getNavListDictValue(self.LEAGUES_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		# LEFT
-		self.navLists[self.LEAGUES_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlLeft(self.getNavListDictValue(self.TEAM_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		self.navLists[self.LEAGUE_VIEW_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlLeft(self.getNavListDictValue(self.LEAGUES_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		self.navLists[self.TEAMS_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlLeft(self.getNavListDictValue(self.LEAGUE_VIEW_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		self.navLists[self.TEAM_VIEW_KEY][self.NAV_LISTS_VALUE_CONTROL] \
-			.controlLeft(self.getNavListDictValue(self.TEAMS_KEY, self.NAV_LISTS_VALUE_CONTROL))
-
-		debug("< setupNavListsNav()")
 
 ########################################################################################################################
 	def setLeagueLogo(self):
 		debug("> setLeagueLogo()")
 
-		# league name
-		try:
-			self.removeControl(self.logoLeagueCLbl)
-		except: pass
-
-		# league view name
-		try:
-			self.removeControl(self.logoViewCLbl)
-		except: pass
-
-		imgW = 115		# country flags
-		xpos = self.contentX
-		ypos = 0
-		imgH = self.headerH-2
+		self.getControl(self.CID_TITLE_LEAGUE).setLabel("")
+		self.getControl(self.CID_TITLE_LEAGUE_VIEW).setLabel("")
 
 		# LEAGUE
-		leagueSelectedID, leagueSelectedItem = self.getNavListSelectedItem(self.LEAGUES_KEY)
+		leagueSelectedID, leagueSelectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
 		title = leagueSelectedItem
-		leagueID = self.getNavListItem(self.LEAGUES_KEY, self.LEAGUE_ITEM_REC_LEAGUE_ID, leagueSelectedID)
+		leagueID = self.getNavListItem(self.CID_LIST_LEAGUES, self.LEAGUE_ITEM_REC_LEAGUE_ID, leagueSelectedID)
 		leagueIDName = leagueID.replace('_results','').replace('europe/','').replace('/','_')
 		fname = os.path.join(DIR_TEAM_GFX,leagueIDName+'.jpg')
 
 		# LEAGUE filename
 		debug("LEAGUES fname: " + fname)
 		if self.filenameLeague != fname:
-			self.filenameLeague = fname
 			if not fileExist(fname):
 				fname = self.SOURCE_LOGO
-
-			# set league logo
-			try:
-				self.logoLeagueCI.setImage(fname)
-			except:
-				self.logoLeagueCI = xbmcgui.ControlImage(xpos, ypos, imgW, imgH, \
-														fname, aspectRatio=2)
-				self.addControl(self.logoLeagueCI)
-				self.logoLeagueCI.setAnimations([('WindowOpen', 'effect=rotate start=90 center=0,0 time=%s' % self.animTimeOn),
-												('WindowClose', 'effect=rotate end=90 center=0,0 time=%s' % self.animTimeOff),
-												 ('VisibleChange', 'effect=rotate start=90 center=0,0 time=%s' % self.animTimeOn)
-												 ])
-		xpos += imgW + 10
+			self.getControl(self.CID_LOGO).setImage(fname)
+			self.filenameLeague = fname
 
 		# LEAGUE_VIEW
-		leagueViewSelectedID, leagueViewSelectedItem = self.getNavListSelectedItem(self.LEAGUE_VIEW_KEY)
+		leagueViewSelectedID, leagueViewSelectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUE_VIEWS)
 		if leagueViewSelectedItem:
 			title += '; ' + leagueViewSelectedItem
 
 		# TEAM
-		teamSelectedID, teamSelectedItem = self.getNavListSelectedItem(self.TEAMS_KEY)
+		teamSelectedID, teamSelectedItem = self.getNavListSelectedItem(self.CID_LIST_TEAMS)
 		if teamSelectedItem:
 			title += '; ' + teamSelectedItem
-			imgW = 60
-			fname = os.path.join(DIR_TEAM_GFX, teamSelectedItem.replace(' ','_').replace('&','and') + '.jpg')
-			debug("TEAMS fname: " + fname)
-			if self.filenameTeam != fname:
-				self.filenameTeam = fname
-				if not fileExist(fname):
-					fname = os.path.join(DIR_TEAM_GFX, 'Unknown_team.png')
 
-				# set team logo
-				try:
-					self.logoTeamCI.setImage(fname)
-				except:
-					# use headerH for w & h  to give a square area - aspectRatio sorts it out
-					self.logoTeamCI = xbmcgui.ControlImage(xpos, ypos, imgW, imgH, fname, aspectRatio=2)
-					self.addControl(self.logoTeamCI)
-					self.logoTeamCI.setAnimations([('WindowOpen', self.animHeaderWO),
-													('WindowClose', self.animHeaderWC),
-													('VisibleChange', self.animZoomWC) ])
-			xpos += imgW + 5
-		else:
-			try:
-				self.logoTeamCI.setVisible(False)
-			except: pass
+		fname = os.path.join(DIR_TEAM_GFX, teamSelectedItem.replace(' ','_').replace('&','and') + '.jpg')
+		debug("TEAMS fname: " + fname)
+		if self.filenameTeam != fname:
+			if not fileExist(fname):
+				fname = os.path.join(DIR_HOME, 'default.tbn')
+			self.getControl(self.CID_CLUB_LOGO).setImage(fname)
+			self.filenameTeam = fname
 
-		labelH = 30
-		w = REZ_W - xpos - 100
-		self.logoLeagueCLbl = xbmcgui.ControlLabel(xpos, ypos, w, labelH, title, FONT_SPECIAL_14, "0xFFFFFF00")
-		self.addControl(self.logoLeagueCLbl)
-		self.logoLeagueCLbl.setAnimations([('WindowOpen', self.animHeaderWO), ('WindowClose', self.animHeaderWC)])
+		self.getControl(self.CID_TITLE_LEAGUE).setLabel(title)
 
 		# TEAM_VIEW
-		teamViewSelectedID, teamViewSelectedItem = self.getNavListSelectedItem(self.TEAM_VIEW_KEY)
-		self.logoViewCLbl = xbmcgui.ControlLabel(xpos, ypos+labelH+5, w, 20, \
-												teamViewSelectedItem, FONT12, "0xFFFFFF00")
-		self.addControl(self.logoViewCLbl)
-		self.logoViewCLbl.setAnimations([('WindowOpen', self.animHeaderWO),('WindowClose', self.animHeaderWC)])
+		teamViewSelectedID, teamViewSelectedItem = self.getNavListSelectedItem(self.CID_LIST_TEAM_VIEWS)
+		self.getControl(self.CID_TITLE_LEAGUE_VIEW).setLabel(teamViewSelectedItem)
 
 		debug("< setLeagueLogo()")
 
@@ -1475,9 +1169,9 @@ class Football(xbmcgui.Window):
 			item, name = self.getNavListSelectedItem(navList)
 
 		try:
-			data = (self.navLists[navList])[self.NAV_LISTS_VALUE_DATA][item]
+			data = (self.navLists[navList])[item]
 		except:
-			debug("getNavListItem() data not found using item %s" % item)
+			debug("getNavListItem() data not found")
 		else:
 			if data:
 				try:
@@ -1489,24 +1183,11 @@ class Football(xbmcgui.Window):
 		return value
 
 ########################################################################################################################
-	def getNavListAttrib(self, navList, field):
-		try:
-			return (self.navLists[navList])[self.NAV_LISTS_VALUE_DATA][self.NAV_LIST_ATTRIBS][field]
-		except:
-			return ''
-
-########################################################################################################################
-	def setNavListAttrib(self, navList, field, value):
-		try:
-			(self.navLists[navList])[self.NAV_LISTS_VALUE_DATA][self.NAV_LIST_ATTRIBS][field] = value
-		except: pass
-
-########################################################################################################################
 	def getNavListDictValue(self, navList, key):
 		try:
 			return (self.navLists[navList])[key]
 		except:
-			return ''
+			return []
 
 ########################################################################################################################
 	def setNavListDictValue(self, navList, dictKey, value):
@@ -1518,18 +1199,23 @@ class Football(xbmcgui.Window):
 	def clearContentControls(self):
 		debug("> clearContentControls()")
 		xbmcgui.lock()
+		if timerthread:
+			timerthread.stop()
+
 		if self.contentControls:
 			for ctrl,data in self.contentControls:
+				print ctrl,data
 				try:
-					self.removeControl(ctrl)
+					ctrl.reset()
 				except: pass
+				ctrl.setVisible(False)
 			self.contentControls = []
 
-		try:
-			self.liveTextCL.reset()
-			self.liveTextCL.setVisible(False)
-			self.liveTextCL.setEnabled(False)
-		except: pass
+		# remove main content list
+		ctrl = self.getControl(self.CID_LIST_CONTENT)
+		ctrl.reset()
+		ctrl.setVisible(False)
+
 		xbmcgui.unlock()
 		debug("< clearContentControls()")
 
@@ -1546,11 +1232,11 @@ class Football(xbmcgui.Window):
 
 		if self.focusNavLists:
 			debug("set focus to NAV LISTS")
-			self.setFocus(self.getNavListDictValue(self.selectedNavListKey, self.NAV_LISTS_VALUE_CONTROL))
+			self.setFocus(self.getControl(self.selectedNavListKey))
 		else:
 			if isLiveText:
 				debug("set focus to CONTENT - LIVE TEXT")
-				self.setFocus(self.liveTextCL)
+				self.setFocus(self.getControl(self.CID_LIST_CONTENT))
 			else:
 				debug("set focus to CONTENT")
 				if self.contentControls:
@@ -1622,7 +1308,6 @@ class Football(xbmcgui.Window):
 		html = fetchURL(url)
 		dialogProgress.close()
 		if validWebPage(html):
-
 			# look for table sections
 			sections = parseDocList(html, self.RE_SUB_SECTION)
 			debug("html sections=%s " % len(sections))
@@ -1645,12 +1330,9 @@ class Football(xbmcgui.Window):
 					if len(menu) > 1:
 						menu.sort()
 						menu.insert(0, __language__(500))
-						selectDialog = DialogSelect()
-						selectDialog.setup(__language__(369), width=400, rows=len(menu))
-						selectedPos, action = selectDialog.ask(menu)
+						selectedPos = xbmcgui.Dialog().select(__language__(369), menu)
 						if selectedPos >= 0:
 							name = menu[selectedPos]
-						del selectDialog
 					elif len(menu) == 1:
 						name = menu[0]
 
@@ -1719,10 +1401,8 @@ class Football(xbmcgui.Window):
 		if len(tablesDict) > 1:
 			menu = tablesDict.keys()
 			menu.sort()
-			menu.insert(0,__language__(500))
-			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(370), rows=len(menu), width=450)
-			selectedPos, action = selectDialog.ask(menu)
+			menu.insert(0,__language__(500))	
+			selectedPos = xbmcgui.Dialog().select(__language__(370), menu)
 			if selectedPos > 0:				# exit selected
 				self.contentData = tablesDict[menu[selectedPos]]
 		elif len(tablesDict) == 1:
@@ -1893,9 +1573,6 @@ class Football(xbmcgui.Window):
 
 			self.contentControls.append([teamCL, teamCLData])
 			self.contentFocusIdx = len(self.contentControls)-1			# set focus to VIEW item
-			# set focus to list
-			self.setFocus(self.contentControls[self.contentFocusIdx][self.CONTENT_REC_CONTROL])
-#			self.toggleNavListFocus(False)		# switch to content
 			self.setFocus(teamCL)
 
 			xbmcgui.unlock()
@@ -1907,17 +1584,17 @@ class Football(xbmcgui.Window):
 		debug("> getLeagueFixtures()")
 
 		self.contentData = []
-		id, selectedItem = self.getNavListSelectedItem(self.LEAGUES_KEY)
+		id, selectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
 		dialogProgress.create(__language__(302), selectedItem, title, title2)
 		html = fetchURL(url)
 		dialogProgress.close()
+#		html = readFile(os.path.join(DIR_USERDATA, 'fixtures.html'))
 		if validWebPage(html):
-
 			# DATA SECTION
 			subSection = searchRegEx(html, self.RE_SUB_SECTION, re.MULTILINE+re.IGNORECASE+re.DOTALL)
 
 			# split in dates
-			splits = subSection.split('class="greyline" noshade>')
+			splits = subSection.split('class="greyline" noshade')
 			if splits:
 				# get fixtures within each date
 				regexDate = 'mvb\"><b>(.*?)</b>'
@@ -1994,7 +1671,7 @@ class Football(xbmcgui.Window):
 		debug("> getLeagueResults()")
 
 		self.contentData = []
-		id, leagueSelectedItem = self.getNavListSelectedItem(self.LEAGUES_KEY)
+		id, leagueSelectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
 		dialogProgress.create(__language__(302), leagueSelectedItem, title, title2)
 		html = fetchURL(url)
 		dialogProgress.close()
@@ -2044,7 +1721,7 @@ class Football(xbmcgui.Window):
 		debug("> getLeagueResultsSOCSTND()")
 
 		self.contentData = []
-		leagueSelectedID, leagueSelectedItem = self.getNavListSelectedItem(self.LEAGUES_KEY)
+		leagueSelectedID, leagueSelectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
 		dialogProgress.create(__language__(302), leagueSelectedItem, title)
 		doc = fetchURL(url)
 		if validWebPage(doc):
@@ -2091,7 +1768,7 @@ class Football(xbmcgui.Window):
 		debug("> getLeagueTopScorers()")
 
 		self.contentData = []
-		id, leagueSelectedItem = self.getNavListSelectedItem(self.LEAGUES_KEY)
+		id, leagueSelectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
 		dialogProgress.create(__language__(302), leagueSelectedItem, title)
 		html = fetchURL(url)
 		dialogProgress.close()
@@ -2119,9 +1796,9 @@ class Football(xbmcgui.Window):
 		debug("> getTeamLiveText()")
 
 		self.contentData = [[__language__(351),__language__(352)]]
-		id, title = self.getNavListSelectedItem(self.LEAGUES_KEY)		# league name
-		id, title2 = self.getNavListSelectedItem(self.TEAM_VIEW_KEY)	# team option
-		id, title3 = self.getNavListSelectedItem(self.TEAMS_KEY)		# team name
+		id, title = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)		# league name
+		id, title2 = self.getNavListSelectedItem(self.CID_LIST_TEAM_VIEWS)	# team option
+		id, title3 = self.getNavListSelectedItem(self.CID_LIST_TEAMS)		# team name
 		dialogProgress.create(__language__(302), title, title2, title3)
 		html = fetchURL(url)
 		dialogProgress.close()
@@ -2159,7 +1836,7 @@ class Football(xbmcgui.Window):
 		debug("> getLeagueLiveScores()")
 
 		self.contentData = [[__language__(351),__language__(352)]]
-		id, leagueSelectedItem = self.getNavListSelectedItem(self.LEAGUES_KEY)
+		id, leagueSelectedItem = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
 		dialogProgress.create(__language__(302), leagueSelectedItem, title)
 		html = fetchURL(url)
 		dialogProgress.close()
@@ -2229,7 +1906,7 @@ class Football(xbmcgui.Window):
 		debug("> getVideprinter()")
 
 		self.contentData = [[__language__(351),__language__(352)]]
-		id, title = self.getNavListSelectedItem(self.LEAGUES_KEY)
+		id, title = self.getNavListSelectedItem(self.CID_LIST_LEAGUES)
 		dialogProgress.create(__language__(302), title)
 		html = fetchURL(url)
 		dialogProgress.close()
@@ -2265,8 +1942,8 @@ class Football(xbmcgui.Window):
 		debug("> getPlayerProfile()")
 
 		self.contentData = []
-		id, title = self.getNavListSelectedItem(self.TEAMS_KEY)
-		id, title2 = self.getNavListSelectedItem(self.TEAM_VIEW_KEY)
+		id, title = self.getNavListSelectedItem(self.CID_LIST_TEAMS)
+		id, title2 = self.getNavListSelectedItem(self.CID_LIST_TEAM_VIEWS)
 		dialogProgress.create(__language__(302), title, title2, playerName)
 		html = fetchURL(url)
 		dialogProgress.close()
@@ -2318,7 +1995,7 @@ class Football(xbmcgui.Window):
 
 ########################################################################################################################
 	def getRSS(self, url, title=""):
-		debug("> getRSS()")
+		debug("> getRSS() url=%s" % url)
 
 		self.contentData = []
 		self.rssparser = RSSParser2()
@@ -2331,6 +2008,7 @@ class Football(xbmcgui.Window):
 
 		dialogProgress.create(__language__(302), __language__(305), title)
 		if self.rssparser.feed(url):
+#		if self.rssparser.feed(file=os.path.join(DIR_USERDATA,'news.xml')):
 			feeds = self.rssparser.parse("item", tags)
 			if feeds:
 				for feed in feeds:
@@ -2376,7 +2054,7 @@ class Football(xbmcgui.Window):
 					desc = cleanHTML(decodeEntities(section).replace('<P>','\n'))		# leave single newlines
 
 		if desc:
-			textDialog = TextBoxDialog()
+			textDialog = TextBoxxbmcgui.Dialog()
 			textDialog.ask(title=title, text=desc)
 			del textDialog
 			success = True
@@ -2512,7 +2190,7 @@ class Football(xbmcgui.Window):
 			messageNoInfo()
 			success = False
 		else:
-			textDialog = TextBoxDialog()
+			textDialog = TextBoxxbmcgui.Dialog()
 			textDialog.ask(title=title, text=desc)
 			del textDialog
 			success = True
@@ -2608,66 +2286,6 @@ class Football(xbmcgui.Window):
 		debug("< getInterviewMediaLink() success: " + str(success))
 		return success
 
-########################################################################################################################
-	def getGalleryPhotoLinks(self, url):
-		debug("> getGalleryPhotoLinks()")
-
-		self.contentData = []
-		dialogProgress.create(__language__(302), __language__(307))
-		html = fetchURL(url)
-		dialogProgress.close()
-		if validWebPage(html):
-
-			regex = 'galImg"><img src="(.*?)".*?alt="(.*?)".*?picGalCaption">(.*?)<'
-			matches = parseDocList(html, regex)
-			for match in matches:
-				try:
-					link = match[0]
-					title = decodeEntities(match[1]).strip()
-					desc = decodeEntities(match[2]).strip()
-					self.contentData.append([title,'',link, desc,link])
-				except: pass
-
-		if not self.contentData:
-			self.contentData.append([__language__(353),""])
-
-		debug("< getGalleryPhotoLinks()")
-		return True
-
-########################################################################################################################
-	def displayGalleryPhoto(self, url):
-		debug("> displayGalleryPhoto()")
-
-		dialogProgress.create(__language__(302), os.path.basename(url))
-		filename = os.path.join(DIR_CACHE, 'gallery_photo.jpg')
-		success = fetchURL(url, filename, isBinary=True)
-		dialogProgress.close()
-		if success:
-			# find controlList, get its width so we know how width to make photo
-			clist_w = 370
-			for ctrlRec in self.contentControls:
-				ctrl = ctrlRec[self.CONTENT_REC_CONTROL]
-				if isinstance(ctrl, xbmcgui.ControlList):
-					clist_w = ctrl.getWidth()
-					break
-			# remove last photo from contentControl
-			# contentCOntrol  will be TITLE, photos list - and maybe photo image
-			# remove image if exists
-			ctrl = self.contentControls[-1][self.CONTENT_REC_CONTROL] # get last ctrl on list
-			if isinstance(ctrl, xbmcgui.ControlImage):
-				debug("removing old image control")
-				self.removeControl(ctrl)
-				self.contentControls.pop()	# remove last element of list, which is our control image
-
-			w = REZ_W - clist_w
-			x = clist_w + 5
-			ctrl = xbmcgui.ControlImage(x, self.contentY, w, self.contentH, filename,aspectRatio=2)
-			self.addControl(ctrl)
-			self.contentControls.append([ctrl,None])
-		else:
-			messageOK(__language__(545),__language__(353))
-
-		debug("< displayGalleryPhoto()")
 
 ########################################################################################################################
 	def loadNavListTeams(self, leagueKey, visible=True):
@@ -2680,8 +2298,8 @@ class Football(xbmcgui.Window):
 			success = False
 		else:
 			teamNameList = teamsDict.keys()
-			teamNameList.sort()				# sort internally, returns None
-			self.setNavListMenu(self.TEAMS_KEY, teamNameList)
+			teamNameList.sort()				# sort internally
+			self.setNavListMenu(self.CID_LIST_TEAMS, teamNameList)
 			success = True
 
 		debug("< loadNavListTeams() success=%s" % success)
@@ -2693,8 +2311,8 @@ class Football(xbmcgui.Window):
 		debug("> getTeamSquad()")
 
 		self.contentData = []
-		id, title = self.getNavListSelectedItem(self.TEAMS_KEY)
-		id, title2 = self.getNavListSelectedItem(self.TEAM_VIEW_KEY)
+		id, title = self.getNavListSelectedItem(self.CID_LIST_TEAMS)
+		id, title2 = self.getNavListSelectedItem(self.CID_LIST_TEAM_VIEWS)
 		dialogProgress.create(__language__(302), title, title2)
 		html = fetchURL(url)
 		if validWebPage(html):
@@ -2737,23 +2355,23 @@ class Football(xbmcgui.Window):
 
 	########################################################################################################################
 	def clearNavList(self, navListKey):
-		debug("clearNavList() navListKey=%s" % navListKey)
+		debug("> clearNavList() navListKey=%s" % navListKey)
 		try:
-			ctrl = self.getNavListDictValue(navListKey, self.NAV_LISTS_VALUE_CONTROL)
+			ctrl = self.getControl(navListKey)
 			ctrl.reset()
 			ctrl.setVisible(False)
-			ctrl.setEnabled(False)
 		except: pass
 		# reset stored menu options
-		self.setNavListMenu(navListKey, [])
+		self.setNavListMenu(navListKey, []) # empties associated menu list
+		debug("< clearNavList()")
 
 	########################################################################################################################
 	def resetNavListTeams(self):
 		debug("> resetNavListTeams()")
 		success = True
 
-		self.clearNavList(self.TEAMS_KEY)
-		self.clearNavList(self.TEAM_VIEW_KEY)
+		self.clearNavList(self.CID_LIST_TEAMS)
+		self.clearNavList(self.CID_LIST_TEAM_VIEWS)
 
 		if xbmcgui.Dialog().yesno(__language__(520) + " ?",__language__(200)):
 			debug("reset gui, clearing all data")
@@ -2765,8 +2383,8 @@ class Football(xbmcgui.Window):
 
 				self.leagueTeams = {}
 				self.toggleNavListFocus(switchToNavLists=True)			# force back to navlists
-				self.selectedNavListKey == self.LEAGUES_KEY				# force to LEAGUES navlist
-				self.setFocus(self.getNavListDictValue(self.LEAGUES_KEY, self.NAV_LISTS_VALUE_CONTROL))
+				self.selectedNavListKey == self.CID_LIST_LEAGUES
+				self.setFocus(self.getControl(self.selectedNavListKey))
 				self.clearContentControls()								# wipe content display control
 			except:
 				messageOK("ERROR","Failed to reset GUI and data.","Must now close to avoid a script hang.")
@@ -2780,34 +2398,30 @@ class Football(xbmcgui.Window):
 
 
 ########################################################################################################################
-	def drawContentList(self, title1='', title2='',width=680, itemHeight=28, font='', x=-1):
-		debug("> drawContentList()")
+	def drawContentList(self, title1='', title2='',width=-1):
+		debug("> drawContentList() width=%s" % width)
 
 		try:
+#			print self.contentData
 			if self.contentData:
+				xbmcgui.lock()
 				debug("content available, DRAWING")
-				if width > self.contentW:
+				if width == -1:
 					width = self.contentW
-				if x == -1:
-					# centered
-					x = self.contentCenterX - (width/2)
-					if x < 0:
-						x = 0
-				else:
-					# as specified
-					x = self.contentX + x
-				y = self.contentY
-				labelH = 22
+				
+				# centered
+				x = self.contentCenterX - (width/2)
+				y = 0
+				labelH = 16
 				listH = self.contentH
-				if not font:
-					font = self.settings[self.SETTING_CONTENT_FONT]
+
 				if title1:
-					ctrl = xbmcgui.ControlLabel(x+20, self.contentY, 0, labelH, title1, font, "0xFFFFFF99")
+					ctrl = xbmcgui.ControlLabel(x+20, self.contentY, 0, labelH, title1, FONT11, "0xFFFFFF99")
 					self.addControl(ctrl)
 					self.contentControls.append([ctrl,None])		# add to content control
 				if title2:
 					xpos = (x + width)
-					ctrl = xbmcgui.ControlFadeLabel(xpos, self.contentY, 0, labelH, font, "0xFFFFFF99",alignment=XBFONT_RIGHT)
+					ctrl = xbmcgui.ControlFadeLabel(xpos, self.contentY, 0, labelH, FONT11, "0xFFFFFF99",alignment=XBFONT_RIGHT)
 					self.addControl(ctrl)
 					ctrl.addLabel(title2)
 					self.contentControls.append([ctrl,None])		# add to content control
@@ -2816,46 +2430,41 @@ class Football(xbmcgui.Window):
 					y += labelH + 5
 					listH -= labelH 
 
-				if width > 250:
-					btnFocusFile = BUTTON_FOCUS_LONG
-				else:
-					btnFocusFile = BUTTON_FOCUS
-				controlList = xbmcgui.ControlList(x, y, width, listH, font=font, \
-									itemHeight=itemHeight, buttonFocusTexture=btnFocusFile, \
-									alignmentY=XBFONT_CENTER_Y)
-				self.addControl(controlList)
-				controlList.setAnimations([('WindowClose', self.animZoomWC)])
+				controlList = self.getControl(self.CID_LIST_CONTENT)
+				controlList.reset()
+				if width != self.contentW or y != 0:
+					controlList.setPosition(x, y)
+					controlList.setWidth(width)
+					controlList.setHeight(listH)
 				self.contentControls.append([controlList,None])
-				try:
-					controlList.setPageControlVisible(False)
-				except: pass
 
 				debug("adding content items")
 				for contentItem in self.contentData:
+					imgFilename = ''
 					lbl1 = decodeEntities(contentItem[0])
 					lbl2 = decodeEntities(contentItem[1])
 					# to get around abug in ListItem that offsets label2 Y if label1 is empty,
 					# load labels with at least a space
-					if lbl2 == '':
-						lbl2 = ' '
-					if lbl1 == '':
+					if not lbl1:
 						lbl1 = ' '
+					if not lbl2:
+						lbl2 = ' '
 					try:
-						# download icon
 						imgUrl = contentItem[5]
 						if not imgUrl: raise
 						imgFilename = os.path.join(DIR_CACHE, os.path.basename(imgUrl))
-						if not fileExist(imgFilename): 
-							if not fetchURL(imgUrl, imgFilename, isBinary=True):
-								imgFilename = ''
+						if fileExist(imgFilename) or fetchURL(imgUrl, imgFilename, isBinary=True):
+							imgFilename = ''
 					except:
 						imgFilename = ''
 					if imgFilename:
 						controlList.addItem(xbmcgui.ListItem(lbl1,lbl2,imgFilename,imgFilename))
 					else:
-						controlList.addItem(xbmcgui.ListItem(lbl1,lbl2))
+						controlList.addItem(xbmcgui.ListItem(lbl1, lbl2))
 
+				controlList.setVisible(True)
 				self.contentFocusIdx = len(self.contentControls)-1	# list is last
+				xbmcgui.unlock()
 		except:
 			handleException("drawContentList()")
 		debug("< drawContentList()")
@@ -2908,7 +2517,7 @@ class Football(xbmcgui.Window):
 
 		if not success:
 			messageNoInfo()
-			timerthread.disableCountDown()
+			timerthread.stop()
 		debug("< updateLiveText()")
 
 	#######################################################################################################################    
@@ -2927,20 +2536,6 @@ class Football(xbmcgui.Window):
 
 
 	#######################################################################################################################    
-	def getPhotoGalley(self):
-		debug("> getPhotoGalley()")
-		self.clearContentControls()
-		self.logoViewCLbl.setLabel(self.MAINMENU_OPT_PHOTO_GALLERY)
-		success = self.getRSS(self.MAINMENU_URL[self.MAINMENU_OPT_PHOTO_GALLERY], self.MAINMENU_OPT_PHOTO_GALLERY)
-		if success:
-			self.drawContentList(__language__(367), width=400)
-			self.toggleNavListFocus(False)		# switch to content
-		else:
-			self.toggleNavListFocus(True)		# switch to navlists
-		debug("< getPhotoGalley() success="+str(success))
-		return success
-
-	#######################################################################################################################    
 	# MAIN MENU
 	#######################################################################################################################    
 	def mainMenu(self):
@@ -2952,9 +2547,7 @@ class Football(xbmcgui.Window):
 		reInit = INIT_NONE
 		while reInit != INIT_FULL:
 			optReInit = INIT_NONE
-			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(501), rows=len(self.MAINMENU), width=300)
-			selectedPos, action = selectDialog.ask(self.MAINMENU, selectedPos)
+			selectedPos = xbmcgui.Dialog().select(__language__(501),self.MAINMENU)
 			if selectedPos <= 0:				# exit selected
 				break
 
@@ -2966,7 +2559,7 @@ class Football(xbmcgui.Window):
 
 			try:
 				if selectedItem == self.MAINMENU_OPT_CONFIG_MENU:
-					optReInit = self.configMenu()
+					optReInit = self.settingsMenu()
 				elif selectedItem in [self.MAINMENU_OPT_INTERVIEWS, \
 									self.MAINMENU_OPT_MOTD_INTERVIEWS, \
 									self.MAINMENU_OPT_SCORE_INTERVIEWS, \
@@ -2980,10 +2573,6 @@ class Football(xbmcgui.Window):
 				elif selectedItem == self.MAINMENU_OPT_5LIVEX:
 					debug("self.MAINMENU_OPT_5LIVEX")
 					success = playMedia(self.MAINMENU_URL[self.MAINMENU_OPT_5LIVE])
-				elif selectedItem == self.MAINMENU_OPT_PHOTO_GALLERY:
-					debug("self.MAINMENU_OPT_PHOTO_GALLERY")
-					if self.getPhotoGalley():
-						break	# to view content
 				elif selectedItem == self.MAINMENU_OPT_LSONTV:
 					debug("self.MAINMENU_OPT_LSONTV")
 					lsontv = LiveSportOnTV().ask()
@@ -3010,10 +2599,8 @@ class Football(xbmcgui.Window):
 
 
 	#############################################################################################
-	# CONFIG MENU
-	#############################################################################################
-	def configMenu(self):
-		debug("> configMenu()")
+	def settingsMenu(self):
+		debug("> settingsMenu()")
 
 		# menu choices
 		OPT_CLEAR_TEAMS = __language__(520)
@@ -3021,133 +2608,90 @@ class Football(xbmcgui.Window):
 		OPT_VIEW_CHANGELOG = __language__(522)
 		OPT_DATASOURCE = __language__(523)
 		OPT_CHECK_UPDATE_STARTUP = __language__(524)
-		OPT_CONTENT_FONT = __language__(525)
-
+		
 		def makeMenu():
-			return [xbmcgui.ListItem(__language__(500)),
-					xbmcgui.ListItem(OPT_CLEAR_TEAMS),
-					xbmcgui.ListItem(OPT_VIEW_README),
-					xbmcgui.ListItem(OPT_VIEW_CHANGELOG),
-					xbmcgui.ListItem(OPT_DATASOURCE),
-					xbmcgui.ListItem(OPT_CHECK_UPDATE_STARTUP, str(self.settings[self.SETTING_CHECK_UPDATE])),
-					xbmcgui.ListItem(OPT_CONTENT_FONT, str(self.settings[self.SETTING_CONTENT_FONT]))]
+			return [__language__(500),
+					OPT_CLEAR_TEAMS,
+					OPT_VIEW_README,
+					OPT_VIEW_CHANGELOG,
+					OPT_DATASOURCE,
+					OPT_CHECK_UPDATE_STARTUP  + " = " + str(self.settings[self.SETTING_CHECK_UPDATE])]
 
 		selectedPos = 0
 		reInit = INIT_NONE
 		while reInit != INIT_FULL:
 			menu = makeMenu()
 			optReInit = INIT_NONE
-			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(505), width=375, rows=len(menu))
-			selectedPos, action = selectDialog.ask(menu, selectedPos)
+			selectedPos = xbmcgui.Dialog().select(__language__(505), menu)
 			if selectedPos <= 0:				# exit selected
 				break
-
-			selectedItem = menu[selectedPos].getLabel()
-
-			if selectedItem == OPT_CLEAR_TEAMS:
+			elif selectedPos == 1:
 				if self.resetNavListTeams():
 					optReInit = INIT_FULL
-			elif selectedItem == OPT_VIEW_README:
-				viewReadme()
-			elif selectedItem == OPT_VIEW_CHANGELOG:
-				viewChangelog()
-			elif selectedItem == OPT_DATASOURCE:
+			elif selectedPos == 2:
+				fn = getReadmeFilename()
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
+				tbd.ask(options[selectedPos], fn=fn)
+				del tbd
+			elif selectedPos == 3:
+				fn = os.path.join( DIR_HOME, "changelog.txt" )
+				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
+				tbd.ask(options[selectedPos], fn=fn)
+				del tbd
+			elif selectedPos == 4:
 				dataSource = self.startupMenu()
 				if dataSource:
 					self.dataSource = dataSource
 					optReInit = INIT_FULL
-			elif selectedItem == OPT_CHECK_UPDATE_STARTUP:
-				self.settings[self.SETTING_CHECK_UPDATE] = xbmcgui.Dialog().yesno(__language__(505), OPT_CHECK_UPDATE_STARTUP)
+			elif selectedPos == 5:
+				self.settings[self.SETTING_CHECK_UPDATE] = not self.settings[self.SETTING_CHECK_UPDATE]
 				saveFileObj(self.SETTINGS_FILENAME, self.settings)
-
-			elif selectedItem == OPT_CONTENT_FONT:
-				menuContent = [__language__(500)]
-				for font in ALL_FONTS:
-					menuContent.append(font)
-				selectDialog = DialogSelect()
-				selectDialog.setup(selectedItem, rows=len(menuContent), width=300)
-				selectedPosContent, action = selectDialog.ask(menuContent)
-				if selectedPosContent > 0:
-					self.settings[self.SETTING_CONTENT_FONT] = menuContent[selectedPosContent]
-					saveFileObj(self.SETTINGS_FILENAME, self.settings)
 
 			if optReInit > reInit:
 				reInit = optReInit	# save highest reinit level
 
-		debug ("< configMenu() reInit=%s" % reInit)
+		debug ("< settingsMenu() reInit=%s" % reInit)
 		return reInit
 
 
 #######################################################################################################################    
 # Realtime clock
 #######################################################################################################################    
-class Timer(Thread): 
-	def __init__(self, motherclass, use24HourClock = True):
-		debug ("> **** Timer() init")
+class CountdownTimer(Thread): 
+	def __init__(self, motherclass, delaySecs=120):
+		debug ("Timer() delaySecs=%s" % delaySecs)
 		Thread.__init__(self)
 		self.mother = motherclass #self.mother will be the same as 'self' in the main class
 		self.running = False
-		self.use24HourClock = use24HourClock
-		self.secCounter = 0
-		self.countDownRunning = False
-		debug ("< **** Timer() init")
+		self.delaySecs = delaySecs
 
 	def run(self):
-		debug( "Timer().run() running: " + str(self.running) + " use24HourClock: " + str(self.use24HourClock))
+		debug( "Timer().run() running: %s" % self.running)
 		if self.running:
 			return
 
 		self.running=True
+		secCounter = 0
 		while self.running:
 			time.sleep(1)
-			if self.use24HourClock:
-				format = "%H:%M:%S"
-			else:
-				format = "%I:%M:%S %p"
-			text = time.strftime(format, time.localtime())
-			# strip leading 0 in 12hr mode
-			if not self.use24HourClock:
-				if text[0] == '0': text = text[1:]
-
-			self.mother.clockLbl.setLabel(text)
 
 			# delay timer
-			if self.countDownRunning:
-				if self.secCounter >= self.delay:
-					self.secCounter = 0
-					self.mother.updateLiveText()
-				else:
-					self.secCounter += 1
+			if secCounter >= self.delay:
+				secCounter = 0
+				self.mother.updateLiveText()
+			else:
+				secCounter += 1
 
 		debug("Timer().run() finished")
 
-	def setClock(self, use24HourClock):
-		debug("setClock() use24HourClock: " + str(use24HourClock))
-		self.use24HourClock = use24HourClock
-
 	def stop(self):
-		debug( "Timer().stop() self.running: " +str(self.running))
-		self.disableCountDown()
+		debug( "Timer().stop() self.running=%s" % self.running)
 		if self.running:
-			self.running = 0
+			self.running = False
 			self.join()
 
 	def isRunning(self):
 		return self.running
-
-	def isCountDownRunning(self):
-		return self.countDownRunning
-
-	def enableCountDown(self, delay=120):
-		debug("enableCountDown() delay="+str(delay))
-		self.delay = delay
-		self.secCounter = delay		# force an update now
-		self.countDownRunning = True
-
-	def disableCountDown(self):
-		debug("disableCountDown()")
-		self.countDownRunning = False
 
 
 ##################################################################################################################    
@@ -3207,10 +2751,10 @@ class LiveSportOnTV:
 
 	###################################################################################################################
 	def onAction(self, action):
+		if not action: return
 		try:
-			actionID = action.getId()
-			if not actionID:
-				actionID = action.getButtonCode()
+			actionID   =  action.getId()
+			buttonCode =  action.getButtonCode()
 		except: return
 		if actionID in CANCEL_DIALOG + EXIT_SCRIPT:
 			self.close()
@@ -3363,41 +2907,30 @@ def updateScript(silent=False):
 	xbmc.output( "< updateScript() updated=%s" % updated)
 	return updated
 
-#################################################################################################################
-def viewReadme():
-	debug("> viewReadme()")
-	fn = getReadmeFilename()
-	doc = readFile(fn)
-	if not doc:
-		doc = "Readme not found: " + fn
-	tbd = TextBoxDialogXML("script-bbb-textbox.xml", DIR_HOME, "Default")
-	tbd.ask(__language__(521), doc)
-	del tbd
-	debug("< viewReadme()")
-
-#################################################################################################################
-def viewChangelog():
-	debug("> viewChangelog()")
-	fn = os.path.join(DIR_HOME, "Changelog.txt")
-	doc = readFile(fn)
-	if not doc:
-		doc = "Changelog not found: " + fn
-
-	tbd = TextBoxDialogXML("script-bbb-textbox.xml", DIR_HOME, "Default")
-	tbd.ask(__language__(522), doc)
-	del tbd
-	debug("< viewChangelog()")
-
 
 #######################################################################################################################    
 # BEGIN !
 #######################################################################################################################
 makeScriptDataDir()
 makeDir(DIR_CACHE)
-myscript = Football()
-if myscript.isReady():
-	myscript.doModal()
-del myscript
+
+# check for script update
+if DEBUG:
+    updated = False
+else:
+    updated = updateScript(True)
+if not updated:
+	try:
+		# check language loaded
+		xbmc.output( "__language__ = %s" % __language__ )
+
+		myscript = Football("script-football-main.xml", DIR_HOME, "Default")
+		if myscript.ready:
+			myscript.doModal()
+		del myscript
+	except:
+		handleException()
+
 
 # housekeep on exit
 debug("exiting script ...")
@@ -3405,20 +2938,26 @@ removeDir(DIR_CACHE, force=True)
 deleteFile(os.path.join(DIR_HOME, "temp.xml"))
 deleteFile(os.path.join(DIR_HOME, "temp.html"))
 
-debug("exiting script ...")
-moduleList = ['bbbLib', 'bbbGUILib']
+# clean up on exit
+moduleList = ['bbbLib','bbbSkinGUILib']
+if not updated:
+    moduleList += ['update']
 for m in moduleList:
 	try:
 		del sys.modules[m]
+		xbmc.output(__scriptname__ + " del sys.module=%s" % m)
 	except: pass
 
 # remove other globals
 try:
 	del dialogProgress
 except: pass
+try:
+	del timerthread
+except: pass
 
 # goto xbmc home window
-try:
-	xbmc.executebuiltin('XBMC.ReplaceWindow(0)')
-except: pass
+#try:
+#	xbmc.executebuiltin('XBMC.ReplaceWindow(0)')
+#except: pass
 

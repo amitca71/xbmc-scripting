@@ -394,7 +394,7 @@ def ErrorCode(e):
 		try:
 			txt = e[1]
 		except:
-			txt = 'Unknown reason'
+			txt = e
 	messageOK(title, str(txt))
 	debug("< ErrorCode()")
 

@@ -1,0 +1,742 @@
+<window>
+	<defaultcontrol>3010</defaultcontrol>
+	<allowoverlays>true</allowoverlays>
+	<controls>
+		<control type="image">
+			<description>header image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-apps.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+
+		<!-- HEADER GROUP -->
+		<control type="group" id="1000">
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>95</height>
+			<visible>true</visible>
+			<animation effect="slide" time="200" start="0,-100" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" end="0,-100" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<animation effect="fade" time="100" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+
+			<control type="image" id="1010">
+				<description>LOGO image control</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>120</width>
+				<height>80</height>
+				<visible>true</visible>
+				<texture>script-logo.png</texture>
+				<aspectratio>keep</aspectratio> 
+				<animation effect="rotate" start="90" end="0" center="0,0" time="300">WindowOpen</animation>
+			</control>
+			<control type="image" id="1011">
+				<description>CLUB image control</description>
+				<posx>130</posx>
+				<posy>5</posy>
+				<width>60</width>
+				<height>80</height>
+				<visible>true</visible>
+				<texture>team-logo.jpg</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+
+			<control type="label" id="1012">
+				<description>TITLE control</description>
+				<posx>195</posx>
+				<posy>10</posy>
+				<width>550</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>0xFFFFFF00</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+				<shadowcolor>shadow-black</shadowcolor>
+				<label></label>
+			</control>
+			<control type="label" id="1013">
+				<description>TITLE DESC control</description>
+				<posx>195</posx>
+				<posy>50</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>0xFFFFFF00</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+				<shadowcolor>shadow-black</shadowcolor>
+				<label></label>
+			</control>
+			<control type="label">
+				<description>CLOCK label control</description>
+				<posx>2r</posx>
+				<posy>2</posy>
+				<width>85</width>
+				<height>25</height>
+				<font>font10</font>
+				<info>System.Time</info>
+				<shadowcolor>shadow-black</shadowcolor>
+				<align>right</align>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="label" id="1014">
+				<description>script ver label</description>
+				<posx>5r</posx>
+				<posy>30</posy>
+				<width>50</width>
+				<height>15</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>shadow-black</shadowcolor>
+				<label></label>
+			</control>
+			<control type="label" id="1015">
+				<description>datasource label</description>
+				<posx>5r</posx>
+				<posy>55</posy>
+				<width>320</width>
+				<height>20</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>shadow-black</shadowcolor>
+				<label></label>
+			</control>
+
+		</control> <!-- end group header -->
+
+		<!-- FOOTER -->
+		<control type="group" id="2000">
+			<posx>2</posx>
+			<posy>440</posy>
+			<height>135</height>
+			<visible>true</visible>
+			<animation effect="slide" time="200" start="0,136" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" end="0,136" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<animation effect="fade" time="100" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+
+			<control type="image">
+				<description>background footer image</description>
+				<posx>0</posx>
+				<posy>-5</posy>
+				<height>136</height>
+				<texture>footer_background.png</texture>
+			</control>
+
+			<!--  LEAGUE list -->
+			<control type="group" id="2010">
+				<posx>0</posx>
+				<posy>0</posy>
+				<height>135</height>
+				<visible>true</visible>
+
+				<control type="list" id="2011">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>190</width>
+					<height>135</height>
+					<onleft>2041</onleft>
+					<onright>2012</onright>
+					<onup>2011</onup>
+					<ondown>2011</ondown>
+					<viewtype label="list">list</viewtype>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>2012</pagecontrol>
+					<itemlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>190</width>
+							<height>25</height>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="label">
+							<posx>2</posx>
+							<posy>0</posy>
+							<width>190</width>
+							<height>25</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="25">
+						<control type="image">
+							<width>190</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>!Control.HasFocus(2011)</visible>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<width>190</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(2011)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="label">
+							<posx>2</posx>
+							<posy>0</posy>
+							<width>190</width>
+							<height>25</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+
+				<!-- SCROLL BAR -->
+				<control type="button">
+					<posx>190</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+					<onclick>PageUp(2012)</onclick>
+					<visible>Control.IsVisible(2012)</visible>
+				</control>
+				<control type="scrollbar" id="2012">
+					<posx>190</posx>
+					<posy>15</posy>
+					<width>16</width>
+					<height>105</height>
+					<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+					<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>2011</onleft>
+					<onright>2021</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="button">
+					<posx>190</posx>
+					<posy>120</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+					<onclick>PageDown(2012)</onclick>
+					<visible>Control.IsVisible(2012)</visible>
+				</control>
+
+			</control> <!-- end group LEAGUES list -->
+
+
+			<!--  LEAGUE VIEWS list -->
+			<control type="group" id="2020">
+				<posx>210</posx>
+				<posy>0</posy>
+				<height>135</height>
+				<visible>true</visible>
+
+				<control type="list" id="2021">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>150</width>
+					<height>135</height>
+					<onleft>2011</onleft>
+					<onright>2022</onright>
+					<onup>2021</onup>
+					<ondown>2021</ondown>
+					<viewtype label="list">list</viewtype>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>2022</pagecontrol>
+					<itemlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="25">
+						<control type="image">
+							<width>150</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>!Control.HasFocus(2021)</visible>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<width>150</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(2021)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<font>special12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+
+				<!-- SCROLL BAR -->
+				<control type="button">
+					<posx>150</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+					<onclick>PageUp(2022)</onclick>
+					<visible>Control.IsVisible(2022)</visible>
+				</control>
+				<control type="scrollbar" id="2022">
+					<posx>150</posx>
+					<posy>15</posy>
+					<width>16</width>
+					<height>105</height>
+					<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+					<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>2011</onleft>
+					<onright>2031</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="button">
+					<posx>150</posx>
+					<posy>120</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+					<onclick>PageDown(2022)</onclick>
+					<visible>Control.IsVisible(2022)</visible>
+				</control>
+
+			</control> <!-- end group LEAGUE VIEWS list -->
+
+			<!--  TEAMS list -->
+			<control type="group" id="2030">
+				<posx>380</posx>
+				<posy>0</posy>
+				<height>135</height>
+				<visible>true</visible>
+
+				<control type="list" id="2031">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>150</width>
+					<height>135</height>
+					<onleft>2021</onleft>
+					<onright>2032</onright>
+					<onup>2031</onup>
+					<ondown>2031</ondown>
+					<viewtype label="list">list</viewtype>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>2032</pagecontrol>
+					<itemlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="25">
+						<control type="image">
+							<width>150</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>!Control.HasFocus(2031)</visible>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<width>150</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(2031)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+
+				<!-- SCROLL BAR FOR TEAMS LIST -->
+				<control type="button">
+					<posx>150</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+					<onclick>PageUp(2032)</onclick>
+					<visible>Control.IsVisible(2032)</visible>
+				</control>
+				<control type="scrollbar" id="2032">
+					<posx>150</posx>
+					<posy>15</posy>
+					<width>16</width>
+					<height>105</height>
+					<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+					<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>2031</onleft>
+					<onright>2041</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="button">
+					<posx>150</posx>
+					<posy>120</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+					<onclick>PageDown(2032)</onclick>
+					<visible>Control.IsVisible(2032)</visible>
+				</control>
+
+			</control> <!-- end group TEAMS list -->
+
+			<!--  TEAM VIEWS list -->
+			<control type="group" id="2040">
+				<posx>550</posx>
+				<posy>0</posy>
+				<height>135</height>
+				<visible>true</visible>
+
+				<control type="list" id="2041">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>150</width>
+					<height>135</height>
+					<onleft>2031</onleft>
+					<onright>2042</onright>
+					<onup>2041</onup>
+					<ondown>2041</ondown>
+					<viewtype label="list">list</viewtype>
+					<scrolltime>200</scrolltime>
+					<pagecontrol>2042</pagecontrol>
+					<itemlayout height="25">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout height="25">
+						<control type="image">
+							<width>150</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>!Control.HasFocus(2041)</visible>
+							<texture border="3">input-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<width>150</width>
+							<height>25</height>
+							<posx>0</posx>
+							<posy>0</posy>
+							<visible>Control.HasFocus(2041)</visible>
+							<texture border="3">input-focus.png</texture>
+						</control>
+						<control type="label">
+							<posx>3</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>25</height>
+							<font>special11</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>left</align>
+							<info>ListItem.Label</info>
+						</control>
+					</focusedlayout>
+				</control>
+
+				<!-- SCROLL BAR FOR TEAMS LIST -->
+				<control type="button">
+					<posx>150</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+					<onclick>PageUp(2042)</onclick>
+					<visible>Control.IsVisible(2042)</visible>
+				</control>
+				<control type="scrollbar" id="2042">
+					<posx>150</posx>
+					<posy>15</posy>
+					<width>16</width>
+					<height>105</height>
+					<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+					<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>2041</onleft>
+					<onright>2011</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="button">
+					<posx>150</posx>
+					<posy>120</posy>
+					<width>16</width>
+					<height>16</height>
+					<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+					<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+					<onclick>PageDown(2042)</onclick>
+					<visible>Control.IsVisible(2042)</visible>
+				</control>
+
+			</control> <!-- end group TEAMS list -->
+
+		</control>  <!-- end group footer outer -->
+
+		<!--  CONTENT list -->
+		<control type="group" id="3000">
+			<posx>5</posx>
+			<posy>90</posy>
+			<width>710</width>
+			<height>345</height>
+			<visible>true</visible>
+
+			<control type="list" id="3010">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>695</width>
+				<height>345</height>
+				<onleft>3011</onleft>
+				<onright>3011</onright>
+				<onup>3010</onup>
+				<ondown>3010</ondown>
+				<viewtype label="list">list</viewtype>
+				<scrolltime>200</scrolltime>
+				<pagecontrol>3011</pagecontrol>
+				<itemlayout height="30">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>695</width>
+						<height>30</height>
+						<texture border="3">input-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>1</posy>
+						<width>29</width>
+						<height>29</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>695</width>
+						<height>30</height>
+						<font>special12</font>
+						<aligny>center</aligny>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>DFFFFFFF</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>695</posx>
+						<posy>0</posy>
+						<width>550</width>
+						<height>30</height>
+						<font>special12</font>
+						<aligny>center</aligny>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>DFFFFFFF</textcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="30">
+					<control type="image">
+						<width>695</width>
+						<height>30</height>
+						<posx>0</posx>
+						<posy>0</posy>
+						<visible>!Control.HasFocus(3010)</visible>
+						<texture border="3">input-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<width>695</width>
+						<height>30</height>
+						<posx>0</posx>
+						<posy>0</posy>
+						<visible>Control.HasFocus(3010)</visible>
+						<texture border="3">input-focus.png</texture>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>1</posy>
+						<width>29</width>
+						<height>29</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>695</width>
+						<height>30</height>
+						<font>special12</font>
+						<aligny>center</aligny>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>FFFFFF99</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>695</posx>
+						<posy>0</posy>
+						<width>550</width>
+						<height>30</height>
+						<font>special12</font>
+						<aligny>center</aligny>
+						<selectedcolor>FFe2ff43</selectedcolor>
+						<textcolor>DFFFFFFF</textcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+
+			<!-- SCROLL BAR FOR TEAMS LIST -->
+			<control type="button">
+				<posx>15r</posx>
+				<posy>0</posy>
+				<width>16</width>
+				<height>16</height>
+				<texturefocus border="2">scrollbar_arrow_up_focus.png</texturefocus>
+				<texturenofocus border="2">scrollbar_arrow_up.png</texturenofocus>
+				<onclick>PageUp(3011)</onclick>
+				<visible>Control.IsVisible(3011)</visible>
+			</control>
+			<control type="scrollbar" id="3011">
+				<posx>15r</posx>
+				<posy>15</posy>
+				<width>16</width>
+				<height>315</height>
+				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>3010</onleft>
+				<onright>3010</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="button">
+				<posx>15r</posx>
+				<posy>330</posy>
+				<width>16</width>
+				<height>16</height>
+				<texturefocus border="2">scrollbar_arrow_down_focus.png</texturefocus>
+				<texturenofocus border="2">scrollbar_arrow_down.png</texturenofocus>
+				<onclick>PageDown(3011)</onclick>
+				<visible>Control.IsVisible(3011)</visible>
+			</control>
+
+		</control> <!-- end group CONTENT list -->
+
+	</controls>
+
+</window>

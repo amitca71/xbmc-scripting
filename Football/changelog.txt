@@ -1,5 +1,8 @@
  Version     Date        Change
- v1.5.1      22-08-08    Fix: Some scraping due to site changes (Live text among others)
+ v1.6         22-11-08    
+                        New: Skinned using WindowXML
+ v1.5.1      22-08-08    
+                         Fix: Some scraping due to site changes (Live text among others)
                          New: Skinned readme & changelog screens.  More skinning to come.
  v1.5        20-04-08    Fix: Large change for code to use language string ID's not the string itself as was causing hangs.
                          Fix: Some scraping due to recent bbc site changes.
