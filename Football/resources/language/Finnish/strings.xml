@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!--  Finnish 23.7.2008 -->
+    <!--  Finnish 9.12.2008 -->
     <string id="0">Football</string>
 
     <!-- Error messages -->
@@ -25,16 +25,16 @@
     <string id="307">Kuvalinkit ...</string>
 
     <!-- datasources -->
-    <string id="330">BBC Sport (UK - perusteellinen)</string>
-    <string id="331">SoccerStand.com  (Intl - tulokset)</string>
+    <string id="330">BBC Sport(UK - perusteellinen)</string>
+    <string id="331">SoccerStand.com (Intl - tulokset)</string>
 
     <!-- titles -->
     <string id="350">TULOS:</string>
     <string id="351">Tapahtumat tekstinä:</string>
     <string id="352">Päivitetään joka 2. minuutti</string>
     <string id="353">Ei tietoja.</string>
-    <string id="354">Näytä taulu alhaalla</string>
-    <string id="355">Näytä taulu ylhäällä</string>
+    <string id="354">Näytä taulukon alaosa</string>
+    <string id="355">Näytä taulukon yläosa</string>
     <string id="356">Otsikko:</string>
     <string id="357">Aika</string>
     <string id="358">Valitse kuva:</string>
@@ -49,7 +49,7 @@
     <string id="367">Valitse kuvagalleria</string>
     <string id="368">(Profiili käytössä)</string>
     <string id="369">Valitse peli</string>
-    <string id="370">Valitse taulu</string>
+    <string id="370">Valitse taulukko</string>
 
     <!-- menu options -->
     <string id="500">Lopeta</string>
@@ -71,7 +71,7 @@
     <string id="531">Kansainväliset</string>
     <string id="532">UEFA Cup</string>
     <string id="533">Joukkueet</string>
-    <string id="534">Taulu</string>
+    <string id="534">Taulukko</string>
     <string id="535">Uutiset</string>
     <string id="536">Ottelut</string>
     <string id="537">Tulokset</string>
@@ -94,21 +94,21 @@
     <string id="554">Suorat tv:n urheilu lähetykset</string>
     <string id="555">606 viestiketju</string>
     <string id="556">Juorut ja siirrot</string>
-    <string id="557">Premier liiga</string>
-    <string id="558">Mestaruus</string>
-    <string id="559">Liiga 1</string>
-    <string id="560">Liiga 2</string>
-    <string id="561">Conference liiga</string>
-    <string id="562">Skottilainen mestaruus liiga</string>
-    <string id="563">Skottilainen Div 1</string>
-    <string id="564">Skottilainen Div 2</string>
-    <string id="565">Skottilainen Div 3</string>
-    <string id="566">Skotlannin ylänkö</string>
-    <string id="567">Walesilainen</string>
-    <string id="568">Irlantilainen</string>
-    <string id="569">Skottilainen Cup</string>
-    <string id="570">Skottilainen liiga Cup</string>
-    <string id="571">Mestaruusliiga</string>
+    <string id="557">Englannin valioliiga</string>
+    <string id="558">Englannin mestaruussarja</string>
+    <string id="559">Englannin liiga 1</string>
+    <string id="560">Englannin liiga 2</string>
+    <string id="561">Konfressi liiga</string>
+    <string id="562">Skotlannin valioliiga</string>
+    <string id="563">Skotlannin Div 1</string>
+    <string id="564">Skotlannin Div 2</string>
+    <string id="565">Skotlannin Div 3</string>
+    <string id="566">Skotlannin highland liiga</string>
+    <string id="567">Walesin liiga</string>
+    <string id="568">Irlannin liiga</string>
+    <string id="569">Skotlannin FA Cup</string>
+    <string id="570">Skotlannin liigaCup</string>
+    <string id="571">Mestarien liiga</string>
     <string id="572">Naiset</string>
     <string id="573">Itävalta</string>
     <string id="574">Belgia</string>
