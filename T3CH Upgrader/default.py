@@ -314,7 +314,7 @@ class Main:
 		except:
 			traceback.print_exc()
 
-		xbmc.output("< _check_build_date() %s %s" % (archive_name, short_build_name))
+		xbmc.output("< _check_build_date() archive_name=%s short_build_name=%s" % (archive_name, short_build_name))
 		return (archive_name, short_build_name)
 
 	######################################################################################
@@ -366,7 +366,7 @@ class Main:
 			# else show Not Found
 			if remote_archive_name:
 				self.opt_download = "%s  %s"  % (__language__(612), remote_archive_name)# download w/ rar name
-			elif self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]:	# yes
+			elif self.settings[self.SETTING_CHECK_NEW_BUILD]:
 				self.opt_download = "%s  %s"  % (__language__(612),__language__(517))	# no new build
 			else:
 				self.opt_download = "%s"  % __language__(622)							# Check Now
@@ -761,10 +761,6 @@ class Main:
 		xbmc.output( "_get_latest_version()" )
 		url = ""
 		for baseUrl in self.HOME_URL_LIST:
-#			fn = os.path.join(DIR_HOME, "index.html")
-#			if fileExist(fn):
-#				doc = file(fn).read()
-#			else:
 			doc = readURL( baseUrl, __language__( 502 ), self.isSilent )
 			if doc:
 				url = self._parse_html_source( doc )
