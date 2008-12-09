@@ -20,7 +20,7 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '07-12-2008'
+__date__ = '08-12-2008'
 __version__ = "1.7.5"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
@@ -851,7 +851,7 @@ class Main:
 			fsize = os.path.getsize(file_name)
 			if file_name.endswith("rar"):
 				xbmc.output("RAR filetype... fsize=%s" % fsize)
-				if fsize > 65000000 and not dialogYesNo( __language__( 0 ), __language__( 322 ) ):
+				if fsize > 69000000 and not dialogYesNo( __language__( 0 ), __language__( 322 ) ):
 					success = False
 				else:
 					xbmc.executebuiltin( "XBMC.extract(%s,%s)" % ( file_name, extract_path, ), )
