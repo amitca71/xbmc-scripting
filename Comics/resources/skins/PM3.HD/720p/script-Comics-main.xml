@@ -17,21 +17,22 @@
 	<control type="image" id="110">
 		<description>windowed comic image</description>
 		<posx>0</posx>
-		<posy>50</posy>
+		<posy>55</posy>
 		<width>1280</width>
-		<height>530</height>
+		<height>535</height>
 		<aspectratio>keep</aspectratio>
         <visible>true</visible>
         <animation effect="zoom" end="0" center="auto" time="200">WindowClose</animation>
+	<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 	</control>	
 
 	<control type="image" id="120">
 		<description>fullscreen guide image</description>
 		<posx>190r</posx>
-		<posy>570</posy>
+		<posy>630</posy>
 		<texture>comics-fullscreen-guide.png</texture>
 		<visible>!Control.IsVisible(1000)</visible>
-		<animation effect="rotate" start="180" end="0" center="720,576" time="200">VisibleChange</animation>
+	        <animation effect="slide" time="200" start="0,720" acceleration="-1.1">VisibleChange</animation>
 	</control>
 
 	<control type="label" id="130">
@@ -55,8 +56,9 @@
 		<visible>true</visible> 
 		<animation effect="slide" time="200" start="0,-55" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 		<animation effect="slide" time="200" end="0,-55" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
-        <animation effect="slide" time="200" start="0,-50" acceleration="-1.1" condition="Control.IsVisible(1000)">conditional</animation>
-        <animation effect="slide" time="200" end="0,-50" acceleration="1.1" condition="!Control.IsVisible(1000)">conditional</animation>
+	        <animation effect="slide" time="200" start="0,-50" acceleration="-1.1" condition="Control.IsVisible(1000)">conditional</animation>
+        	<animation effect="slide" time="200" end="0,-50" acceleration="1.1" condition="!Control.IsVisible(1000)">conditional</animation>
+		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
 		<control type="image" id="1001">
 			<description>background header image</description>
@@ -95,16 +97,18 @@
 			<align>right</align>
 			<label></label>
 			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
 			<font>font11</font>
 		</control>
 		<control type="label" id="23">
 			<description>title label</description>
 			<posx>130</posx>
-			<posy>2</posy>
+			<posy>1</posy>
 			<align>left</align>
 			<label></label>
 			<width>545</width>
 			<textcolor>FFFFFF66</textcolor>
+			<shadowcolor>black</shadowcolor>
 			<font>font14</font>
 			<wrapmultiline>false</wrapmultiline>
 			<scroll>true</scroll>
@@ -112,11 +116,12 @@
 		<control type="label" id="24">
 			<description>description label</description>
 			<posx>130</posx>
-			<posy>25</posy>
+			<posy>24</posy>
 			<align>left</align>
 			<label></label>
 			<width>545</width>
 			<textcolor>FFFFFFF99</textcolor>
+			<shadowcolor>black</shadowcolor>
 			<font>font12</font>
 			<wrapmultiline>false</wrapmultiline>
 			<scroll>true</scroll>
@@ -133,10 +138,11 @@
 		<visible>true</visible>
 		<animation effect="slide" time="200" start="0,136" acceleration="-1.1">WindowOpen</animation>
 		<animation effect="slide" time="200" end="0,136" acceleration="1.1">WindowClose</animation>
-        <animation effect="slide" time="200" start="0,136" acceleration="-1.1" condition="Control.IsVisible(2000)">conditional</animation>
-        <animation effect="slide" time="200" end="0,136" acceleration="-1.1" condition="!Control.IsVisible(2000)">conditional</animation>
+	        <animation effect="slide" time="200" start="0,136" acceleration="-1.1" condition="Control.IsVisible(2000)">conditional</animation>
+        	<animation effect="slide" time="200" end="0,136" acceleration="-1.1" condition="!Control.IsVisible(2000)">conditional</animation>
+		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
 
-        <control type="image" id="2001">
+        	<control type="image" id="2001">
 			<description>background footer image</description>
 			<texture>bbb-footer.png</texture>
 			<width>1280</width>
@@ -182,7 +188,7 @@
                         <posy>0</posy>
                         <width>255</width>
                         <height>29</height>
-                        <font>special12</font>
+                        <font>special11</font>
                         <aligny>center</aligny>
                         <selectedcolor>FFe2ff43</selectedcolor>
                         <textcolor>DFFFFFFF</textcolor>
@@ -212,10 +218,10 @@
                         <posy>0</posy>
                         <width>255</width>
                         <height>29</height>
-                        <font>special12</font>
+                        <font>special11</font>
                         <aligny>center</aligny>
                         <selectedcolor>FFe2ff43</selectedcolor>
-                        <textcolor>FFFFFFFF</textcolor>
+                        <textcolor>FFFFFF99</textcolor>
                         <align>left</align>
                         <info>ListItem.Label</info>
                     </control>
@@ -225,9 +231,9 @@
             <!-- SCROLL BAR LISTS -->
             <control type="scrollbar" id="2111">
                 <posx>255</posx>
-                <posy>16</posy>
+                <posy>0</posy>
                 <width>16</width>
-                <height>83</height>
+                <height>115</height>
 				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
 				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
 				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
@@ -249,7 +255,7 @@
 	    	<visible>true</visible>
 
             <control type="list" id="2210">
-                <width>310</width>
+                <width>490</width>
                 <height>116</height>
                 <onleft>2110</onleft>
                 <onright>2211</onright>
@@ -262,16 +268,16 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>310</width>
+                        <width>490</width>
                         <height>29</height>
                         <texture border="3">button-nofocus.png</texture>
                     </control>
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>310</width>
+                        <width>490</width>
                         <height>29</height>
-                        <font>special12</font>
+                        <font>special11</font>
                         <aligny>center</aligny>
                         <selectedcolor>FFe2ff43</selectedcolor>
                         <textcolor>DFFFFFFF</textcolor>
@@ -283,7 +289,7 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>310</width>
+                        <width>490</width>
                         <height>29</height>
                         <visible>!Control.HasFocus(2210)</visible>
                         <texture border="3">button-nofocus.png</texture>
@@ -291,7 +297,7 @@
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>310</width>
+                        <width>490</width>
                         <height>29</height>
                         <visible>Control.HasFocus(2210)</visible>
                         <texture border="3">button-focus.png</texture>
@@ -299,12 +305,12 @@
                     <control type="label">
                         <posx>5</posx>
                         <posy>0</posy>
-                        <width>310</width>
+                        <width>490</width>
                         <height>29</height>
-                        <font>special12</font>
+                        <font>special11</font>
                         <aligny>center</aligny>
                         <selectedcolor>FFe2ff43</selectedcolor>
-                        <textcolor>FFFFFFFF</textcolor>
+                        <textcolor>FFFFFF99</textcolor>
                         <align>left</align>
                         <info>ListItem.Label</info>
                     </control>
@@ -313,10 +319,10 @@
             
             <!-- SCROLL BAR LISTS -->
             <control type="scrollbar" id="2211">
-                <posx>310</posx>
-                <posy>16</posy>
+                <posx>490</posx>
+                <posy>0</posy>
                 <width>16</width>
-                <height>83</height>
+                <height>115</height>
 				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
 				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
 				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
@@ -332,7 +338,7 @@
 
         <!--  ITEM IMAGES list -->
         <control type="group" id="2300">
-            <posx>620</posx>
+            <posx>800</posx>
             <posy>5</posy>
             <animation effect="slide" time="200" start="0,136" end="0,0" acceleration="-1.1" condition="Control.IsVisible(2300)">conditional</animation>
 			<visible>true</visible>
@@ -360,7 +366,7 @@
                         <posy>0</posy>
                         <width>260</width>
                         <height>29</height>
-                        <font>special12</font>
+                        <font>special11</font>
                         <aligny>center</aligny>
                         <selectedcolor>FFe2ff43</selectedcolor>
                         <textcolor>DFFFFFFF</textcolor>
@@ -390,10 +396,10 @@
                         <posy>0</posy>
                         <width>260</width>
                         <height>29</height>
-                        <font>special12</font>
+                        <font>special11</font>
                         <aligny>center</aligny>
                         <selectedcolor>FFe2ff43</selectedcolor>
-                        <textcolor>FFFFFFFF</textcolor>
+                        <textcolor>FFFFFF99</textcolor>
                         <align>left</align>
                         <info>ListItem.Label</info>
                     </control>
@@ -403,9 +409,9 @@
             <!-- SCROLL BAR LISTS -->
             <control type="scrollbar" id="2311">
                 <posx>260</posx>
-                <posy>16</posy>
+                <posy>0</posy>
                 <width>16</width>
-                <height>83</height>
+                <height>115</height>
 				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
 				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
 				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>

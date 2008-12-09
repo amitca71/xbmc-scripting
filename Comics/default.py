@@ -1263,7 +1263,7 @@ makeDir(DIR_CACHE)
 if DEBUG:
     updated = False
 else:
-    updated = updateScript(False)
+    updated = updateScript(True)
 if not updated:
 	try:
 		# check language loaded
