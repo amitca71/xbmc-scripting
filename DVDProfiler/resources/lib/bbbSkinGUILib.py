@@ -84,9 +84,9 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 class DialogSelectXML(xbmcgui.WindowXMLDialog):
 	# control id's
 	CLBL_TITLE = 1
-	CLST_SELECT = 3
 	CLBL_COL1_TITLE = 6
 	CLBL_COL2_TITLE = 7
+	CLST_SELECT = 8
 
 	def __init__( self, *args, **kwargs ):
 		log("DialogSelectXML().__init__")

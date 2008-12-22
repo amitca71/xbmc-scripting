@@ -1,5 +1,5 @@
 <window type="dialog" id="2000">
-	<defaultcontrol always="true">3</defaultcontrol>
+	<defaultcontrol always="true">8</defaultcontrol>
 	<coordinates>
 		<system>1</system>
 		<posx>300</posx>
@@ -71,16 +71,16 @@
 				<textcolor>white</textcolor>
 			</control>
 
-			<control type="list" id="3">
+			<control type="list" id="8">
 				<posx>40</posx>
 				<posy>110</posy>
 				<width>612</width>
 				<height>465</height>
-				<onup>3</onup>
-				<ondown>3</ondown>
-				<onleft>61</onleft>
-				<onright>61</onright>
-				<pagecontrol>61</pagecontrol>
+				<onup>8</onup>
+				<ondown>8</ondown>
+				<onleft>9</onleft>
+				<onright>9</onright>
+				<pagecontrol>9</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="35">
 					<control type="image">
@@ -121,7 +121,7 @@
 						<posy>0</posy>
 						<width>612</width>
 						<height>33</height>
-						<visible>!Control.HasFocus(3)</visible>
+						<visible>!Control.HasFocus(8)</visible>
 						<texture border="3">button-nofocus.png</texture>
 					</control>
 					<control type="image">
@@ -129,7 +129,7 @@
 						<posy>0</posy>
 						<width>612</width>
 						<height>33</height>
-						<visible>Control.HasFocus(3)</visible>
+						<visible>Control.HasFocus(8)</visible>
 						<texture border="3">button-focus.png</texture>
 					</control>
 					<control type="label">
@@ -156,7 +156,7 @@
 					</control> 
 				</focusedlayout>
 			</control>
-			<control type="scrollbar" id="61">
+			<control type="scrollbar" id="9">
 				<posx>55r</posx>
 				<posy>110</posy>
 				<width>20</width>
@@ -166,10 +166,10 @@
 				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>scrollbar_nib.png</textureslidernib>
 				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
-				<onleft>3</onleft>
-				<onright>3</onright>
-				<ondown>61</ondown>
-				<onup>61</onup>
+				<onleft>8</onleft>
+				<onright>8</onright>
+				<ondown>9</ondown>
+				<onup>9</onup>
 				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>

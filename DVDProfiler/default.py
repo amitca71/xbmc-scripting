@@ -23,9 +23,9 @@ from shutil import rmtree
 
 # Script doc constants
 __scriptname__ = "DVDProfiler"
-__version__ = '1.6.4'
+__version__ = '1.7'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '03-11-2008'
+__date__ = '21-12-2008'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -173,7 +173,7 @@ class DVDProfiler(xbmcgui.WindowXML):
 			if forceReset or not self.settings.has_key( key ) or self.settings[key] in [None,""]:
 				self.settings[key] = defaultValue
 				changed = True
-				debug( "setting reset: " + key + " = " + str(defaultValue))
+				debug("using default value for key=%s" % key)
 
 		if changed or not fileExist(self.SETTINGS_FILENAME):
 			saveFileObj(self.SETTINGS_FILENAME, self.settings)
@@ -1166,7 +1166,7 @@ class DVDProfiler(xbmcgui.WindowXML):
 			if selectedOpt == OPT_CONFIG_SMB:
 				self.configSMB()
 			elif selectedOpt == OPT_CHECK_SCRIPT_UPDATE:
-				self.settings[self.SETTING_CHECK_UPDATE] = xbmcgui.Dialog().yesno( __language__(502), OPT_CHECK_SCRIPT_UPDATE )
+				self.settings[self.SETTING_CHECK_UPDATE] = not self.settings[self.SETTING_CHECK_UPDATE]
 				saveFileObj(self.SETTINGS_FILENAME, self.settings)
 			elif selectedOpt == OPT_UPDATE_SCRIPT:
 				if updateScript(False, True):							# never silent from config menu
@@ -1297,7 +1297,7 @@ class DVDProfiler(xbmcgui.WindowXML):
 				changed = True
 
 			elif key == MENU_OPT_SMB_USE:
-				self.settings[self.SETTING_SMB_USE] = xbmcgui.Dialog().yesno(__language__(527), MENU_OPT_SMB_USE)
+				self.settings[self.SETTING_SMB_USE] = not self.settings[self.SETTING_SMB_USE]
 				changed = True
 
 			elif key == MENU_OPT_SMB_DVDPRO_SHARE:
@@ -2231,28 +2231,20 @@ makeDir(DIR_IMG_CACHE)
 makeDir(DIR_CACHE)
 
 # check for script update
-if DEBUG:
-    updated = False
-else:
-    updated = updateScript(True)
-if not updated:
-	try:
-		# check language loaded
-		xbmc.output( "__language__ = %s" % __language__ )
-
-		myscript = DVDProfiler("script-dvdpro-main.xml", DIR_HOME, "Default")
-		if myscript.ready:
-			myscript.doModal()
-		del myscript
-	except:
-		handleException()
+try:
+    # check language loaded
+    xbmc.output( "__language__ = %s" % __language__ )
+    myscript = DVDProfiler("script-dvdpro-main.xml", DIR_HOME, "Default")
+    if myscript.ready:
+        myscript.doModal()
+    del myscript
+except:
+    handleException()
 
 # clean up on exit
 deleteFile(os.path.join(DIR_HOME, "temp.xml"))
 deleteFile(os.path.join(DIR_HOME, "temp.html"))
 moduleList = ['bbbLib', 'bbbSkinGUILib', 'smbLib', 'IMDbWin', 'IMDbLib']
-if not updated:
-    moduleList += ['update']
 for m in moduleList:
 	try:
 		del sys.modules[m]

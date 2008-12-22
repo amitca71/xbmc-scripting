@@ -1,5 +1,5 @@
 <window type="dialog" id="2000">
-	<defaultcontrol always="true">3</defaultcontrol>
+	<defaultcontrol always="true">8</defaultcontrol>
 	<animation effect="fade" time="200">WindowOpen</animation>
 	<animation effect="fade" time="200">WindowClose</animation>
 	<controls>
@@ -45,16 +45,16 @@
 				<textcolor>TextcolorBlack</textcolor>
 			</control>
 
-			<control type="list" id="3">
+			<control type="list" id="8">
 				<posx>365</posx>
 				<posy>85</posy>
 				<width>350</width>
 				<height>360</height>
-				<onup>3</onup>
-				<ondown>3</ondown>
-				<onleft>61</onleft>
-				<onright>61</onright>
-				<pagecontrol>61</pagecontrol>
+				<onup>8</onup>
+				<ondown>8</ondown>
+				<onleft>9</onleft>
+				<onright>9</onright>
+				<pagecontrol>10</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="30">
 					<control type="image">
@@ -95,7 +95,7 @@
 						<posy>0</posy>
 						<width>350</width>
 						<height>28</height>
-						<visible>!Control.HasFocus(3)</visible>
+						<visible>!Control.HasFocus(8)</visible>
 						<texture border="3">iconlist-nofocus.png</texture>
 					</control>
 					<control type="image">
@@ -103,7 +103,7 @@
 						<posy>0</posy>
 						<width>350</width>
 						<height>28</height>
-						<visible>Control.HasFocus(3)</visible>
+						<visible>Control.HasFocus(8)</visible>
 						<texture border="3">iconlist-focus.png</texture>
 					</control>
 					<control type="label">
@@ -132,16 +132,16 @@
 					</control> 
 				</focusedlayout>
 			</control>
-			<control type="spincontrol" id="61">
+			<control type="spincontrol" id="9">
 				<description>Next page button</description>
 				<posx>680</posx>
 				<posy>450</posy>
 				<subtype>page</subtype>
 				<font>font12</font>
-				<onleft>3</onleft>
-				<onright>3</onright>
-				<ondown>3</ondown>
-				<onup>3</onup>
+				<onleft>8</onleft>
+				<onright>8</onright>
+				<ondown>8</ondown>
+				<onup>8</onup>
 				<textcolor>TextcolorBlack</textcolor>
 				<showonepage>false</showonepage>
 			</control>
