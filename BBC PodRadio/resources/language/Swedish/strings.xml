@@ -1,11 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 01/01/2009-->
+<!--$Revision$-->
 <strings>
   <string id="0">BBC PodRadio</string>
-  <!-- Prompts -->
   <string id="100">Välj en källa</string>
   <string id="101">Välj en ström att spela</string>
   <string id="102">Välj station</string>
-  <!-- menu options  -->
+  <string id="103">Spara till</string>
+  <string id="104">Spara och spela upp ?</string>
+  <string id="105">Filen existerar, skriva över ?</string>
   <string id="200">Podsändningar</string>
   <string id="201">Radio Igen</string>
   <string id="202">Radio Live</string>
@@ -16,13 +22,12 @@
   <string id="207">Bläddra efter musikgenre</string>
   <string id="208">Bläddra efter talgenre</string>
   <string id="209">Bläddra efter radiostationer</string>
-  <!-- Error messages -->
   <string id="300">Mappkategori saknas!</string>
   <string id="301">Inga strömmar hittade!</string>
   <string id="302">Strömmen är inte tillgänglig</string>
   <string id="303">Inga avsnitt är tillgängliga.</string>
   <string id="304">Ingen medialänk hittad!</string>
-  <!-- Status messages -->
+  <string id="305">Nedladdning misslyckades!</string>
   <string id="400">Var god vänta...</string>
   <string id="401">Lyckades</string>
   <string id="402">Misslyckades</string>
@@ -31,11 +36,16 @@
   <string id="405">Plugin installed.</string>
   <string id="406">I instick 'Lägg till källa' för att slutföra installation.</string>
   <string id="407">Strömmar för:</string>
-  <!-- Main Menu -->
+  <string id="408">Nu spelas...</string>
+  <string id="409">Spela</string>
+  <string id="410">Spara</string>
+  <string id="411">Sparar...</string>
   <string id="500">Meny</string>
   <string id="501">Visa Skript Readme</string>
   <string id="502">Visa Skript ChangeLog</string>
-  <!-- Update messages -->
+  <string id="503">Spela sparad fil</string>
+  <string id="504">Stoppa</string>
+  <string id="505">Rensa buffert</string>
   <string id="1000">Din version är aktuell.</string>
   <string id="1001">Hämtar nuvarande taggade versioner...</string>
   <string id="1002">är nyare</string>
@@ -47,7 +57,6 @@
   <string id="1008">Sökväg:</string>
   <string id="1009">Fil:</string>
   <string id="1010">Skript uppdaterat, startar om nu.</string>
-  <!-- Update error messages -->
   <string id="1030">Inga taggade versioner hittade!</string>
   <string id="1031">Ett fel uppstod under uppdatering av skriptet!</string>
 </strings>
