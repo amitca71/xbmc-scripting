@@ -1,0 +1,960 @@
+<window>
+	<defaultcontrol>-</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<!-- START: Images -->
+		<include>ProgramBackGroundWhiteWash</include>
+		<control type="image" id="61">
+			<description>EvoxT Banner</description>
+			<posx>25</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>85</height>
+			<texture>evt_banner.png</texture>
+		</control>
+
+		<control type="label">
+			<description>date label</description>
+			<posx>670</posx>
+			<posy>10</posy>
+			<align>right</align>
+			<info>System.Date</info>
+			<width>500</width>
+			<font>bold14</font>
+			<shadowcolor>shadow-black</shadowcolor>
+			<animation effect="fade" time="100">WindowOpen</animation>
+		</control>
+
+		<control type="label">
+			<description>Clock Label</description>
+			<posx>670</posx>
+			<posy>48</posy>
+			<info>System.Time</info>
+			<align>right</align>
+			<font>bold14</font>
+			<shadowcolor>shadow-black</shadowcolor>
+			<animation effect="fade" time="100">WindowOpen</animation>
+		</control>
+
+		<control type="label" id="64">
+			<description>updated label</description>
+			<posx>670</posx>
+			<posy>550</posy>
+			<align>right</align>
+			<label>* = Latest Update</label>
+			<width>200</width>
+			<include>KeymapFont</include>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="83">
+			<description>version label</description>
+			<posx>140</posx>
+			<posy>460</posy>
+			<align>right</align>
+			<label>-</label>
+			<width>200</width>
+			<include>KeymapFont</include>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="image" id="69">
+			<description>Back Button Image</description>
+			<posx>633</posx>
+			<posy>526</posy>
+			<include>Button-Map-Texture-Width</include>
+			<height>21</height>
+			<texture>button-Back.png</texture>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="70">
+			<description>Back Button label Main</description>
+			<posx>623</posx>
+			<posy>528</posy>
+			<align>right</align>
+			<label>Exit Script</label>
+			<width>200</width>
+			<include>KeymapFont</include>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="45">
+			<description>Back Button label NFO</description>
+			<posx>623</posx>
+			<posy>528</posy>
+			<align>right</align>
+			<label>Back</label>
+			<width>200</width>
+			<include>KeymapFont</include>
+			<visible>Control.IsVisible(5)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="image" id="65">
+			<description>A Button Image</description>
+			<posx>112</posx>
+			<posy>525</posy>
+			<include>Button-Map-Texture-Width</include>
+			<height>21</height>
+			<texture>button-A.png</texture>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="66">
+			<description>A Button label</description>
+			<posx>145</posx>
+			<posy>528</posy>
+			<align>left</align>
+			<label>Install Trainer</label>
+			<width>200</width>
+			<include>KeymapFont</include>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="image">
+			<description>Y Button Image</description>
+			<posx>125</posx>
+			<posy>505</posy>
+			<include>Button-Map-Texture-Width</include>
+			<height>21</height>
+			<texture>button-Y.png</texture>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="68">
+			<description>Y Button label</description>
+			<posx>158</posx>
+			<posy>508</posy>
+			<align>left</align>
+			<label>Show Info</label>
+			<width>200</width>
+			<include>KeymapFont</include>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="image">
+			<description>White Button Image</description>
+			<posx>620</posx>
+			<posy>506</posy>
+			<include>Button-Map-Texture-Width</include>
+			<height>21</height>
+			<texture>button-White.png</texture>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="68">
+			<description>White Button label</description>
+			<include>KeymapFont</include>
+			<posx>610</posx>
+			<posy>508</posy>
+			<align>right</align>
+			<label>Change Trainerpath</label>
+			<width>200</width>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="46">
+			<description>Title label</description>
+			<posx>219</posx>
+			<posy>90</posy>
+			<align>left</align>
+			<label>Title</label>
+			<width>200</width>
+			<font>font13</font>
+			<textcolor>TextcolorBlack</textcolor>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="47">
+			<description>Trainer date label</description>
+			<posx>512</posx>
+			<posy>90</posy>
+			<align>left</align>
+			<label>Date</label>
+			<width>200</width>
+			<font>font13</font>
+			<textcolor>TextcolorBlack</textcolor>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+
+		<control type="label" id="48">
+			<description>dL count label</description>
+			<posx>610</posx>
+			<posy>90</posy>
+			<align>left</align>
+			<label>dL's</label>
+			<width>200</width>
+			<font>font13</font>
+			<textcolor>TextcolorBlack</textcolor>
+			<visible>Control.IsVisible(81)</visible>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+		<!-- END: Images -->
+
+		<!-- START: Textarea -->
+		<control type="image" id="4">
+			<description>nfo background image</description>
+ 			<posx>100</posx>
+  			<posy>95</posy>
+			<width>590</width>
+			<height>420</height>
+			<texture>Playlist-Vis-Back.png</texture>
+			<visible>Control.IsVisible(5)</visible>
+			<animation effect="fade" time="200">WindowOpen</animation>
+			<animation effect="fade" end="0">WindowClose</animation>
+		</control>
+
+		<control type="textbox" id="5">
+			<description>textarea</description>
+			<posx>110</posx>
+			<posy>100</posy>
+			<width>540</width>
+			<height>390</height>
+			<font>font12</font>
+			<textcolor>FFFFFFFF</textcolor>
+			<spinposx>520</spinposx>
+			<spinposy>395</spinposy>
+			<animation effect="fade" time="200">WindowOpen</animation>
+			<animation effect="fade" end="0">WindowClose</animation>
+		</control>
+		<!-- END: Teaxtarea -->
+
+		<!-- START: Lists -->
+		<control type="list" id="81">
+			<description>Trainerlist</description>
+			<posx>215</posx>
+			<posy>110</posy>
+			<width>580</width>
+			<height>385</height>
+			<onleft>9000</onleft>
+			<onright>49</onright>
+			<onup>81</onup>
+			<ondown>81</ondown>
+			<pagecontrol>49</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<animation effect="fade" time="200">WindowOpen</animation>
+			<animation effect="fade" end="0">WindowClose</animation>
+			<itemlayout height="30">
+				<control type="image">
+					<width>426</width>
+					<height>30</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>iconlist-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>4</posy>
+					<width>265</width>
+					<height>22</height>
+					<font>font13</font>
+					<align>left</align>
+					<textcolor>TextcolorBlack</textcolor>
+					<selectedcolor>listselectedcolor</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>370</posx>
+					<posy>5</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font12</font>
+					<align>right</align>
+					<textcolor>TextcolorBlack</textcolor>
+					<selectedcolor>listselectedcolor</selectedcolor>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="30">
+				<control type="image">
+					<width>426</width>
+					<height>30</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>iconlist2-focus.png</texture>
+					<visible>Control.HasFocus(81)</visible>
+				</control>
+				<control type="image">
+					<width>426</width>
+					<height>30</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>iconlist2-nofocus.png</texture>
+					<visible>!Control.HasFocus(81)</visible>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>20</width>
+					<height>20</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>4</posy>
+					<width>265</width>
+					<height>22</height>
+					<font>font13</font>
+					<align>left</align>
+					<textcolor>TextcolorBlack</textcolor>
+					<selectedcolor>listselectedcolor</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>370</posx>
+					<posy>5</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font12</font>
+					<align>right</align>
+					<textcolor>TextcolorBlack</textcolor>
+					<selectedcolor>listselectedcolor</selectedcolor>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="list" id="82">
+			<description>DLCountlist</description>
+			<posx>105</posx>
+			<posy>110</posy>
+			<width>580</width>
+			<height>385</height>
+			<onleft>9000</onleft>
+			<onright>82</onright>
+			<onup>82</onup>
+			<ondown>82</ondown>
+			<pagecontrol>49</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<itemlayout height="30">
+				<control type="image">
+					<width>515</width>
+					<height>30</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>-</texture>
+				</control>
+				<control type="label">
+					<posx>530</posx>
+					<posy>5</posy>
+					<width>50</width>
+					<height>22</height>
+					<align>right</align>
+					<font>font12</font>
+					<textcolor>TextcolorBlack</textcolor>
+					<selectedcolor>listselectedcolor</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>580</posx>
+					<posy>2</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font10</font>
+					<selectedcolor>FFe2ff43</selectedcolor>
+					<align>right</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="30">
+				<control type="image">
+					<width>570</width>
+					<height>25</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(82)</visible>
+					<texture>-</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>20</width>
+					<height>20</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>530</posx>
+					<posy>5</posy>
+					<width>50</width>
+					<height>22</height>
+					<align>right</align>
+					<font>font12</font>
+					<textcolor>TextcolorBlack</textcolor>
+					<selectedcolor>listselectedcolor</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>580</posx>
+					<posy>2</posy>
+					<width>100</width>
+					<height>22</height>
+					<font>font10</font>
+					<selectedcolor>FFe2ff43</selectedcolor>
+					<align>right</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="button">
+			<posx>650</posx>
+			<posy>105</posy>
+			<width>16</width>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageUp(49)</onclick>
+			<texturefocus border="4">scrollbar-up-arrow.png</texturefocus>
+			<texturenofocus border="4">scrollbar-up-arrow.png</texturenofocus>
+			<visible>Control.IsVisible(49)</visible>
+		</control>
+		<control type="button">
+			<posx>650</posx>
+			<posy>475</posy>
+			<width>16</width>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageDown(49)</onclick>
+			<texturefocus border="4">scrollbar-down-arrow.png</texturefocus>
+			<texturenofocus border="4">scrollbar-down-arrow.png</texturenofocus>
+			<visible>Control.IsVisible(49)</visible>
+		</control>
+		<control type="scrollbar" id="49">
+			<posx>650</posx>
+			<posy>125</posy>
+			<width>16</width>
+			<height>350</height>
+			<texturesliderbackground border="4">scrollbar-middle.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar-indicator-focus.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar-indicator-focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
+			<onleft>81</onleft>
+			<onright>49</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<visible>Control.IsVisible(81)</visible>
+		</control>
+		<!-- END: Lists -->
+
+		<!-- START: Main buttons -->
+		<control type="group" id="9000">
+			<posy>8</posy>
+			<visible>!Control.IsVisible(5)</visible>
+			<control type="image">
+				<description>Divider image 1</description>
+				<posx>95</posx>
+				<posy>80</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 2</description>
+				<posx>95</posx>
+				<posy>115</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 3</description>
+				<posx>95</posx>
+				<posy>150</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 4</description>
+				<posx>95</posx>
+				<posy>185</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 5</description>
+				<posx>95</posx>
+				<posy>220</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 6</description>
+				<posx>95</posx>
+				<posy>255</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 7</description>
+				<posx>95</posx>
+				<posy>290</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 8</description>
+				<posx>95</posx>
+				<posy>325</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 9</description>
+				<posx>95</posx>
+				<posy>360</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 10</description>
+				<posx>95</posx>
+				<posy>395</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Divider image 11</description>
+				<posx>95</posx>
+				<posy>430</posy>
+				<width>100</width>
+				<height>1</height>
+				<texture>divider.png</texture>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Recent Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-1a.png</texture>
+				<visible>Control.HasFocus(71)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>Recent Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-1-shadow.png</texture>
+				<visible>Control.HasFocus(71)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="71">
+				<description>Recent Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>Recent</label>
+				<posx>98</posx>
+				<posy>85</posy>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onright>81</onright>
+				<onup>80</onup>
+				<ondown>72</ondown>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>0-9 Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-2a.png</texture>
+				<visible>Control.HasFocus(72)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>0-9 Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-2-shadow.png</texture>
+				<visible>Control.HasFocus(72)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="72">
+				<description>0-9 Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>0-9</label>
+				<posx>98</posx>
+				<posy>120</posy>
+				<onright>81</onright>
+				<onup>71</onup>
+				<ondown>73</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>A-C Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-3a.png</texture>
+				<visible>Control.HasFocus(73)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>A-C Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-3-shadow.png</texture>
+				<visible>Control.HasFocus(73)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="73">
+				<description>A-C Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>A-C</label>
+				<posx>98</posx>
+				<posy>155</posy>
+				<onright>81</onright>
+				<onup>72</onup>
+				<ondown>74</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>D-F Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-4a.png</texture>
+				<visible>Control.HasFocus(74)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>D-F Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-4-shadow.png</texture>
+				<visible>Control.HasFocus(74)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="74">
+				<description>D-F Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>D-F</label>
+				<posx>98</posx>
+				<posy>190</posy>
+				<onright>81</onright>
+				<onup>73</onup>
+				<ondown>75</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>G-I Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-5a.png</texture>
+				<visible>Control.HasFocus(75)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>G-I Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-5-shadow.png</texture>
+				<visible>Control.HasFocus(75)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="75">
+				<description>G-I Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>G-I</label>
+				<posx>98</posx>
+				<posy>225</posy>
+				<onright>81</onright>
+				<onup>74</onup>
+				<ondown>76</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>J-L Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-6a.png</texture>
+				<visible>Control.HasFocus(76)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>J-L Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-6-shadow.png</texture>
+				<visible>Control.HasFocus(76)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="76">
+				<description>J-L Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>J-L</label>
+				<posx>98</posx>
+				<posy>260</posy>
+				<onright>81</onright>
+				<onup>75</onup>
+				<ondown>77</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>M-O Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-7a.png</texture>
+				<visible>Control.HasFocus(77)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>M-O Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-7-shadow.png</texture>
+				<visible>Control.HasFocus(77)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="77">
+				<description>M-O Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>M-O</label>
+				<posx>98</posx>
+				<posy>295</posy>
+				<onright>81</onright>
+				<onup>76</onup>
+				<ondown>78</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>P-R Button Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-8a.png</texture>
+				<visible>Control.HasFocus(78)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>P-R Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-8-shadow.png</texture>
+				<visible>Control.HasFocus(78)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="78">
+				<description>P-R Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>P-R</label>
+				<posx>98</posx>
+				<posy>330</posy>
+				<onright>81</onright>
+				<onup>77</onup>
+				<ondown>79</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>S-U Button Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-9a.png</texture>
+				<visible>Control.HasFocus(79)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>S-U Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-9-shadow.png</texture>
+				<visible>Control.HasFocus(79)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="79">
+				<description>S-U Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>S-U</label>
+				<posx>98</posx>
+				<posy>365</posy>
+				<onright>81</onright>
+				<onup>78</onup>
+				<ondown>80</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+
+			<control type="image">
+				<description>V-Z Button Button</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-10a.png</texture>
+				<visible>Control.HasFocus(80)</visible>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="image">
+				<description>V-Z Button Shadow</description>
+				<posx>75</posx>
+				<posy>80</posy>
+				<width>130</width>
+				<height>367</height>
+				<texture>systemhomebutton-10-shadow.png</texture>
+				<visible>Control.HasFocus(80)</visible>
+				<include>button-shadow</include>
+				<animation effect="fade" delay="100" time="100" condition="Window.Previous(1112)">WindowOpen</animation>
+				<animation effect="fade" end="0" condition="Window.Next(1112)">WindowClose</animation>
+			</control>
+			<control type="button" id="80">
+				<description>V-Z Button</description>
+				<include>Sub-Blade-Button-Commons</include>
+				<label>V-Z</label>
+				<posx>98</posx>
+				<posy>400</posy>
+				<onright>81</onright>
+				<onup>79</onup>
+				<ondown>71</ondown>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			</control>
+			<!-- END: Main buttons -->
+		</control>
+		<include>ProgramsCommonsBlades</include>
+	</controls>
+</window>
