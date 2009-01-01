@@ -1,4 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 01/01/2009-->
+<!--$Revision$-->
 <strings>
   <string id="0">T3CH Upgrader</string>
   <string id="200">Installationssökväg (ex. E:\apps) </string>
@@ -30,6 +35,8 @@
   <string id="318">Alla FTP-servrar är inte tillgängliga!</string>
   <string id="319">Inga Internetversioner hittades!</string>
   <string id="320">SFV filnamn inte hittat![CR]Fortsätta ändå?</string>
+  <string id="321">Kunde inte hitta datum i arkivfilnamnet!</string>
+  <string id="322">RAR är väldigt stor och kan förmodligen inte packas upp![CR](Tips: Packa om uten oönskade skal. ~ 60mb)[CR]Fortsätta ändå ?</string>
   <string id="400">Ladda ned</string>
   <string id="401">Hoppa över</string>
   <string id="402">Ja</string>
@@ -80,6 +87,8 @@
   <string id="531">Ledigt minne=%sMB  Rekommenderat=%sMB</string>
   <string id="532">Fortsätt ?</string>
   <string id="533">Ladda endast ner eller ladda ner och installera ?</string>
+  <string id="534">Kontrollera nu</string>
+  <string id="535">Ange ett datum</string>
   <string id="600">Huvudmeny</string>
   <string id="601">Inställningsmeny</string>
   <string id="610">Inställningar</string>
@@ -92,6 +101,7 @@
   <string id="619">Uppdatera skript</string>
   <string id="620">Installera lokal fil:</string>
   <string id="621">Installera gammal version från Internet</string>
+  <string id="622">Kontrollera efter ny T3CH version</string>
   <string id="630">Menysystemsgenvägsdisk:</string>
   <string id="631">Menysystemsgenvägsnamn:</string>
   <string id="632">Installationssökväg:</string>
@@ -102,6 +112,7 @@
   <string id="637">Återställ egen kopierings och raderingslistor</string>
   <string id="638">Fråga innan borttagning av T3CH arkivsfil?</string>
   <string id="639">Visa skripets LäsMig/Ändringslogg</string>
+  <string id="640">Kontrollera efter ny T3CH vid uppstart?</string>
   <string id="650">Avsluta</string>
   <string id="651">Lägg till ny</string>
   <string id="652">Använd tangentbord</string>
