@@ -1,6 +1,6 @@
 __scriptname__ = 'EvoxT-Trainers'
 __author__ = 'bootsy'
-__version__ = '0.97'
+__version__ = '0.98'
 import xbmc, xbmcgui
 
 dia = xbmcgui.Dialog()

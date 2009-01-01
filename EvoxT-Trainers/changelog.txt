@@ -1,3 +1,6 @@
+version 0.98:
+- changed: some cosmetic things
+
 version 0.97:
 - added: 'resources' folder to get the script working again
 - changed: renamed 'temp' to 'cache' and placed it into 'resources'
