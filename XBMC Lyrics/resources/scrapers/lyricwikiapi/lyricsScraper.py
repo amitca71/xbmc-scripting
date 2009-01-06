@@ -89,7 +89,7 @@ class LyricsFetcher:
                 file_object.close()
             # exec jsonSource to a native python dictionary
             exec jsonSource
-            if ( song[ "lyrics" ] == "Not found" or song[ "lyrics" ].startswith( "{{Wikipedia}}" ) ):
+            if ( song[ "lyrics" ].startswith( "{{ArtistHeader" ) or song[ "lyrics" ] == "Not found" or song[ "lyrics" ].startswith( "{{Wikipedia}}" ) ):
                 raise
             lyrics = song[ "lyrics" ]
             return lyrics
@@ -154,9 +154,9 @@ debugWrite = False
 
 if ( __name__ == "__main__" ):
     # used to test get_lyrics() 
-    artists = [ "Iron & Wine", "The Charlie Daniels Band", "ABBA", "Jem","Stealers Wheel","Paul McCartney & Wings","ABBA","AC/DC", "Tom Jones", "Kim Mitchell", "Ted Nugent", "Blue Öyster Cult", "The 5th Dimension", "Big & Rich", "Don Felder" ]
-    songs = [ "On Your Wings", "(What This World Needs Is) A Few More Rednecks", "S.O.S","24","Stuck in the middle with you","Band on the run", "Dancing Queen", "T.N.T.", "She's A Lady", "Go for Soda", "Free-for-all2", "(Don't Fear) The Reaper", "Age of Aquarius", "Save a Horse (Ride a Cowboy)", "Heavy Metal (Takin' a Ride)" ]
-    for cnt in range( 1, 2 ):
+    artists = [ "AC/DC", "Iron & Wine", "The Charlie Daniels Band", "ABBA", "Jem","Stealers Wheel","Paul McCartney & Wings","ABBA","AC/DC", "Tom Jones", "Kim Mitchell", "Ted Nugent", "Blue Öyster Cult", "The 5th Dimension", "Big & Rich", "Don Felder" ]
+    songs = [ "Money Talks", "On Your Wings", "(What This World Needs Is) A Few More Rednecks", "S.O.S","24","Stuck in the middle with you","Band on the run", "Dancing Queen", "T.N.T.", "She's A Lady", "Go for Soda", "Free-for-all2", "(Don't Fear) The Reaper", "Age of Aquarius", "Save a Horse (Ride a Cowboy)", "Heavy Metal (Takin' a Ride)" ]
+    for cnt in range( 0, 7 ):
         lyrics = LyricsFetcher().get_lyrics( artists[ cnt ], songs[ cnt ] )
         print "__________________________________"
         print "%s - %s" % ( artists[ cnt ], songs[ cnt ], )
@@ -166,7 +166,7 @@ if ( __name__ == "__main__" ):
         if ( isinstance( lyrics, list ) ):
             print "List:"
             for song in lyrics:
-                print song
+                print "song", song
             print "\nSong 1 lyrics:\n____________________"
             lyrics = LyricsFetcher().get_lyrics_from_list( lyrics[ 0 ][ 1 ] )
         print lyrics#.encode( "utf-8", "ignore" )
