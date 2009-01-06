@@ -17,7 +17,7 @@ __version__ = sys.modules[ "__main__" ].__version__
 __svn_revision__ = sys.modules[ "__main__" ].__svn_revision__
 
 # comapatble versions
-SETTINGS_VERSIONS = ( "1.6.0", )
+SETTINGS_VERSIONS = ( "1.6.1", )
 # base paths
 BASE_DATA_PATH = os.path.join( xbmc.translatePath( "P:\\script_data" ), os.path.basename( os.getcwd() ) )
 BASE_SETTINGS_PATH = os.path.join( xbmc.translatePath( "P:\\script_data" ), os.path.basename( os.getcwd() ), "settings.txt" )
@@ -141,7 +141,7 @@ class Settings:
         LOG( LOG_NOTICE, "%s (ver: %s) used default settings", __scriptname__, __version__ )
         settings = {}
         defaults = {  
-            "scraper": "lyricwiki",
+            "scraper": "lyricwikiapi",
             "save_lyrics": True,
             "lyrics_path": os.path.join( BASE_DATA_PATH, "lyrics" ),
             "smooth_scrolling": False,
