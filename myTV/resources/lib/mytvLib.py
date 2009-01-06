@@ -1028,7 +1028,8 @@ class MYTVConfig:
 				try:
 					defaultDisplaySection[key] = skinConfig.get('SKIN', key)
 				except:
-					pass # key not in skin config
+					# key not in skin config
+					print "SKIN section; setting defaults; unknown key %s" % key
 
 		except:
 			messageOK("SKIN LOAD ERROR","Failed to load skin config file.",skinFN)
@@ -1162,9 +1163,10 @@ class ConfigHelper:
 	# this does all the real work on ConfigParser
 	def action(self, section='', option='', value='', mode=None):
 		if not mode: mode = self.MODE_READ
-		debug("> ConfigHelper.action() section: '" + section + "' option: '" + str(option) + \
-				"' value: '" + str(value) + "' mode: " + str(mode))
-
+		debugStr = "> ConfigHelper.action() mode=%s section=%s option=%s" % (mode,section,option)
+		if value:
+			debugStr += " value=%s" % value
+		debug(debugStr)
 		retValue = None
 
 		if mode==self.MODE_READ:
