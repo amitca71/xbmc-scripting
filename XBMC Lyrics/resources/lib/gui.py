@@ -284,7 +284,9 @@ class MyPlayer( xbmc.Player ):
         self.function = kwargs[ "function" ]
 
     def onPlayBackStopped( self ):
-        self.function( 0 )
+        xbmc.sleep( 300 )
+        if ( not xbmc.Player().isPlayingAudio() ):
+            self.function( 0 )
     
     def onPlayBackEnded( self ):
         xbmc.sleep( 300 )
@@ -293,13 +295,3 @@ class MyPlayer( xbmc.Player ):
     
     def onPlayBackStarted( self ):
         self.function( 2 )
-
-
-#class Start( threading.Thread ):
-#    """ Thread Class used to allow gui to show before all checks are done at start of script """
-#    def __init__( self, *args, **kwargs ):
-#        threading.Thread.__init__( self )
-#        self.function = kwargs[ "function" ]
-#
-#    def run(self):
-#        self.function()
