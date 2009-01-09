@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
-    <!--  22.7.2008 Finnish   -->
+<strings>    <!--  Finnish 9.1.2009  -->
     <string id="0">DVDProfiler</string>
 
     <!-- Browse dialog headings -->
@@ -9,11 +8,11 @@
     <string id="100">Asetusten tallennuksessa tapahtui virhe!</string>
     <string id="101">Käynnistys epäonnistui!</string>
     <string id="102">Kokoelma ei palautunut tai[CR]XML-tiedosto on tyhjä ?</string>
-    <string id="103">Paikallinen kokoelma tiedosto puuttuu</string>
+    <string id="103">Paikallinen kokoelmatiedosto puuttuu</string>
     <string id="104">-</string>
-    <string id="105">Aseta asetukset tai poista SMB käytöstä</string>
+    <string id="105">Määritä asetukset tai poista SMB käytöstä</string>
     <string id="109">Tuntematon verkkonimi: </string>
-    <string id="110">Tyhjä verkko kokoelma: </string>
+    <string id="110">Tyhjä verkkokokoelma: </string>
     <string id="111">Nimen kaksoiskappale!</string>
 
     <!-- Status messages -->
@@ -24,7 +23,7 @@
     <string id="204"></string>
     <string id="210">Elokuvan toisto</string>
     <string id="211">Median sijainti ei ole tallennettu XML-tiedostoon</string>
-    <string id="212">Toisto epäonnistui osoitteesta:</string>
+    <string id="212">Toisto epäonnistui sijainnista:</string>
     <string id="213">Aloitus muoto</string>
     <string id="214">Asennetaanko SMB uudelleen ?</string>
     <string id="215">SMB kokoelman nouto</string>
@@ -68,6 +67,8 @@
     <string id="352">Kansio</string>
     <string id="353">Tiedosto</string>
     <string id="354">Lataa</string>
+    <string id="355">Intervocative</string>
+    <string id="356">Invelos</string>
 
     <!-- Headings -->
     <string id="400">Tietoja</string>
@@ -79,7 +80,7 @@
     <string id="406">Julkaistu</string>
     <string id="407">Lajityyppi</string>
     <string id="408">Kuvasuhde</string>
-    <string id="409">Vakio</string>
+    <string id="409">Normaali</string>
     <string id="410">16x9</string>
     <string id="411">Äänen kieli</string>
     <string id="412">Studiot</string>
@@ -87,7 +88,7 @@
     <string id="414">Ominaisuudet</string>
     <string id="415">Yllätykset</string>
     <string id="416">Median sijainti</string>
-    <string id="417">Pääosa</string>
+    <string id="417">Pääosassa</string>
     <string id="418">Näyttelijä</string>
     <string id="419">Rooli</string>
     <string id="420">Ryhmä</string>
@@ -116,7 +117,7 @@
     <string id="504">Katso kokoelmaa verkosta</string>
     <string id="505">Katso omaa kokoelmaa</string>
     <string id="506">Suodattimet</string>
-    <string id="507">Hae kaikki kokoelmat SMB:stä</string>
+    <string id="507">Hae kokoelma SMB:stä</string>
     <string id="508">Hae kaikki kuvat</string>
 
     <!-- Settings Menu Options -->
@@ -124,7 +125,7 @@
     <string id="521">Katso ohje</string>
     <string id="522">Katso muutokset</string>
     <string id="523">Päivitä skripti</string>
-    <string id="524">Tarkista päivitykset käynnistyksessä?</string>
+    <string id="524">Tarkista päivitykset käynnistyessä?</string>
     <string id="525">Tyhjennä välimuisti</string>
     <string id="526">Aloitus muoto:</string>
     <string id="527">SMB-asetukset</string>
@@ -149,7 +150,7 @@
 
     <!-- Misc Menu Options Options -->
     <string id="560">Lisää</string>
-    <string id="561">Käytä näppääimistöä</string>
+    <string id="561">Käytä näppäimistöä</string>
     <string id="562">Oma määritys</string>
     <string id="563">Poista</string>
     <string id="564">Muokkaa</string>
@@ -160,10 +161,10 @@
     <string id="950">SMB polku ja/tai isännän IP-osoite puuttuu!</string>
     <string id="951">SMB virhe!</string>
     <string id="952">SMB yhteys epäonnistui!</string>
-    <string id="953">tarkista PC:n nimi ja IP-osoite</string>
+    <string id="953">tarkista tietokoneen nimi ja IP-osoite</string>
     <string id="954">SMB kirjautuminen epäonnistui!</string>
-    <string id="955">PC:n osoite ei ole käytössä SMB polussa!</string>
-    <string id="956">SMB automaattinen IP määritys epäonnistui!</string>
+    <string id="955">Käytä tietokoneen nimeä eikä IP:tä SMB polussa!</string>
+    <string id="956">SMB:n automaattinen IP:n määritys epäonnistui!</string>
     <string id="957">SMB - haku virhe!</string>
     <string id="958">SMB - lähetys virhe!</string>
     <string id="959">SMB - asetukset sopimattomat!</string>
@@ -198,17 +199,17 @@
     <string id="989">Katso kuvaesitys</string>
 
    <!-- Update messages -->
-    <string id="1000">Ohjelmasi on jo ajantasalla.</string>
-    <string id="1001">Tarkistetaan uusinta versiota...</string>
-    <string id="1002">on uudempi</string>
-    <string id="1003">Haluatko päivittää ohjelman?</string>
-    <string id="1004">Noudetaan tiedostoluetteloa...</string>
-    <string id="1005">Odota...</string>
-    <string id="1006">Versio</string>
-    <string id="1007">Haetaan:</string>
-    <string id="1008">Polku:</string>
-    <string id="1009">Tiedosto:</string>
-    <string id="1010">Ohjelma tallennettiin kansioon:</string>
+   <string id="1000">Sinun ohjelmasi on ajantasalla.</string>
+   <string id="1001">Tarkistetaan uusinta versiota...</string>
+   <string id="1002">on uudempi</string>
+   <string id="1003">Haluatko päivittää ohjelman?</string>
+   <string id="1004">Haetaan tiedostoluetteloa...</string>
+   <string id="1005">Odota hetki..</string>
+   <string id="1006">Versio</string>
+   <string id="1007">Haetaan:</string>
+   <string id="1008">Polku:</string>
+   <string id="1009">Tiedosto:</string> 
+   <string id="1010">Ohjelma päivitetty, voit käynnistää uudelleen.</string>
 
     <!-- Update error messages -->
     <string id="1030">Uusinta versiota ei löytynyt!</string>
