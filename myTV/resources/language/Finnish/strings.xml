@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>   <!--   30.11.2008 Finnish   -->
+<strings>   <!--   9.1.2009 Finnish   -->
     <string id="0">myTV</string>
 
     <!-- Error messages -->
@@ -135,7 +135,7 @@
     <string id="517">Muuta herätyskelloa</string>
     <string id="518">TVRage.com</string>
     <string id="519">LiveSportOnTV.com (UK)</string>
-    <string id="520">Peru suosikki</string>
+    <string id="520">Peruuta suosikki</string>
 
     <!-- config menu options -->
     <string id="530">Tyhjennä listauksen välimuisti</string>
@@ -306,11 +306,11 @@
     <string id="986">Ladataan kuvaa ...</string>
     <string id="987">Ladataan kuva linkkejä ...</string>
     <string id="988">Ladataan kuvaesitystä ...</string>
-    <string id="989">View SlideShow</string>
+    <string id="989">Näytä kuvaesitys</string>
 
   <!-- Update messages -->  
   <string id="1000">Ohjelmasi on jo ajantasalla.</string>
-  <string id="1001">Tarkistetaan päivityksiä...</string>
+  <string id="1001">Tarkistetaan uusinta versiota...</string>
   <string id="1002">on uudempi</string>
   <string id="1003">Haluatko päivittää ohjelman?</string>
   <string id="1004">Haetaan tiedostoluetteloa...</string>
@@ -319,7 +319,7 @@
   <string id="1007">Haetaan:</string>
   <string id="1008">Polku:</string>
   <string id="1009">Tiedosto:</string>
-  <string id="1010">Skripti päivitetty, käynnistetään uudestaan.</string>
+  <string id="1010">Skripti päivitetty, voit käynnistää uudelleen.</string>
   <!-- Update error messages -->
   <string id="1030">Uutta versiota ei löytynyt!</string>
   <string id="1031">Päivitys ei onnistunut!</string>
