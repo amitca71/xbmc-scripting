@@ -1,0 +1,238 @@
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+        <include>background</include>
+	<include>#files</include>
+        <include>Fake-Overlay</include>
+		<control type="group">
+			<include>list-fade</include>
+			<animation effect="fade" start="0" time="100">WindowOpen</animation>
+			<animation effect="fade" start="0" time="100">WindowClose</animation>
+			<animation effect="fade" time="200" start="100" end="33" condition="!Control.IsEnabled(1000)">conditional</animation>
+			<control type="image">
+				<description>Settings Logo</description>
+				<posx>410</posx>
+				<posy>45</posy>
+				<width>150</width>
+				<height>50</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<texture>script-logo.png</texture>
+			</control>
+			<control type="image">
+				<description>list item icon</description>
+				<posx>20</posx>
+				<posy>100</posy>
+				<width>350</width>
+				<height>350</height>
+				<info>ListItem.Icon</info>
+				<aspectratio>keep</aspectratio>
+				<visible>Control.IsVisible(50)</visible>
+			</control>
+			<control type="image">
+				<description>list item icon reflection</description>
+				<posx>20</posx>
+				<posy>450</posy>
+				<width>350</width>
+				<height>350</height>
+				<info>ListItem.Icon</info>
+				<texture flipy="true" diffuse="fade2.png">-</texture>
+				<aspectratio>keep</aspectratio>
+				<visible>Control.IsVisible(50)</visible>
+			</control>
+		</control> 
+
+		<include>ListView</include>
+		<include>List2</include>
+		<include>IconView</include>
+		<include>WrapView</include>
+<!--		<include>VideoWrapView</include> -->
+		<include>PageControl</include>
+
+		<!-- GROUP HEADER -->
+		<control type="group" id="1000">
+			<description>group header</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>128</height>
+			<visible>true</visible> 
+			<animation effect="fade" start="0" time="100">WindowOpen</animation>
+			<animation effect="fade" start="0" time="100">WindowClose</animation>
+			<animation effect="fade" time="200" start="100" end="33" condition="!Control.IsEnabled(1000)">conditional</animation>
+			<include>list-fade</include>
+			<control type="label">
+				<description>CLOCK</description>
+				<posx>4r</posx>
+				<posy>2</posy>
+				<width>85</width>
+				<height>25</height>
+				<font>font11</font>
+				<info>System.Time</info>
+				<align>right</align>
+				<textcolor>0xFFFFFFFF</textcolor>
+			</control>
+			<control type="label" id="1001">
+				<description>version</description>
+				<posx>4r</posx>
+				<posy>25</posy>
+				<align>right</align>
+				<label></label>
+				<textcolor>0xFFFFFFFF</textcolor>
+				<font>font10</font>
+			</control>
+			<control type="label" id="1002">
+				<description>title label</description>
+				<posx>560</posx>
+				<posy>55</posy>
+				<align>left</align>
+				<label></label>
+				<width>900</width>
+				<textcolor>0xFFFFFFFF</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<font>special14</font>
+				<scroll>true</scroll>
+				<aligny>bottom</aligny>
+			</control>
+		</control> <!-- end group header -->
+
+		<!--  PAD BUTTONS -->
+		<control type="group" id="3000">
+			<posx>310</posx>
+			<posy>525</posy>
+			<animation effect="slide" time="200" start="0,40" acceleration="-1.1">WindowOpen</animation>
+			<animation effect="slide" time="200" end="0,40" acceleration="1.1">WindowClose</animation>
+			<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>
+			<visible>true</visible>
+			<include>list-fade</include>
+
+			<control type="button" id="2">
+				<description>View As Icons button</description>
+				<posx>0</posx>
+				<posy>25</posy>
+				<width>85</width>
+				<height>25</height>
+				<font>font10</font>
+				<label>100</label>
+				<textoffsetx>5</textoffsetx>
+				<aligny>center</aligny>
+				<texture>default-button.png</texture>
+				<texturefocus>default-button.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onleft>21</onleft>
+				<onright>20</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<textcolor>button-text</textcolor>
+				<include>button-fade</include>
+			</control>
+			<control type="button" id="20">
+				<description>prev page</description>
+				<posx>88</posx>
+				<posy>25</posy>
+				<width>120</width>
+				<height>25</height>
+				<font>font10</font>
+				<label></label>
+				<textoffsetx>5</textoffsetx>
+				<texture>default-button.png</texture>
+				<texturefocus>default-button.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onleft>2</onleft>
+				<onright>21</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<textcolor>button-text</textcolor>
+				<include>button-fade</include>
+			</control>
+			<control type="button" id="21">
+				<description>next page</description>
+				<posx>210</posx>
+				<posy>25</posy>
+				<width>100</width>
+				<height>25</height>
+				<font>font10</font>
+				<label></label>
+				<texture>default-button.png</texture>
+				<textoffsetx>5</textoffsetx>
+				<texturefocus>default-button.png</texturefocus>
+				<onleft>20</onleft>
+				<onright>2</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<textcolor>button-text</textcolor>
+				<include>button-fade</include>
+			</control>
+
+			<control type="image">
+				<description>BACK button</description>
+				<posx>0</posx>
+				<posy>2</posy>
+				<width>25</width>
+				<height>25</height>
+				<texture>backbutton.png</texture>
+			</control>
+			<control type="label" id="3001">
+				<description>BACK label</description>
+				<posx>30</posx>
+				<posy>2</posy>
+				<label>Exit</label>
+				<font>font11</font>
+				<align>left</align>
+				<textcolor>0xFFFFFFFF</textcolor>
+			</control>
+			<control type="image">
+				<description>0xFFFFFFFF button</description>
+				<posx>110</posx>
+				<posy>2</posy>
+				<width>25</width>
+				<height>25</height>
+				<texture>whitebutton.png</texture>
+			</control>
+			<control type="label" id="3002">
+				<description>white label</description>
+				<posx>140</posx>	
+				<posy>2</posy>
+				<label>Menu</label>
+				<font>font11</font>
+				<align>left</align>
+				<textcolor>0xFFFFFFFF</textcolor>
+			</control>
+			<control type="image">
+				<description>A button</description>
+				<posx>220</posx>
+				<posy>2</posy>
+				<width>25</width>
+				<height>25</height>
+				<texture>abutton.png</texture>
+			</control>
+			<control type="label" id="3003">
+				<description>A label</description>
+				<posx>250</posx>	
+				<posy>2</posy>
+				<label>Select</label>
+				<font>font11</font>
+				<align>left</align>
+				<textcolor>0xFFFFFFFF</textcolor>
+			</control>
+			<control type="image">
+				<description>B button</description>
+				<posx>330</posx>
+				<posy>2</posy>
+				<width>25</width>
+				<height>25</height>
+				<texture>bbutton.png</texture>
+			</control>
+			<control type="label" id="3004">
+				<description>B label</description>
+				<posx>360</posx>	
+				<posy>2</posy>
+				<label>Back</label>
+				<font>font11</font>
+				<align>left</align>
+				<textcolor>0xFFFFFFFF</textcolor>
+			</control>
+		</control> <!-- end group PAD -->
+
+	</controls>
+</window>
