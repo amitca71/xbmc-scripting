@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- German strings.xml by bootsy (bootsycollins82@gmail.com) -->
+<strings>
+    <string id="0">reeplay.it</string>
+
+    <!-- Error messages -->
+    <string id="100">Fehler!</string>
+    <string id="101">Datei kann nicht geöffnet werden!</string>
+    <string id="102">Download fehlgeschlagen!</string>
+    <string id="103">Download abgebrochen</string>
+    <string id="104">Keine Wiedergabeliste gefunden!</string>
+    <string id="105">Keine Videos gefunden!</string>
+    <string id="106">Fehler beim Downloaden des Videos!</string>
+    <string id="107">Login Details fehlen[CR]Jetzt eingeben?</string>
+    <string id="108">Authorisierung Fehlgeschlagen![CR]Bitte Login Details ändern</string>
+    <string id="109">Wiedergabe des Videos fehlgeschlagen!</string>
+
+    <!-- General -->
+    <string id="200">Ja</string>
+    <string id="201">Nein</string>
+    <string id="202">Abbruch</string>
+    <string id="203">Beenden</string>
+    <string id="204">Menü</string>
+    <string id="205">Bitte warten ...</string>
+    <string id="206">Erfolgreich</string>
+    <string id="207">Downloade ...</string>
+    <string id="208">Suche ....</string>
+    <string id="209">Einloggen ...</string>
+    <string id="210">XML Parsing ...</string>
+    <string id="211">Zeige Alles</string>
+    <string id="212">Benutzername eingeben:</string>
+    <string id="213">Passwort eingeben:</string>
+    <string id="214">Benutzer</string>
+    <string id="215">Wiedergabelisten werden geladen ...</string>
+    <string id="216">Wiedergabeliste wählen</string>
+    <string id="217">Lade Wiedergabelisten-Inhalt ...</string>
+    <string id="218">Video wählen</string>
+    <string id="219">Seite:</string>
+    <string id="220">Vorherige Seite</string>
+    <string id="221">Nächste Seite</string>
+    <string id="222">Lade Video Information ...</string>
+    <string id="223">Lade Video ...</string>
+    <string id="224">Lade Bild ...</string>
+    <string id="225">Hoch</string>
+    <string id="226">Standard</string>
+    <string id="227">Videos</string>
+    <string id="228">Alle</string>
+
+    <!-- menu options -->
+    <string id="300">Skript Readme anzeigen</string>
+    <string id="301">Skript ChangeLog anzeigen</string>
+    <string id="302">Beim Start nach Skript-Updates suchen?</string>
+    <string id="303">Benutzername:</string>
+    <string id="304">Passwort:</string>
+    <string id="305">Videos pro Seite:</string>
+    <string id="306">Video Qualität:</string>
+    <string id="307">Beim Beenden aus dem Cache löschen:</string>
+
+    <!-- Update messages -->
+    <string id="1000">Deine Version ist aktuell.</string>
+    <string id="1001">Nach Skript-Updates suchen ...</string>
+    <string id="1002">ist neuer</string>
+    <string id="1003">Möchtest du aktualisieren?</string>
+    <string id="1004">Abruf der Dateiliste...</string>
+    <string id="1005">Bitte warten...</string>
+    <string id="1006">Version</string>
+    <string id="1007">Laden:</string>
+    <string id="1008">Pfad:</string>
+    <string id="1009">Datei:</string>
+    <string id="1010">Skript aktualisiert, neustart folgt.</string>
+    <string id="1015">Plugin installiert.</string>
+    <string id="1016">In Plugins 'Quelle hinzufügen' um Installation abzuschließen.</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Keine neuere Version verfügbar!</string>
+    <string id="1031">Fehler beim Aktualisieren des Skripts!</string>
+
+</strings>
