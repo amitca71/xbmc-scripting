@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings> <!--  27.1.2009 Finnish   -->
+    <string id="0">reeplay.it</string>
+
+    <!-- Error messages -->
+    <string id="100">Virhe!</string>
+    <string id="101">Tiedostoa ei voida avata!</string>
+    <string id="102">Lataus epäonnistui!</string>
+    <string id="103">Lataus keskeytetty</string>
+    <string id="104">Toistolistoja ei löydy!</string>
+    <string id="105">Videoita ei löydy!</string>
+    <string id="106">Videon lataus epäonnistui!</string>
+    <string id="107">Sisäänkirjautumis tiedot puuttuvat[CR]Kirjaudutaanko sisään nyt?</string>
+    <string id="108">Kirjautuminen epäonnistui![CR]Tarkasta sisäänkirjautumis asetukset</string>
+    <string id="109">Videon toisto epäonnistui!</string>
+
+    <!-- General -->
+    <string id="200">Kyllä</string>
+    <string id="201">Ei</string>
+    <string id="202">Peruuta</string>
+    <string id="203">Lopeta</string>
+    <string id="204">Valikko</string>
+    <string id="205">Odota hetki ...</string>
+    <string id="206">Onnistui</string>
+    <string id="207">Ladataan ...</string>
+    <string id="208">Haetaan ....</string>
+    <string id="209">Kirjaudutaan sisään ...</string>
+    <string id="210">XML:n käsittely ...</string>
+    <string id="211">Näytä kaikki</string>
+    <string id="212">Käyttäjänimi:</string>
+    <string id="213">Salasana:</string>
+    <string id="214">Käyttäjä</string>
+    <string id="215">Ladataan toistolistoja ...</string>
+    <string id="216">Valitse toistolista</string>
+    <string id="217">Ladataan toistolistojen sisältöjä ...</string>
+    <string id="218">Valitse video</string>
+    <string id="219">Sivu:</string>
+    <string id="220">Aiempi sivu</string>
+    <string id="221">Seuraava sivu</string>
+    <string id="222">Ladataan tietoja videosta ...</string>
+    <string id="223">Ladataan videota ...</string>
+    <string id="224">Ladataan kuvaa ...</string>
+    <string id="225">Korkea</string>
+    <string id="226">Normaali</string>
+    <string id="227">Videot</string>
+    <string id="228">Kaikki</string>
+    <string id="229">Valitse</string>
+    <string id="230">Takaisin</string>
+
+    <!-- menu options -->
+    <string id="300">Näytä skriptin ohje</string>
+    <string id="301">Näytä skriptin muutokset</string>
+    <string id="302">Tarkista päivitykset käynnistyessä</string>
+    <string id="303">Käyttäjänimi:</string>
+    <string id="304">Salasana:</string>
+    <string id="305">Videoiden määrä sivua kohti:</string>
+    <string id="306">Videon kuvanlaatu:</string>
+    <string id="307">Tyhjennä välimuisti lopettaessa:</string>
+
+    <!-- Update messages -->
+    <string id="1000">Sinun ohjelmasi on ajantasalla.</string>
+    <string id="1001">Tarkistetaan uusinta versiota...</string>
+    <string id="1002">on uudempi</string>
+    <string id="1003">Haluatko päivittää ohjelman?</string>
+    <string id="1004">Haetaan tiedostoluetteloa...</string>
+    <string id="1005">Odota hetki..</string>
+    <string id="1006">Versio</string>
+    <string id="1007">Haetaan:</string>
+    <string id="1008">Polku:</string>
+    <string id="1009">Tiedosto:</string>
+    <string id="1010">Skripti päivitetty, voit käynnistää uudelleen.</string>
+    <string id="1015">Lisäke on asennettu.</string>
+    <string id="1016">Viimeistele asennus 'Lisää sijainti'-toiminnolla.</string>
+
+    <!-- Update error messages -->
+  <string id="1030">Uutta versiota ei löytynyt!</string>
+  <string id="1031">Päivitys ei onnistunut!</string>
+
+</strings>
