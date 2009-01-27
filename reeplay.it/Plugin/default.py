@@ -94,10 +94,10 @@ class ReeplayitPlugin:
 		self.report_udata = None
 
 		if ( not sys.argv[ 2 ] ):
+			# new session clear cache
+			reeplayit.deleteScriptCache(False)	# just clear old XML and videos
 			self.getPlaylists()
 		else:
-			error = False
-
 			# extract URL params and act accordingly
 			try:
 				paramDict = self._getParams()
@@ -130,7 +130,7 @@ class ReeplayitPlugin:
 		self.user = self.settings.get('user','')
 		self.pwd = self.settings.get('pwd','')
 #		self.pageSize = self.settings.get('page_size','')
-		self.pageSize = 10000	# fixed so we dont have to bother with paging, whcih doesnt work well in Plugins
+		self.pageSize = 10000	# fixed so we dont have to bother with paging
 		vq = self.settings.get('video_quality',False)
 		self.vqProfile = ( 'xbmc_high', 'xbmc_standard' )[vq]
 		if not self.user or not self.pwd or not self.pageSize or not self.vqProfile:

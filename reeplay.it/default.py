@@ -88,7 +88,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.SETTING_USER : "",
 			self.SETTING_PWD : "",
 			self.SETTING_CHECK_UPDATE : False,
-			self.SETTING_PAGE_SIZE : 500,
+			self.SETTING_PAGE_SIZE : 200,
 			self.SETTING_VQ : False,					# False = high, True = med
 			self.SETTING_CACHE_ACTION : False		# False == All, True == Videos Only
 			}

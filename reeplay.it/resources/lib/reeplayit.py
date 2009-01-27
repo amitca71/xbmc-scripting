@@ -351,9 +351,7 @@ def parsePlaylist(xmlDoc):
 def parseVideo(xmlDoc):
     """ Parse Video ID xml to get media url using regex """
 
-    data = searchRegEx(xmlDoc, '<media_url>(.*?)</')
-    if not data:
-        data = searchRegEx(xmlDoc, '<media_url>(.*?)</')
+    data = searchRegEx(xmlDoc, '<media[_-]url>(.*?)</')        # _ or - depending on XML in use
     return data
 
 def deleteScriptCache(deleteAll=True):
