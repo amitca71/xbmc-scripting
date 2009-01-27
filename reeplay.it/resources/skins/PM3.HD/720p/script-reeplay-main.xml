@@ -149,7 +149,7 @@
 			<description>BACK label</description>
 			<posx>30</posx>
 			<posy>2</posy>
-			<label>Exit</label>
+			<label></label>
 			<font>font11</font>
 			<align>left</align>
 			<textcolor>white</textcolor>
@@ -166,13 +166,13 @@
 			<description>WHITE label</description>
 			<posx>140</posx>	
 			<posy>2</posy>
-			<label>Menu</label>
+			<label></label>
 			<font>font11</font>
 			<align>left</align>
 			<textcolor>white</textcolor>
 		</control>
 		<control type="image">
-			<description>A button</description>
+			<description>Select button</description>
 			<posx>220</posx>
 			<posy>2</posy>
 			<width>25</width>
@@ -183,7 +183,7 @@
 			<description>A label</description>
 			<posx>250</posx>	
 			<posy>2</posy>
-			<label>Select</label>
+			<label></label>
 			<font>font11</font>
 			<align>left</align>
 			<textcolor>white</textcolor>
@@ -200,7 +200,7 @@
 			<description>B label</description>
 			<posx>360</posx>	
 			<posy>2</posy>
-			<label>Back</label>
+			<label></label>
 			<font>font11</font>
 			<align>left</align>
 			<textcolor>white</textcolor>

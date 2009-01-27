@@ -96,6 +96,7 @@ class ReeplayitPlugin:
 		if ( not sys.argv[ 2 ] ):
 			# new session clear cache
 			reeplayit.deleteScriptCache(False)	# just clear old XML and videos
+#			xbmcplugin.ClearProperties()
 			self.getPlaylists()
 		else:
 			# extract URL params and act accordingly

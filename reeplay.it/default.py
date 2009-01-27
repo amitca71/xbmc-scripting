@@ -158,6 +158,10 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.getControl( self.CLBL_VERSION ).setLabel( "v" + __version__ )
 			self.getControl( self.CBTN_PREV_PAGE ).setVisible(False)
 			self.getControl( self.CBTN_NEXT_PAGE ).setVisible(False)
+			self.getControl( self.CLBL_BACK_BTN ).setLabel( __lang__(203) )
+			self.getControl( self.CLBL_WHITE_BTN ).setLabel( __lang__(204) )
+			self.getControl( self.CLBL_A_BTN ).setLabel( __lang__(229) )
+			self.getControl( self.CLBL_B_BTN ).setLabel( __lang__(230) )
 
 			if self.reset():
 				self.initPlaylists()

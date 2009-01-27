@@ -44,6 +44,8 @@
     <string id="226">Standard</string>
     <string id="227">Videos</string>
     <string id="228">All</string>
+    <string id="229">Select</string>
+    <string id="230">Back</string>
 
     <!-- menu options -->
     <string id="300">View Script Readme</string>

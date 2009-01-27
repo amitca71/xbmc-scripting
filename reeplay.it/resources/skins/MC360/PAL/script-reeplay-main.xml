@@ -1,0 +1,362 @@
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlays>true</allowoverlays>
+	<controls>
+		<!-- Setup Background and Window Transition -->
+		<control type="group">
+			<include>LiveBackGroundWhitewash</include>
+		</control>
+		<control type="group">
+			<include>ProgramBackGroundWhiteWash</include>
+		</control>
+		<control type="group">
+			<include>SystemBackGroundWhitewash</include>
+		</control>
+		<control type="group">
+			<include>MediaIconBackGroundWhiteWash</include>
+		</control>
+
+		<!-- Start Normal Window Controls -->
+		<control type="group">
+			<animation effect="fade" delay="100" time="250">WindowOpen</animation>
+			<animation effect="fade" time="250">WindowClose</animation>
+			<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>
+			<control type="group" id="9000">
+				<posy>8</posy>
+				<control type="image">
+					<description>Divider image 1</description>
+					<posx>95</posx>
+					<posy>80</posy>
+					<width>185</width>
+					<height>1</height>
+					<texture>divider.png</texture>
+				</control>
+				<control type="image">
+					<description>Divider image 2</description>
+					<posx>95</posx>
+					<posy>115</posy>
+					<width>185</width>
+					<height>1</height>
+					<texture>divider.png</texture>
+				</control>
+				<control type="image">
+					<description>Divider image 3</description>
+					<posx>95</posx>
+					<posy>150</posy>
+					<width>185</width>
+					<height>1</height>
+					<texture>divider.png</texture>
+					<visible>Control.IsVisible(20)</visible>
+				</control>
+				<control type="image">
+					<description>Divider image 4</description>
+					<posx>95</posx>
+					<posy>185</posy>
+					<width>185</width>
+					<height>1</height>
+					<texture>divider.png</texture>
+					<visible>Control.IsVisible(21)</visible>
+				</control>
+
+				<!-- View As -->
+				<control type="image">
+					<description>View As Highlight Image</description>
+					<posx>75</posx>
+					<posy>80</posy>
+					<width>215</width>
+					<height>367</height>
+					<texture>systemhomebutton-1a.png</texture>
+					<visible>Control.HasFocus(2)</visible>
+				</control>
+				<control type="image">
+					<description>View As Highlight Image Shadow</description>
+					<posx>75</posx>
+					<posy>80</posy>
+					<width>215</width>
+					<height>367</height>
+					<texture>systemhomebutton-1-shadow.png</texture>
+					<visible>Control.HasFocus(2)</visible>
+					<include>button-shadow</include>
+				</control>
+				<control type="button" id="2">
+					<description>View As Push Button</description>
+					<include>Sub-Blade-Button-Commons</include>
+					<posx>98</posx>
+					<posy>85</posy>
+					<label>100</label>
+					<texturefocus>icon-viewas.png</texturefocus>
+					<texturenofocus>icon-viewas.png</texturenofocus>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>21</onup>
+					<ondown>20</ondown>
+				</control>
+
+				<!-- PREV PAGE -->
+				<control type="image">
+					<description>Prev Page Highlight Image</description>
+					<posx>75</posx>
+					<posy>80</posy>
+					<width>215</width>
+					<height>367</height>
+					<texture>systemhomebutton-2a.png</texture>
+					<visible>Control.HasFocus(20)</visible>
+				</control>
+				<control type="image">
+					<description>Prev Page Highlight Image Shadow</description>
+					<posx>75</posx>
+					<posy>80</posy>
+					<width>215</width>
+					<height>367</height>
+					<texture>systemhomebutton-2-shadow.png</texture>
+					<visible>Control.HasFocus(20)</visible>
+					<include>button-shadow</include>
+				</control>
+				<control type="button" id="20">
+					<description>Prev Page Push Button</description>
+					<include>Sub-Blade-Button-Commons</include>
+					<posx>98</posx>
+					<posy>120</posy>
+					<label>Previous Page</label>
+					<texturefocus>button-focus.png</texturefocus>
+					<texturenofocus>button-nofocus.png</texturenofocus>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>2</onup>
+					<ondown>21</ondown>
+					<visible>true</visible>
+				</control>
+
+				<!-- NEXT PAGE -->
+				<control type="image">
+					<description>Next Page Highlight Image</description>
+					<posx>75</posx>
+					<posy>80</posy>
+					<width>215</width>
+					<height>367</height>
+					<texture>systemhomebutton-3a.png</texture>
+					<visible>Control.HasFocus(21)</visible>
+				</control>
+				<control type="image">
+					<description>Next Page Highlight Image Shadow</description>
+					<posx>75</posx>
+					<posy>80</posy>
+					<width>215</width>
+					<height>367</height>
+					<texture>systemhomebutton-3-shadow.png</texture>
+					<visible>Control.HasFocus(21)</visible>
+					<include>button-shadow</include>
+				</control>
+				<control type="button" id="21">
+					<description>Next Page Push Button</description>
+					<include>Sub-Blade-Button-Commons</include>
+					<posx>98</posx>
+					<posy>155</posy>
+					<label>Next Page</label>
+					<texturefocus>button-focus.png</texturefocus>
+					<texturenofocus>button-nofocus.png</texturenofocus>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>20</onup>
+					<ondown>2</ondown>
+					<visible>true</visible>
+				</control>
+			</control> <!-- end group -->
+		</control>
+		<include>ListItemThumb</include>
+		<include>NowPlayingItemThumb</include>
+		<include>OldCommonListView</include>
+		<include>NewCommonListView</include>
+		<include>CommonThumbnailPanel</include>
+		<include>CommonBigThumbnailPanel</include>
+		<include>AllViewCommonPageControls</include>
+		<control type="label" id="12">
+			<description>number of files text label</description>
+			<posx>335</posx>
+			<posy>475</posy>
+			<align>center</align>
+			<label>-</label>
+			<font>font12</font>
+			<textcolor>TextcolorBlack</textcolor>
+		</control>
+
+
+		<!-- GROUP HEADER -->
+		<control type="group" id="1000">
+			<description>group header</description>
+			<posx>90</posx>
+			<posy>0</posy>
+			<width>590</width>
+			<height>100</height>
+			<visible>true</visible> 
+			<include>Window_OpenClose_Animation</include>
+			<include>VisibleFadeEffect</include>
+			<animation effect="fade" time="200" start="100" end="33" condition="!Control.IsEnabled(1000)">conditional</animation>
+
+			<control type="image">
+				<description>script logo</description>
+				<posx>0</posx>
+				<posy>5</posy>
+				<width>130</width>
+				<height>50</height>
+				<texture>script-logo.png</texture>
+				<aspectratio>keep</aspectratio>
+				<align>left</align>
+				<animation effect="rotate" start="90" end="0" center="0,0" time="300" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+				<animation effect="rotate" end="90" center="0,0" time="200" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+			</control>
+			<control type="label">
+				<description>CLOCK</description>
+				<posx>0r</posx>
+				<posy>2</posy>
+				<width>85</width>
+				<height>25</height>
+				<font>font11</font>
+				<info>System.Time</info>
+				<align>right</align>
+				<textcolor>TextcolorWhite</textcolor>
+			</control>
+			<control type="label" id="1001">
+				<description>version</description>
+				<posx>8r</posx>
+				<posy>30</posy>
+				<align>right</align>
+				<label>v0.0</label>
+				<textcolor>TextcolorGrey</textcolor>
+				<font>font10</font>
+			</control>
+			<control type="label" id="1002">
+				<description>title label</description>
+				<posx>140</posx>
+				<posy>15</posy>
+				<width>400</width>
+				<align>left</align>
+				<textcolor>TextcolorWhite</textcolor>
+				<shadowcolor>shadow-black</shadowcolor>
+				<font>font18</font>
+				<scroll>true</scroll>
+				<label></label>
+			</control>
+		</control> <!-- end group header -->
+
+
+		<!--  PAD BUTTONS -->
+		<control type="group" id="3000">
+			<animation effect="slide" time="200" start="0,40" acceleration="-1.1" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+			<animation effect="slide" time="200" end="0,40" acceleration="1.1" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+			<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>
+			<visible>true</visible>
+
+			<control type="image">
+				<description>BACK Button</description>
+				<posx>112</posx>
+				<posy>525</posy>
+				<include>Button-Map-Texture-Width</include>
+				<height>21</height>
+				<texture>button-Back.png</texture>
+			</control>
+			<control type="label" id="3001">
+				<description>BACK Button Label</description>
+				<include>KeymapFont</include>
+				<posx>142</posx>
+				<posy>528</posy>
+				<label>???</label>
+				<align>left</align>
+				<visible>true</visible>
+			</control>
+
+			<control type="image">
+				<description>White Button</description>
+				<posx>125</posx>
+				<posy>505</posy>
+				<include>Button-Map-Texture-Width</include>
+				<height>21</height>
+				<texture>button-white.png</texture>
+			</control>
+			<control type="label" id="3002">
+				<description>WHITE Button Label</description>
+				<include>KeymapFont</include>
+				<posx>155</posx>
+				<posy>508</posy>
+				<label></label>
+				<align>left</align>
+				<visible>true</visible>
+			</control>
+			
+			<control type="image">
+				<description>B Button</description>
+				<posx>620</posx>
+				<posy>505</posy>
+				<include>Button-Map-Texture-Width</include>
+				<height>21</height>
+				<texture>button-B.png</texture>
+			</control>
+			<control type="label" id="3004">
+				<description>B Button Label</description>
+				<include>KeymapFont</include>
+				<posx>610</posx>
+				<posy>508</posy>
+				<label>31027</label>
+				<align>right</align>
+				<visible>true</visible>
+			</control>
+			
+			<control type="image">
+				<description>Select Button</description>
+				<posx>633</posx>
+				<posy>525</posy>
+				<include>Button-Map-Texture-Width</include>
+				<height>21</height>
+				<texture>button-A.png</texture>
+			</control>
+			<control type="label" id="3003">
+				<description>A button Label</description>
+				<include>KeymapFont</include>
+				<posx>623</posx>
+				<posy>528</posy>
+				<label>31024</label>
+				<align>right</align>
+				<visible>true</visible>
+			</control>
+		</control> <!-- end group PAD -->
+
+		<control type="group">
+			<control type="image">
+				<description>Left Blade Runner</description>
+				<posx>-61</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>576</height>
+				<texture>blades-runner-left.png</texture>
+			</control>
+			<control type="image">
+				<description>Right Blade Runner</description>
+				<posx>665</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>576</height>
+				<texture>blades-runner-right.png</texture>
+			</control>
+			<control type="image">
+				<description>XBMC Live Blade</description>
+				<posx>17</posx>
+				<posy>0</posy>
+				<width>80</width>
+				<height>576</height>
+				<texture>blades-size2-left-NF.png</texture>
+			</control>
+			<control type="label">
+				<description>XBMC Live Label</description>
+				<label>reeplay.it</label>
+				<posx>77</posx>
+				<posy>170</posy>
+				<font>BladeFont</font>
+				<textcolor>TextcolorDarkGrey</textcolor>
+				<aligny>top</aligny>
+				<angle>270</angle>
+			</control>
+		</control>
+
+	</controls>
+
+</window>
