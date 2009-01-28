@@ -46,8 +46,9 @@
     <string id="228">Alla</string>
     <string id="229">Välj</string>
     <string id="230">Bakåt</string>
-
-
+	<string id="231">Ström</string>
+    <string id="232">Hämta</string>
+	
     <!-- menu options -->
     <string id="300">Visa skript-läsmig</string>
     <string id="301">Visa skript-ändringslogg</string>
@@ -57,6 +58,7 @@
     <string id="305">Videor per sida:</string>
     <string id="306">Videokvalitet:</string>
     <string id="307">Ta bort buffert vid avslut:</string>
+    <string id="308">Uppspelning Mode:</string>
 
     <!-- Update messages -->
     <string id="1000">Din version är aktuell.</string>

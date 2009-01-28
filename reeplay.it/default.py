@@ -22,10 +22,10 @@ from string import find, strip, replace
 
 # Script doc constants
 __scriptname__ = "reeplay.it"
-__version__ = '0.3'
+__version__ = '0.4'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
-__date__ = '26-01-2009'
+__date__ = '28-01-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -309,7 +309,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			# make menu
 			options = [__lang__(203), __lang__(300), __lang__(301), check_startup, user, pwd, pageSZ, vq, cache,playback]
 			selectedPos = xbmcgui.Dialog().select( __lang__(204), options )
-			print "pos=%s option=%s" % (selectedPos,options[selectedPos])
+			debug( "selectedPos=%s" % selectedPos)
 			if selectedPos <= 0:
 				break
 			elif selectedPos == 1:
@@ -363,8 +363,11 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 				saveFileObj(self.SETTINGS_FILENAME, self.settings)
 			elif selectedPos == 9:
 				# playback mode
+				print self.settings[self.SETTING_PLAY_MODE]
 				self.settings[self.SETTING_PLAY_MODE] = not self.settings[self.SETTING_PLAY_MODE]	# toggle
+				print self.settings[self.SETTING_PLAY_MODE]
 				saveFileObj(self.SETTINGS_FILENAME, self.settings)
+				print "saved"
 
 		self.getControl(self.CGRP_HEADER).setEnabled(True)
 		debug ("< mainMenu() reset=%s" % reset)

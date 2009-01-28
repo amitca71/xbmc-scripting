@@ -47,7 +47,10 @@
     <string id="228">Kaikki</string>
     <string id="229">Valitse</string>
     <string id="230">Takaisin</string>
-<!-- 
+    <string id="231">Jono</string>
+    <string id="232">Ladata</string>
+
+    <!-- menu options -->
     <string id="300">Näytä skriptin ohje</string>
     <string id="301">Näytä skriptin muutokset</string>
     <string id="302">Tarkista päivitykset käynnistyessä</string>
@@ -56,8 +59,9 @@
     <string id="305">Videoiden määrä sivua kohti:</string>
     <string id="306">Videon kuvanlaatu:</string>
     <string id="307">Tyhjennä välimuisti lopettaessa:</string>
--->
-    
+    <string id="308">Toisto Mode:</string>
+
+    <!-- Update messages -->
     <string id="1000">Sinun ohjelmasi on ajantasalla.</string>
     <string id="1001">Tarkistetaan uusinta versiota...</string>
     <string id="1002">on uudempi</string>

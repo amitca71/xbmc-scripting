@@ -176,14 +176,24 @@ class ReeplayitPlugin:
 			if not data: raise "Empty"
 
 			# extarct data and store into ListItems
-			rssItems = reeplayit.parsePlaylists(data)
-			itemCount = len(rssItems)
+			items = reeplayit.parsePlaylists(data)
+			itemCount = len(items)
 			if not itemCount: raise "Empty"
 
-			for item in rssItems:
-				id, title, desc, count, updatedDate = item
-				longTitle = "%s (%s)" % (title, count)
-				
+			for item in items:
+				title, id, desc, count, updatedDate, imgURL = item
+				# get thumb image
+				imgName = os.path.basename(imgURL)
+				print "imgName=" + imgName
+				imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
+				if not fileExist(imgFN):
+					data = self.retrieve(imgURL, fn=imgFN)
+					if data == "": # aborted
+						break
+					elif not data:
+						imgFN = ""
+
+				longTitle = "%s (%s)" % (title, count)			
 				link = self.URL_PLAYLIST % (self.user, id, 1, self.pageSize)
 				li_url = "%s?%s=%s&%s=%s&%s=%s&%s=%s" % ( sys.argv[ 0 ], \
 												self.PARAM_TITLE, escape(title), \
@@ -191,7 +201,7 @@ class ReeplayitPlugin:
 												self.PARAM_PLS_COUNT, count, \
 												self.PARAM_URL, link )
 
-				li = xbmcgui.ListItem(longTitle, desc)
+				li = xbmcgui.ListItem(longTitle, desc, imgFN, imgFN)
 				li.setInfo(type="video", infoLabels={ "Title" : longTitle, "Size": int(count), \
 													  "Album" : desc, "Date" : updatedDate })
 
@@ -246,8 +256,8 @@ class ReeplayitPlugin:
 
 			if not data: raise "Empty"
 
-			rssItems = reeplayit.parsePlaylist(data)
-			itemCount = len(rssItems)
+			items = reeplayit.parsePlaylist(data)
+			itemCount = len(items)
 			if not itemCount: raise "Empty"
 
 #			if isPrevPage:
@@ -289,8 +299,8 @@ class ReeplayitPlugin:
 			defaultThumbImg = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
 
 			# for each video , extract info and stoe to a ListItem
-			for item in rssItems:
-				videoid, videoTitle, videoDesc, videoDate, link, imgURL = item
+			for item in items:
+				videoTitle, videoid, videoDate, link, imgURL, duration = item
 				link += "?profile=%s" % self.vqProfile
 
 				# get thumb image
@@ -308,7 +318,7 @@ class ReeplayitPlugin:
 												self.PARAM_URL, link )
 
 				li = xbmcgui.ListItem(videoTitle, videoDate, imgFN, imgFN)
-				li.setInfo(type="video", infoLabels={ "Title" : videoTitle, "Date" : videoDate })
+				li.setInfo(type="video", infoLabels={ "Title" : videoTitle, "Date" : videoDate, "Duration" : duration })
 
 				ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
 							url=li_url, listitem=li, isFolder=False, totalItems=itemCount)

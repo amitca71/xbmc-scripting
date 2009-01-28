@@ -45,6 +45,10 @@
     <string id="226">Standard</string>
     <string id="227">Videos</string>
     <string id="228">Alle</string>
+    <string id="229">Wählen Sie</string>
+    <string id="230">Zurück</string>
+    <string id="231">Strom</string>
+    <string id="232">Herunterladen</string>
 
     <!-- menu options -->
     <string id="300">Skript Readme anzeigen</string>
@@ -55,6 +59,7 @@
     <string id="305">Videos pro Seite:</string>
     <string id="306">Video Qualität:</string>
     <string id="307">Beim Beenden aus dem Cache löschen:</string>
+    <string id="308">Wiedergabe-Modus:</string>
 
     <!-- Update messages -->
     <string id="1000">Deine Version ist aktuell.</string>

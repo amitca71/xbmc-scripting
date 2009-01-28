@@ -1,17 +1,18 @@
 """
-	Support module for Reeplay.It script.
-	Written by BigBellyBilly.
+	Support module for reeplay.it script.
+	Written by BigBellyBilly - 2009
 """
 import urllib2, sys, os, os.path
 import cookielib, traceback
 import xbmc, xbmcgui
 import xbmcutils.net as net
 from xml.sax.saxutils import unescape
+from pprint import pprint
 
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
-__title__ = "ReeplayitLib"
+__title__ = "reeplayitLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '25-01-2009'
+__date__ = '28-01-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -22,6 +23,8 @@ except:
     __lang__ = None
 from bbbLib import *
 
+DOC_EXT = "xml"		# xml or json
+
 class ReeplayitLib:
 	""" Data gatherer / store for reeplay.it """
 
@@ -31,6 +34,8 @@ class ReeplayitLib:
 		self.user = user
 		self.pageSize = pageSize
 		self.setVideoProfile(vq)
+		
+		DOC_EXT = "xml"       # json or xml
 
 		self.PROP_ID = "ID"					# pls id
 		self.PROP_COUNT = "COUNT"			# pls video count
@@ -55,11 +60,12 @@ class ReeplayitLib:
 		urllib2.install_opener(urlopener)
 		debug("install_opener done")
 
-		self.URL_PLAYLISTS = self.URL_BASE + "users/%s/playlists.xml"
-		self.URL_PLAYLIST = self.URL_BASE + "users/%s/playlists/%s.xml?page=%s&page_size=%s"
+		self.URL_PLAYLISTS = self.URL_BASE + "users/%s/playlists." + DOC_EXT
+		self.URL_PLAYLIST = self.URL_BASE + "users/%s/playlists/%s."+DOC_EXT+"?page=%s&page_size=%s"
 
 		self.plsListItems = []
 		self.videoListItems = []
+		self.defaultThumbImg = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
 
 	##############################################################################################################
 	def setVideoProfile(self, vq):
@@ -100,32 +106,50 @@ class ReeplayitLib:
 
 		if not self.plsListItems:
 
+			dialogProgress.create(__lang__(0), __lang__(215))
+			self.set_report_hook(self.progressHandler, dialogProgress)
+
 			# if exist, load from cache
-			xmlFN = os.path.join(DIR_CACHE, "playlists.xml")
-			debug("xmlFN=" + xmlFN)
-			data = readFile(xmlFN)
+			playlistsURL = self.URL_PLAYLISTS % self.user
+			docFN = os.path.join( DIR_CACHE, os.path.basename(playlistsURL) )
+			debug("docFN=" + docFN)
+			data = readFile(docFN)
 			if not data:
 				# not in cache, download
-				dialogProgress.create(__lang__(0), __lang__(215))
-				self.set_report_hook(self.progressHandler, dialogProgress)
-				data = self.retrieve(self.URL_PLAYLISTS % self.user)
+				data = self.retrieve(playlistsURL)
 
 			if data:
-				rssItems = parsePlaylists(data)
+				items = parsePlaylists(data)
 
 				# load data into content list
-				debug("storing xml items ...")
-				for item in rssItems:
-					id, plsName, desc, count, updatedDate = item
-					title = "%s (%s)" % (plsName, count)
-					li = xbmcgui.ListItem(title, desc)
-					li.setProperty(self.PROP_ID, id)
-					li.setProperty(self.PROP_COUNT, count)
-					li.setInfo("File", {"Title" : title, "Size": int(count), \
-										"Album" : desc, "Date" : updatedDate})
-					self.plsListItems.append(li)
+				debug("storing data to listItems ...")
+				for item in items:
+					try:
+						print item
+						name, id, desc, count, updatedDate, imgURL = item
 
-				del rssItems
+						# get thumb image
+						imgName = os.path.basename(imgURL)
+						imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
+						print "imgFN=" + imgFN
+						if not fileExist(imgFN):
+							data = self.retrieve(imgURL, fn=imgFN)
+							if data == "": # aborted
+								break
+							elif not data:
+								imgFN = self.defaultThumbImg
+
+						title = "%s (%s)" % (name, count)
+						li = xbmcgui.ListItem(title, desc, imgFN, imgFN)
+						li.setProperty(self.PROP_ID, id)
+						li.setProperty(self.PROP_COUNT, count)
+						li.setInfo("File", {"Title" : name, "Size": int(count), \
+											"Album" : desc, "Date" : updatedDate})
+						self.plsListItems.append(li)
+					except:
+						traceback.print_exc()
+
+				del items
 				dialogProgress.close()
 
 		count = len(self.plsListItems)
@@ -153,73 +177,75 @@ class ReeplayitLib:
 		self.set_report_hook(self.progressHandler, dialogProgress)
 
 		# load cached file
-		xmlFN = os.path.join(DIR_CACHE, "pls_%s_page_%d.xml" % (plsID, page))
-		debug("xmlFN=" + xmlFN)
-		data = readFile(xmlFN)
+		docFN = os.path.join(DIR_CACHE, "pls_%s_page_%d.%s" % (plsID, page, DOC_EXT))
+		debug("docFN=" + docFN)
+		data = readFile(docFN)
 		if not data:
 			# not cached, download
 			url = self.URL_PLAYLIST % (self.user, plsID, page, self.pageSize)
 			data = self.retrieve(url)
-			saveData(data, xmlFN)
+			saveData(data, docFN)
 
 		if data:
 			self.set_report_hook(None, None)
-			dialogProgress.update(0, __lang__(210), "") # XML parsing
-			rssItems = parsePlaylist(data)
+			dialogProgress.update(0, __lang__(210), "") # parsing
+			items = parsePlaylist(data)
 
 			# load data into content list
-			if rssItems:
-				debug("storing xml items ...")
+			if items:
+				debug("storing items as listitems ...")
+				totalsize = len(items)
+				
 				dialogProgress.update(0, __lang__(210)) # + " (%d) % totalsize")
-				defaultThumbImg = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
-				totalsize = len(rssItems)
 				lastPercent = 0
-				for itemCount, item in enumerate(rssItems):
-					videoid, title, desc, captured, link, imgURL = item
-					if not videoid:
-						continue
+				for itemCount, item in enumerate(items):
+					try:
+						title, videoid, captured, link, imgURL, duration = item
+						if not videoid:
+							continue
 
-					percent = int((itemCount * 100.0) / totalsize)
-					if percent != lastPercent and percent % 5 == 0:
-						lastPercent = percent
-						countMsg = "(%d / %d)" % (itemCount+1, totalsize)
-						dialogProgress.update(percent, __lang__(210), countMsg )
-						if dialogProgress.iscanceled():
-							debug("xml parsing cancelled")
-							break
+						percent = int((itemCount * 100.0) / totalsize)
+						if percent != lastPercent and percent % 5 == 0:
+							lastPercent = percent
+							countMsg = "(%d / %d)" % (itemCount+1, totalsize)
+							dialogProgress.update(percent, __lang__(210), countMsg )
+							if dialogProgress.iscanceled():
+								debug("parsing cancelled")
+								break
 
-					# get thumb image
-					imgName = videoid+".jpg"
-					imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
-					if not fileExist(imgFN):
-						# download thumb image
-#						dialogProgress.update(percent, __lang__(210), countMsg, imgName)
-						data = self.retrieve(imgURL, fn=imgFN)
-						if data == "": # aborted
-							break
-						elif not data:
-							imgFN = defaultThumbImg
+						# get thumb image
+						imgName = videoid+".jpg"
+						print "imgName=", imgName
+						imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
+						print "imgFN=" + imgFN
+						if not fileExist(imgFN):
+							data = self.retrieve(imgURL, fn=imgFN)
+							if data == "": # aborted
+								break
+							elif not data:
+								imgFN = self.defaultThumbImg
 
-					li = xbmcgui.ListItem(title, desc, imgFN, imgFN)
-					li.setProperty(self.PROP_ID, videoid)
-					li.setProperty(self.PROP_URL, link)
-					li.setInfo("video", {"Title" : title, "Date": captured})
-					li.setProperty( "releasedate", captured )
-					self.videoListItems.append(li)
+						li = xbmcgui.ListItem(title, "%smins" % duration, imgFN, imgFN)
+						li.setProperty(self.PROP_ID, videoid)
+						li.setProperty(self.PROP_URL, link)
+						li.setInfo("video", {"Title" : title, "Date": captured, "Duration" : duration})
+						self.videoListItems.append(li)
+					except:
+						traceback.print_exc()
 
-				del rssItems
+				del items
 
 		dialogProgress.close()
 		# delete file if failed to parse etc
 		if not totalsize:
-			deleteFile(xmlFN)
+			deleteFile(docFN)
 
 		debug("< getPlaylist() totalsize=%s" % totalsize)
 		return totalsize
 
 	##############################################################################################################
 	def getVideo(self, idx, download=False):
-		""" Download the selected video XML, then the video from media-url """
+		""" Download the selected video info doc to get video url """
 		debug("> getVideo() idx=%s download=%s" % (idx,download))
 		fn = None
 
@@ -235,22 +261,22 @@ class ReeplayitLib:
 		self.set_report_hook(self.progressHandler, dialogProgress)
 
 		# if exist, load cached
-		xmlFN = os.path.join(DIR_CACHE, "%s_%s.xml" % (id, self.vqProfile))
-		debug("xmlFN=" + xmlFN)
-		data = readFile(xmlFN)
+		docFN = os.path.join(DIR_CACHE, "%s_%s.%s" % (id, self.vqProfile, DOC_EXT))
+		debug("docFN=" + docFN)
+		data = readFile(docFN)
 		if not data:
 			# not cached, download
 			data = self.retrieve(url)
-			saveData(data, xmlFN)
+			saveData(data, docFN)
 
-		# parse video XML to get media-url
+		# parse video info to get media-url
 		if data:
 			videoURL = parseVideo(data)
 			debug("videoURL=" + videoURL)
 
 			# download and save video from its unique media-url
 			if not videoURL:
-				messageOK(__lang__(0), "Media URL missing from XML!", title)
+				messageOK(__lang__(0), "Media URL missing!", title)
 			else:
 				# download video to cache
 				basename = os.path.basename(videoURL)
@@ -271,7 +297,7 @@ class ReeplayitLib:
 		dialogProgress.close()
 		# delete file if failed to parse etc
 		if not fn:
-			deleteFile(xmlFN)
+			deleteFile(docFN)
 
 		debug("< getVideo() fn=%s li=%s" % (fn, li))
 		return (fn, li)
@@ -318,46 +344,142 @@ def saveData(data, fn, mode="w"):
         del f
         return True
     except:
-        print "saveData() exception=", sys.exc_info()
+        traceback.print_exc()
         return False
 
 
-def parsePlaylists(xmlDoc):
-	""" Parse Playlists xml using regex """
+##############################################################################################################
+def parsePlaylistsXML(doc):
+	""" Parse Playlists XML using regex to [ [], [], [] ... ] """
+	debug("parsePlaylistsXML()")
+
 	data = []
-	idList = findAllRegEx(xmlDoc, '<id.*?>(\d+)</')
-	titleList = findAllRegEx(xmlDoc, '<title.*?>(.*?)</')
-	descList = findAllRegEx(xmlDoc, '<description.*?>(.*?)</')
-	countList = findAllRegEx(xmlDoc, '<contents-count.*?">(\d+)</')
-	updatedList = findAllRegEx(xmlDoc, '<updated-at.*?>(\d\d\d\d-\d\d-\d\d)')
+	idList = findAllRegEx(doc, '<id>(\d+)</')
+	titleList = findAllRegEx(doc, '<title>(.*?)</')
+	descList = findAllRegEx(doc, '<description>(.*?)</')
+	countList = findAllRegEx(doc, '<contents_count>(\d+)</')
+	updatedList = findAllRegEx(doc, '<updated_at>(\d\d\d\d.\d\d.\d\d)')
+	imgList  = findAllRegEx(doc, '<img.*?src="(.*?)"')
 	itemCount = len(idList)
 	debug("ParsePlaylists.itemCount=%d" % itemCount)
 	for i in range(itemCount):
-		data.append((idList[i], unescape(titleList[i]), unescape(descList[i]), countList[i], updatedList[i]))
+		data.append((unescape(titleList[i]), idList[i], unescape(descList[i]), countList[i], updatedList[i], imgList[i]))
+	data.sort()
 	return data
 
 
-def parsePlaylist(xmlDoc):
-    """ Parse Playlist ID xml to get videos using regex """
+##############################################################################################################
+def parsePlaylistXML(doc):
+	""" Parse Playlist XML to get videos using regex """
+	debug("parsePlaylistXML()")
 
-    data = []
-    videos = findAllRegEx(xmlDoc, '(<video uid.*?</video>)')
-    debug("ParsePlaylist.itemCount=%d" % len(videos))
-    for video in videos:
-        data.append( ( searchRegEx(video, '<video uid.*?id="(\d+)"'), \
-                    unescape(searchRegEx(video, '<title.*?>(.*?)</')), \
-                    unescape(searchRegEx(video, '<description>(.*?)</')), \
-                    searchRegEx(video, '<captured>(\d\d\d\d-\d\d-\d\d)'), \
-                    searchRegEx(video, '<link>(.*?)</') + ".xml", \
-                    searchRegEx(video, '<img.*?src="(.*?)"') ) )
-    return data
+	data = []
+	videos = findAllRegEx(doc, '(<content>.*?</content>)')
+	debug("ParsePlaylist.itemCount=%d" % len(videos))
+	for video in videos:
+		data.append( ( unescape(searchRegEx(video, '<title>(.*?)</')), \
+						searchRegEx(video, '<id>(.*?)<'), \
+						searchRegEx(video, '<captured>(\d\d\d\d.\d\d.\d\d)'), \
+						searchRegEx(video, '<link>(.*?)</').strip() + ".xml", \
+						searchRegEx(video, '<img.*?src="(.*?)"'), \
+						int(searchRegEx(video, '<duration>(\d+)<')) ) )
 
-def parseVideo(xmlDoc):
-    """ Parse Video ID xml to get media url using regex """
+	return data
 
-    data = searchRegEx(xmlDoc, '<media[_-]url>(.*?)</')        # _ or - depending on XML in use
-    return data
+##############################################################################################################
+def parsePlaylistsJSON(doc):
+	""" Parse Playlists JSON using eval to [ [], [], [] ... ] """
+	debug("parsePlaylistsJSON()")
 
+	data = []
+	try:
+		# evals to [ {}, {}, .. ]
+		items = eval( doc.replace('null', '\"\"' ) )
+		# convert to [ [], [], .. ] as its easier to unpack without key knowlegde
+		for item in items:
+			try:
+				updated = item.get('updated_at','')[:10]				# yyyy/mm/dd
+			except:
+				updated = ''
+			data.append( (unescape(item.get('title','')), \
+						   item.get('id',''), \
+						   unescape(item.get('description','')), \
+						   item.get('contents_count',''), \
+						   updated ) )
+		print "unsorted json data=", data
+		data.sort()
+		print "sorted json data=", data
+
+	except:
+		traceback.print_exc()
+		data = []
+	if DEBUG:
+		pprint (data)
+	return data
+
+
+##############################################################################################################
+def parsePlaylistJSON(doc):
+	""" Parse Playlist JSON to get videos using eval """
+	debug("parsePlaylistJSON()")
+
+	data = []
+	try:
+		# evals to [ {}, {}, .. ]
+		items = eval( doc.replace('null', '\"\"' ) )
+		# convert to [ [], [], .. ] as its easier to unpack without key knowlegde
+		for item in items:
+			link = item.get('link','')
+			id = link[link.rfind('/'):]							# extract ID off end of link eg /1167
+			try:
+				captured = item.get('captured','')[:10]				# yyyy/mm/dd
+			except:
+				captured = ''
+			data.append( (id, \
+						   unescape(item.get('title','')), \
+						   unescape(item.get('description','')), \
+						   captured, \
+						   link + ".json", \
+						   item.get('img','')
+						  ) )
+	except:
+		traceback.print_exc()
+		data = []
+	if DEBUG:
+		pprint (data)
+	return data
+
+
+##############################################################################################################
+def parsePlaylists(doc):
+	""" Wrapper to call Playlists parsing """
+	if DOC_EXT == "json":
+		return parsePlaylistsJSON(doc)
+	else:
+		return parsePlaylistsXML(doc)
+
+##############################################################################################################
+def parsePlaylist(doc):
+	""" Wrapper to call Playlist parsing """
+	if DOC_EXT == "json":
+		return parsePlaylistJSON(doc)
+	else:
+		return parsePlaylistXML(doc)
+
+##############################################################################################################
+def parseVideoXML(doc):
+    """ Parse Video ID XML to get media url using regex """
+    return searchRegEx(doc, '<media[_-]url>(.*?)</')        # _ or - depending on XML in use
+
+##############################################################################################################
+def parseVideo(doc):
+	""" Wrapper to parse Video info doc  """
+	if DOC_EXT == "json":
+		return parseVideoJSON(doc)
+	else:
+		return parseVideoXML(doc)
+
+##############################################################################################################
 def deleteScriptCache(deleteAll=True):
 	""" Delete script cache contents according to settings """
 	debug("deleteScriptCache() deleteAll=%s" % deleteAll)
