@@ -23,7 +23,9 @@ except:
     __lang__ = None
 from bbbLib import *
 
-DOC_EXT = "xml"		# xml or json
+# xml or json - XML is quicker and less mem use! json was implemented as a test (but it works)
+DOC_EXT = "xml"
+URL_BASE = "http://staging.reeplay.it/"                    # LIVE is "http://reeplay.it/"
 
 class ReeplayitLib:
 	""" Data gatherer / store for reeplay.it """
@@ -35,16 +37,13 @@ class ReeplayitLib:
 		self.pageSize = pageSize
 		self.setVideoProfile(vq)
 		
-		DOC_EXT = "xml"       # json or xml
-
 		self.PROP_ID = "ID"					# pls id
 		self.PROP_COUNT = "COUNT"			# pls video count
 		self.PROP_URL = "URL"				# video url
-		self.URL_BASE = "http://staging.reeplay.it/"                    # LIVE is "http://reeplay.it/"
 
 		# password manager handler
 		passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
-		passman.add_password(None, self.URL_BASE, user, pwd)
+		passman.add_password(None, URL_BASE, user, pwd)
 
 		# Basic Auth. handler
 		authhandler = urllib2.HTTPBasicAuthHandler(passman)
@@ -60,8 +59,8 @@ class ReeplayitLib:
 		urllib2.install_opener(urlopener)
 		debug("install_opener done")
 
-		self.URL_PLAYLISTS = self.URL_BASE + "users/%s/playlists." + DOC_EXT
-		self.URL_PLAYLIST = self.URL_BASE + "users/%s/playlists/%s."+DOC_EXT+"?page=%s&page_size=%s"
+		self.URL_PLAYLISTS = URL_BASE + "users/%s/playlists." + DOC_EXT
+		self.URL_PLAYLIST = URL_BASE + "users/%s/playlists/%s."+DOC_EXT+"?page=%s&page_size=%s"
 
 		self.plsListItems = []
 		self.videoListItems = []
@@ -125,13 +124,11 @@ class ReeplayitLib:
 				debug("storing data to listItems ...")
 				for item in items:
 					try:
-						print item
 						name, id, desc, count, updatedDate, imgURL = item
 
 						# get thumb image
 						imgName = os.path.basename(imgURL)
 						imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
-						print "imgFN=" + imgFN
 						if not fileExist(imgFN):
 							data = self.retrieve(imgURL, fn=imgFN)
 							if data == "": # aborted
@@ -215,20 +212,19 @@ class ReeplayitLib:
 
 						# get thumb image
 						imgName = videoid+".jpg"
-						print "imgName=", imgName
 						imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
-						print "imgFN=" + imgFN
 						if not fileExist(imgFN):
-							data = self.retrieve(imgURL, fn=imgFN)
-							if data == "": # aborted
+							result = self.retrieve(imgURL, fn=imgFN)
+							if result == "": # aborted
 								break
-							elif not data:
+							elif not result:
 								imgFN = self.defaultThumbImg
 
-						li = xbmcgui.ListItem(title, "%smins" % duration, imgFN, imgFN)
+						lbl2 = "%smins" % duration
+						li = xbmcgui.ListItem(title, lbl2, imgFN, imgFN)
+						li.setInfo("video", {"Title" : title, "Date" : captured, "Duration" : duration})
 						li.setProperty(self.PROP_ID, videoid)
 						li.setProperty(self.PROP_URL, link)
-						li.setInfo("video", {"Title" : title, "Date": captured, "Duration" : duration})
 						self.videoListItems.append(li)
 					except:
 						traceback.print_exc()
@@ -382,8 +378,9 @@ def parsePlaylistXML(doc):
 						searchRegEx(video, '<captured>(\d\d\d\d.\d\d.\d\d)'), \
 						searchRegEx(video, '<link>(.*?)</').strip() + ".xml", \
 						searchRegEx(video, '<img.*?src="(.*?)"'), \
-						int(searchRegEx(video, '<duration>(\d+)<')) ) )
-
+						searchRegEx(video, '<duration>(.*?)<')) )
+#	if DEBUG:
+#		pprint (data)
 	return data
 
 ##############################################################################################################
@@ -402,19 +399,17 @@ def parsePlaylistsJSON(doc):
 			except:
 				updated = ''
 			data.append( (unescape(item.get('title','')), \
-						   item.get('id',''), \
-						   unescape(item.get('description','')), \
-						   item.get('contents_count',''), \
-						   updated ) )
-		print "unsorted json data=", data
+						str(item.get('id','')), \
+						unescape(item.get('description','')), \
+						str(item.get('contents_count',0)), \
+						updated, \
+						item.get('icon_url','')) )
 		data.sort()
-		print "sorted json data=", data
-
 	except:
 		traceback.print_exc()
 		data = []
-	if DEBUG:
-		pprint (data)
+#	if DEBUG:
+#		pprint (data)
 	return data
 
 
@@ -426,29 +421,45 @@ def parsePlaylistJSON(doc):
 	data = []
 	try:
 		# evals to [ {}, {}, .. ]
-		items = eval( doc.replace('null', '\"\"' ) )
+		items = eval( doc )['contents']
+		pprint (items)
 		# convert to [ [], [], .. ] as its easier to unpack without key knowlegde
 		for item in items:
 			link = item.get('link','')
-			id = link[link.rfind('/'):]							# extract ID off end of link eg /1167
+			id = link[link.rfind('/')+1:]							# extract ID off end of link eg /1167
 			try:
 				captured = item.get('captured','')[:10]				# yyyy/mm/dd
 			except:
 				captured = ''
-			data.append( (id, \
-						   unescape(item.get('title','')), \
-						   unescape(item.get('description','')), \
-						   captured, \
-						   link + ".json", \
-						   item.get('img','')
-						  ) )
+			data.append( (
+					unescape(item.get('title','')), \
+					id, \
+					captured, \
+					link + ".json", \
+					item.get('keyframe_url',''),
+					str(item.get('duration','0'))
+					) )
 	except:
 		traceback.print_exc()
 		data = []
-	if DEBUG:
-		pprint (data)
+#	if DEBUG:
+#		pprint (data)
 	return data
 
+##############################################################################################################
+def parseVideoXML(doc):
+    """ Parse Video ID XML to get media url using regex """
+    return searchRegEx(doc, '<media[_-]url>(.*?)</')        # _ or - depending on XML in use
+
+##############################################################################################################
+def parseVideoJSON(doc):
+	""" Parse Video ID XML to get media url using regex """
+
+	items = eval( doc.replace('null', '\"\"' ) )
+	data = items.get('media_url','')
+#	if DEBUG:
+#		pprint (data)
+	return data
 
 ##############################################################################################################
 def parsePlaylists(doc):
@@ -465,11 +476,6 @@ def parsePlaylist(doc):
 		return parsePlaylistJSON(doc)
 	else:
 		return parsePlaylistXML(doc)
-
-##############################################################################################################
-def parseVideoXML(doc):
-    """ Parse Video ID XML to get media url using regex """
-    return searchRegEx(doc, '<media[_-]url>(.*?)</')        # _ or - depending on XML in use
 
 ##############################################################################################################
 def parseVideo(doc):
@@ -492,9 +498,9 @@ def deleteScriptCache(deleteAll=True):
 		allFiles = os.listdir( DIR_CACHE )
 		for f in allFiles:
 			fn, ext = os.path.splitext(f)
-			if ext in ('.mp4','.ts,','.flv','.xml'):
+			if ext in ('.mp4','.ts,','.flv','.xml','.json'):
 				deleteFN = os.path.join(DIR_CACHE, f)
-				if not DEBUG:
-					deleteFile(deleteFN)
-				else:
-					debug("DEBUG mode: File not deleted: " + deleteFN)
+#				if not DEBUG:
+				deleteFile(deleteFN)
+#				else:
+#					debug("DEBUG mode: File not deleted: " + deleteFN)
