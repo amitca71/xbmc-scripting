@@ -577,21 +577,25 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 	return install
 
 ##############################################################################################################    
-def playMedia(source):
+def playMedia(source, li=None):
 	debug("> playMedia() " + source)
 	success = False
 
 	try:
-		xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(source)
+		if li:
+			xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(source, li)
+		else:
+			xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(source)
 		success = xbmc.Player().isPlaying()
 	except:
+		traceback.print_exc
 		debug('xbmc.Player().play() failed trying xbmc.PlayMedia() ')
 		try:
 			cmd = 'xbmc.PlayMedia(%s)' % source
 			xbmc.executebuiltin(cmd)
 			success = True
 		except:
-			handleException('xbmc.PlayMedia()')
+			handleException('playMedia()')
 
 	debug("< playMedia() success=%s" % success)
 	return success

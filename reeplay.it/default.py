@@ -83,6 +83,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		self.SETTING_PAGE_SIZE = "page_size"
 		self.SETTING_VQ = "video_quality"
 		self.SETTING_CACHE_ACTION = "cache_action"
+		self.SETTING_PLAY_MODE = "play_mode"
 
 		self.SETTINGS_DEFAULTS = {
 			self.SETTING_USER : "",
@@ -90,7 +91,8 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.SETTING_CHECK_UPDATE : False,
 			self.SETTING_PAGE_SIZE : 200,
 			self.SETTING_VQ : False,					# False = high, True = med
-			self.SETTING_CACHE_ACTION : False		# False == All, True == Videos Only
+			self.SETTING_CACHE_ACTION : False,			# False == All, True == Videos Only
+			self.SETTING_PLAY_MODE : False				# False == Stream, True == Download
 			}
 
 		self.settings = {}
@@ -300,8 +302,12 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			cacheValue = (__lang__(227), __lang__(228))[self.settings[self.SETTING_CACHE_ACTION]]
 			cache = "%s %s" % (__lang__(307), cacheValue)
 
+			# Playback mode
+			playbackValue = (__lang__(231), __lang__(232))[self.settings[self.SETTING_PLAY_MODE]]
+			playback = "%s %s" % (__lang__(308), playbackValue)
+
 			# make menu
-			options = [__lang__(203), __lang__(300), __lang__(301), check_startup, user, pwd, pageSZ, vq, cache]
+			options = [__lang__(203), __lang__(300), __lang__(301), check_startup, user, pwd, pageSZ, vq, cache,playback]
 			selectedPos = xbmcgui.Dialog().select( __lang__(204), options )
 			print "pos=%s option=%s" % (selectedPos,options[selectedPos])
 			if selectedPos <= 0:
@@ -354,6 +360,10 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			elif selectedPos == 8:
 				# cache action on exit
 				self.settings[self.SETTING_CACHE_ACTION] = not self.settings[self.SETTING_CACHE_ACTION]	# toggle
+				saveFileObj(self.SETTINGS_FILENAME, self.settings)
+			elif selectedPos == 9:
+				# playback mode
+				self.settings[self.SETTING_PLAY_MODE] = not self.settings[self.SETTING_PLAY_MODE]	# toggle
 				saveFileObj(self.SETTINGS_FILENAME, self.settings)
 
 		self.getControl(self.CGRP_HEADER).setEnabled(True)
@@ -442,12 +452,12 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		debug("> videoSelected()")
 
 		idx = self.getCurrentListPosition()
-		fn = self.reeplayitLib.getVideo(idx)
-		if fn:
-			if not playMedia(fn):
-				messageOK(__lang__(0), __lang__(109), fn)	# playback failed
-		elif fn == None:
-			messageOK(__lang__(0), __lang__(106))		# DL failed
+		source, li = self.reeplayitLib.getVideo(idx, self.settings[self.SETTING_PLAY_MODE])
+		if source:
+			playMedia(source, li)
+#					messageOK(__lang__(0), __lang__(109), source)	# playback failed
+#		elif fn == None:
+#			messageOK(__lang__(0), __lang__(106))		# DL failed
 
 		debug("< videoSelected()")
 

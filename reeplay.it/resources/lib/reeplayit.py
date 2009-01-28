@@ -173,7 +173,6 @@ class ReeplayitLib:
 				dialogProgress.update(0, __lang__(210)) # + " (%d) % totalsize")
 				defaultThumbImg = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
 				totalsize = len(rssItems)
-				debug("xml size=%s" % totalsize)
 				lastPercent = 0
 				for itemCount, item in enumerate(rssItems):
 					videoid, title, desc, captured, link, imgURL = item
@@ -204,7 +203,8 @@ class ReeplayitLib:
 					li = xbmcgui.ListItem(title, desc, imgFN, imgFN)
 					li.setProperty(self.PROP_ID, videoid)
 					li.setProperty(self.PROP_URL, link)
-					li.setInfo("Video", {"Title" : title, "Date": captured})
+					li.setInfo("video", {"Title" : title, "Date": captured})
+					li.setProperty( "releasedate", captured )
 					self.videoListItems.append(li)
 
 				del rssItems
@@ -218,9 +218,9 @@ class ReeplayitLib:
 		return totalsize
 
 	##############################################################################################################
-	def getVideo(self, idx):
+	def getVideo(self, idx, download=False):
 		""" Download the selected video XML, then the video from media-url """
-		debug("> getVideo() idx=%s" % idx)
+		debug("> getVideo() idx=%s download=%s" % (idx,download))
 		fn = None
 
 		# get LI info
@@ -252,25 +252,29 @@ class ReeplayitLib:
 			if not videoURL:
 				messageOK(__lang__(0), "Media URL missing from XML!", title)
 			else:
+				# download video to cache
 				basename = os.path.basename(videoURL)
 				videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
 				fn = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, videoName))
 				debug( "video fn=" + fn )
 				if not fileExist(fn):
-					dialogProgress.update(0,  __lang__(223), title, videoName)
-					if not self.retrieve(videoURL, fn=fn):
-						deleteFile(fn)	# delete incase of partial DL
-						fn = ''
-				else:
-					debug("video file exists")
+					# if not in cache, do stream or download
+					if download:
+						dialogProgress.update(0,  __lang__(223), title, videoName)
+						if not self.retrieve(videoURL, fn=fn):
+							deleteFile(fn)	# delete incase of partial DL
+							fn = ''
+					else:
+						# stream, so return url
+						fn = videoURL
 
 		dialogProgress.close()
 		# delete file if failed to parse etc
 		if not fn:
 			deleteFile(xmlFN)
 
-		debug("< getVideo() fn=%s" % fn)
-		return fn
+		debug("< getVideo() fn=%s li=%s" % (fn, li))
+		return (fn, li)
 
 	##############################################################################################################
 	def getPlsLI(self, idx):

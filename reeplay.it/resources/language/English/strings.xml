@@ -46,6 +46,8 @@
     <string id="228">All</string>
     <string id="229">Select</string>
     <string id="230">Back</string>
+    <string id="231">Stream</string>
+    <string id="232">Download</string>
 
     <!-- menu options -->
     <string id="300">View Script Readme</string>
@@ -56,6 +58,7 @@
     <string id="305">Videos Per Page:</string>
     <string id="306">Video Quality:</string>
     <string id="307">Delete From Cache On Exit:</string>
+    <string id="308">Playback Mode:</string>
 
     <!-- Update messages -->
     <string id="1000">Your version is up to date.</string>
