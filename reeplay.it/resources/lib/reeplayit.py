@@ -12,64 +12,71 @@ from pprint import pprint
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "reeplayitLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '28-01-2009'
+__date__ = '29-01-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
 DIR_CACHE = sys.modules[ "__main__" ].DIR_CACHE
-try:
-    __lang__ = sys.modules[ "__main__" ].__lang__
-except:
-    __lang__ = None
+__lang__ = sys.modules[ "__main__" ].__lang__
+
 from bbbLib import *
 
-# xml or json - XML is quicker and less mem use! json was implemented as a test (but it works)
-DOC_EXT = "xml"
-URL_BASE = "http://staging.reeplay.it/"                    # LIVE is "http://reeplay.it/"
-
+##############################################################################################################
+##############################################################################################################
 class ReeplayitLib:
-	""" Data gatherer / store for reeplay.it """
+	""" Reeplay.it data gatherer / store """
 
-	def __init__(self, user, pwd, pageSize=100, vq=False):
-		debug("ReeplayitLib() __init__ %s %s pageSize=%d vq=%s" % (user, pwd, pageSize, vq))
+	URL_BASE = "http://staging.reeplay.it/"        # LIVE is "http://reeplay.it/"
+
+	def __init__(self, user, pwd, pageSize=200, vq=False, docType='xml'):
+		debug("ReeplayitLib() __init__ %s %s pageSize=%d vq=%s docType=%s" % (user, pwd, pageSize, vq, docType))
 
 		self.user = user
 		self.pageSize = pageSize
+		self.docType = docType
 		self.setVideoProfile(vq)
 		
 		self.PROP_ID = "ID"					# pls id
 		self.PROP_COUNT = "COUNT"			# pls video count
 		self.PROP_URL = "URL"				# video url
 
-		# password manager handler
-		passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
-		passman.add_password(None, URL_BASE, user, pwd)
+		try:
+			# password manager handler
+			passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
+			passman.add_password(None, self.URL_BASE, user, pwd)
 
-		# Basic Auth. handler
-		authhandler = urllib2.HTTPBasicAuthHandler(passman)
+			# Basic Auth. handler
+			authhandler = urllib2.HTTPBasicAuthHandler(passman)
 
-		# Cookie handler
-		cookiejar = cookielib.LWPCookieJar()
-		cookiehandler = urllib2.HTTPCookieProcessor(cookiejar)
+			# Cookie handler
+			cookiejar = cookielib.LWPCookieJar()
+			cookiehandler = urllib2.HTTPCookieProcessor(cookiejar)
 
-		# add our handlers
-		urlopener = urllib2.build_opener(authhandler, cookiehandler)
+			# add our handlers
+			urlopener = urllib2.build_opener(authhandler, cookiehandler)
 
-		# install urlopener so all urllib2 calls use our handlers
-		urllib2.install_opener(urlopener)
-		debug("install_opener done")
+			# install urlopener so all urllib2 calls use our handlers
+			urllib2.install_opener(urlopener)
+			debug("HTTP handlers installed")
+		except:
+			handleException("HTTP handlers")
+			return
 
-		self.URL_PLAYLISTS = URL_BASE + "users/%s/playlists." + DOC_EXT
-		self.URL_PLAYLIST = URL_BASE + "users/%s/playlists/%s."+DOC_EXT+"?page=%s&page_size=%s"
+		self.URL_PLAYLISTS = self.URL_BASE + "users/%s/playlists." + self.docType
+		self.URL_PLAYLIST = self.URL_BASE + "users/%s/playlists/%s."+self.docType+"?page=%s&page_size=%s"
+		self.URL_VIDEO_INFO = self.URL_BASE + "users/%s/contents/%s." + self.docType
 
 		self.plsListItems = []
 		self.videoListItems = []
-		self.defaultThumbImg = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
+		self.DEFAULT_THUMB_IMG = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
+
+	def debug(self, msg=""):
+		debug("%s.%s" % (self.__class__.__name__, msg))
 
 	##############################################################################################################
 	def setVideoProfile(self, vq):
 		self.vqProfile = ( 'xbmc_high', 'xbmc_standard' )[vq]
-		debug("setVideoProfile() %s" % self.vqProfile)
+		self.debug("setVideoProfile() %s" % self.vqProfile)
 
 	##############################################################################################################
 	def setPageSize(self, pageSize):
@@ -78,7 +85,7 @@ class ReeplayitLib:
 	##############################################################################################################
 	def retrieve(self, url, post=None, headers={}, fn=None):
 		""" Downloads an url. Returns: None = error , '' = cancelled """
-		debug("retrieve() %s" % url)
+		self.debug("retrieve() %s" % url)
 		try:
 			return net.retrieve (url, post, headers, self.report_hook, self.report_udata, fn)
 		except net.AuthError, e:
@@ -95,13 +102,13 @@ class ReeplayitLib:
 	##############################################################################################################
 	def set_report_hook(self, func, udata=None):
 		"""Set the download progress report handler."""
-		debug("set_report_hook()")
+		self.debug("set_report_hook()")
 		self.report_hook = func
 		self.report_udata = udata
 
 	##############################################################################################################
 	def getPlaylists(self):
-		debug("> getPlaylists()")
+		self.debug("> getPlaylists()")
 
 		if not self.plsListItems:
 
@@ -111,20 +118,20 @@ class ReeplayitLib:
 			# if exist, load from cache
 			playlistsURL = self.URL_PLAYLISTS % self.user
 			docFN = os.path.join( DIR_CACHE, os.path.basename(playlistsURL) )
-			debug("docFN=" + docFN)
+			self.debug("docFN=" + docFN)
 			data = readFile(docFN)
 			if not data:
 				# not in cache, download
 				data = self.retrieve(playlistsURL)
 
 			if data:
-				items = parsePlaylists(data)
+				items = self.parsePlaylists(data)
 
 				# load data into content list
-				debug("storing data to listItems ...")
+				self.debug("storing data to listItems ...")
 				for item in items:
 					try:
-						name, id, desc, count, updatedDate, imgURL = item
+						title, id, desc, count, updatedDate, imgURL = item
 
 						# get thumb image
 						imgName = os.path.basename(imgURL)
@@ -134,13 +141,13 @@ class ReeplayitLib:
 							if data == "": # aborted
 								break
 							elif not data:
-								imgFN = self.defaultThumbImg
+								imgFN = self.DEFAULT_THUMB_IMG
 
-						title = "%s (%s)" % (name, count)
-						li = xbmcgui.ListItem(title, desc, imgFN, imgFN)
+						longTitle = "%s (%s)" % (title, count)
+						li = xbmcgui.ListItem(longTitle, desc, imgFN, imgFN)
 						li.setProperty(self.PROP_ID, id)
-						li.setProperty(self.PROP_COUNT, count)
-						li.setInfo("File", {"Title" : name, "Size": int(count), \
+						li.setProperty(self.PROP_COUNT, str(count))
+						li.setInfo("File", {"Title" : title, "Size": count, \
 											"Album" : desc, "Date" : updatedDate})
 						self.plsListItems.append(li)
 					except:
@@ -150,23 +157,24 @@ class ReeplayitLib:
 				dialogProgress.close()
 
 		count = len(self.plsListItems)
-		debug("< getPlaylists() count=%s" % count)
+		self.debug("< getPlaylists() count=%s" % count)
 		return count
 
 	##############################################################################################################
-	def getPlaylist(self, plsIdx, page=1):
+	def getPlaylist(self, plsIdx=None, plsId="", plsTitle="", page=1):
 		""" Download video list for playlist """
-		debug("> getPlaylist() plsIdx=%s" % plsIdx)
+		self.debug("> getPlaylist() plsIdx=%s plsId=%s page=%d" % (plsIdx,plsId,page))
 
 		# reset stored videos
 		self.videoListItems = []
 		totalsize = 0
 
 		# get selected playlist info
-		li = self.getPlsLI(plsIdx)
-		plsID = li.getProperty(self.PROP_ID)
-		plsTitle = li.getLabel()
-		debug("plsID=%s  plsTitle=%s" % (plsID, plsTitle))
+		if not plsId:
+			li = self.getPlsLI(plsIdx)
+			plsId = li.getProperty(self.PROP_ID)
+			plsTitle = li.getLabel()
+			self.debug("From plsIdx; plsId=%s  plsTitle=%s" % (plsId, plsTitle))
 
 		msg = "%s - %s %s" % (plsTitle, __lang__(219), page)
 		dialogProgress.create(__lang__(0), __lang__(217), msg) # DL playlist content
@@ -174,23 +182,23 @@ class ReeplayitLib:
 		self.set_report_hook(self.progressHandler, dialogProgress)
 
 		# load cached file
-		docFN = os.path.join(DIR_CACHE, "pls_%s_page_%d.%s" % (plsID, page, DOC_EXT))
-		debug("docFN=" + docFN)
+		docFN = os.path.join(DIR_CACHE, "pls_%s_page_%d.%s" % (plsId, page, self.docType))
+		self.debug("docFN=" + docFN)
 		data = readFile(docFN)
 		if not data:
 			# not cached, download
-			url = self.URL_PLAYLIST % (self.user, plsID, page, self.pageSize)
+			url = self.URL_PLAYLIST % (self.user, plsId, page, self.pageSize)
 			data = self.retrieve(url)
 			saveData(data, docFN)
 
 		if data:
 			self.set_report_hook(None, None)
 			dialogProgress.update(0, __lang__(210), "") # parsing
-			items = parsePlaylist(data)
+			items = self.parsePlaylist(data)
 
 			# load data into content list
 			if items:
-				debug("storing items as listitems ...")
+				self.debug("storing items as listitems ...")
 				totalsize = len(items)
 				
 				dialogProgress.update(0, __lang__(210)) # + " (%d) % totalsize")
@@ -198,6 +206,7 @@ class ReeplayitLib:
 				for itemCount, item in enumerate(items):
 					try:
 						title, videoid, captured, link, imgURL, duration = item
+						link += "?profile=%s" % self.vqProfile
 						if not videoid:
 							continue
 
@@ -207,7 +216,7 @@ class ReeplayitLib:
 							countMsg = "(%d / %d)" % (itemCount+1, totalsize)
 							dialogProgress.update(percent, __lang__(210), countMsg )
 							if dialogProgress.iscanceled():
-								debug("parsing cancelled")
+								self.debug("parsing cancelled")
 								break
 
 						# get thumb image
@@ -218,7 +227,7 @@ class ReeplayitLib:
 							if result == "": # aborted
 								break
 							elif not result:
-								imgFN = self.defaultThumbImg
+								imgFN = self.DEFAULT_THUMB_IMG
 
 						lbl2 = "%smins" % duration
 						li = xbmcgui.ListItem(title, lbl2, imgFN, imgFN)
@@ -233,42 +242,55 @@ class ReeplayitLib:
 
 		dialogProgress.close()
 		# delete file if failed to parse etc
-		if not totalsize:
+		if not self.videoListItems:
 			deleteFile(docFN)
 
-		debug("< getPlaylist() totalsize=%s" % totalsize)
+		self.debug("< getPlaylist() totalsize=%s" % totalsize)
 		return totalsize
 
 	##############################################################################################################
-	def getVideo(self, idx, download=False):
+	def getVideo(self, idx=-1, id="", title="", download=False, authReq=False):
 		""" Download the selected video info doc to get video url """
-		debug("> getVideo() idx=%s download=%s" % (idx,download))
+		self.debug("> getVideo() idx=%s id=%s download=%s authReq=%s" % (idx, id, download, authReq))
 		fn = None
 
 		# get LI info
-		li = self.getVideoLI(idx)
-		title = li.getLabel()
-		id = li.getProperty(self.PROP_ID)
-		url = li.getProperty(self.PROP_URL) + "?profile=" + self.vqProfile
-		debug("id=%s url=%s" % (id, url))
+		if not id:
+			li = self.getVideoLI(idx)
+			title = li.getLabel()
+			id = li.getProperty(self.PROP_ID)
+#			infoUrl = li.getProperty(self.PROP_URL)
+			self.debug("From idx; id=%s title=%s" % (id, title))
 
-		dialogProgress.create(__lang__(0), __lang__(222), title)
-		dialogProgress.update(0)
+		infoUrl = self.URL_VIDEO_INFO % (self.user, id)
+		self.debug("infoUrl=" + infoUrl)
+
+		dialogProgress.create(__lang__(0))
 		self.set_report_hook(self.progressHandler, dialogProgress)
+		if authReq:
+			# This is for Plugin; as it won't have done Auth. before getVideo() call
+			dialogProgress.update(0, "User Authentication ...")
+			if not self.retrieve(self.URL_PLAYLISTS % self.user):
+				dialogProgress.close()
+				messageOK("Error", __lang__(108))	# auth failed.
+				self.debug("< getVideo() failed auth.")
+				return ("", None)
+
+		dialogProgress.update(0, __lang__(222), title)
 
 		# if exist, load cached
-		docFN = os.path.join(DIR_CACHE, "%s_%s.%s" % (id, self.vqProfile, DOC_EXT))
-		debug("docFN=" + docFN)
+		docFN = os.path.join(DIR_CACHE, "%s_%s.%s" % (id, self.vqProfile, self.docType))
+		self.debug("docFN=" + docFN)
 		data = readFile(docFN)
 		if not data:
 			# not cached, download
-			data = self.retrieve(url)
+			data = self.retrieve(infoUrl)
 			saveData(data, docFN)
 
 		# parse video info to get media-url
 		if data:
-			videoURL = parseVideo(data)
-			debug("videoURL=" + videoURL)
+			videoURL = self.parseVideo(data)
+			self.debug("videoURL=" + videoURL)
 
 			# download and save video from its unique media-url
 			if not videoURL:
@@ -278,24 +300,28 @@ class ReeplayitLib:
 				basename = os.path.basename(videoURL)
 				videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
 				fn = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, videoName))
-				debug( "video fn=" + fn )
+				self.debug( "video fn=" + fn )
 				if not fileExist(fn):
 					# if not in cache, do stream or download
 					if download:
+						self.debug("download video")
 						dialogProgress.update(0,  __lang__(223), title, videoName)
 						if not self.retrieve(videoURL, fn=fn):
 							deleteFile(fn)	# delete incase of partial DL
 							fn = ''
 					else:
 						# stream, so return url
+						self.debug("stream video")
 						fn = videoURL
+				else:
+					self.debug("video file exists")
 
 		dialogProgress.close()
 		# delete file if failed to parse etc
 		if not fn:
 			deleteFile(docFN)
 
-		debug("< getVideo() fn=%s li=%s" % (fn, li))
+		self.debug("< getVideo() fn=%s li=%s" % (fn, li))
 		return (fn, li)
 
 	##############################################################################################################
@@ -313,6 +339,15 @@ class ReeplayitLib:
 			return None
 
 	##############################################################################################################
+	def getMaxPages(self, plsCount):
+		maxPages = int(plsCount / self.pageSize)
+		mod = plsCount % self.pageSize
+		if mod:
+			maxPages += 1
+		self.debug("getMaxPages() %d" % maxPages)
+		return maxPages
+
+	##############################################################################################################
 	def progressHandler(self, count, totalsize, dlg):
 		"""Update progress dialog percent and return abort status."""
 
@@ -326,22 +361,33 @@ class ReeplayitLib:
 
 		return not dlg.iscanceled()
 
+	##############################################################################################################
+	def parsePlaylists(self, doc):
+		""" Wrapper to call Playlists parsing """
+		self.debug("parsePlaylists()")
+		if self.docType == "json":
+			return parsePlaylistsJSON(doc)
+		else:
+			return parsePlaylistsXML(doc)
 
-##############################################################################################################
-def saveData(data, fn, mode="w"):
-    """ Save data to a file """
-    if not data or not fn or not mode: return False
-    debug("saveData() fn=%s" % fn)
-    try:
-        f = open(fn, mode)
-        f.write(data)
-        f.flush()
-        f.close()
-        del f
-        return True
-    except:
-        traceback.print_exc()
-        return False
+	##############################################################################################################
+	def parsePlaylist(self, doc):
+		""" Wrapper to call Playlist parsing """
+		self.debug("parsePlaylist()")
+		if self.docType == "json":
+			return parsePlaylistJSON(doc)
+		else:
+			return parsePlaylistXML(doc)
+
+	##############################################################################################################
+	def parseVideo(self, doc):
+		""" Wrapper to parse Video info doc  """
+		self.debug("parseVideo()")
+		if self.docType == "json":
+			return parseVideoJSON(doc)
+		else:
+			return parseVideoXML(doc)
+
 
 
 ##############################################################################################################
@@ -359,7 +405,7 @@ def parsePlaylistsXML(doc):
 	itemCount = len(idList)
 	debug("ParsePlaylists.itemCount=%d" % itemCount)
 	for i in range(itemCount):
-		data.append((unescape(titleList[i]), idList[i], unescape(descList[i]), countList[i], updatedList[i], imgList[i]))
+		data.append((unescape(titleList[i]), idList[i], unescape(descList[i]), int(countList[i]), updatedList[i], imgList[i]))
 	data.sort()
 	return data
 
@@ -401,7 +447,7 @@ def parsePlaylistsJSON(doc):
 			data.append( (unescape(item.get('title','')), \
 						str(item.get('id','')), \
 						unescape(item.get('description','')), \
-						str(item.get('contents_count',0)), \
+						item.get('contents_count',0), \
 						updated, \
 						item.get('icon_url','')) )
 		data.sort()
@@ -462,30 +508,6 @@ def parseVideoJSON(doc):
 	return data
 
 ##############################################################################################################
-def parsePlaylists(doc):
-	""" Wrapper to call Playlists parsing """
-	if DOC_EXT == "json":
-		return parsePlaylistsJSON(doc)
-	else:
-		return parsePlaylistsXML(doc)
-
-##############################################################################################################
-def parsePlaylist(doc):
-	""" Wrapper to call Playlist parsing """
-	if DOC_EXT == "json":
-		return parsePlaylistJSON(doc)
-	else:
-		return parsePlaylistXML(doc)
-
-##############################################################################################################
-def parseVideo(doc):
-	""" Wrapper to parse Video info doc  """
-	if DOC_EXT == "json":
-		return parseVideoJSON(doc)
-	else:
-		return parseVideoXML(doc)
-
-##############################################################################################################
 def deleteScriptCache(deleteAll=True):
 	""" Delete script cache contents according to settings """
 	debug("deleteScriptCache() deleteAll=%s" % deleteAll)
@@ -500,7 +522,78 @@ def deleteScriptCache(deleteAll=True):
 			fn, ext = os.path.splitext(f)
 			if ext in ('.mp4','.ts,','.flv','.xml','.json'):
 				deleteFN = os.path.join(DIR_CACHE, f)
-#				if not DEBUG:
 				deleteFile(deleteFN)
-#				else:
-#					debug("DEBUG mode: File not deleted: " + deleteFN)
+
+##############################################################################################################
+##############################################################################################################
+class ReeplayitSettings:
+	""" Settings for reeplay.it, allows same file to be shared by script and plugin """
+
+	SETTINGS_FILENAME = os.path.join( DIR_USERDATA, "settings.txt" )
+	SETTING_USER = "user"
+	SETTING_PWD = "pwd"
+	SETTING_CHECK_UPDATE = "check_script_update_startup"
+	SETTING_PAGE_SIZE = "page_size"
+	SETTING_VQ = "video_quality"
+	SETTING_CACHE_ACTION = "cache_action"
+	SETTING_PLAY_MODE = "play_mode"
+
+	SETTINGS_DEFAULTS = {
+		SETTING_USER : "",
+		SETTING_PWD : "",
+		SETTING_CHECK_UPDATE : False,
+		SETTING_PAGE_SIZE : 200,
+		SETTING_VQ : False,					# False = high, True = med
+		SETTING_CACHE_ACTION : False,			# False == All, True == Videos Only
+		SETTING_PLAY_MODE : False				# False == Stream, True == Download
+		}
+
+	def __init__(self):
+		self.debug("__init__")
+		self.load()
+
+	def debug(self, msg=""):
+		debug("%s.%s" % (self.__class__.__name__, msg))
+
+	def load(self):
+		self.debug("load()")
+		self.settings = loadFileObj( self.SETTINGS_FILENAME, {} )
+		self.check()
+
+	def save(self):
+		self.debug("save()")
+		saveFileObj(self.SETTINGS_FILENAME, self.settings)
+
+	def check(self):
+		self.debug("check()")
+		# put default values into any settings that are missing
+		changed = False
+		for key, defaultValue in self.SETTINGS_DEFAULTS.items():
+			if not self.settings.has_key( key ) or self.settings[key] in [None,""]:
+				self.settings[key] = defaultValue
+				changed = True
+				debug("using default value for key=%s" % key)
+
+		if changed:
+			self.save()
+		return changed
+
+	def reset(self):
+		self.debug("reset()")
+		self.settings = {}
+		self.check()
+
+	def get(self, key):
+		return self.settings.get(key, None)
+
+	def set(self, key, value):
+		self.settings[key] = value
+		self.save()
+
+	def getSettings(self):
+		return self.settings
+
+	def boolToggle(self, key):
+		value = not self.get(key)	# toggle
+		self.settings.set(key, value)
+		return value

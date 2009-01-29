@@ -184,10 +184,10 @@ def debug( value ):
 	global debugIndentLvl
 	if (DEBUG and value):
 		try:
-			if value[0] == ">": debugIndentLvl += 2
+			if find(value,">") >= 0: debugIndentLvl += 2
 			pad = rjust("", debugIndentLvl)
 			print pad + str(value)
-			if value[0] == "<": debugIndentLvl -= 2
+			if find(value,"<") >= 0: debugIndentLvl -= 2
 		except:
 			try:
 				print value
@@ -641,3 +641,20 @@ def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
 		sz = 0
 	debug ("findAllRegEx() matches=%s" % sz)
 	return matchList
+
+##############################################################################################################
+def saveData(data, fn, mode="w"):
+    """ Save data to a file """
+    if not data or not fn or not mode: return False
+    debug("saveData() fn=%s" % fn)
+    try:
+        f = open(fn, mode)
+        f.write(data)
+        f.flush()
+        f.close()
+        del f
+        return True
+    except:
+        traceback.print_exc()
+        return False
+

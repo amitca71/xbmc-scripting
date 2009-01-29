@@ -12,13 +12,13 @@
 
 __plugin__ = "reeplay.it"
 __scriptname__  = "reeplay.it"
-__version__ = '0.3'
+__version__ = '0.5'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '28-01-2009'
+__date__ = '29-01-2009'
 
 import sys, os.path
 import xbmc, xbmcgui, xbmcplugin
-import re, os, traceback, urllib, urllib2, cookielib
+import os, traceback
 from xml.sax.saxutils import unescape
 from xml.sax.saxutils import escape
 
@@ -26,117 +26,93 @@ if os.name=='posix':
     DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
 else:
     DIR_HOME= os.getcwd().replace(';','')
-DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __plugin__ )
-DIR_RESOURCES = os.path.join( "Q:"+os.sep,"scripts", __scriptname__, "resources" )
-DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
+DIR_USERDATA = os.path.join( "T:"+os.sep, "script_data", __plugin__ )
+DIR_SCRIPT_HOME = os.path.join( "Q:"+os.sep, "scripts", __scriptname__ )
+DIR_RESOURCES = os.path.join( DIR_SCRIPT_HOME, "resources" )
+DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES, "lib" )
 DIR_CACHE = os.path.join(DIR_USERDATA, "cache")
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
-import xbmcutils.net as net
-from bbbLib import *
-from reeplayit import *
+# Load Language using xbmc builtin
+try:
+    # 'resources' now auto appended onto path
+    __lang__ = xbmc.Language( DIR_SCRIPT_HOME ).getLocalizedString
+except:
+	print str( sys.exc_info()[ 1 ] )
+	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Install a new XBMC build to run this script.")
 
-print "plugin URL_BASE=" , URL_BASE
+from bbbLib import *
+import reeplayit
 
 #################################################################################################################
 class ReeplayitPlugin:
 	""" main plugin class """
 
 	def __init__( self, *args, **kwargs ):
-		debug("> __init__() argv[ 2 ]=%s " % sys.argv[ 2 ])
-		debug( "argv[ 1 ]=%s" % sys.argv[ 1 ])
-
-		URL_BASE = "http://staging.reeplay.it/"        # LIVE is "http://reeplay.it/"
+		self.debug("> __init__() argv[ 2 ]=%s " % sys.argv[ 2 ])
+		self.debug( "argv[ 1 ]=%s" % sys.argv[ 1 ])
 
 		# load settings (as set in script)
 		if not self.loadSettings():
-			messageOK(__plugin__, "Settings Incomplete", "Please run Script version to setup settings.")
+			messageOK(__plugin__, __lang__(110))	# setup incomplete
 			return
 
-		# CREATE HTTP HANDLERS
-		try:
-			debug("setup HTTP handlers")
-			# password manager handler
-			passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
-			passman.add_password(None, URL_BASE, self.user, self.pwd)
-			# Basic Auth. handler
-			authhandler = urllib2.HTTPBasicAuthHandler(passman)
-
-			# Cookie handler
-			self.cookiejar = cookielib.LWPCookieJar()
-			self.cookie_file = os.path.join(DIR_CACHE, 'cookie.lwp')
-			if fileExist(self.cookie_file):
-				self.cookiejar.load(self.cookie_file)
-			cookiehandler = urllib2.HTTPCookieProcessor(self.cookiejar)
-
-			# add our handlers
-			urlopener = urllib2.build_opener(authhandler, cookiehandler)
-			# install urlopener so all urllib2 calls use our handlers
-			urllib2.install_opener(urlopener)
-			debug("install_opener done")
-			self.http_installed = True
-		except:
-			handleException("HTTP handlers")
-			return
-
-		self.PROP_ID = "ID"					# pls id
-		self.PROP_COUNT = "COUNT"			# pls video count
-		self.PROP_URL = "URL"				# video url
-		self.URL_PLAYLISTS = URL_BASE + "users/%s/playlists.xml"
-		self.URL_PLAYLIST = URL_BASE + "users/%s/playlists/%s.xml?page=%s^page_size=%s"
-		self.lastSaveMediaPath = DIR_USERDATA
+		# create a new lib instance using login details
+		self.reeplayitLib = reeplayit.ReeplayitLib(self.user, self.pwd, self.pageSize, self.vq)
 
 		# define param key names
 		self.PARAM_TITLE = "title"
 		self.PARAM_PLS_ID = 'plsid'
 		self.PARAM_PLS_COUNT = 'plscount'
+		self.PARAM_PLS_PAGE = 'plspage'
 		self.PARAM_URL = 'url'
 		self.PARAM_VIDEO_ID = 'videoid'
-		self.report_hook = None
-		self.report_udata = None
 
 		if ( not sys.argv[ 2 ] ):
 			# new session clear cache
-			deleteScriptCache(False)	# just clear old XML and videos
+			reeplayit.deleteScriptCache(False)	# just clear old XML/JSON and videos
 #			xbmcplugin.ClearProperties()
 			self.getPlaylists()
 		else:
 			# extract URL params and act accordingly
 			try:
 				paramDict = self._getParams()
-				url = paramDict[self.PARAM_URL]
+				url = paramDict.get(self.PARAM_URL,'')
 				if paramDict.has_key(self.PARAM_PLS_ID):
 					title = unescape(paramDict[self.PARAM_TITLE])
 					id = paramDict[self.PARAM_PLS_ID]
 					count = int(paramDict[self.PARAM_PLS_COUNT])
-					page = int(searchRegEx(url, 'page=(\d+)'))
-					self.getPlaylist(title, id, url, count, page)
+					page = int(paramDict.get(self.PARAM_PLS_PAGE,1))
+					self.getPlaylist(title, id, count, page)
 				elif paramDict.has_key(self.PARAM_VIDEO_ID):
 					title = unescape(paramDict[self.PARAM_TITLE])
 					id = paramDict[self.PARAM_VIDEO_ID]
-					fn = self.getVideo(title, id, url)
-					if fn:
-						playMedia(fn)
+					source = self.getVideo(title, id)
+					if source:
+						playMedia(source)
 				else:
 					raise
 			except:
-				print sys.exc_info()[ 1 ]
+				traceback.print_exc()
 				messageOK("ERROR", str(sys.exc_info()[ 1 ]))
 
-		debug("< __init__()")
+		self.debug("< __init__()")
+
+	def debug(self, msg=""):
+		debug("%s.%s" % (self.__class__.__name__, msg))
 
 	########################################################################################################################
 	def loadSettings(self):
 		""" Settings are set in the script, this is just to check all settings exist """
-		debug( "loadSettings")
-		self.settings = loadFileObj( os.path.join( DIR_USERDATA, "settings.txt" ), {} )
-		self.user = self.settings.get('user','')
-		self.pwd = self.settings.get('pwd','')
-		self.pageSize = self.settings.get('page_size','')
-#		self.pageSize = 10000	# fixed so we dont have to bother with paging
-		vq = self.settings.get('video_quality',False)
-		self.vqProfile = ( 'xbmc_high', 'xbmc_standard' )[vq]
-		if not self.user or not self.pwd or not self.pageSize or not self.vqProfile:
+		self.debug( "loadSettings")
+		settings = reeplayit.ReeplayitSettings()
+		
+		self.user = settings.get(settings.SETTING_USER)
+		self.pwd = settings.get(settings.SETTING_PWD)
+		self.pageSize = settings.get(settings.SETTING_PAGE_SIZE)
+		self.vq = settings.get(settings.SETTING_VQ)
+		self.playbackMode = settings.get(settings.SETTING_PLAY_MODE)
+		if not self.user or not self.pwd:
 			return False
 		else:
 			return True
@@ -161,62 +137,35 @@ class ReeplayitPlugin:
 	########################################################################################################################
 	def getPlaylists(self):
 		""" Return a list of Playlists """
-		debug( "> getPlaylists()")
+		self.debug( "> getPlaylists()")
 		ok = False
 		try:
-			# if exist, load from cache
-			xmlFN = os.path.join(DIR_CACHE, "playlists.xml")
-			debug("xmlFN=" + xmlFN)
-			data = readFile(xmlFN)
-			if not data:
-				# not in cache, download
-				dialogProgress.create(__plugin__, "Downloading Playlists ...", self.user)
-				self.set_report_hook(self.progressHandler, dialogProgress)
-				data = self.retrieve(self.URL_PLAYLISTS % self.user)
-				dialogProgress.close()
+			if not self.reeplayitLib.getPlaylists():
+				raise "Empty"
 
-			if not data: raise "Empty"
+			for li in self.reeplayitLib.plsListItems:
+				plsTitle = li.getLabel()
+				plsId = li.getProperty(self.reeplayitLib.PROP_ID)
+				plsCount = int(li.getProperty(self.reeplayitLib.PROP_COUNT))
+#				plsLink = self.reeplayitLib.URL_PLAYLIST % (self.user, id, 1, self.pageSize)
+#				print plsTitle, plsId, plsCount
 
-			# extarct data and store into ListItems
-			items = parsePlaylists(data)
-			itemCount = len(items)
-			if not itemCount: raise "Empty"
-
-			for item in items:
-				title, id, desc, count, updatedDate, imgURL = item
-				# get thumb image
-				imgName = os.path.basename(imgURL)
-				imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
-				if not fileExist(imgFN):
-					data = self.retrieve(imgURL, fn=imgFN)
-					if data == "": # aborted
-						break
-					elif not data:
-						imgFN = ""
-
-				longTitle = "%s (%s)" % (title, count)			
-				link = self.URL_PLAYLIST % (self.user, id, 1, self.pageSize)
-				li_url = "%s?%s=%s&%s=%s&%s=%s&%s=%s" % ( sys.argv[ 0 ], \
-												self.PARAM_TITLE, escape(title), \
-												self.PARAM_PLS_ID, id, \
-												self.PARAM_PLS_COUNT, count, \
-												self.PARAM_URL, link )
-
-				li = xbmcgui.ListItem(longTitle, desc, imgFN, imgFN)
-				li.setInfo(type="video", infoLabels={ "Title" : longTitle, "Size": int(count), \
-													  "Album" : desc, "Date" : updatedDate })
+				li_url = "%s?%s=%s&%s=%s&%s=%s" % ( sys.argv[ 0 ], \
+												self.PARAM_TITLE, plsTitle, \
+												self.PARAM_PLS_ID, plsId, \
+												self.PARAM_PLS_COUNT, plsCount )
 
 				ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
-							url=li_url, listitem=li, isFolder=True, totalItems=itemCount)
+							url=li_url, listitem=li, isFolder=True, totalItems=plsCount)
 				if ( not ok ): break
 		except "Empty":
-			debug("Empty raised")
+			self.debug("Empty raised")
 		except:
 			traceback.print_exc()
 			messageOK("ERROR:", str(sys.exc_info()[ 1 ]))
 
 		if not ok:
-			messageOK(__plugin__, "No Playlists Found")
+			messageOK(__plugin__, __lang__(104))	# no pls found
 		else:
 			xbmcplugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=xbmcplugin.SORT_METHOD_LABEL )
 			xbmcplugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=xbmcplugin.SORT_METHOD_DATE )
@@ -224,94 +173,62 @@ class ReeplayitPlugin:
 			xbmcplugin.setContent( handle=int( sys.argv[ 1 ] ), content="files" )
 
 		xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=ok )
-		debug( "< getPlaylists() ok=%s" % ok)
+		self.debug( "< getPlaylists() ok=%s" % ok)
 
 	########################################################################################################################
-	def getPlaylist(self, plsTitle, plsId, plsUrl, plsCount, page):
+	def getPlaylist(self, plsTitle, plsId, plsCount, plsPage=1):
 		""" Discover a list of Categories within a Directory """
-		debug( "> getplaylist() %s id=%s %s count=%s page=%s" % (plsTitle, plsId, plsUrl, plsCount, page))
+		self.debug( "> getplaylist() %s plsId=%s plsCount=%s plsPage=%s" % (plsTitle, plsId, plsCount, plsPage))
 
 		ok = False
 		try:
-			maxPages = int( plsCount / self.pageSize)
-			mod = plsCount % self.pageSize
-			if mod:
-				maxPages += 1
-			debug("videoCount=%s maxPages=%s" % (plsCount, maxPages))
-			isNextPage = (page < maxPages)
+			maxPages = self.reeplayitLib.getMaxPages( plsCount )
+			isNextPage = (plsPage < maxPages)
+			self.debug("isNextPage=%s" % isNextPage)
 
-			dialogProgress.create(__plugin__, "Downloading Playlist ...", plsTitle, "Page: %d / %d" % (page,maxPages))
-			self.set_report_hook(self.progressHandler, dialogProgress)
-
-			# if exist, load from cache
-			xmlFN = os.path.join(DIR_CACHE, "pls_%s_page_%d.xml" % (plsId, page))
-			debug("xmlFN=" + xmlFN)
-			data = readFile(xmlFN)
-			if not data:
-				# not in cache, download
-				data = self.retrieve(plsUrl)
-				saveData(data, xmlFN)
-
-			if not data: raise "Empty"
-
-			items = parsePlaylist(data)
-			itemCount = len(items)
-			if not itemCount: raise "Empty"
+			videoCount = self.reeplayitLib.getPlaylist(-1, plsId, plsTitle, plsPage)
+			if not videoCount: raise "Empty"
 
 			if isNextPage:
-				itemCount += 1
+				videoCount += 1
 
 			if isNextPage:
-				newPage = "page=%s^" % (page+1)
-				oldPage = "page=%s&" % page
-				title = "Next Page (%s/%s)" % (page+1, maxPages)
-				link = plsUrl.replace(oldPage, newPage)
+				nextPage = plsPage+1
+				title = "%s (%s/%s)" % (__lang__(221), plsPage+1, maxPages)
+				
 				li_url = "%s?%s=%s&%s=%s&%s=%s&%s=%s" % ( sys.argv[ 0 ], \
 												self.PARAM_TITLE, escape(title), \
 												self.PARAM_PLS_ID, plsId, \
 												self.PARAM_PLS_COUNT, plsCount, \
-												self.PARAM_URL, link )
+												self.PARAM_PLS_PAGE, nextPage )
 
 				li = xbmcgui.ListItem(title)
 				ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
-							url=li_url, listitem=li, isFolder=True, totalItems=itemCount)
-
-			defaultThumbImg = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
+							url=li_url, listitem=li, isFolder=True, totalItems=0)
 
 			# for each video , extract info and store to a ListItem
-			for item in items:
-				videoTitle, videoid, videoDate, link, imgURL, duration = item
-				link += "?profile=%s" % self.vqProfile
+			for li in self.reeplayitLib.videoListItems:
+				videoTitle = li.getLabel()
+				videoId = li.getProperty(self.reeplayitLib.PROP_ID)
+#				videoLink = li.getProperty(self.reeplayitLib.PROP_URL)
+#				print videoTitle, videoId#, videoLink
 
-				# get thumb image
-				imgName = videoid+".jpg"
-				imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
-				if not fileExist(imgFN):
-					debug("download imgFN=" + imgFN)
-					# download thumb image
-					if not self.retrieve(imgURL, fn=imgFN):
-						imgFN = defaultThumbImg
-
-				li_url = "%s?%s=%s&%s=%s&%s=%s" % ( sys.argv[ 0 ], \
-												self.PARAM_VIDEO_ID, videoid, \
-												self.PARAM_TITLE, escape(videoTitle), \
-												self.PARAM_URL, link )
-
-				li = xbmcgui.ListItem(videoTitle, videoDate, imgFN, imgFN)
-				li.setInfo(type="video", infoLabels={ "Title" : videoTitle, "Date" : videoDate, "Duration" : duration })
+				li_url = "%s?%s=%s&%s=%s" % ( sys.argv[ 0 ], \
+												self.PARAM_VIDEO_ID, videoId, \
+												self.PARAM_TITLE, escape(videoTitle) )
 
 				ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
-							url=li_url, listitem=li, isFolder=False, totalItems=itemCount)
+							url=li_url, listitem=li, isFolder=False, totalItems=videoCount)
 				if ( not ok ): break
 		except "Empty":
-			debug("Empty raised")
+			self.debug("Empty raised")
 		except:
 			traceback.print_exc()
 			messageOK("ERROR:", str(sys.exc_info()[ 1 ]))
 
 #		dialogProgress.close()
 		if not ok:
-			messageOK(__plugin__, "No videos found", plsTitle)
+			messageOK(__plugin__, __lang__(105), plsTitle)	# no video
 		else:
 			xbmcplugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=xbmcplugin.SORT_METHOD_LABEL )
 			xbmcplugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=xbmcplugin.SORT_METHOD_DATE )
@@ -319,116 +236,56 @@ class ReeplayitPlugin:
 			xbmcplugin.setContent( handle=int( sys.argv[ 1 ] ), content="movies" )
 
 		xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=ok )
-		debug( "< getPlaylist() ok=%s" % ok)
+		self.debug( "< getPlaylist() ok=%s" % ok)
 
 	############################################################################################################
-	def getVideo(self, title, id, url):
+	def getVideo(self, videoTitle, videoId):
 		""" Discover media link from video content """
 
-		debug( "> getVideo() %s %s" % (id, url))
-		fn = ''
+		self.debug( "> getVideo() videoId=%s" % (videoId))
+		source = ''
 		try:
-			dialogProgress.create(__plugin__, title, "User Authentication ...")
-			self.set_report_hook(self.progressHandler, dialogProgress)
-			data = self.retrieve(self.URL_PLAYLISTS % self.user)
-			dialogProgress.update(0, title, "Video Information ...")
-
-			# if exist, load from cache
-			xmlFN = os.path.join(DIR_CACHE, "%s_%s.xml" % (id, self.vqProfile))
-			debug("xmlFN=" + xmlFN)
-			data = readFile(xmlFN)
-			if not data:
-				# not in cache, download
-				data = self.retrieve(url)
-				saveData(data, xmlFN)
-
-			if not data: raise "Empty"
-
-			videoURL = parseVideo(data)
-			debug("videoURL=" + videoURL)
-
-			# download and save video from its unique media-url
-			if not videoURL: raise "Empty"
-
-			basename = os.path.basename(videoURL)
-			videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
-			fn = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, videoName))
-			if not fileExist(fn):
-				dialogProgress.update(0,  "Downloading Video ...", title, videoName)
-				if not self.retrieve(videoURL, fn=fn):
-					deleteFile(fn)	# delete incase of partial DL
-					raise "Empty"
-					
-		except "Empty":
-			debug("Empty raised")
-			fn = ""
+			source, li = self.reeplayitLib.getVideo(id=videoId, \
+													title=videoTitle, \
+													download=self.playbackMode, \
+													authReq=True)
+			if not source:
+				messageOK(__plugin__, __lang__(105), videoTitle)	# no video
 		except:
-			fn = ""
+			source = ""
 			traceback.print_exc()
 			messageOK("ERROR:", str(sys.exc_info()[ 1 ]))
 
-		dialogProgress.close()
-		if not fn:
-			messageOK(__plugin__, "Video not found!", title)
-
-		debug( "< getVideo() fn=%s" % fn)
-		return fn
-
-
-	##############################################################################################################
-	def retrieve(self, url, post=None, headers={}, fn=None):
-		""" Downloads an url. Returns: None = error , '' = cancelled """
-		debug("retrieve() " + url)
-		if fn:
-			debug("retrieve() fn=" + fn)
-		try:
-			result = net.retrieve (url, post, headers, self.report_hook, self.report_udata, fn)
-			if result:
-				self.cookiejar.save(self.cookie_file)
-			return result
-		except net.AuthError, e:
-			messageOK(__plugin__, "Authorization Failed!")
-		except net.DownloadAbort, e:
-			messageOK(__plugin__ + ": Download Aborted!", e.value)
-			return "" # means aborted
-		except net.DownloadError, e:
-			messageOK(__plugin__ + ": Download Error!", e.value)
-		except:
-			handleException()
-		return None
-
-
-	##############################################################################################################
-	def set_report_hook(self, func, udata=None):
-		"""Set the download progress report handler."""
-		debug("set_report_hook()")
-		self.report_hook = func
-		self.report_udata = udata
-
-	##############################################################################################################
-	def progressHandler(self, count, totalsize, dlg):
-		"""Update progress dialog percent and return abort status."""
-		if count and totalsize:
-			percent = int((count * 100) / totalsize )
-			if (percent % 5) == 0:
-				dlg.update( percent )
-
-		return not dlg.iscanceled()
+		self.debug( "< getVideo() source=%s" % source)
+		return source
 
 
 #######################################################################################################################    
 # BEGIN !
 #######################################################################################################################
-try:
-	os.makedirs(DIR_USERDATA)
-except: pass
+makeScriptDataDir() 
+makeDir(DIR_CACHE)
 
-if ( __name__ == "__main__" ):
-	app = ReeplayitPlugin()
-	del app
+try:
+	# check language loaded
+	xbmc.output( "__lang__ = %s" % __lang__ )
+	myplugin = ReeplayitPlugin()
+	del myplugin
+except:
+	handleException()
+
+# clean up on exit
+debug(__plugin__ + ": exit housekeeping ...")
+moduleList = ['bbbLib', 'reeplayit']
+for m in moduleList:
+	try:
+		del sys.modules[m]
+		xbmc.output(__plugin__ + " del sys.module=%s" % m)
+	except: pass
 
 # remove other globals
 try:
 	del dialogProgress
 except: pass
+sys.modules.clear()
 
