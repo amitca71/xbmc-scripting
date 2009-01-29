@@ -25,7 +25,7 @@
     <string id="207">Laddar ner ...</string>
     <string id="208">Söker ....</string>
     <string id="209">Loggar in ...</string>
-    <string id="210">XML Parsing ...</string>
+    <string id="210">Parsing ...</string>
     <string id="211">Visa alla</string>
     <string id="212">Ange användarnamn:</string>
     <string id="213">Ange lösenord:</string>
@@ -46,7 +46,7 @@
     <string id="228">Alla</string>
     <string id="229">Välj</string>
     <string id="230">Bakåt</string>
-	<string id="231">Ström</string>
+    <string id="231">Ström</string>
     <string id="232">Hämta</string>
 	
     <!-- menu options -->
