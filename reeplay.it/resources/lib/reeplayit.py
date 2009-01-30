@@ -20,6 +20,7 @@ DIR_CACHE = sys.modules[ "__main__" ].DIR_CACHE
 __lang__ = sys.modules[ "__main__" ].__lang__
 
 from bbbLib import *
+from bbbSkinGUILib import TextBoxDialogXML
 
 ##############################################################################################################
 ##############################################################################################################
@@ -147,14 +148,14 @@ class ReeplayitLib:
 						li = xbmcgui.ListItem(longTitle, desc, imgFN, imgFN)
 						li.setProperty(self.PROP_ID, id)
 						li.setProperty(self.PROP_COUNT, str(count))
-						li.setInfo("File", {"Title" : title, "Size": count, \
+						li.setInfo("Video", {"Title" : title, "Size": count, \
 											"Album" : desc, "Date" : updatedDate})
 						self.plsListItems.append(li)
 					except:
 						traceback.print_exc()
 
 				del items
-				dialogProgress.close()
+			dialogProgress.close()
 
 		count = len(self.plsListItems)
 		self.debug("< getPlaylists() count=%s" % count)
@@ -584,9 +585,10 @@ class ReeplayitSettings:
 		self.check()
 
 	def get(self, key):
-		return self.settings.get(key, None)
+		return self.settings.get(key, '')
 
 	def set(self, key, value):
+		self.debug("set() key=%s value=%s" % (key, value))
 		self.settings[key] = value
 		self.save()
 
@@ -595,5 +597,130 @@ class ReeplayitSettings:
 
 	def boolToggle(self, key):
 		value = not self.get(key)	# toggle
-		self.settings.set(key, value)
+		self.set(key,value)
+		self.debug("boolToggle() key=%s newValue=%s" % (key,value))
 		return value
+
+	def makeMenu(self, singleString=True):
+		self.debug("makeMenu() singleString=%s" % singleString)
+
+		def _makeBool(key, opt, no="", yes=""):
+			""" return a (key, li) tuple """
+#			self.debug("_makeBool() key=%s" % (key))
+			value = self.get(key)
+			if not no: no = __lang__(201)
+			if not yes: yes = __lang__(200)
+			yesno = (no, yes)[value]		# translate to yes/no for true/false
+			if singleString:
+				lbl1 = "%s %s" % (opt, yesno)
+				lbl2 = ""
+			else:
+				lbl1 = opt
+				lbl2 = yesno
+			return (key, value, lbl1, lbl2)
+
+		def _makeOpt(key, opt, hidden=False):
+			""" make a menu optino from a key and opt name """
+#			self.debug("_makeOpt() key=%s" % (key))
+			value = self.get(key)
+			if hidden:
+				displayValue = ""
+				for i in range(len(value)):
+					displayValue += "*"
+			else:
+				displayValue = value
+
+			if singleString:
+				lbl1 = "%s %s" % (opt, displayValue)
+				lbl2 = ""
+			else:
+				lbl1 = opt
+				lbl2 = displayValue
+			return (key, value, lbl1, lbl2)
+
+		# START MENU
+		menu = [
+			_makeOpt('exit', __lang__(203)), \
+			_makeOpt('readme', __lang__(300)), \
+			_makeOpt('changelog', __lang__(301))
+			]
+
+		# check for scrit update at startup
+		menu.append( _makeBool(self.SETTING_CHECK_UPDATE, __lang__(302)) )
+
+		# USER
+		menu.append( _makeOpt(self.SETTING_USER, __lang__(303)) )
+
+		# PWD
+		menu.append( _makeOpt(self.SETTING_PWD, __lang__(304), True) )
+
+		# PAGE SIZE
+		menu.append( _makeOpt(self.SETTING_PAGE_SIZE, __lang__(305)) )
+
+		# VIDEO QUALITY
+		menu.append( _makeBool(self.SETTING_VQ, __lang__(306), __lang__(225), __lang__(226)) )
+
+		# CACHE ON EXIT
+		menu.append( _makeBool(self.SETTING_CACHE_ACTION, __lang__(307), __lang__(227), __lang__(228)) )
+
+		# PLAYBACK MODE
+		menu.append( _makeBool(self.SETTING_PLAY_MODE, __lang__(308), __lang__(231), __lang__(232)) )
+
+		return menu
+
+
+	#################################################################################################################
+	def changeOption(self, optionData):
+		self.debug("> changeOption()")
+
+		reset = False
+		newValue = None
+		key, value, optName, optValue = optionData
+		if key == 'readme':
+			home_dir = os.path.join( "Q:"+os.sep, "scripts", __scriptname__ )
+			fn = getReadmeFilename(home_dir)
+			tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
+			tbd.ask(optName, fn=fn)
+			del tbd
+		elif key == 'changelog':
+			home_dir = os.path.join( "Q:"+os.sep, "scripts", __scriptname__ )
+			fn = os.path.join( home_dir, "changelog.txt" )
+			tbd = TextBoxDialogXML("DialogScriptInfo.xml", home_dir, "Default")
+			tbd.ask(optName, fn=fn)
+			del tbd
+		elif key == self.SETTING_CHECK_UPDATE:
+			newValue = self.boolToggle(key)
+		elif key == self.SETTING_USER:
+			result = doKeyboard(value, optName)
+			if result and result != value:
+				self.set(key, result)
+				reset = True
+		elif key == self.SETTING_PWD:
+			result = doKeyboard(value, optName, KBTYPE_ALPHA, True)
+			if result and result != value:
+				self.set(key, result)
+				reset = True
+		elif key == self.SETTING_PAGE_SIZE:
+			result = doKeyboard(str(value), optName, KBTYPE_NUMERIC)
+			if result:
+				result = int(result)
+				if result != value:
+					# ensure range limits
+					if result < 5:
+						result = 5
+					elif result > 10000: # limited by available ram - much less on xbox
+						result = 10000
+					self.set(key, result)
+					reset = True
+		elif key == self.SETTING_VQ:
+			# video quality
+			newValue = self.boolToggle(key)
+		elif key == self.SETTING_CACHE_ACTION:
+			# cache action on exit
+			self.boolToggle(key)
+		elif key == self.SETTING_PLAY_MODE:
+			# playback mode
+			self.boolToggle(key)
+
+		self.debug("< changeOption() reset=%s newValue=%s" % (reset, newValue))
+		return reset, newValue

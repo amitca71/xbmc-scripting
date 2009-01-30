@@ -46,7 +46,6 @@ except:
 
 import update
 from bbbLib import *
-from bbbSkinGUILib import TextBoxDialogXML
 import reeplayit
 
 #################################################################################################################
@@ -100,6 +99,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.exit()
 			return False
 
+		reeplayit.deleteScriptCache(False)  # always clear data files
 		self.isContentPlaylists = True
 		self.lastPlaylistIdx = 0
 		self.current_position = 0
@@ -112,6 +112,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		debug("> onInit() startup=%s" % self.startup)
 		if self.startup:
 			self.startup = False
+			self.ready = False
 			self.getControl( self.CLBL_VERSION ).setLabel( "v" + __version__ )
 			self.getControl( self.CBTN_PREV_PAGE ).setVisible(False)
 			self.getControl( self.CBTN_NEXT_PAGE ).setVisible(False)
@@ -120,10 +121,16 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.getControl( self.CLBL_A_BTN ).setLabel( __lang__(229) )
 			self.getControl( self.CLBL_B_BTN ).setLabel( __lang__(230) )
 
-			if self.reset():
-				self.initPlaylists()
-#					self.setCurrentListPosition(self.current_position)
-#					self.setFocus(self.getControl(self.CLST_CONTENT))
+			while not self.ready:
+				if not self.reset():
+					break
+				else:
+					self.ready = self.initPlaylists()
+					if not self.ready:
+						# remove username which will force login menu
+						self.settings.set(self.settings.SETTING_USER, "")
+				
+
 		elif not self.isContentPlaylists:
 			debug("refresh default window list with videoList")
 			self.initList(self.reeplayitLib.videoListItems)
@@ -151,6 +158,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		if actionID in CONTEXT_MENU:
 			debug("> CONTEXT_MENU")
 			if self.mainMenu():
+				# reset req.
 				self.startup = True
 				self.onInit()
 			debug("< CONTEXT_MENU")
@@ -200,7 +208,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 
 	##############################################################################################
 	def setPageNav(self):
-		debug("setPageNav() currPage=%s maxPages=%s " % (self.currPage, self.maxPages))
+		debug("> setPageNav() currPage=%s maxPages=%s " % (self.currPage, self.maxPages))
 		# PREV btn
 		ctrl = self.getControl( self.CBTN_PREV_PAGE )
 		ctrl.setLabel("%s   (%s/%s)" % (__lang__(220), self.currPage-1, self.maxPages))
@@ -209,6 +217,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		ctrl = self.getControl( self.CBTN_NEXT_PAGE )
 		ctrl.setLabel("%s   (%s/%s)" % (__lang__(221), self.currPage+1, self.maxPages))
 		ctrl.setVisible((self.currPage < self.maxPages))
+		debug("< setPageNav()")
 
 	##############################################################################################################
 	def getNextPrevPage(self, isNextPage):
@@ -235,85 +244,26 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		reset = False
 		self.getControl(self.CGRP_HEADER).setEnabled(False)
 		while True:
-			# BUILD MENU OPTIONS
-			user = "%s %s" % (__lang__(303), self.settings.get(self.settings.SETTING_USER))
-			# get pwd - show as * for the length of pwd
-			pwd = "%s " % __lang__(304)
-			for i in range(len(self.settings.get(self.settings.SETTING_PWD))):
-				pwd += "*"
-
-			pageSZ = "%s %s" % (__lang__(305), self.settings.get(self.settings.SETTING_PAGE_SIZE))
-			if self.settings.get(self.settings.SETTING_CHECK_UPDATE):
-				yesno = __lang__(200)
-			else:
-				yesno = __lang__(201)
-			check_startup = "%s %s" % (__lang__(302), yesno)
-
-			# video quality (high, med, low)
-			vqValue = (__lang__(225), __lang__(226))[self.settings.get(self.settings.SETTING_VQ)]
-			vq = "%s %s" % (__lang__(306), vqValue)
-
-			# cache action on exit
-			cacheValue = (__lang__(227), __lang__(228))[self.settings.get(self.settings.SETTING_CACHE_ACTION)]
-			cache = "%s %s" % (__lang__(307), cacheValue)
-
-			# Playback mode
-			playbackValue = (__lang__(231), __lang__(232))[self.settings.get(self.settings.SETTING_PLAY_MODE)]
-			playback = "%s %s" % (__lang__(308), playbackValue)
+			# make menu of listItems
+			options = []
+			menuData = self.settings.makeMenu()
+			for key, value, lbl1, lbl2 in menuData:
+				options.append( lbl1 )
 
 			# SHOW MENU
-			options = [__lang__(203), __lang__(300), __lang__(301), check_startup, user, pwd, pageSZ, vq, cache,playback]
 			selectedPos = xbmcgui.Dialog().select( __lang__(204), options )
 			debug( "selectedPos=%s" % selectedPos)
 			if selectedPos <= 0:
 				break
-			elif selectedPos == 1:
-				fn = getReadmeFilename()
-				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
-				tbd.ask(options[selectedPos], fn=fn)
-				del tbd
-			elif selectedPos == 2:
-				fn = os.path.join( DIR_HOME, "changelog.txt" )
-				tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
-				tbd.ask(options[selectedPos], fn=fn)
-				del tbd
-			elif selectedPos == 3:
-				newValue = self.settings.boolToggle(self.settings.SETTING_CHECK_UPDATE)
-			elif selectedPos == 4:
-				result = doKeyboard(self.settings.get(self.settings.SETTING_USER), options[selectedPos])
-				if result:
-					self.settings.set(self.settings.SETTING_USER, result)
-					reset = True
-			elif selectedPos == 5:
-				result = doKeyboard(self.settings.get(self.settings.SETTING_PWD), options[selectedPos], KBTYPE_ALPHA, True)
-				if result:
-					self.settings.set(self.settings.SETTING_PWD, result)
-					reset = True
-			elif selectedPos == 6:
-				origValue = str(self.settings.get(self.settings.SETTING_PAGE_SIZE))
-				result = doKeyboard(origValue, options[selectedPos], KBTYPE_NUMERIC)
-				if result != origValue:
-					# ensure range limits
-					result = int(result)
-					if result < 5:
-						result = 5
-					elif result > 10000: # limited by available ram - much less on xbox
-						result = 10000
-					self.settings.set(self.settings.SETTING_PAGE_SIZE, result)
-					self.reeplayitLib.setPageSize(result)
-					# delete existing cached data as its probs for wrong page size now
-					reeplayit.deleteScriptCache(False)
-					reset = True
-			elif selectedPos == 7:
-				# video quality
-				newValue = self.settings.boolToggle(self.settings.SETTING_VQ)
-				self.reeplayitLib.setVideoProfile(newValue)
-			elif selectedPos == 8:
-				# cache action on exit
-				newValue = self.settings.boolToggle(self.settings.SETTING_CACHE_ACTION)
-			elif selectedPos == 9:
-				# playback mode
-				newValue = self.settings.boolToggle(self.settings.SETTING_PLAY_MODE)
+
+			resetReq, newValue = self.settings.changeOption(menuData[selectedPos])
+			if resetReq:
+				reset = True
+			elif newValue:
+				# perform special actions according to option key
+				key, value, optName, optValue = menuData[selectedPos]
+				if key == self.settings.SETTING_VQ:
+					self.reeplayitLib.setVideoProfile(newValue)
 
 		self.getControl(self.CGRP_HEADER).setEnabled(True)
 		debug ("< mainMenu() reset=%s" % reset)

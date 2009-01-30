@@ -365,165 +365,11 @@ def saveFileObj( filename, saveObj ):
         handleException( "_save_file_obj()" )
 
 
-######################################################################################
-# Parser that parses version 2.0 RSS documents
-# enhanced to now find required name in tag attributes
-######################################################################################
-class RSSParser2:
-	def __init__(self):
-		debug("RSSParser2().init()")
-
-	# feeds the xml document from given url or file to the parser
-	def feed(self, url="", file="", doc=""):
-		debug("> RSSParser2().feed()")
-		success = False
-		self.dom = None
-
-		if url:
-			debug("parseString from URL")
-			if not file:
-				dir = os.getcwd().replace(';','')
-				file = os.path.join(dir, "temp.xml")
-			doc = fetchCookieURL(url, file)
-		elif file:
-			debug("parseString from FILE " + file)
-			doc = readFile(file)
-		else:
-			debug("parseString from DOC")
-
-		if doc:
-			success = self.__parseString(doc)
-
-		debug("< RSSParser2().feed() success=%s" % success)
-		return success
-
-	def __parseString(self, xmlDocument):
-		debug("> RSSParser2().__parseString()")
-		success = True
-		try:
-			self.dom = parseString(xmlDocument.encode( "utf-8" ))
-		except UnicodeDecodeError:
-			try:
-				debug("__parseString() UnicodeDecodeError, try unicodeToAscii")
-				self.dom = parseString(unicodeToAscii(xmlDocument))
-			except:
-				try:
-					debug("__parseString() unicodeToAscii failed - try without encoding")
-					self.dom = parseString(xmlDocument)
-				except:
-					debug("__parseString() failure - give up!")
-					handleException()
-					success = False
-		except:
-			success = False
-
-		if not self.dom:
-			messageOK("XML Parser Failed","Empty/Bad XML file","Unable to parse data.")
-			success = False
-
-		debug("< RSSParser2().__parseString() success=%s" % success)
-		return success
-
-
-	# parses RSS document items and returns an list of objects
-	def __parseElements(self, tagName, elements, elementDict):
-		debug("> RSSParser2().__parseElements() elements=%s" % len(elements))
-
-		# extract required attributes from element attribute
-		def _get_element_attributes(el, attrNameList):
-			attrDataList = {}
-			for attrName in attrNameList:
-				data = el.getAttribute( attrName )
-				if data:
-					attrDataList[attrName] = data
-			return attrDataList
-		
-		objectsList = []
-		for index, el in enumerate(elements):
-#			print "index=%s el=%s" % (index, el)
-			dict = {}
-			# check element attributes
-			elAttrItems = el.attributes.items()
-#			print "element attributes=%s" % elAttrItems
-
-			# get data from item with attributes
-			if elAttrItems and elementDict.has_key(tagName):
-#				print "# get data from item with attributes %s" % elAttrItems
-				attrDataList= _get_element_attributes(el, elementDict[tagName])
-				if attrDataList:
-					dict[tagName] = attrDataList
-
-			# get data from item
-			for elTagName, attrNameList in elementDict.items():
-#				print "get data from item: elTagName=%s attrNameList=%s" % (elTagName, attrNameList)
-				if elTagName == tagName:
-#					print " skip element tagName - already processed it attributes"
-					continue
-
-				data = None
-
-				try:
-					# get value for tag (without any attributes)
-					data = el.getElementsByTagName(elTagName)[0].childNodes[0].data
-				except:
-					try:
-						# get required attributes from tag
-						subEl = el.getElementsByTagName(elTagName)[0]
-						attrItems = subEl.attributes.items()
-						data = _get_element_attributes(subEl, attrNameList)
-					except: pass
-
-				if data:
-					dict[elTagName] = data
-#				else:
-#					debug("Tag: %s, No Data found" % (elTagName, ))
-
-#			if DEBUG:
-#				print "%s %s" % (index, dict)
-			if dict:
-				objectsList.append(RSSNode(dict))
-
-		debug("< RSSParser2().__parseElements() No. objects=%s" % len(objectsList))
-		return objectsList
-
-
-	# parses the RSS document
-	def parse(self, tagName, elementDict):
-		debug("> RSSParser2().parse() tagName: %s %s" % (tagName,elementDict))
-
-		parsedList = None
-		if self.dom:
-			try:
-				elements = self.dom.getElementsByTagName(tagName)
-				parsedList = self.__parseElements(tagName, elements, elementDict)
-			except:
-				debug("exception No parent elements found for tagName")
-
-		debug("< RSSParser2().parse()")
-		return parsedList
-
 #################################################################################################################
-class RSSNode:
-	def __init__(self, elements):
-		self.elements = elements
-		
-	def getElement(self, element):
-		try:
-			return self.elements[element]
-		except:
-			return ""
-		
-	def getElementNames(self):
-		return self.elements.keys()
-		
-	def hasElement(self, element):
-		return self.elements.has_key(element)
-
-#################################################################################################################
-def getReadmeFilename():
+def getReadmeFilename(home_dir=""):
     debug("> getReadmeFilename()")
     filename = "readme.txt"
-    base_path, language = getLanguagePath()
+    base_path, language = getLanguagePath(home_dir)
     fn = os.path.join( base_path, language, filename)
     if not fileExist( fn ):
         fn = os.path.join( base_path, "English", filename )
@@ -607,9 +453,11 @@ def logFreeMem(msg=""):
     return mem
 
 ##############################################################################################################    
-def getLanguagePath():
+def getLanguagePath(home_dir=''):
 	try:
-		base_path = os.path.join( os.getcwd().replace(';',''), 'resources', 'language' )
+		if not home_dir:
+			home_dir = os.getcwd().replace(';','')
+		base_path = os.path.join( home_dir, 'resources', 'language' )
 		language = xbmc.getLanguage()
 		langPath = os.path.join( base_path, language )
 		if not os.path.exists(langPath):
