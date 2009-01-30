@@ -22,10 +22,10 @@ from string import find, strip, replace
 
 # Script doc constants
 __scriptname__ = "reeplay.it"
-__version__ = '0.5'
+__version__ = '0.6'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
-__date__ = '29-01-2009'
+__date__ = '30-01-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -121,14 +121,17 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.getControl( self.CLBL_A_BTN ).setLabel( __lang__(229) )
 			self.getControl( self.CLBL_B_BTN ).setLabel( __lang__(230) )
 
-			while not self.ready:
-				if not self.reset():
-					break
-				else:
-					self.ready = self.initPlaylists()
-					if not self.ready:
-						# remove username which will force login menu
-						self.settings.set(self.settings.SETTING_USER, "")
+			if self.reset():
+				self.initPlaylists()
+
+#			while not self.ready:
+#				if not self.reset():
+#					break
+#				else:
+#					self.ready = self.initPlaylists()
+#					if not self.ready:
+#						# remove username which will force login menu
+#						self.settings.set(self.settings.SETTING_USER, "")
 				
 
 		elif not self.isContentPlaylists:

@@ -262,21 +262,15 @@ class ReeplayitLib:
 			id = li.getProperty(self.PROP_ID)
 #			infoUrl = li.getProperty(self.PROP_URL)
 			self.debug("From idx; id=%s title=%s" % (id, title))
+		else:
+			# from plugin, create a video li
+			li = xbmcgui.ListItem( title )
 
 		infoUrl = self.URL_VIDEO_INFO % (self.user, id)
 		self.debug("infoUrl=" + infoUrl)
 
 		dialogProgress.create(__lang__(0))
 		self.set_report_hook(self.progressHandler, dialogProgress)
-		if authReq:
-			# This is for Plugin; as it won't have done Auth. before getVideo() call
-			dialogProgress.update(0, "User Authentication ...")
-			if not self.retrieve(self.URL_PLAYLISTS % self.user):
-				dialogProgress.close()
-				messageOK("Error", __lang__(108))	# auth failed.
-				self.debug("< getVideo() failed auth.")
-				return ("", None)
-
 		dialogProgress.update(0, __lang__(222), title)
 
 		# if exist, load cached
@@ -305,6 +299,16 @@ class ReeplayitLib:
 				if not fileExist(fn):
 					# if not in cache, do stream or download
 					if download:
+						if authReq:
+							debug("http authenticate ...")
+							# This is for Plugin; as it won't have done Auth. before getVideo() call
+							dialogProgress.update(0, "User Authentication ...")
+							if not self.retrieve(self.URL_PLAYLISTS % self.user):
+								dialogProgress.close()
+								messageOK("Error", __lang__(108))	# auth failed.
+								self.debug("< getVideo() failed auth.")
+								return ("", None)
+
 						self.debug("download video")
 						dialogProgress.update(0,  __lang__(223), title, videoName)
 						if not self.retrieve(videoURL, fn=fn):
@@ -469,7 +473,6 @@ def parsePlaylistJSON(doc):
 	try:
 		# evals to [ {}, {}, .. ]
 		items = eval( doc )['contents']
-		pprint (items)
 		# convert to [ [], [], .. ] as its easier to unpack without key knowlegde
 		for item in items:
 			link = item.get('link','')

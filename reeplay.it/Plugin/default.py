@@ -12,15 +12,16 @@
 
 __plugin__ = "reeplay.it"
 __scriptname__  = "reeplay.it"
-__version__ = '0.5'
+__version__ = '0.6'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '29-01-2009'
+__date__ = '30-01-2009'
 
 import sys, os.path
 import xbmc, xbmcgui, xbmcplugin
 import os, traceback
 from xml.sax.saxutils import unescape
 from xml.sax.saxutils import escape
+from pprint import pprint
 
 if os.name=='posix':    
     DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
@@ -49,16 +50,20 @@ class ReeplayitPlugin:
 	""" main plugin class """
 
 	def __init__( self, *args, **kwargs ):
-		self.debug("> __init__() argv[ 2 ]=%s " % sys.argv[ 2 ])
-		self.debug( "argv[ 1 ]=%s" % sys.argv[ 1 ])
+		self.debug("> __init__()")
+		if DEBUG:
+			pprint (sys.argv)
 
 		# load settings (as set in script)
 		if not self.loadSettings():
-			messageOK(__plugin__, __lang__(110))	# setup incomplete
+			self.debug("incomplete settings - quit")
 			return
 
 		# create a new lib instance using login details
-		self.reeplayitLib = reeplayit.ReeplayitLib(self.user, self.pwd, self.pageSize, self.vq)
+		self.reeplayitLib = reeplayit.ReeplayitLib(self.settings.get(self.settings.SETTING_USER), \
+												   self.settings.get(self.settings.SETTING_PWD), \
+												   self.settings.get(self.settings.SETTING_PAGE_SIZE), \
+												   self.settings.get(self.settings.SETTING_VQ))
 
 		# define param key names
 		self.PARAM_TITLE = "title"
@@ -67,8 +72,7 @@ class ReeplayitPlugin:
 		self.PARAM_PLS_PAGE = 'plspage'
 		self.PARAM_URL = 'url'
 		self.PARAM_VIDEO_ID = 'videoid'
-		self.PARAM_SETTING_KEY = 'setting_key'
-		self.PARAM_SETTING_NAME = 'setting_name'
+		self.PARAM_SETTINGS = 'setting'
 
 		if ( not sys.argv[ 2 ] ):
 			# new session clear cache
@@ -92,10 +96,11 @@ class ReeplayitPlugin:
 					source = self.getVideo(title, id)
 					if source:
 						playMedia(source)
-				elif paramDict.has_key(self.PARAM_SETTING_KEY):
-					key = paramDict.get(self.PARAM_SETTING_KEY)     # if empty means just show menu as a dir
-					name = paramDict.get(self.PARAM_SETTING_NAME,'')     # will be empty on first call	
-					self.showMenu(key, name)
+				elif paramDict.has_key(self.PARAM_SETTINGS):
+					if self.showMenu():
+						self.debug("reset plugin")
+#						xbmc.executebuiltin("XBMC.RunPlugin(%s)" % sys.argv[0]) # only for nonFolders
+						xbmc.executebuiltin("xbmc.ActivateWindow(videofiles,%s)" % sys.argv[0])
 				else:
 					raise
 			except:
@@ -110,18 +115,22 @@ class ReeplayitPlugin:
 	########################################################################################################################
 	def loadSettings(self):
 		""" Settings are set in the script, this is just to check all settings exist """
-		self.debug( "loadSettings")
-		self.settings = reeplayit.ReeplayitSettings()
-		
-		self.user = self.settings.get(self.settings.SETTING_USER)
-		self.pwd = self.settings.get(self.settings.SETTING_PWD)
-		self.pageSize = self.settings.get(self.settings.SETTING_PAGE_SIZE)
-		self.vq = self.settings.get(self.settings.SETTING_VQ)
-		self.playbackMode = self.settings.get(self.settings.SETTING_PLAY_MODE)
-		if not self.user or not self.pwd:
-			return False
-		else:
-			return True
+		self.debug( "> loadSettings")
+		success = False
+
+		while not success:
+			self.settings = reeplayit.ReeplayitSettings()
+			success = (self.settings.get(self.settings.SETTING_USER) and \
+						self.settings.get(self.settings.SETTING_PWD))
+			if not success:
+				if xbmcgui.Dialog().yesno(__lang__(0),__lang__(107)):	# edit now?
+					self.showMenu()
+				else:
+					break
+
+		self.debug( "< loadSettings")
+		return success
+
 
 	########################################################################################################################
 	def _getParams(self):
@@ -147,12 +156,15 @@ class ReeplayitPlugin:
 		ok = False
 		try:
 			# include menu option
-			li_url = "%s?%s=" % ( sys.argv[ 0 ], self.PARAM_SETTING_KEY)
+			li_url = "%s?%s=" % ( sys.argv[ 0 ], self.PARAM_SETTINGS)
 			title = __lang__(204)
 			li = xbmcgui.ListItem( title )
 			li.setInfo("Files", {"Title" : title} )
+#			menuCmd = "xbmc.ActivateWindow(videofiles,%s?%s=)" % (sys.argv[0],self.PARAM_SETTINGS)
+#			li.addContextMenuItems([("Plugin Settings", menuCmd)])
+
 			ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
-						url=li_url, listitem=li, isFolder=True, totalItems=0)
+						url=li_url, listitem=li, isFolder=False, totalItems=1)
 
 			if not self.reeplayitLib.getPlaylists():
 				raise "Empty"
@@ -161,8 +173,7 @@ class ReeplayitPlugin:
 				plsTitle = li.getLabel()
 				plsId = li.getProperty(self.reeplayitLib.PROP_ID)
 				plsCount = int(li.getProperty(self.reeplayitLib.PROP_COUNT))
-#				plsLink = self.reeplayitLib.URL_PLAYLIST % (self.user, id, 1, self.pageSize)
-#				print plsTitle, plsId, plsCount
+#				li.addContextMenuItems([("Plugin Settings", menuCmd)])
 
 				li_url = "%s?%s=%s&%s=%s&%s=%s" % ( sys.argv[ 0 ], \
 												self.PARAM_TITLE, plsTitle, \
@@ -185,7 +196,7 @@ class ReeplayitPlugin:
 			xbmcplugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=xbmcplugin.SORT_METHOD_SIZE )
 			xbmcplugin.setContent( handle=int( sys.argv[ 1 ] ), content="files" )
 
-		xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=ok )
+		xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=ok)
 		self.debug( "< getPlaylists() ok=%s" % ok)
 
 	########################################################################################################################
@@ -259,9 +270,9 @@ class ReeplayitPlugin:
 		source = ''
 		try:
 			source, li = self.reeplayitLib.getVideo(id=videoId, \
-													title=videoTitle, \
-													download=self.playbackMode, \
-													authReq=True)
+										title=videoTitle, \
+										download=self.settings.get(self.settings.SETTING_PLAY_MODE), \
+										authReq=True)
 			if not source:
 				messageOK(__plugin__, __lang__(105), videoTitle)	# no video
 		except:
@@ -274,52 +285,38 @@ class ReeplayitPlugin:
 
 
 	############################################################################################################
-	def showMenu(self, key="", name=""):
-		""" Alter settings bycreating a directory of menu options """
+	def showMenu(self):
+		self.debug( "> showMenu()")
 
-		self.debug( "> showMenu() key=%s" % (key))
-		ok = False
+		reset = False
 		try:
-			# if key; change option
-			reset = False
-			if key:
-				value = self.settings.get(key)
-				optionData = (key, value, name, "")
-				resetReq, newValue = self.settings.changeOption(optionData)
-				if newValue:
+			while True:
+				# make menu of listItems
+				options = []
+				menuData = self.settings.makeMenu()
+				for key, value, lbl1, lbl2 in menuData:
+					options.append( lbl1 )
+
+				# SHOW MENU
+				selectedPos = xbmcgui.Dialog().select( __lang__(204), options )
+				debug( "selectedPos=%s" % selectedPos)
+				if selectedPos <= 0:
+					break
+
+				resetReq, newValue = self.settings.changeOption(menuData[selectedPos])
+				if resetReq:
+					reset = True
+				elif newValue:
 					# perform special actions according to option key
+					key, value, optName, optValue = menuData[selectedPos]
 					if key == self.settings.SETTING_VQ:
 						self.reeplayitLib.setVideoProfile(newValue)
-			else:
-				# first time into settings, warn of reset
-				messageOK(__plugin__, "Any changed setings won't come into","effect until Plugin restarted.")
-
-			# make menu of listItems
-			menuData = self.settings.makeMenu()
-			print menuData
-			itemCount = len(menuData)
-			print sys.argv[ 0 ]
-			print sys.argv[ 1 ]
-			for key, value, lbl1, lbl2 in menuData[3:]:
-				li_url = "%s?%s=%s&%s=%s" % ( sys.argv[ 0 ], \
-										self.PARAM_SETTING_KEY, key, \
-										self.PARAM_SETTING_NAME, lbl1)
-				li = xbmcgui.ListItem( lbl1 )
-				li.setInfo("Files", {"Title" : lbl1} )
-
-				ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
-							url=li_url, listitem=li, isFolder=False, totalItems=itemCount)
-				if ( not ok ): break
 		except:
 			traceback.print_exc()
 			messageOK("ERROR:", str(sys.exc_info()[ 1 ]))
 
-		if ok:
-			xbmcplugin.addSortMethod( handle=int( sys.argv[ 1 ] ), sortMethod=xbmcplugin.SORT_METHOD_NONE )
-			xbmcplugin.setContent( handle=int( sys.argv[ 1 ] ), content="files" )
-
-		xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=ok )
-		self.debug( "< showMenu() ok=%s" % ok)
+		self.debug( "< showMenu() reset=%s" % reset)
+		return reset
 
 
 #######################################################################################################################    
