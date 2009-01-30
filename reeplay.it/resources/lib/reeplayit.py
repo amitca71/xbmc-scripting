@@ -230,7 +230,7 @@ class ReeplayitLib:
 							elif not result:
 								imgFN = self.DEFAULT_THUMB_IMG
 
-						lbl2 = "%smins" % duration
+						lbl2 = "%.1f mins" % (float(duration) / 60)
 						li = xbmcgui.ListItem(title, lbl2, imgFN, imgFN)
 						li.setInfo("video", {"Title" : title, "Date" : captured, "Duration" : duration})
 						li.setProperty(self.PROP_ID, videoid)
@@ -278,6 +278,15 @@ class ReeplayitLib:
 		self.debug("docFN=" + docFN)
 		data = readFile(docFN)
 		if not data:
+			if authReq:
+				debug("http authenticate ...")
+				# This is for Plugin; as it won't have done Auth. before getVideo() call
+				dialogProgress.update(0, "User Authentication ...")
+				if not self.retrieve(self.URL_PLAYLISTS % self.user):
+					dialogProgress.close()
+					messageOK("Error", __lang__(108))	# auth failed.
+					self.debug("< getVideo() failed auth.")
+					return ("", None)
 			# not cached, download
 			data = self.retrieve(infoUrl)
 			saveData(data, docFN)
@@ -299,16 +308,6 @@ class ReeplayitLib:
 				if not fileExist(fn):
 					# if not in cache, do stream or download
 					if download:
-						if authReq:
-							debug("http authenticate ...")
-							# This is for Plugin; as it won't have done Auth. before getVideo() call
-							dialogProgress.update(0, "User Authentication ...")
-							if not self.retrieve(self.URL_PLAYLISTS % self.user):
-								dialogProgress.close()
-								messageOK("Error", __lang__(108))	# auth failed.
-								self.debug("< getVideo() failed auth.")
-								return ("", None)
-
 						self.debug("download video")
 						dialogProgress.update(0,  __lang__(223), title, videoName)
 						if not self.retrieve(videoURL, fn=fn):
@@ -426,7 +425,7 @@ def parsePlaylistXML(doc):
 	for video in videos:
 		data.append( ( unescape(searchRegEx(video, '<title>(.*?)</')), \
 						searchRegEx(video, '<id>(.*?)<'), \
-						searchRegEx(video, '<captured>(\d\d\d\d.\d\d.\d\d)'), \
+						searchRegEx(video, '<captured_at>(\d\d\d\d.\d\d.\d\d)'), \
 						searchRegEx(video, '<link>(.*?)</').strip() + ".xml", \
 						searchRegEx(video, '<img.*?src="(.*?)"'), \
 						searchRegEx(video, '<duration>(.*?)<')) )
