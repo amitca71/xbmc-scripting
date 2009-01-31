@@ -85,8 +85,8 @@ __credits__ = 'SCRIPTER: Donno \nIRC Libary: Joel Rosdahl\nFirst Tester: skamm \
 __version__ = '2.9'
 
 #CHANGE THIS ONLY if u need too -  ONE DAY HOPE these will be change able thorugh the Settings Menu
-YOURNICK = "DonnoII"    #Sets Default NickName
-realname = "Dark Donno"
+YOURNICK = "XBMC|User"    #Sets Default NickName
+realname = "XBMC"
 usrname = "IRCXBMC"
 bot_mode = 0            #This enables/disables weather bot mod is enabled (response to certain messages)
 
@@ -109,7 +109,7 @@ RootDir = os.getcwd().replace(";","")+"\\"
 #ScriptDir = "IRCXBMC\\"          #Sets Location to extra files for scripts (like background, configs)
 ScriptHome =  os.getcwd().replace(";","")+"\\" 
 
-PC_dir = "d:\\sean\mywork\\xbox\\irc_client\\" # Set RootDir Equivelent on my computer for testing #PC_dir = "C:\\Documents and Settings\\All Users\\Documents\\irc_client\\" # Set RootDir Equivelent on laptop for testing
+PC_dir = ""
 
 ACTION_Y_BUTTON = 259		# Think it is Y
 ACTION_Y_BUTTON = 34		# Think it is Y
