@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>  <!--  Finnish 29.1.2009  -->
+<strings>  <!--  Finnish 3.2.2009  -->
 	<string id="0">reeplay.it</string>
 
 	<!-- Error messages -->
@@ -15,7 +15,6 @@
 	<string id="109">Videon toisto epäonnistui!</string>
 
 	<!-- General -->
-
 	<string id="200">Kyllä</string>
 	<string id="201">Ei</string>
 	<string id="202">Peruuta</string>
@@ -49,6 +48,10 @@
 	<string id="230">Takaisin</string>
 	<string id="231">Katso</string>
 	<string id="232">Lataa</string>
+	<string id="233">Käynnistä toistolista</string>
+	<string id="234">Toistojärjestys ?</string>
+	<string id="235">Satunnisesti</string>
+	<string id="236">Peräkkäin</string>
 
 	<!-- menu options -->
 	<string id="300">Näytä skriptin ohje</string>
@@ -76,7 +79,7 @@
 	<string id="1015">Lisäke on asennettu.</string>
 	<string id="1016">Viimeistele asennus 'Lisää sijainti'-toiminnolla.</string>
 
-
+    <!-- Update error messages -->
 	<string id="1030">Uutta versiota ei löytynyt!</string>
 	<string id="1031">Päivitys ei onnistunut!</string>
 
