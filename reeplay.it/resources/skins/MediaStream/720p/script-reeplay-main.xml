@@ -1,0 +1,152 @@
+<window id="20">
+  <defaultcontrol always="true">50</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+
+  <controls>
+    <include>Background</include>
+    <include>List</include>
+    <include>InfoList</include>
+    <include>PanelStream</include>
+
+    <control type="group" id="1000">
+		<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>
+		<control type="group">
+			<posx>400</posx>
+			<control type="image">
+				<description>Third Title</description>
+				<include>TopOverlayTitleAreaBG</include>
+				<width>400</width>
+			</control>
+			<control type="label" id="1002">
+				<include>TopOverlayTitleAreaText</include>
+				<posx>380</posx>
+				<width>250</width>
+				<label></label>
+			</control>
+		</control>
+
+		<include>TopOverlaySecondTitleAreaBG</include>
+		<control type="label" id="1001">
+			<description>version</description>
+			<label></label>
+			<visible>true</visible>
+			<include>TopOverlaySecondTitleAreaText</include>
+		</control>
+
+		<include>TopOverlayTitlePos</include>
+		<include>TopOverlayFirstTitleAreaBG</include>
+		<control type="label">
+			<description>Scripts label</description>
+			<include>TopOverlayFirstTitleAreaText</include>
+			<label>reeplay.it</label>
+		</control>
+
+	</control>
+
+	<!--  PAD BUTTONS -->
+	<control type="group" id="3000">
+		<posx>580r</posx>
+		<posy>655</posy>
+		<animation effect="slide" tween="cubic" start="580,0" time="700" delay="90">WindowOpen</animation>
+		<animation effect="slide" tween="circle" easing="inout" end="580,0" delay="300" time="800">WindowClose</animation>
+		<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>
+		<visible>true</visible>
+
+		<control type="image">
+			<description>BACK button</description>
+			<posx>0</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>backbutton.png</texture>
+		</control>
+		<control type="label" id="3001">
+			<description>BACK label</description>
+			<posx>30</posx>
+			<posy>2</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>Unfocused</textcolor>
+		</control>
+		<control type="image">
+			<description>WHITE button</description>
+			<posx>110</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>whitebutton.png</texture>
+		</control>
+		<control type="label" id="3002">
+			<description>WHITE label</description>
+			<posx>140</posx>	
+			<posy>2</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>Unfocused</textcolor>
+		</control>
+		<control type="image">
+			<description>Select button</description>
+			<posx>220</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>abutton.png</texture>
+		</control>
+		<control type="label" id="3003">
+			<description>A label</description>
+			<posx>250</posx>	
+			<posy>2</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>Unfocused</textcolor>
+		</control>
+		<control type="image">
+			<description>B button</description>
+			<posx>330</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>bbutton.png</texture>
+		</control>
+		<control type="label" id="3004">
+			<description>B label</description>
+			<posx>360</posx>	
+			<posy>2</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>Unfocused</textcolor>
+		</control>
+		<control type="image">
+			<description>Y button</description>
+			<posx>440</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>ybutton.png</texture>
+			<visible>Control.IsVisible(3005)</visible>
+		</control>
+		<control type="label" id="3005">
+			<description>Y label</description>
+			<posx>470</posx>	
+			<posy>2</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>Unfocused</textcolor>
+		</control>
+	</control> <!-- end group PAD -->
+
+	<control type="group">
+		<include>Clock</include>
+		<include>OptionsMenu</include>
+		<include>MediaCount</include>
+		<include>MusicNowPlayingIndicators</include>
+		<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>
+	</control>
+
+  </controls>
+</window>

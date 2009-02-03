@@ -300,7 +300,7 @@
 				<align>right</align>
 				<visible>true</visible>
 			</control>
-			
+
 			<control type="image">
 				<description>Select Button</description>
 				<posx>633</posx>
@@ -315,6 +315,25 @@
 				<posx>623</posx>
 				<posy>528</posy>
 				<label>31024</label>
+				<align>right</align>
+				<visible>true</visible>
+			</control>
+			
+			<control type="image">
+				<description>Y Button</description>
+				<posx>646</posx>
+				<posy>545</posy>
+				<include>Button-Map-Texture-Width</include>
+				<height>21</height>
+				<texture>button-Y.png</texture>
+				<visible>Control.IsVisible(3005)</visible>
+			</control>
+			<control type="label" id="3005">
+				<description>Y button Label</description>
+				<include>KeymapFont</include>
+				<posx>636</posx>
+				<posy>548</posy>
+				<label></label>
 				<align>right</align>
 				<visible>true</visible>
 			</control>

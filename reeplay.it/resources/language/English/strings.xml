@@ -48,6 +48,10 @@
     <string id="230">Back</string>
     <string id="231">Stream</string>
     <string id="232">Download</string>
+	<string id="233">Play Playlist</string>
+	<string id="234">Play Order ?</string>
+	<string id="235">Random</string>
+	<string id="236">Sequential</string>
 
     <!-- menu options -->
     <string id="300">View Script Readme</string>

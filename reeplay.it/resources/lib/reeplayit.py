@@ -29,12 +29,13 @@ class ReeplayitLib:
 
 	URL_BASE = "http://staging.reeplay.it/"        # LIVE is "http://reeplay.it/"
 
-	def __init__(self, user, pwd, pageSize=200, vq=False, docType='xml'):
-		debug("ReeplayitLib() __init__ %s %s pageSize=%d vq=%s docType=%s" % (user, pwd, pageSize, vq, docType))
+	def __init__(self, user, pwd, pageSize=200, vq=False, docType='xml', isPlugin=False):
+		debug("ReeplayitLib() __init__ %s %s pageSize=%d vq=%s docType=%s isPlugin=%s" % (user, pwd, pageSize, vq, docType, isPlugin))
 
 		self.user = user
 		self.pageSize = pageSize
 		self.docType = docType
+		self.isPlugin = isPlugin
 		self.setVideoProfile(vq)
 		
 		self.PROP_ID = "ID"					# pls id
@@ -65,7 +66,7 @@ class ReeplayitLib:
 
 		self.URL_PLAYLISTS = self.URL_BASE + "users/%s/playlists." + self.docType
 		self.URL_PLAYLIST = self.URL_BASE + "users/%s/playlists/%s."+self.docType+"?page=%s&page_size=%s"
-		self.URL_VIDEO_INFO = self.URL_BASE + "users/%s/contents/%s." + self.docType
+		self.URL_VIDEO_INFO = self.URL_BASE + "users/%s/contents/%s." + self.docType + "?profile=%s"
 
 		self.plsListItems = []
 		self.videoListItems = []
@@ -162,25 +163,16 @@ class ReeplayitLib:
 		return count
 
 	##############################################################################################################
-	def getPlaylist(self, plsIdx=None, plsId="", plsTitle="", page=1):
+	def getPlaylist(self, plsId="", page=1, pageSize=0):
 		""" Download video list for playlist """
-		self.debug("> getPlaylist() plsIdx=%s plsId=%s page=%d" % (plsIdx,plsId,page))
+		self.debug("> getPlaylist() plsId=%s page=%d pageSize=%d" % (plsId, page, pageSize))
 
 		# reset stored videos
 		self.videoListItems = []
 		totalsize = 0
-
-		# get selected playlist info
-		if not plsId:
-			li = self.getPlsLI(plsIdx)
-			plsId = li.getProperty(self.PROP_ID)
-			plsTitle = li.getLabel()
-			self.debug("From plsIdx; plsId=%s  plsTitle=%s" % (plsId, plsTitle))
-
-		msg = "%s - %s %s" % (plsTitle, __lang__(219), page)
-		dialogProgress.create(__lang__(0), __lang__(217), msg) # DL playlist content
-		dialogProgress.update(0)
-		self.set_report_hook(self.progressHandler, dialogProgress)
+		# use settings pageSize, unless overridden
+		if not pageSize:
+			pageSize = self.pageSize
 
 		# load cached file
 		docFN = os.path.join(DIR_CACHE, "pls_%s_page_%d.%s" % (plsId, page, self.docType))
@@ -188,12 +180,11 @@ class ReeplayitLib:
 		data = readFile(docFN)
 		if not data:
 			# not cached, download
-			url = self.URL_PLAYLIST % (self.user, plsId, page, self.pageSize)
+			url = self.URL_PLAYLIST % (self.user, plsId, page, pageSize)
 			data = self.retrieve(url)
 			saveData(data, docFN)
 
 		if data:
-			self.set_report_hook(None, None)
 			dialogProgress.update(0, __lang__(210), "") # parsing
 			items = self.parsePlaylist(data)
 
@@ -250,9 +241,9 @@ class ReeplayitLib:
 		return totalsize
 
 	##############################################################################################################
-	def getVideo(self, idx=-1, id="", title="", download=False, authReq=False):
+	def getVideo(self, idx=-1, id="", title="", download=False):
 		""" Download the selected video info doc to get video url """
-		self.debug("> getVideo() idx=%s id=%s download=%s authReq=%s" % (idx, id, download, authReq))
+		self.debug("> getVideo() idx=%s id=%s download=%s" % (idx, id, download))
 		fn = None
 
 		# get LI info
@@ -266,27 +257,62 @@ class ReeplayitLib:
 			# from plugin, create a video li
 			li = xbmcgui.ListItem( title )
 
-		infoUrl = self.URL_VIDEO_INFO % (self.user, id)
-		self.debug("infoUrl=" + infoUrl)
-
 		dialogProgress.create(__lang__(0))
 		self.set_report_hook(self.progressHandler, dialogProgress)
 		dialogProgress.update(0, __lang__(222), title)
 
+		videoURL = self.getVideoMediaUrl(id)
+		
+		# download and save video from its unique media-url
+		if videoURL:
+			# download video to cache
+			basename = os.path.basename(videoURL)
+			videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
+			fn = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, videoName))
+			self.debug( "video fn=" + fn )
+			if not fileExist(fn):
+				# if not in cache, do stream or download
+				if download:
+					self.debug("download video")
+					dialogProgress.update(0,  __lang__(223), title, videoName)
+					if not self.retrieve(videoURL, fn=fn):
+						deleteFile(fn)	# delete incase of partial DL
+						fn = ''
+				else:
+					# stream, so return url
+					self.debug("stream video")
+					fn = videoURL
+			else:
+				self.debug("video file exists")
+
+		dialogProgress.close()
+
+		self.debug("< getVideo() fn=%s li=%s" % (fn, li))
+		return (fn, li)
+
+	##############################################################################################################
+	def getVideoMediaUrl(self, videoId):
+		""" Download the selected video info doc to get video url """
+		self.debug("> getVideoMediaUrl() videoId=%s" % videoId)
+
+		videoURL = ""
+		infoUrl = self.URL_VIDEO_INFO % (self.user, videoId, self.vqProfile)
+		self.debug("infoUrl=" + infoUrl)
+
 		# if exist, load cached
-		docFN = os.path.join(DIR_CACHE, "%s_%s.%s" % (id, self.vqProfile, self.docType))
+		docFN = os.path.join(DIR_CACHE, "%s_%s.%s" % (videoId, self.vqProfile, self.docType))
 		self.debug("docFN=" + docFN)
 		data = readFile(docFN)
 		if not data:
-			if authReq:
+			if self.isPlugin:
 				debug("http authenticate ...")
 				# This is for Plugin; as it won't have done Auth. before getVideo() call
 				dialogProgress.update(0, "User Authentication ...")
 				if not self.retrieve(self.URL_PLAYLISTS % self.user):
 					dialogProgress.close()
 					messageOK("Error", __lang__(108))	# auth failed.
-					self.debug("< getVideo() failed auth.")
-					return ("", None)
+					self.debug("< getVideoMediaUrl() failed auth.")
+					return ""
 			# not cached, download
 			data = self.retrieve(infoUrl)
 			saveData(data, docFN)
@@ -294,39 +320,12 @@ class ReeplayitLib:
 		# parse video info to get media-url
 		if data:
 			videoURL = self.parseVideo(data)
-			self.debug("videoURL=" + videoURL)
-
-			# download and save video from its unique media-url
-			if not videoURL:
-				messageOK(__lang__(0), "Media URL missing!", title)
-			else:
-				# download video to cache
-				basename = os.path.basename(videoURL)
-				videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
-				fn = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, videoName))
-				self.debug( "video fn=" + fn )
-				if not fileExist(fn):
-					# if not in cache, do stream or download
-					if download:
-						self.debug("download video")
-						dialogProgress.update(0,  __lang__(223), title, videoName)
-						if not self.retrieve(videoURL, fn=fn):
-							deleteFile(fn)	# delete incase of partial DL
-							fn = ''
-					else:
-						# stream, so return url
-						self.debug("stream video")
-						fn = videoURL
-				else:
-					self.debug("video file exists")
-
-		dialogProgress.close()
-		# delete file if failed to parse etc
-		if not fn:
-			deleteFile(docFN)
-
-		self.debug("< getVideo() fn=%s li=%s" % (fn, li))
-		return (fn, li)
+		if not videoURL:
+			messageOK(__lang__(0), "Video Media URL missing!")
+			deleteFile(docFN) # incase its a bad info doc
+		
+		self.debug("< getVideoMediaUrl() videoURL=%s" % videoURL)
+		return videoURL
 
 	##############################################################################################################
 	def getPlsLI(self, idx):

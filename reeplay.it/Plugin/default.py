@@ -12,9 +12,9 @@
 
 __plugin__ = "reeplay.it"
 __scriptname__  = "reeplay.it"
-__version__ = '0.6'
+__version__ = '0.7'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '30-01-2009'
+__date__ = '02-02-2009'
 
 import sys, os.path
 import xbmc, xbmcgui, xbmcplugin
@@ -160,6 +160,7 @@ class ReeplayitPlugin:
 			title = __lang__(204)
 			li = xbmcgui.ListItem( title )
 			li.setInfo("Files", {"Title" : title} )
+			# context menu option
 #			menuCmd = "xbmc.ActivateWindow(videofiles,%s?%s=)" % (sys.argv[0],self.PARAM_SETTINGS)
 #			li.addContextMenuItems([("Plugin Settings", menuCmd)])
 
@@ -202,7 +203,7 @@ class ReeplayitPlugin:
 	########################################################################################################################
 	def getPlaylist(self, plsTitle, plsId, plsCount, plsPage=1):
 		""" Discover a list of Categories within a Directory """
-		self.debug( "> getplaylist() %s plsId=%s plsCount=%s plsPage=%s" % (plsTitle, plsId, plsCount, plsPage))
+		self.debug( "> getplaylist() plsId=%s plsCount=%s plsPage=%s" % (plsId, plsCount, plsPage))
 
 		ok = False
 		try:
@@ -210,12 +211,17 @@ class ReeplayitPlugin:
 			isNextPage = (plsPage < maxPages)
 			self.debug("isNextPage=%s" % isNextPage)
 
-			videoCount = self.reeplayitLib.getPlaylist(-1, plsId, plsTitle, plsPage)
+			msg = "%s - %s %s" % (plsTitle, __lang__(219), plsPage)
+			dialogProgress.create(__lang__(0), __lang__(217), msg) # DL playlist content
+			self.reeplayitLib.set_report_hook(self.reeplayitLib.progressHandler, dialogProgress)
+
+			videoCount = self.reeplayitLib.getPlaylist(plsId, page=plsPage)
+
+			dialogProgress.close()
 			if not videoCount: raise "Empty"
 
 			if isNextPage:
 				videoCount += 1
-
 			if isNextPage:
 				nextPage = plsPage+1
 				title = "%s (%s/%s)" % (__lang__(221), plsPage+1, maxPages)

@@ -424,7 +424,7 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 
 ##############################################################################################################    
 def playMedia(source, li=None):
-	debug("> playMedia() " + source)
+	debug("> playMedia() %s" % source)
 	success = False
 
 	try:

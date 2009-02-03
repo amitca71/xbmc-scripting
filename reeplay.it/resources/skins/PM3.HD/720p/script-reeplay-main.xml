@@ -205,6 +205,24 @@
 			<align>left</align>
 			<textcolor>white</textcolor>
 		</control>
+		<control type="image">
+			<description>Y button</description>
+			<posx>440</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>ybutton.png</texture>
+			<visible>Control.IsVisible(3005)</visible>
+		</control>
+		<control type="label" id="3005">
+			<description>Y label</description>
+			<posx>470</posx>	
+			<posy>2</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>white</textcolor>
+		</control>
 	</control> <!-- end group PAD -->
 
 	</controls>

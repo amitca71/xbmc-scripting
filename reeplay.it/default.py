@@ -22,10 +22,10 @@ from string import find, strip, replace
 
 # Script doc constants
 __scriptname__ = "reeplay.it"
-__version__ = '0.6'
+__version__ = '0.7'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
-__date__ = '30-01-2009'
+__date__ = '02-02-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -61,6 +61,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 	CLBL_WHITE_BTN = 3002
 	CLBL_A_BTN = 3003
 	CLBL_B_BTN = 3004
+	CLBL_Y_BTN = 3005
 	CLST_CONTENT = 50
 	CBTN_PREV_PAGE = 20
 	CBTN_NEXT_PAGE = 21
@@ -120,19 +121,10 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.getControl( self.CLBL_WHITE_BTN ).setLabel( __lang__(204) )
 			self.getControl( self.CLBL_A_BTN ).setLabel( __lang__(229) )
 			self.getControl( self.CLBL_B_BTN ).setLabel( __lang__(230) )
+			self.getControl( self.CLBL_Y_BTN ).setLabel( __lang__(233) )
 
 			if self.reset():
 				self.initPlaylists()
-
-#			while not self.ready:
-#				if not self.reset():
-#					break
-#				else:
-#					self.ready = self.initPlaylists()
-#					if not self.ready:
-#						# remove username which will force login menu
-#						self.settings.set(self.settings.SETTING_USER, "")
-				
 
 		elif not self.isContentPlaylists:
 			debug("refresh default window list with videoList")
@@ -169,7 +161,13 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			debug("> CLICK_B isContentPlaylists=%s" %  self.isContentPlaylists)
 			if not self.isContentPlaylists:
 				self.initPlaylists()
+			self.setYBtn()
 			debug("< CLICK_B")
+		elif actionID in CLICK_Y:
+			# Discover all videos in selected playlist and add to xbmc pls
+			debug("CLICK_Y")
+			if self.isContentPlaylists:
+				self.playPlaylist()
 
 		self.ready = True
 
@@ -208,6 +206,11 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 	##############################################################################################
 	def setHeader(self, title=""):
 		self.getControl( self.CLBL_TITLE ).setLabel(title)
+
+	##############################################################################################
+	def setYBtn(self):
+		debug("setYBtn()")
+		self.getControl(self.CLBL_Y_BTN).setVisible(self.isContentPlaylists)
 
 	##############################################################################################
 	def setPageNav(self):
@@ -324,6 +327,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		self.lastPlaylistIdx = idx
 		if success:
 			self.setPageNav()
+			self.setYBtn()
 
 		debug("< playlistSelected() success=%s" % success)
 		return success
@@ -331,9 +335,20 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 	######################################################################################
 	def initVideos(self, plsIdx=0):
 		debug("> initVideos() plsIdx=%s" % plsIdx)
-		success = False
 
-		if self.reeplayitLib.getPlaylist(plsIdx, page=self.currPage):
+		li = self.reeplayitLib.getPlsLI(plsIdx)
+		plsId = li.getProperty(self.reeplayitLib.PROP_ID)
+		plsTitle = li.getLabel()
+		msg = "%s - %s %s" % (plsTitle, __lang__(219), self.currPage)
+		dialogProgress.create(__lang__(0), __lang__(217), msg) # DL playlist content
+		self.reeplayitLib.set_report_hook(self.reeplayitLib.progressHandler, dialogProgress)
+
+		print "do getPlaylist"
+		success = self.reeplayitLib.getPlaylist(plsId, page=self.currPage)
+		print "done getPlaylist"
+
+		dialogProgress.close()
+		if success:
 			self.initList(self.reeplayitLib.videoListItems)
 			self.isContentPlaylists = False
 			self.setHeader(__lang__(218))		# choose a video
@@ -357,6 +372,51 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 #			messageOK(__lang__(0), __lang__(106))		# DL failed
 
 		debug("< videoSelected()")
+
+	#################################################################################################################
+	def playPlaylist(self):
+		debug("> playPlaylist()")
+		success = False
+
+		try:
+			if xbmcgui.Dialog().yesno(__lang__(0), __lang__(233) + "?"):
+				xbmcPlaylist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+				xbmcPlaylist.clear()
+
+				# delete existing data doc as were now getting every video not just a pagesize
+				reeplayit.deleteScriptCache(False)
+				# get selected pls
+				plsIdx = self.getCurrentListPosition()
+				li = self.reeplayitLib.getPlsLI(plsIdx)
+				plsId = li.getProperty(self.reeplayitLib.PROP_ID)
+				plsTitle = li.getLabel()
+				plsCount = int(li.getProperty(self.reeplayitLib.PROP_COUNT))
+
+				msg = "%s - %s %s" % (plsTitle, __lang__(219), self.currPage)
+				dialogProgress.create(__lang__(0), __lang__(217), msg) # DL playlist content
+				self.reeplayitLib.set_report_hook(self.reeplayitLib.progressHandler, dialogProgress)
+
+				# get all videos in playlist
+				videoCount = self.reeplayitLib.getPlaylist(plsId, pageSize=plsCount)
+				dialogProgress.close()
+
+				for idx in range(videoCount):
+					source, li = self.reeplayitLib.getVideo(idx, download=self.settings.get(self.settings.SETTING_PLAY_MODE))
+					if source and li:
+						url = li.getProperty(self.reeplayitLib.PROP_URL)
+						xbmcPlaylist.add(source, li)
+
+				# play all in xbmc pls
+				if xbmcPlaylist.size():
+					if xbmcgui.Dialog().yesno(__lang__(0), __lang__(234), "","", __lang__(236), __lang__(235)):
+						xbmcPlaylist.shuffle()
+					playMedia(xbmcPlaylist)
+				else:
+					messageOK(__lang__(0), __lang__(105))		# no videos
+		except:
+			handleException()
+
+		debug("< playPlaylist()")
 
 	##############################################################################################################
 	def login(self):

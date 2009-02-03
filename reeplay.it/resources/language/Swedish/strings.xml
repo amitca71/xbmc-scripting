@@ -3,80 +3,80 @@
     <string id="0">reeplay.it</string>
 
     <!-- Error messages -->
-    <string id="100">Fel!</string>
-    <string id="101">Kunde inte öppna filen!</string>
-    <string id="102">Nedladdning misslyckades!</string>
-    <string id="103">Nedladdning avbruten</string>
-    <string id="104">Inga spellistor hittade!</string>
-    <string id="105">Inga videor hittade!</string>
-    <string id="106">Misslyckades att ladda ner video!</string>
-    <string id="107">Inloggningsdetaljer saknas[CR]Ange nu?</string>
-    <string id="108">Authentisering misslyckades![CR]Var god ändra inloggningsdetaljer</string>
-    <string id="109">Video kunde inte spelas!</string>
+    <string id="100">Errore!</string>
+    <string id="101">Impossibile aprire il file!</string>
+    <string id="102">Errore di download!</string>
+    <string id="103">Download annullato</string>
+    <string id="104">Non trovo nessuna playlist!</string>
+    <string id="105">Non trovo nessun video!</string>
+    <string id="106">Download del video fallito!</string>
+    <string id="107">Mancano le credenziali utente[CR]Immetterle ora?</string>
+    <string id="108">Autenticazione fallita![CR]Prego reimmettere le credenziali</string>
+    <string id="109">Non e' stato possibile riprodurre il video!</string>
 
     <!-- General -->
-    <string id="200">Ja</string>
-    <string id="201">Nej</string>
-    <string id="202">Avbryt</string>
-    <string id="203">Avsluta</string>
-    <string id="204">Meny</string>
-    <string id="205">Var god vänta ...</string>
-    <string id="206">Lyckades</string>
-    <string id="207">Laddar ner ...</string>
-    <string id="208">Söker ....</string>
-    <string id="209">Loggar in ...</string>
-    <string id="210">Parsing ...</string>
-    <string id="211">Visa alla</string>
-    <string id="212">Ange användarnamn:</string>
-    <string id="213">Ange lösenord:</string>
-    <string id="214">Användare</string>
-    <string id="215">Laddar ner spellistor ...</string>
-    <string id="216">Välj en spellista</string>
-    <string id="217">Laddar ner spellisteinnehåll ...</string>
-    <string id="218">Välj en video</string>
-    <string id="219">Sida:</string>
-    <string id="220">Föregående sida</string>
-    <string id="221">Nästa sida</string>
-    <string id="222">Laddar ner videoinformation ...</string>
-    <string id="223">Laddar ner video ...</string>
-    <string id="224">Laddar ner image ...</string>
-    <string id="225">Hög</string>
+    <string id="200">Si</string>
+    <string id="201">No</string>
+    <string id="202">Annulla</string>
+    <string id="203">Esci</string>
+    <string id="204">Menu</string>
+    <string id="205">Prego attendere ...</string>
+    <string id="206">Successo</string>
+    <string id="207">Download in corso ...</string>
+    <string id="208">Ricerca in corso ....</string>
+    <string id="209">Effettuo il login ...</string>
+    <string id="210">Analizzo l'XML...</string>
+    <string id="211">Mostra tutto</string>
+    <string id="212">Immetti Nome utente:</string>
+    <string id="213">Immetti Password:</string>
+    <string id="214">Utente</string>
+    <string id="215">Download playlist in corso ...</string>
+    <string id="216">Scegli una playlist</string>
+    <string id="217">Download contenuti playlist in corso ...</string>
+    <string id="218">Scegli un video</string>
+    <string id="219">Pagina:</string>
+    <string id="220">Pag. precedente</string>
+    <string id="221">Pag. successiva </string>
+    <string id="222">Download informazioni Video...</string>
+    <string id="223">Download Video in corso...</string>
+    <string id="224">Download immagine in corso...</string>
+    <string id="225">Alta</string>
     <string id="226">Standard</string>
-    <string id="227">Videor</string>
-    <string id="228">Alla</string>
-    <string id="229">Välj</string>
-    <string id="230">Bakåt</string>
-    <string id="231">Ström</string>
-    <string id="232">Hämta</string>
-	
+    <string id="227">Video</string>
+    <string id="228">Tutti</string>
+    <string id="229">Seleziona</string>
+    <string id="230">Indietro</string>
+    <string id="231">Stream</string>
+    <string id="232">Download</string>
+
     <!-- menu options -->
-    <string id="300">Visa skript-läsmig</string>
-    <string id="301">Visa skript-ändringslogg</string>
-    <string id="302">Kontrollera efter skriptuppdatering vid start?</string>
-    <string id="303">Användarnamn:</string>
-    <string id="304">Lösenord:</string>
-    <string id="305">Videor per sida:</string>
-    <string id="306">Videokvalitet:</string>
-    <string id="307">Ta bort buffert vid avslut:</string>
-    <string id="308">Uppspelning Mode:</string>
+    <string id="300">Vedi file Leggimi</string>
+    <string id="301">Vedi log cambiamenti </string>
+    <string id="302">Controllo aggiornamento script all'avvio?</string>
+    <string id="303">Nome utente:</string>
+    <string id="304">Password:</string>
+    <string id="305">Video per pagina:</string>
+    <string id="306">Qualità video:</string>
+    <string id="307">Svuota la cache in uscita:</string>
+    <string id="308">Modalità Riproduzione:</string>
 
     <!-- Update messages -->
-    <string id="1000">Din version är aktuell.</string>
-    <string id="1001">Kontrollerar skriptuppdatering...</string>
-    <string id="1002">är nyare</string>
-    <string id="1003">Vill du uppdatera?</string>
-    <string id="1004">Hämtar fillista...</string>
-    <string id="1005">Var god vänta...</string>
-    <string id="1006">Version</string>
-    <string id="1007">Hämtar:</string>
-    <string id="1008">Sökväg:</string>
-    <string id="1009">Fil:</string>
-    <string id="1010">Skriptet uppdaterat, startar om.</string>
-    <string id="1015">Tillägg installerat.</string>
-    <string id="1016">I tillägg välj 'Lägg till' för att slutföra installationen.</string>
+    <string id="1000">La versione é la più recente.</string>
+    <string id="1001">Controllo se ci sono versioni aggiornate...</string>
+    <string id="1002">è più recente</string>
+    <string id="1003">Vuoi effettuare l'aggiornamento?</string>
+    <string id="1004">Prelevo la lista dei file...</string>
+    <string id="1005">Prego attendere...</string>
+    <string id="1006">Versione</string>
+    <string id="1007">Prelievo:</string>
+    <string id="1008">Path:</string>
+    <string id="1009">File:</string>
+    <string id="1010">Script aggiornato. Riavvio dello script.</string>
+    <string id="1015">Plugin installato.</string>
+    <string id="1016">Nei plugin 'Aggiungi Sorgente' per completare l'installazione.</string>
 
     <!-- Update error messages -->
-    <string id="1030">Inga taggade versioner hittades!</string>
-    <string id="1031">Ett fel inträffade under uppdatering av skriptet!</string>
+    <string id="1030">Non sono state trovate versioni!</string>
+    <string id="1031">C'e' stato un errore di aggiornamento dello script!</string>
 
 </strings>

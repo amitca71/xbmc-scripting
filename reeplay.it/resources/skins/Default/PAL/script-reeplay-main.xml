@@ -142,8 +142,8 @@
 
 	<!--  PAD BUTTONS -->
 	<control type="group" id="3000">
-		<posx>300</posx>
-		<posy>680</posy>
+		<posx>180</posx>
+		<posy>550</posy>
 		<animation effect="slide" time="200" start="0,40" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
 		<animation effect="slide" time="200" end="0,40" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>
@@ -161,8 +161,8 @@
 		</control>
 		<control type="label" id="3001">
 			<description>BACK label</description>
-			<posx>30</posx>
-			<posy>2</posy>
+			<posx>25</posx>
+			<posy>4</posy>
 			<label>Exit</label>
 			<font>font11</font>
 			<align>left</align>
@@ -170,7 +170,7 @@
 		</control>
 		<control type="image">
 			<description>WHITE button</description>
-			<posx>110</posx>
+			<posx>100</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -178,8 +178,8 @@
 		</control>
 		<control type="label" id="3002">
 			<description>WHITE label</description>
-			<posx>140</posx>	
-			<posy>2</posy>
+			<posx>125</posx>	
+			<posy>4</posy>
 			<label>Menu</label>
 			<font>font11</font>
 			<align>left</align>
@@ -187,7 +187,7 @@
 		</control>
 		<control type="image">
 			<description>A button</description>
-			<posx>220</posx>
+			<posx>200</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -195,8 +195,8 @@
 		</control>
 		<control type="label" id="3003">
 			<description>A label</description>
-			<posx>250</posx>	
-			<posy>2</posy>
+			<posx>225</posx>	
+			<posy>4</posy>
 			<label>Select</label>
 			<font>font11</font>
 			<align>left</align>
@@ -204,7 +204,7 @@
 		</control>
 		<control type="image">
 			<description>B button</description>
-			<posx>330</posx>
+			<posx>300</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -212,9 +212,27 @@
 		</control>
 		<control type="label" id="3004">
 			<description>B label</description>
-			<posx>360</posx>	
+			<posx>325</posx>	
+			<posy>4</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="image">
+			<description>Y button</description>
+			<posx>400</posx>
 			<posy>2</posy>
-			<label>Back</label>
+			<width>25</width>
+			<height>25</height>
+			<texture>ybutton.png</texture>
+			<visible>Control.IsVisible(3005)</visible>
+		</control>
+		<control type="label" id="3005">
+			<description>Y label</description>
+			<posx>425</posx>	
+			<posy>4</posy>
+			<label></label>
 			<font>font11</font>
 			<align>left</align>
 			<textcolor>white</textcolor>
