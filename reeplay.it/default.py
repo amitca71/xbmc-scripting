@@ -343,9 +343,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		dialogProgress.create(__lang__(0), __lang__(217), msg) # DL playlist content
 		self.reeplayitLib.set_report_hook(self.reeplayitLib.progressHandler, dialogProgress)
 
-		print "do getPlaylist"
 		success = self.reeplayitLib.getPlaylist(plsId, page=self.currPage)
-		print "done getPlaylist"
 
 		dialogProgress.close()
 		if success:

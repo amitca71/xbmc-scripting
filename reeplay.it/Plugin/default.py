@@ -331,6 +331,7 @@ class ReeplayitPlugin:
 				if xbmcgui.Dialog().yesno(__lang__(0), __lang__(234), "","", __lang__(236), __lang__(235)):
 					xbmcPlaylist.shuffle()
 				playMedia(xbmcPlaylist)
+#				xbmc.executebuiltin("xbmc.ActivateWindow(videoplaylist)")
 			else:
 				messageOK(__lang__(0), __lang__(105))		# no videos
 		except:

@@ -434,7 +434,7 @@ def playMedia(source, li=None):
 			xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(source)
 		success = xbmc.Player().isPlaying()
 	except:
-		traceback.print_exc
+		traceback.print_exc()
 		debug('xbmc.Player().play() failed trying xbmc.PlayMedia() ')
 		try:
 			cmd = 'xbmc.PlayMedia(%s)' % source

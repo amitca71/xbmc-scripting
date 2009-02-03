@@ -71,6 +71,7 @@ class ReeplayitLib:
 		self.plsListItems = []
 		self.videoListItems = []
 		self.DEFAULT_THUMB_IMG = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
+		self.isPluginAuth = False
 
 	def debug(self, msg=""):
 		debug("%s.%s" % (self.__class__.__name__, msg))
@@ -307,7 +308,7 @@ class ReeplayitLib:
 		self.debug("docFN=" + docFN)
 		data = readFile(docFN)
 		if not data:
-			if self.isPlugin:
+			if self.isPlugin and not self.isPluginAuth:
 				debug("http authenticate ...")
 				# This is for Plugin; as it won't have done Auth. before getVideo() call
 				dialogProgress.update(0, "User Authentication ...")
@@ -316,6 +317,7 @@ class ReeplayitLib:
 					messageOK("Error", __lang__(108))	# auth failed.
 					self.debug("< getVideoMediaUrl() failed auth.")
 					return ""
+				self.isPluginAuth = True
 			# not cached, download
 			data = self.retrieve(infoUrl)
 			saveData(data, docFN)
