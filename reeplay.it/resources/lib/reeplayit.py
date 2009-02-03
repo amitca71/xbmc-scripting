@@ -29,7 +29,7 @@ class ReeplayitLib:
 
 	URL_BASE = "http://staging.reeplay.it/"        # LIVE is "http://reeplay.it/"
 
-	def __init__(self, user, pwd, pageSize=200, vq=False, docType='xml', isPlugin=False):
+	def __init__(self, user, pwd, pageSize=200, vq=False, isPlugin=False, docType='xml'):
 		debug("ReeplayitLib() __init__ %s %s pageSize=%d vq=%s docType=%s isPlugin=%s" % (user, pwd, pageSize, vq, docType, isPlugin))
 
 		self.user = user
@@ -257,9 +257,12 @@ class ReeplayitLib:
 			# from plugin, create a video li
 			li = xbmcgui.ListItem( title )
 
-		dialogProgress.create(__lang__(0))
-		self.set_report_hook(self.progressHandler, dialogProgress)
-		dialogProgress.update(0, __lang__(222), title)
+		try:
+			dialogProgress.create(__lang__(0),__lang__(222), title)
+			self.set_report_hook(self.progressHandler, dialogProgress)
+		except:
+			self.set_report_hook(None, None)
+			traceback.print_exc()
 
 		videoURL = self.getVideoMediaUrl(id)
 		

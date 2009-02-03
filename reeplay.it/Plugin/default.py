@@ -14,7 +14,7 @@ __plugin__ = "reeplay.it"
 __scriptname__  = "reeplay.it"
 __version__ = '0.7'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '02-02-2009'
+__date__ = '03-02-2009'
 
 import sys, os.path
 import xbmc, xbmcgui, xbmcplugin
@@ -61,9 +61,9 @@ class ReeplayitPlugin:
 
 		# create a new lib instance using login details
 		self.reeplayitLib = reeplayit.ReeplayitLib(self.settings.get(self.settings.SETTING_USER), \
-												   self.settings.get(self.settings.SETTING_PWD), \
-												   self.settings.get(self.settings.SETTING_PAGE_SIZE), \
-												   self.settings.get(self.settings.SETTING_VQ))
+												self.settings.get(self.settings.SETTING_PWD), \
+												self.settings.get(self.settings.SETTING_PAGE_SIZE), \
+												self.settings.get(self.settings.SETTING_VQ), True)
 
 		# define param key names
 		self.PARAM_TITLE = "title"
@@ -73,6 +73,7 @@ class ReeplayitPlugin:
 		self.PARAM_URL = 'url'
 		self.PARAM_VIDEO_ID = 'videoid'
 		self.PARAM_SETTINGS = 'setting'
+		self.PARAM_PLS_PLAYALL = 'plsplayall'
 
 		if ( not sys.argv[ 2 ] ):
 			# new session clear cache
@@ -86,9 +87,9 @@ class ReeplayitPlugin:
 				url = paramDict.get(self.PARAM_URL,'')
 				if paramDict.has_key(self.PARAM_PLS_ID):
 					title = unescape(paramDict[self.PARAM_TITLE])
-					id = paramDict[self.PARAM_PLS_ID]
 					count = int(paramDict[self.PARAM_PLS_COUNT])
 					page = int(paramDict.get(self.PARAM_PLS_PAGE,1))
+					id = paramDict[self.PARAM_PLS_ID]
 					self.getPlaylist(title, id, count, page)
 				elif paramDict.has_key(self.PARAM_VIDEO_ID):
 					title = unescape(paramDict[self.PARAM_TITLE])
@@ -101,6 +102,11 @@ class ReeplayitPlugin:
 						self.debug("reset plugin")
 #						xbmc.executebuiltin("XBMC.RunPlugin(%s)" % sys.argv[0]) # only for nonFolders
 						xbmc.executebuiltin("xbmc.ActivateWindow(videofiles,%s)" % sys.argv[0])
+				elif paramDict.has_key(self.PARAM_PLS_PLAYALL):
+					id = paramDict[self.PARAM_PLS_PLAYALL]
+					title = unescape(paramDict[self.PARAM_TITLE])
+					count = int(paramDict[self.PARAM_PLS_COUNT])
+					self.playPlaylist(title, id, count)
 				else:
 					raise
 			except:
@@ -157,12 +163,9 @@ class ReeplayitPlugin:
 		try:
 			# include menu option
 			li_url = "%s?%s=" % ( sys.argv[ 0 ], self.PARAM_SETTINGS)
-			title = __lang__(204)
+			title = __lang__(204)	# menu
 			li = xbmcgui.ListItem( title )
 			li.setInfo("Files", {"Title" : title} )
-			# context menu option
-#			menuCmd = "xbmc.ActivateWindow(videofiles,%s?%s=)" % (sys.argv[0],self.PARAM_SETTINGS)
-#			li.addContextMenuItems([("Plugin Settings", menuCmd)])
 
 			ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), \
 						url=li_url, listitem=li, isFolder=False, totalItems=1)
@@ -174,8 +177,14 @@ class ReeplayitPlugin:
 				plsTitle = li.getLabel()
 				plsId = li.getProperty(self.reeplayitLib.PROP_ID)
 				plsCount = int(li.getProperty(self.reeplayitLib.PROP_COUNT))
-#				li.addContextMenuItems([("Plugin Settings", menuCmd)])
 
+				# context menu option - Play Playlist
+				menuCmd = "xbmc.ActivateWindow(videofiles,%s?%s=%s&%s=%s&%s=%s)" % (sys.argv[0], \
+																self.PARAM_PLS_PLAYALL, plsId,
+																self.PARAM_TITLE, plsTitle, \
+																self.PARAM_PLS_COUNT, plsCount)
+				li.addContextMenuItems([(__lang__(233), menuCmd)])		# play pls
+	
 				li_url = "%s?%s=%s&%s=%s&%s=%s" % ( sys.argv[ 0 ], \
 												self.PARAM_TITLE, plsTitle, \
 												self.PARAM_PLS_ID, plsId, \
@@ -203,7 +212,7 @@ class ReeplayitPlugin:
 	########################################################################################################################
 	def getPlaylist(self, plsTitle, plsId, plsCount, plsPage=1):
 		""" Discover a list of Categories within a Directory """
-		self.debug( "> getplaylist() plsId=%s plsCount=%s plsPage=%s" % (plsId, plsCount, plsPage))
+		self.debug( "> getplaylist() plsId=%s plsCount=%s plsPage=%s" % (plsId,plsCount,plsPage))
 
 		ok = False
 		try:
@@ -289,6 +298,47 @@ class ReeplayitPlugin:
 		self.debug( "< getVideo() source=%s" % source)
 		return source
 
+
+	########################################################################################################################
+	def playPlaylist(self, plsTitle, plsId, plsCount):
+		""" Discover a list of Categories within a Directory """ 
+		self.debug( "> playPlaylist() plsId=%s plsCount=%s" % (plsId,plsCount))
+
+		try:
+			xbmcPlaylist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+			xbmcPlaylist.clear()
+
+			# delete existing data doc as were now getting every video not just a pagesize
+			reeplayit.deleteScriptCache(False)
+
+			dialogProgress.create(__lang__(0), __lang__(217), plsTitle) # DL playlist content
+			self.reeplayitLib.set_report_hook(self.reeplayitLib.progressHandler, dialogProgress)
+
+			# get all videos in playlist
+			videoCount = self.reeplayitLib.getPlaylist(plsId, pageSize=plsCount)
+			dialogProgress.close()
+
+			playMode = self.settings.get(self.settings.SETTING_PLAY_MODE)
+			for idx in range(videoCount):
+				source, li = self.reeplayitLib.getVideo(idx, download=playMode)
+				if source and li:
+#						url = li.getProperty(self.reeplayitLib.PROP_URL)
+					xbmcPlaylist.add(source, li)
+
+			# play all in xbmc pls
+			debug("Playlist size=%d" % xbmcPlaylist.size())
+			if xbmcPlaylist.size() > 0:
+				if xbmcgui.Dialog().yesno(__lang__(0), __lang__(234), "","", __lang__(236), __lang__(235)):
+					xbmcPlaylist.shuffle()
+				playMedia(xbmcPlaylist)
+			else:
+				messageOK(__lang__(0), __lang__(105))		# no videos
+		except:
+			traceback.print_exc()
+			handleException()
+
+
+		self.debug( "< playPlaylist()")
 
 	############################################################################################################
 	def showMenu(self):

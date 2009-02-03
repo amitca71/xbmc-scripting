@@ -403,7 +403,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 				for idx in range(videoCount):
 					source, li = self.reeplayitLib.getVideo(idx, download=self.settings.get(self.settings.SETTING_PLAY_MODE))
 					if source and li:
-						url = li.getProperty(self.reeplayitLib.PROP_URL)
+#						url = li.getProperty(self.reeplayitLib.PROP_URL)
 						xbmcPlaylist.add(source, li)
 
 				# play all in xbmc pls
