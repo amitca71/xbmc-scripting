@@ -94,19 +94,16 @@ class ReeplayitPlugin:
 				elif paramDict.has_key(self.PARAM_VIDEO_ID):
 					title = unescape(paramDict[self.PARAM_TITLE])
 					id = paramDict[self.PARAM_VIDEO_ID]
-					source = self.getVideo(title, id)
-					if source:
-						playMedia(source)
+					self.getVideo(title, id)
 				elif paramDict.has_key(self.PARAM_SETTINGS):
 					if self.showMenu():
 						self.debug("reset plugin")
-#						xbmc.executebuiltin("XBMC.RunPlugin(%s)" % sys.argv[0]) # only for nonFolders
 						xbmc.executebuiltin("xbmc.ActivateWindow(videofiles,%s)" % sys.argv[0])
 				elif paramDict.has_key(self.PARAM_PLS_PLAYALL):
 					id = paramDict[self.PARAM_PLS_PLAYALL]
 					title = unescape(paramDict[self.PARAM_TITLE])
 					count = int(paramDict[self.PARAM_PLS_COUNT])
-					self.playPlaylist(title, id, count)
+					self.playPlaylist(title, id, count) 
 				else:
 					raise
 			except:
@@ -286,10 +283,11 @@ class ReeplayitPlugin:
 		try:
 			source, li = self.reeplayitLib.getVideo(id=videoId, \
 										title=videoTitle, \
-										download=self.settings.get(self.settings.SETTING_PLAY_MODE), \
-										authReq=True)
+										download=self.settings.get(self.settings.SETTING_PLAY_MODE))
 			if not source:
 				messageOK(__plugin__, __lang__(105), videoTitle)	# no video
+			else:
+				playMedia(source, li)
 		except:
 			source = ""
 			traceback.print_exc()

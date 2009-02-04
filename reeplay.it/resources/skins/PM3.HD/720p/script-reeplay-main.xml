@@ -147,7 +147,7 @@
 		</control>
 		<control type="label" id="3001">
 			<description>BACK label</description>
-			<posx>30</posx>
+			<posx>25</posx>
 			<posy>2</posy>
 			<label></label>
 			<font>font11</font>
@@ -164,24 +164,7 @@
 		</control>
 		<control type="label" id="3002">
 			<description>WHITE label</description>
-			<posx>140</posx>	
-			<posy>2</posy>
-			<label></label>
-			<font>font11</font>
-			<align>left</align>
-			<textcolor>white</textcolor>
-		</control>
-		<control type="image">
-			<description>Select button</description>
-			<posx>220</posx>
-			<posy>2</posy>
-			<width>25</width>
-			<height>25</height>
-			<texture>abutton.png</texture>
-		</control>
-		<control type="label" id="3003">
-			<description>A label</description>
-			<posx>250</posx>	
+			<posx>135</posx>	
 			<posy>2</posy>
 			<label></label>
 			<font>font11</font>
@@ -190,7 +173,7 @@
 		</control>
 		<control type="image">
 			<description>B button</description>
-			<posx>330</posx>
+			<posx>220</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -198,7 +181,24 @@
 		</control>
 		<control type="label" id="3004">
 			<description>B label</description>
-			<posx>360</posx>	
+			<posx>245</posx>	
+			<posy>2</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="image">
+			<description>Select button</description>
+			<posx>330</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>abutton.png</texture>
+		</control>
+		<control type="label" id="3003">
+			<description>A label</description>
+			<posx>355</posx>	
 			<posy>2</posy>
 			<label></label>
 			<font>font11</font>
@@ -207,7 +207,7 @@
 		</control>
 		<control type="image">
 			<description>Y button</description>
-			<posx>440</posx>
+			<posx>470</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -216,7 +216,7 @@
 		</control>
 		<control type="label" id="3005">
 			<description>Y label</description>
-			<posx>470</posx>	
+			<posx>495</posx>	
 			<posy>2</posy>
 			<label></label>
 			<font>font11</font>

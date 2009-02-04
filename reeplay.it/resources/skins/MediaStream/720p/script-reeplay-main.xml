@@ -62,8 +62,8 @@
 		</control>
 		<control type="label" id="3001">
 			<description>BACK label</description>
-			<posx>30</posx>
-			<posy>2</posy>
+			<posx>25</posx>
+			<posy>3</posy>
 			<label></label>
 			<font>font11</font>
 			<align>left</align>
@@ -71,7 +71,7 @@
 		</control>
 		<control type="image">
 			<description>WHITE button</description>
-			<posx>110</posx>
+			<posx>105</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -79,25 +79,8 @@
 		</control>
 		<control type="label" id="3002">
 			<description>WHITE label</description>
-			<posx>140</posx>	
-			<posy>2</posy>
-			<label></label>
-			<font>font11</font>
-			<align>left</align>
-			<textcolor>Unfocused</textcolor>
-		</control>
-		<control type="image">
-			<description>Select button</description>
-			<posx>220</posx>
-			<posy>2</posy>
-			<width>25</width>
-			<height>25</height>
-			<texture>abutton.png</texture>
-		</control>
-		<control type="label" id="3003">
-			<description>A label</description>
-			<posx>250</posx>	
-			<posy>2</posy>
+			<posx>130</posx>	
+			<posy>3</posy>
 			<label></label>
 			<font>font11</font>
 			<align>left</align>
@@ -105,7 +88,7 @@
 		</control>
 		<control type="image">
 			<description>B button</description>
-			<posx>330</posx>
+			<posx>210</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -113,8 +96,25 @@
 		</control>
 		<control type="label" id="3004">
 			<description>B label</description>
-			<posx>360</posx>	
+			<posx>235</posx>	
+			<posy>3</posy>
+			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>Unfocused</textcolor>
+		</control>
+		<control type="image">
+			<description>Select button</description>
+			<posx>315</posx>
 			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>abutton.png</texture>
+		</control>
+		<control type="label" id="3003">
+			<description>A label</description>
+			<posx>340</posx>	
+			<posy>3</posy>
 			<label></label>
 			<font>font11</font>
 			<align>left</align>
@@ -122,7 +122,7 @@
 		</control>
 		<control type="image">
 			<description>Y button</description>
-			<posx>440</posx>
+			<posx>430</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -131,8 +131,8 @@
 		</control>
 		<control type="label" id="3005">
 			<description>Y label</description>
-			<posx>470</posx>	
-			<posy>2</posy>
+			<posx>455</posx>	
+			<posy>3</posy>
 			<label></label>
 			<font>font11</font>
 			<align>left</align>

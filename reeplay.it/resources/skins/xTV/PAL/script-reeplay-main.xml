@@ -98,7 +98,7 @@
 
 		<!--  PAD BUTTONS -->
 		<control type="group" id="3000">
-			<posx>310</posx>
+			<posx>290</posx>
 			<posy>525</posy>
 			<animation effect="slide" time="200" start="0,40" acceleration="-1.1">WindowOpen</animation>
 			<animation effect="slide" time="200" end="0,40" acceleration="1.1">WindowClose</animation>
@@ -175,7 +175,7 @@
 			<control type="label" id="3001">
 				<description>BACK label</description>
 				<posx>25</posx>
-				<posy>4</posy>
+				<posy>3</posy>
 				<label>Exit</label>
 				<font>font11</font>
 				<align>left</align>
@@ -183,7 +183,7 @@
 			</control>
 			<control type="image">
 				<description>white button</description>
-				<posx>75</posx>
+				<posx>70</posx>
 				<posy>2</posy>
 				<width>25</width>
 				<height>25</height>
@@ -191,33 +191,16 @@
 			</control>
 			<control type="label" id="3002">
 				<description>white label</description>
-				<posx>100</posx>	
-				<posy>4</posy>
+				<posx>95</posx>	
+				<posy>3</posy>
 				<label>Menu</label>
 				<font>font11</font>
 				<align>left</align>
 				<textcolor>0xFFFFFFFF</textcolor>
 			</control>
 			<control type="image">
-				<description>A button</description>
-				<posx>150</posx>
-				<posy>2</posy>
-				<width>25</width>
-				<height>25</height>
-				<texture>abutton.png</texture>
-			</control>
-			<control type="label" id="3003">
-				<description>A label</description>
-				<posx>175</posx>	
-				<posy>4</posy>
-				<label>Select</label>
-				<font>font11</font>
-				<align>left</align>
-				<textcolor>0xFFFFFFFF</textcolor>
-			</control>
-			<control type="image">
 				<description>B button</description>
-				<posx>225</posx>
+				<posx>140</posx>
 				<posy>2</posy>
 				<width>25</width>
 				<height>25</height>
@@ -225,16 +208,33 @@
 			</control>
 			<control type="label" id="3004">
 				<description>B label</description>
-				<posx>250</posx>	
-				<posy>4</posy>
+				<posx>165</posx>	
+				<posy>3</posy>
 				<label>Back</label>
 				<font>font11</font>
 				<align>left</align>
 				<textcolor>0xFFFFFFFF</textcolor>
 			</control>
 			<control type="image">
+				<description>A button</description>
+				<posx>210</posx>
+				<posy>2</posy>
+				<width>25</width>
+				<height>25</height>
+				<texture>abutton.png</texture>
+			</control>
+			<control type="label" id="3003">
+				<description>A label</description>
+				<posx>235</posx>	
+				<posy>3</posy>
+				<label>Select</label>
+				<font>font11</font>
+				<align>left</align>
+				<textcolor>0xFFFFFFFF</textcolor>
+			</control>
+			<control type="image">
 				<description>Y button</description>
-				<posx>300</posx>
+				<posx>310</posx>
 				<posy>2</posy>
 				<width>25</width>
 				<height>25</height>
@@ -243,8 +243,8 @@
 			</control>
 			<control type="label" id="3005">
 				<description>Y label</description>
-				<posx>325</posx>	
-				<posy>4</posy>
+				<posx>335</posx>	
+				<posy>3</posy>
 				<label>Back</label>
 				<font>font11</font>
 				<align>left</align>

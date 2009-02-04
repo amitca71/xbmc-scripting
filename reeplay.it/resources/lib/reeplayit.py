@@ -12,7 +12,7 @@ from pprint import pprint
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "reeplayitLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '29-01-2009'
+__date__ = '04-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME

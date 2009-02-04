@@ -170,7 +170,7 @@
 		</control>
 		<control type="image">
 			<description>WHITE button</description>
-			<posx>100</posx>
+			<posx>95</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -178,7 +178,7 @@
 		</control>
 		<control type="label" id="3002">
 			<description>WHITE label</description>
-			<posx>125</posx>	
+			<posx>120</posx>	
 			<posy>4</posy>
 			<label>Menu</label>
 			<font>font11</font>
@@ -186,25 +186,8 @@
 			<textcolor>white</textcolor>
 		</control>
 		<control type="image">
-			<description>A button</description>
-			<posx>200</posx>
-			<posy>2</posy>
-			<width>25</width>
-			<height>25</height>
-			<texture>abutton.png</texture>
-		</control>
-		<control type="label" id="3003">
-			<description>A label</description>
-			<posx>225</posx>	
-			<posy>4</posy>
-			<label>Select</label>
-			<font>font11</font>
-			<align>left</align>
-			<textcolor>white</textcolor>
-		</control>
-		<control type="image">
 			<description>B button</description>
-			<posx>300</posx>
+			<posx>190</posx>
 			<posy>2</posy>
 			<width>25</width>
 			<height>25</height>
@@ -212,9 +195,26 @@
 		</control>
 		<control type="label" id="3004">
 			<description>B label</description>
-			<posx>325</posx>	
+			<posx>215</posx>	
 			<posy>4</posy>
 			<label></label>
+			<font>font11</font>
+			<align>left</align>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="image">
+			<description>A button</description>
+			<posx>285</posx>
+			<posy>2</posy>
+			<width>25</width>
+			<height>25</height>
+			<texture>abutton.png</texture>
+		</control>
+		<control type="label" id="3003">
+			<description>A label</description>
+			<posx>310</posx>	
+			<posy>4</posy>
+			<label>Select</label>
 			<font>font11</font>
 			<align>left</align>
 			<textcolor>white</textcolor>
