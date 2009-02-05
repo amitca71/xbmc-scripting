@@ -46,8 +46,12 @@
     <string id="228">Tutti</string>
     <string id="229">Seleziona</string>
     <string id="230">Indietro</string>
-    <string id="231">Flusso</string>
-    <string id="232">Scaricare</string>
+    <string id="231">Streaming</string>
+    <string id="232">Download</string>
+    <string id="233">Play Playlist</string>
+	<string id="234">Ordine riproduzione ?</string>
+	<string id="235">Casuale</string>
+	<string id="236">Sequenziale</string>
 
     <!-- menu options -->
     <string id="300">Vedi file Leggimi</string>

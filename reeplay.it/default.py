@@ -25,7 +25,7 @@ __scriptname__ = "reeplay.it"
 __version__ = '0.7'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
-__date__ = '02-02-2009'
+__date__ = '05-02-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -140,30 +140,30 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 	def onAction(self, action):
 		try:
 			actionID = action.getId()
-			if not actionID:
-				actionID = action.getButtonCode()
+			btnID = action.getButtonCode()
 		except: return
 
 		# allow exit regardless of ready state
-		if (actionID in EXIT_SCRIPT):
+		if (actionID in EXIT_SCRIPT or btnID in EXIT_SCRIPT):
 			self.exit()
 		if not self.ready: return
 
 		self.ready = False
-		if actionID in CONTEXT_MENU:
+		if (actionID in CONTEXT_MENU or btnID in CONTEXT_MENU):
 			debug("> CONTEXT_MENU")
 			if self.mainMenu():
 				# reset req.
 				self.startup = True
 				self.onInit()
 			debug("< CONTEXT_MENU")
-		elif actionID in CLICK_B:
+		elif (actionID in CLICK_B or btnID in CLICK_B):
 			debug("> CLICK_B isContentPlaylists=%s" %  self.isContentPlaylists)
 			if not self.isContentPlaylists:
 				self.initPlaylists()
 			self.setYBtn()
 			debug("< CLICK_B")
-		elif actionID in CLICK_Y:
+		elif (actionID in CLICK_Y or btnID in CLICK_Y or \
+			  actionID in ACTION_REMOTE_PLAY or btnID in ACTION_REMOTE_PLAY):
 			# Discover all videos in selected playlist and add to xbmc pls
 			debug("CLICK_Y")
 			if self.isContentPlaylists:
