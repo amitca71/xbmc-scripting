@@ -10,14 +10,14 @@
 import sys, os.path
 import xbmc, xbmcgui
 import os, re, unicodedata, traceback
-from string import strip, replace, find, rjust
+from string import strip, replace, find, rjust, capwords
 from xml.dom.minidom import parse, parseString
 from shutil import rmtree
 
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '05-02-2009'
+__date__ = '09-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -85,10 +85,7 @@ ACTION_REMOTE_MENU          = 8
 ACTION_REMOTE_PAUSE		    = 25
 ACTION_REMOTE_BACK			= 39
 ACTION_REMOTE_DISPLAY       = 42
-ACTION_REMOTE_TITLE         = 26
-ACTION_REMOTE_INFO		    = 60
 ACTION_REMOTE_STOP		    = 31
-ACTION_REMOTE_PLAY          = 21   
 ACTION_REMOTE_NEXT_ITEM	    = 32	# remote Skip Next
 ACTION_REMOTE_PREV_ITEM	    = 34	# remote Skip Previous
 ACTION_REMOTE_LEFT          = 86
@@ -96,13 +93,15 @@ ACTION_REMOTE_RIGHT         = 87
 ACTION_REMOTE_DOWN          = 88
 ACTION_REMOTE_UP            = 89   
 
-REMOTE_LEFT             = 169
-REMOTE_RIGHT            = 168
-REMOTE_UP               = 166   
-REMOTE_DOWN             = 167
-REMOTE_INFO             = 195
-REMOTE_BACK			    = 216
+REMOTE_LEFT             = (169, 86, )
+REMOTE_RIGHT            = (168, 87, )
+REMOTE_UP               = (166, 89, )
+REMOTE_DOWN             = (167, 88, )
+REMOTE_INFO             = (195, 60, )
+REMOTE_BACK			    = (216, 39, )
 REMOTE_SELECT           = 244
+REMOTE_PLAY             = (234, 79, )
+REMOTE_TITLE            = (229, 26, )
 
 KEYBOARD_LEFT          = 61477 
 KEYBOARD_UP            = 61478 
@@ -125,13 +124,13 @@ KEYBOARD_HOME           = 61476
 
 # CODE GROUPS
 CLICK_A = ( ACTION_A, PAD_A, KEYBOARD_A, KEYBOARD_RETURN, REMOTE_SELECT, )
-CLICK_B = ( ACTION_B, PAD_B, KEYBOARD_B, ACTION_REMOTE_BACK, REMOTE_BACK, )
+CLICK_B = ( ACTION_B, PAD_B, KEYBOARD_B, ) + REMOTE_BACK
 CLICK_X = ( ACTION_X, PAD_X, KEYBOARD_X, )
 CLICK_Y = ( ACTION_Y, PAD_Y, KEYBOARD_Y, )
 SELECT_ITEM = CLICK_A
 EXIT_SCRIPT = ( ACTION_BACK, PAD_BACK, ACTION_REMOTE_MENU, KEYBOARD_ESC, )
 CANCEL_DIALOG = CLICK_B
-CONTEXT_MENU = ( ACTION_WHITE, ACTION_SHOW_INFO, PAD_WHITE, ACTION_REMOTE_INFO, REMOTE_INFO, KEYBOARD_HOME,)
+CONTEXT_MENU = ( ACTION_WHITE, ACTION_SHOW_INFO, PAD_WHITE, KEYBOARD_HOME, ) + REMOTE_INFO
 LEFT_STICK_CLICK = (ACTION_LEFT_STICK, PAD_LEFT_STICK, )
 RIGHT_STICK_CLICK = (ACTION_RIGHT_STICK, PAD_RIGHT_STICK, )
 MOVEMENT_DPAD = ( ACTION_MOVE_LEFT, ACTION_MOVE_RIGHT, ACTION_MOVE_UP, ACTION_MOVE_DOWN, )
@@ -142,11 +141,11 @@ MOVEMENT_SCROLL_UP = ( ACTION_LEFT_TRIGGER, PAD_LEFT_ANALOG_TRIGGER, ACTION_SCRO
 MOVEMENT_SCROLL_DOWN = ( ACTION_RIGHT_TRIGGER, PAD_RIGHT_ANALOG_TRIGGER, ACTION_SCROLL_DOWN, KEYBOARD_PG_DOWN, PAD_RIGHT_TRIGGER, ACTION_REMOTE_NEXT_ITEM, )
 MOVEMENT_SCROLL = MOVEMENT_SCROLL_UP + MOVEMENT_SCROLL_DOWN
 MOVEMENT_KEYBOARD = ( KEYBOARD_LEFT, KEYBOARD_UP, KEYBOARD_RIGHT, KEYBOARD_DOWN, KEYBOARD_PG_UP, KEYBOARD_PG_DOWN, )
-MOVEMENT_REMOTE = ( ACTION_REMOTE_LEFT, REMOTE_LEFT, ACTION_REMOTE_RIGHT, REMOTE_RIGHT, ACTION_REMOTE_UP, REMOTE_UP, ACTION_REMOTE_DOWN, REMOTE_DOWN, ACTION_REMOTE_NEXT_ITEM, ACTION_REMOTE_PREV_ITEM, )
-MOVEMENT_UP = ( ACTION_MOVE_UP, PAD_LEFT_STICK_UP, PAD_RIGHT_STICK_UP, PAD_DPAD_UP, KEYBOARD_UP, ACTION_REMOTE_UP, REMOTE_UP, ACTION_RIGHT_STICK_UP,)
-MOVEMENT_DOWN = ( ACTION_MOVE_DOWN, PAD_LEFT_STICK_DOWN,PAD_RIGHT_STICK_DOWN, PAD_DPAD_DOWN, KEYBOARD_DOWN, ACTION_REMOTE_DOWN, REMOTE_DOWN, ACTION_RIGHT_STICK_DOWN,)
-MOVEMENT_LEFT = ( ACTION_MOVE_LEFT, PAD_LEFT_STICK_LEFT, PAD_RIGHT_STICK_LEFT,PAD_DPAD_LEFT, KEYBOARD_LEFT, ACTION_REMOTE_LEFT, REMOTE_LEFT, ACTION_RIGHT_STICK_LEFT,)
-MOVEMENT_RIGHT = (  ACTION_MOVE_RIGHT, PAD_LEFT_STICK_RIGHT, PAD_RIGHT_STICK_RIGHT, PAD_DPAD_RIGHT, KEYBOARD_RIGHT, ACTION_REMOTE_RIGHT, REMOTE_RIGHT, ACTION_RIGHT_STICK_RIGHT, )
+MOVEMENT_REMOTE = REMOTE_LEFT + REMOTE_RIGHT + REMOTE_UP + REMOTE_DOWN + (ACTION_REMOTE_NEXT_ITEM, ACTION_REMOTE_PREV_ITEM, )
+MOVEMENT_UP = ( ACTION_MOVE_UP, PAD_LEFT_STICK_UP, PAD_RIGHT_STICK_UP, PAD_DPAD_UP, KEYBOARD_UP, ACTION_RIGHT_STICK_UP,) + REMOTE_UP
+MOVEMENT_DOWN = ( ACTION_MOVE_DOWN, PAD_LEFT_STICK_DOWN,PAD_RIGHT_STICK_DOWN, PAD_DPAD_DOWN, KEYBOARD_DOWN, ACTION_RIGHT_STICK_DOWN, ) + REMOTE_DOWN
+MOVEMENT_LEFT = ( ACTION_MOVE_LEFT, PAD_LEFT_STICK_LEFT, PAD_RIGHT_STICK_LEFT,PAD_DPAD_LEFT, KEYBOARD_LEFT, ACTION_RIGHT_STICK_LEFT,) + REMOTE_LEFT
+MOVEMENT_RIGHT = (  ACTION_MOVE_RIGHT, PAD_LEFT_STICK_RIGHT, PAD_RIGHT_STICK_RIGHT, PAD_DPAD_RIGHT, KEYBOARD_RIGHT, ACTION_RIGHT_STICK_RIGHT, ) + REMOTE_RIGHT
 MOVEMENT = MOVEMENT_UP + MOVEMENT_DOWN + MOVEMENT_LEFT + MOVEMENT_RIGHT + MOVEMENT_SCROLL + MOVEMENT_KEYBOARD
 
 XBFONT_LEFT       = 0x00000000
@@ -216,22 +215,22 @@ def handleException(txt=''):
 		text = ''
 		for l in list:
 			text += l
-#		print text
+		traceback.print_exc()
 		messageOK(title, text)
 	except: pass
 
 #################################################################################################################
 def makeScriptDataDir():
 	try:
-		scriptPath = os.path.join("T:"+os.sep, "script_data", __scriptname__)
-		return makeDir(scriptPath)
+#		scriptPath = os.path.join("T:"+os.sep, "script_data", __scriptname__)
+		return makeDir(DIR_USERDATA)
 	except:
 		return False
 
 #############################################################################################################
 def makeDir(dir):
 	try:
-		os.makedirs( dir )
+		os.makedirs( xbmc.translatePath(dir) )
 		debug("bbbLib.makeDir() " + dir)
 		return True
 	except:
@@ -241,7 +240,7 @@ def makeDir(dir):
 def removeDir(dir, title="", msg="", msg2="", force=False):
 	if force or xbmcgui.Dialog().yesno(title, msg, msg2):
 		try:
-			rmtree(dir,ignore_errors=True)
+			rmtree(xbmc.translatePath(dir),ignore_errors=True)
 			debug("removeDir() done %s" % dir)
 		except: pass
 	
@@ -249,25 +248,26 @@ def removeDir(dir, title="", msg="", msg2="", force=False):
 # delete a single file
 def deleteFile(filename):
 	try:
-		os.remove(filename)
+		os.remove(xbmc.translatePath(filename))
 		debug("bbbLib.file deleted: " + filename)
 	except: pass
 
 #################################################################################################################
 def readFile(filename):
 	try:
-		return file(filename).read()
+		return file(xbmc.translatePath(filename)).read()
 	except:
 		return ""
 
 #################################################################################################################
 def fileExist(filename):
-	exist = False
 	try:
-		if os.path.isfile(filename) and os.path.getsize(filename) > 0:
-			exist = True
+		osFN = xbmc.translatePath(filename)
+		debug("fileExist() osFN=" + osFN)
+		if os.path.isfile(osFN) and os.path.getsize(osFN) > 0:
+			return True
 	except: pass
-	return exist
+	return False
 
 ##############################################################################################
 def doKeyboard(currentValue='', heading='', kbType=KBTYPE_ALPHA, hidden=False):
@@ -349,7 +349,7 @@ def unicodeToAscii(text, charset='utf8'):
 def loadFileObj( filename, dataType={} ):
     debug( "loadFileObj() " + filename)
     try:
-        file_handle = open( filename, "r" )
+        file_handle = open( xbmc.translatePath(filename), "r" )
         loadObj = eval( file_handle.read() )
         file_handle.close()
     except:
@@ -366,7 +366,7 @@ def loadFileObj( filename, dataType={} ):
 def saveFileObj( filename, saveObj ):
     debug( "saveFileObj() " + filename)
     try:
-        file_handle = open( filename, "w" )
+        file_handle = open( xbmc.translatePath(filename), "w" )
         file_handle.write( repr( saveObj ) )
         file_handle.close()
     except:
@@ -378,9 +378,9 @@ def getReadmeFilename(home_dir=""):
     debug("> getReadmeFilename()")
     filename = "readme.txt"
     base_path, language = getLanguagePath(home_dir)
-    fn = os.path.join( base_path, language, filename)
+    fn = xbmc.translatePath(os.path.join( base_path, language, filename))
     if not fileExist( fn ):
-        fn = os.path.join( base_path, "English", filename )
+        fn = xbmc.translatePath(os.path.join( base_path, "English", filename ))
         if not fileExist( fn ):
             fn = ''
 
@@ -401,6 +401,7 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 		copyFromFile = os.path.join( copyFromPath, 'default.py')
 		debug("copyFromFile=" + copyFromFile)
 		copyToPath = xbmc.translatePath( os.path.join( "Q:\\", "plugins", pluginType, name ) )
+#		copyToPath = xbmc.translatePath( os.path.join( "special://xbmc", "plugins", pluginType, name ) )
 		copyToFile = os.path.join( copyToPath, 'default.py')
 		debug("copyToFile=" + copyToFile)
 
@@ -415,16 +416,17 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 		install = True
 
 	if install:
-		# do installation
 		try:
 			from shutil import copytree, rmtree
 			try:
 				rmtree( copyToPath,ignore_errors=True )
 			except: pass
 			copytree( copyFromPath, copyToPath )
+			debug("plugin installed OK")
 			messageOK(__scriptname__, okMsg, pluginType + ": " + name)
 		except:
-			msg = "Plugin Failed\n" + str(sys.exc_info()[ 1 ])
+			traceback.print_exc()
+			msg = "Plugin Install Failed\n" + str(sys.exc_info()[ 1 ])
 			messageOK(__scriptname__, msg)
 
 	debug("< installPlugin() install=%s" % install)
@@ -465,13 +467,15 @@ def getLanguagePath(home_dir=''):
 	try:
 		if not home_dir:
 			home_dir = os.getcwd().replace(';','')
-		base_path = os.path.join( home_dir, 'resources', 'language' )
-		language = xbmc.getLanguage()
+		base_path = xbmc.translatePath(os.path.join( home_dir, 'resources', 'language' ))
+		language = capwords(xbmc.getLanguage())
+		debug("xbmc language=" + language)
 		langPath = os.path.join( base_path, language )
-		if not os.path.exists(langPath):
-			debug("getLanguagePath() not exist: " + langPath)
+		if not os.path.isdir(langPath):
+			debug("getLanguagePath() DIR not exist: " + langPath)
 			raise
 	except:
+		traceback.print_exc()
 		language = 'English'
 	debug("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
 	return base_path, language
@@ -504,7 +508,7 @@ def saveData(data, fn, mode="w"):
     if not data or not fn or not mode: return False
     debug("saveData() fn=%s" % fn)
     try:
-        f = open(fn, mode)
+        f = open(xbmc.translatePath(fn), mode)
         f.write(data)
         f.flush()
         f.close()

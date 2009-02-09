@@ -43,6 +43,48 @@
 
 	</control>
 
+    <control type="group">
+      <include>MediaViewFade</include>
+
+      <control type="group" id="9009">
+        <posx>560r</posx>
+        <posy>192</posy>
+          <control type="button" id="2">
+            <description>Refresh button</description>
+            <posx>0</posx>
+		    <width>175</width>
+            <label>184</label>
+            <onleft>21</onleft>
+            <onright>20</onright>
+            <onup>50</onup>
+            <ondown>50</ondown>
+            <include>WeatherButton</include>
+          </control>
+          <control type="button" id="20">
+            <description>PREV button</description>
+            <posx>175</posx>
+		    <width>175</width>
+            <label>PREV</label>
+            <onleft>2</onleft>
+            <onright>21</onright>
+            <onup>50</onup>
+            <ondown>50</ondown>
+            <include>WeatherButton</include>
+          </control>
+          <control type="button" id="21">
+            <description>NEXT button</description>
+            <posx>350</posx>
+		    <width>175</width>
+            <label>PREV</label>
+            <onleft>20</onleft>
+            <onright>2</onright>
+            <onup>50</onup>
+            <ondown>50</ondown>
+            <include>WeatherButton</include>
+          </control>
+	  </control>
+	</control>
+
 	<!--  PAD BUTTONS -->
 	<control type="group" id="3000">
 		<posx>580r</posx>
@@ -142,7 +184,7 @@
 
 	<control type="group">
 		<include>Clock</include>
-		<include>OptionsMenu</include>
+<!--		<include>OptionsMenu</include> -->
 		<include>MediaCount</include>
 		<include>MusicNowPlayingIndicators</include>
 		<animation effect="fade" time="200" start="100" end="30" condition="!Control.IsEnabled(1000)">conditional</animation>

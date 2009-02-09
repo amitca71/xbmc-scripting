@@ -12,7 +12,7 @@ from pprint import pprint
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "reeplayitLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '04-02-2009'
+__date__ = '09-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -70,7 +70,7 @@ class ReeplayitLib:
 
 		self.plsListItems = []
 		self.videoListItems = []
-		self.DEFAULT_THUMB_IMG = xbmc.makeLegalFilename(os.path.join(DIR_HOME, "default.tbn"))
+		self.DEFAULT_THUMB_IMG = xbmc.translatePath(os.path.join(DIR_HOME, "default.tbn"))
 		self.isPluginAuth = False
 
 	def debug(self, msg=""):
@@ -138,7 +138,7 @@ class ReeplayitLib:
 
 						# get thumb image
 						imgName = os.path.basename(imgURL)
-						imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
+						imgFN = xbmc.translatePath(os.path.join(DIR_CACHE, imgName))
 						if not fileExist(imgFN):
 							data = self.retrieve(imgURL, fn=imgFN)
 							if data == "": # aborted
@@ -214,7 +214,7 @@ class ReeplayitLib:
 
 						# get thumb image
 						imgName = videoid+".jpg"
-						imgFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, imgName))
+						imgFN = xbmc.translatePath(os.path.join(DIR_CACHE, imgName))
 						if not fileExist(imgFN):
 							result = self.retrieve(imgURL, fn=imgFN)
 							if result == "": # aborted
@@ -272,7 +272,7 @@ class ReeplayitLib:
 			# download video to cache
 			basename = os.path.basename(videoURL)
 			videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
-			fn = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, videoName))
+			fn = xbmc.translatePath(os.path.join(DIR_CACHE, videoName))
 			self.debug( "video fn=" + fn )
 			if not fileExist(fn):
 				# if not in cache, do stream or download
@@ -518,18 +518,21 @@ def parseVideoJSON(doc):
 def deleteScriptCache(deleteAll=True):
 	""" Delete script cache contents according to settings """
 	debug("deleteScriptCache() deleteAll=%s" % deleteAll)
-	if deleteAll:
-		# delete all by removing cache dir
-		from shutil import rmtree
-		rmtree( DIR_CACHE, ignore_errors=True )
-	else:
-		# Delete videos and xml
-		allFiles = os.listdir( DIR_CACHE )
-		for f in allFiles:
-			fn, ext = os.path.splitext(f)
-			if ext in ('.mp4','.ts,','.flv','.xml','.json'):
-				deleteFN = os.path.join(DIR_CACHE, f)
-				deleteFile(deleteFN)
+	try:
+		if deleteAll:
+			# delete all by removing cache dir
+			from shutil import rmtree
+			rmtree( xbmc.translatePath(DIR_CACHE), ignore_errors=True )
+		else:
+			# Delete videos and xml
+			allFiles = os.listdir( xbmc.translatePath(DIR_CACHE) )
+			for f in allFiles:
+				fn, ext = os.path.splitext(f)
+				if ext in ('.mp4','.ts,','.flv','.xml','.json'):
+					deleteFN = os.path.join(DIR_CACHE, f)
+	#				deleteFile(deleteFN)
+	except:
+		handleException("deleteScriptCache()")
 
 ##############################################################################################################
 ##############################################################################################################

@@ -22,17 +22,18 @@ from string import find, strip, replace
 
 # Script doc constants
 __scriptname__ = "reeplay.it"
-__version__ = '0.7'
+__version__ = '0.8'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
-__date__ = '05-02-2009'
+__date__ = '09-02-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
 DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )
+#DIR_USERDATA = os.path.join( "special://masterprofile","script_data", __scriptname__ )      # T:// - new drive
+DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )      # translatePath() will convert
 DIR_CACHE = os.path.join(DIR_USERDATA, "cache")
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
@@ -47,6 +48,12 @@ except:
 import update
 from bbbLib import *
 import reeplayit
+
+debug("DIR_HOME=" + DIR_HOME)
+debug("DIR_RESOURCES=" + DIR_RESOURCES)
+debug("DIR_RESOURCES_LIB=" + DIR_RESOURCES_LIB)
+debug("DIR_USERDATA=" + DIR_USERDATA)
+debug("DIR_CACHE=" + DIR_CACHE)
 
 #################################################################################################################
 # MAIN
@@ -163,7 +170,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.setYBtn()
 			debug("< CLICK_B")
 		elif (actionID in CLICK_Y or btnID in CLICK_Y or \
-			  actionID in ACTION_REMOTE_PLAY or btnID in ACTION_REMOTE_PLAY):
+			  actionID in REMOTE_PLAY or btnID in REMOTE_PLAY):
 			# Discover all videos in selected playlist and add to xbmc pls
 			debug("CLICK_Y")
 			if self.isContentPlaylists:
