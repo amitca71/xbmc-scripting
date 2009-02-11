@@ -12,7 +12,7 @@ from pprint import pprint
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "reeplayitLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '09-02-2009'
+__date__ = '11-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -27,7 +27,7 @@ from bbbSkinGUILib import TextBoxDialogXML
 class ReeplayitLib:
 	""" Reeplay.it data gatherer / store """
 
-	URL_BASE = "http://staging.reeplay.it/"        # LIVE is "http://reeplay.it/"
+	URL_BASE = "http://reeplay.it/"        # LIVE: "http://reeplay.it/" DEV: http://staging.reeplay.it
 
 	def __init__(self, user, pwd, pageSize=200, vq=False, isPlugin=False, docType='xml'):
 		debug("ReeplayitLib() __init__ %s %s pageSize=%d vq=%s docType=%s isPlugin=%s" % (user, pwd, pageSize, vq, docType, isPlugin))
@@ -70,7 +70,7 @@ class ReeplayitLib:
 
 		self.plsListItems = []
 		self.videoListItems = []
-		self.DEFAULT_THUMB_IMG = xbmc.translatePath(os.path.join(DIR_HOME, "default.tbn"))
+		self.DEFAULT_THUMB_IMG = bbbTranslatePath( [DIR_HOME, "default.tbn"] )
 		self.isPluginAuth = False
 
 	def debug(self, msg=""):
@@ -120,8 +120,7 @@ class ReeplayitLib:
 
 			# if exist, load from cache
 			playlistsURL = self.URL_PLAYLISTS % self.user
-			docFN = os.path.join( DIR_CACHE, os.path.basename(playlistsURL) )
-			self.debug("docFN=" + docFN)
+			docFN = "/".join( [DIR_CACHE, os.path.basename(playlistsURL)] )
 			data = readFile(docFN)
 			if not data:
 				# not in cache, download
@@ -138,7 +137,7 @@ class ReeplayitLib:
 
 						# get thumb image
 						imgName = os.path.basename(imgURL)
-						imgFN = xbmc.translatePath(os.path.join(DIR_CACHE, imgName))
+						imgFN = bbbTranslatePath( [DIR_CACHE, imgName] )
 						if not fileExist(imgFN):
 							data = self.retrieve(imgURL, fn=imgFN)
 							if data == "": # aborted
@@ -150,7 +149,7 @@ class ReeplayitLib:
 						li = xbmcgui.ListItem(longTitle, desc, imgFN, imgFN)
 						li.setProperty(self.PROP_ID, id)
 						li.setProperty(self.PROP_COUNT, str(count))
-						li.setInfo("Video", {"Title" : title, "Size": count, \
+						li.setInfo("video", {"Title" : title, "Size": count, \
 											"Album" : desc, "Date" : updatedDate})
 						self.plsListItems.append(li)
 					except:
@@ -176,8 +175,7 @@ class ReeplayitLib:
 			pageSize = self.pageSize
 
 		# load cached file
-		docFN = os.path.join(DIR_CACHE, "pls_%s_page_%d.%s" % (plsId, page, self.docType))
-		self.debug("docFN=" + docFN)
+		docFN = "/".join( [DIR_CACHE, "%s_page_%d.%s" % (plsId, page, self.docType)] )
 		data = readFile(docFN)
 		if not data:
 			# not cached, download
@@ -214,7 +212,7 @@ class ReeplayitLib:
 
 						# get thumb image
 						imgName = videoid+".jpg"
-						imgFN = xbmc.translatePath(os.path.join(DIR_CACHE, imgName))
+						imgFN = bbbTranslatePath( [DIR_CACHE, imgName] )
 						if not fileExist(imgFN):
 							result = self.retrieve(imgURL, fn=imgFN)
 							if result == "": # aborted
@@ -257,6 +255,7 @@ class ReeplayitLib:
 		else:
 			# from plugin, create a video li
 			li = xbmcgui.ListItem( title )
+			li.setInfo("video", {"Title" : title})
 
 		try:
 			dialogProgress.create(__lang__(0),__lang__(222), title)
@@ -272,8 +271,7 @@ class ReeplayitLib:
 			# download video to cache
 			basename = os.path.basename(videoURL)
 			videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
-			fn = xbmc.translatePath(os.path.join(DIR_CACHE, videoName))
-			self.debug( "video fn=" + fn )
+			fn = bbbTranslatePath( [DIR_CACHE, videoName] )
 			if not fileExist(fn):
 				# if not in cache, do stream or download
 				if download:
@@ -304,8 +302,7 @@ class ReeplayitLib:
 		self.debug("infoUrl=" + infoUrl)
 
 		# if exist, load cached
-		docFN = os.path.join(DIR_CACHE, "%s_%s.%s" % (videoId, self.vqProfile, self.docType))
-		self.debug("docFN=" + docFN)
+		docFN = "/".join( [DIR_CACHE, "%s_%s.%s" % (videoId, self.vqProfile, self.docType)] )
 		data = readFile(docFN)
 		if not data:
 			if self.isPlugin and not self.isPluginAuth:
@@ -316,7 +313,7 @@ class ReeplayitLib:
 					dialogProgress.close()
 					messageOK("Error", __lang__(108))	# auth failed.
 					self.debug("< getVideoMediaUrl() failed auth.")
-					return ""
+					return None
 				self.isPluginAuth = True
 			# not cached, download
 			data = self.retrieve(infoUrl)
@@ -529,7 +526,7 @@ def deleteScriptCache(deleteAll=True):
 			for f in allFiles:
 				fn, ext = os.path.splitext(f)
 				if ext in ('.mp4','.ts,','.flv','.xml','.json'):
-					deleteFN = os.path.join(DIR_CACHE, f)
+					deleteFN = "/".join( [DIR_CACHE, f] )
 	#				deleteFile(deleteFN)
 	except:
 		handleException("deleteScriptCache()")
@@ -539,7 +536,7 @@ def deleteScriptCache(deleteAll=True):
 class ReeplayitSettings:
 	""" Settings for reeplay.it, allows same file to be shared by script and plugin """
 
-	SETTINGS_FILENAME = os.path.join( DIR_USERDATA, "settings.txt" )
+	SETTINGS_FILENAME = "/".join( [DIR_USERDATA, "settings.txt"] )
 	SETTING_USER = "user"
 	SETTING_PWD = "pwd"
 	SETTING_CHECK_UPDATE = "check_script_update_startup"
@@ -685,15 +682,12 @@ class ReeplayitSettings:
 		reset = False
 		newValue = None
 		key, value, optName, optValue = optionData
-		if key == 'readme':
-			home_dir = os.path.join( "Q:"+os.sep, "scripts", __scriptname__ )
-			fn = getReadmeFilename(home_dir)
-			tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME, "Default")
-			tbd.ask(optName, fn=fn)
-			del tbd
-		elif key == 'changelog':
-			home_dir = os.path.join( "Q:"+os.sep, "scripts", __scriptname__ )
-			fn = os.path.join( home_dir, "changelog.txt" )
+		if key in ('readme', 'changelog'):
+			home_dir = "/".join( ["Q:", "scripts", __scriptname__] )
+			if key == 'readme':
+				fn = getReadmeFilename(home_dir)
+			else:
+				fn = "/".join( [home_dir, "changelog.txt"] )
 			tbd = TextBoxDialogXML("DialogScriptInfo.xml", home_dir, "Default")
 			tbd.ask(optName, fn=fn)
 			del tbd

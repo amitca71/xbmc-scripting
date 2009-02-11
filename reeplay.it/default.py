@@ -16,26 +16,23 @@
 """
 
 import xbmc, xbmcgui
-import sys, os.path
-from os import path
+import sys, os, traceback
 from string import find, strip, replace
 
-# Script doc constants
 __scriptname__ = "reeplay.it"
-__version__ = '0.8'
+__version__ = '0.9'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
-__date__ = '09-02-2009'
+__date__ = '11-02-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
 DIR_HOME = os.getcwd().replace( ";", "" )
-DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
-DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-#DIR_USERDATA = os.path.join( "special://masterprofile","script_data", __scriptname__ )      # T:// - new drive
-DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )      # translatePath() will convert
-DIR_CACHE = os.path.join(DIR_USERDATA, "cache")
-sys.path.insert(0, DIR_RESOURCES_LIB)
+DIR_RESOURCES_LIB = "/".join( [DIR_HOME, "resources", "lib"] )
+#DIR_USERDATA = "/".join( ["special://masterprofile","script_data", __scriptname__] )      # T:// - new drive
+DIR_USERDATA = "/".join( ["T:","script_data", __scriptname__] )  # translatePath() will convert to new special://
+DIR_CACHE = "/".join( [DIR_USERDATA, "cache"] )
+sys.path.insert(0, xbmc.translatePath(DIR_RESOURCES_LIB) )
 
 # Load Language using xbmc builtin
 try:
@@ -43,14 +40,13 @@ try:
     __lang__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
 	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Install a new XBMC build to run this script.")
+	xbmcgui.Dialog().ok("XBMC Language Error", "Install a new XBMC build to run this script.")
 
 import update
 from bbbLib import *
 import reeplayit
 
 debug("DIR_HOME=" + DIR_HOME)
-debug("DIR_RESOURCES=" + DIR_RESOURCES)
 debug("DIR_RESOURCES_LIB=" + DIR_RESOURCES_LIB)
 debug("DIR_USERDATA=" + DIR_USERDATA)
 debug("DIR_CACHE=" + DIR_CACHE)
@@ -140,6 +136,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			debug("refresh default window list with plsList")
 			self.initList(self.reeplayitLib.plsListItems, self.lastPlaylistIdx)
 
+		self.setFocus(self.getControl(self.contentListControlID))
 		self.ready = True
 		debug("< onInit()")
 
@@ -248,6 +245,10 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 		else:
 			self.currPage = origPage
 
+		# switch to list if curr nav button not visible
+		if self.currPage <= 1 or self.currPage >= self.maxPages:
+			self.setFocus(self.getControl(self.contentListControlID))
+
 		debug("< getNextPrevPage() success=%s" % success)
 
 	##############################################################################################
@@ -295,7 +296,7 @@ class ReeplayitGUI(xbmcgui.WindowXML):
 			self.setCurrentListPosition(self.current_position)
 			debug("contentListControlID=%s" % self.contentListControlID)
 			self.getControl(self.contentListControlID).selectItem(itemIdx)
-			self.setFocus(self.getControl(self.contentListControlID))
+#			self.setFocus(self.getControl(self.contentListControlID))
 			xbmcgui.unlock()
 		debug("< initList()")
 
@@ -477,7 +478,7 @@ def updateScript(silent=False, notifyNotFound=False):
 #############################################################################################
 # BEGIN !
 #############################################################################################
-makeScriptDataDir() 
+makeDir(DIR_USERDATA)
 makeDir(DIR_CACHE)
 
 try:

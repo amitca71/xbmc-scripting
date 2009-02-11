@@ -16,6 +16,8 @@ Changes:
 12-09-2008 use os.path.join instead of string +
 10-10-2008 Fix: to use xbmc.language from __main__
            Fix: Created folders replaced %20 with a space
+11-02-2008 Change: To use xbmc.translatePath() which converts Q: T: etc to their special:// equiv.
+            Replace os.path.join with "/".join( [ ] ) as all paths now url form, using '/'
 """
 
 import sys
@@ -29,17 +31,17 @@ from shutil import copytree, rmtree
 class Update:
 	""" Update Class: used to update scripts from http://code.google.com/p/xbmc-scripting/ """
 	def __init__( self, language, script ):
-		xbmc.output( "Update().__init__" )
+		xbmc.output( "Update()._init_ script=%s" % script )
 		self._ = language
 		self.script = script.replace( ' ', '%20' )
 		self.base_url = "http://xbmc-scripting.googlecode.com/svn"
 		self.tags_url = "%s/tags/%s/" % ( self.base_url, self.script)
-		local_base_dir = os.path.join('Q:' + os.sep,'scripts')
-		self.local_dir = os.path.join(local_base_dir, script)
-		self.backup_base_dir = os.path.join(local_base_dir,'.backups')
-		self.local_backup_dir = os.path.join(self.backup_base_dir, script)
+		# TODO: use special:// equiv. - for now use Q: as translatePath() converts to special:// equiv.
+		local_base_dir = xbmc.translatePath( "/".join( ['Q:','scripts'] ) )
+		self.local_dir = "/".join( [local_base_dir, script] )
+		self.backup_base_dir = "/".join( [local_base_dir,'.backups'] )
+		self.local_backup_dir = "/".join( [self.backup_base_dir, script] )
 
-		xbmc.output("script=" + script)
 		xbmc.output("base_url=" + self.base_url)
 		xbmc.output("tags_url=" + self.tags_url)
 		xbmc.output("local_dir=" + self.local_dir)
@@ -81,11 +83,11 @@ class Update:
 				raise
 			else:
 				success = self.getFiles( script_files, version )
-			self.dialog.close()
 		except:
-			self.dialog.close()
 			traceback.print_exc()
 			xbmcgui.Dialog().ok( self._(0), self._( 1031 ) )
+
+		self.dialog.close()
 		xbmc.output("< Update().downloadVersion() success = %s" % success)
 		return success
 
@@ -106,9 +108,9 @@ class Update:
 		except:
 			traceback.print_exc()
 			xbmcgui.Dialog().ok( self._(0), self._( 1031 ) )
-		self.dialog.close()
 
-		xbmc.output( "Update().getLatestVersion() new version="+str(version) )
+		self.dialog.close()
+		xbmc.output( "Update().getLatestVersion() new version=%s" % version )
 		return version
 
 	def makeBackup( self ):
@@ -120,25 +122,32 @@ class Update:
 			xbmc.output("created dirs=%s" % self.backup_base_dir )
 		except: pass
 
-		copytree(self.local_dir, self.local_backup_dir)
-		xbmc.output("< Update().makeBackup() done")
+		try:
+			copytree(self.local_dir, self.local_backup_dir)
+		except:
+			traceback.print_exc()
+			xbmcgui.Dialog().ok( "Error Making Script Backup!", str( sys.exc_info()[ 1 ] ) )
+		xbmc.output("< Update().makeBackup()")
 
 	def issueUpdate( self, version ):
 		xbmc.output("> Update().issueUpdate() version=%s" % version)
-		path = os.path.join(self.local_backup_dir, 'resources','lib','update.py')
+		path = "/".join( [self.local_backup_dir, 'resources','lib','update.py'] )
 		command = 'XBMC.RunScript(%s,%s,%s)'%(path, self.script.replace('%20',' '), version)
 		xbmc.executebuiltin(command)
 		xbmc.output("< Update().issueUpdate() done")
 	
 	def removeBackup( self ):
-		xbmc.output("Update().removeBackup()")
-		if self.backupExists():
+		try:
 			rmtree(self.local_backup_dir,ignore_errors=True)		
-			xbmc.output("Update().removeBackup() done")
+			xbmc.output("Update().removeBackup() removed OK")
+		except: pass
 	
 	def removeOriginal( self ):
-		xbmc.output("Update().removeOriginal()")
-		rmtree(self.local_dir,ignore_errors=True)		
+		try:
+			rmtree(self.local_dir,ignore_errors=True)
+			xbmc.output("Update().removeOriginal() removed OK")
+		except:
+			traceback.print_exc()
 		
 	def backupExists( self ):
 		exists = os.path.exists(self.local_backup_dir)
@@ -146,14 +155,15 @@ class Update:
 		return exists
 
 	def getFiles( self, script_files, version ):
-		""" fetch the files """
+		""" fetch the files from svn """
 		xbmc.output( "Update().getFiles() version=%s" % version )
 		success = False
 		try:
 			totalFiles = len(script_files)
+			xbmc.output("Update().getFiles() totalFiles=%d" % totalFiles)
 			for cnt, url in enumerate( script_files ):
 				items = os.path.split( url )
-				path = os.path.join(self.local_dir, items[0]).replace( version+'/', '' ).replace( version, '' ).replace('/','\\').replace( '%20', ' ' )
+				path = "/".join( [self.local_dir, items[0]] ).replace( version+'/', '' ).replace( version, '' ).replace('\\','/').replace( '%20', ' ' )
 				file = items[ 1 ].replace( '%20', ' ' )
 				pct = int( ( float( cnt ) / totalFiles ) * 100 )
 				self.dialog.update( pct, "%s %s" % ( self._( 1007 ), url, ), "%s %s" % ( self._( 1008 ), path, ), "%s %s" % ( self._( 1009 ), file, ) )
@@ -161,7 +171,8 @@ class Update:
 				if ( not os.path.isdir( path ) ):
 					os.makedirs( path )
 				src = "%s%s" % (self.tags_url, url)
-				dest = os.path.join(path, file).replace( '%20', ' ' )
+				dest = "/".join( [path, file] ).replace( '%20', ' ' )
+				xbmc.output("urlretrieve src=%s dest=%s" % (src, dest))
 				urllib.urlretrieve( src,  dest)
 
 			success = True
@@ -180,6 +191,7 @@ class Update:
 			return doc
 		except:
 			traceback.print_exc()
+			xbmcgui.Dialog().ok( self._(0), "HTTP Error", str( sys.exc_info()[ 1 ] ) )
 			return None
 
 	def parseHTMLSource( self, htmlsource ):
@@ -201,10 +213,12 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	try:
-		lang_path = os.path.join('Q:' + os.sep,'scripts', sys.argv[1])
+		lang_path = xbmc.translatePath( "/".join( ['Q:','scripts', sys.argv[1]] ) )
+		xbmc.output("Update() lang_path=%s" % lang_path)
 		up = Update(xbmc.Language( lang_path ).getLocalizedString, sys.argv[1])
 		up.removeOriginal()
 		up.downloadVersion(sys.argv[2])
-		xbmc.executebuiltin('XBMC.RunScript(%s)'%(up.local_dir+'\\default.py'))
+		xbmc.executebuiltin('XBMC.RunScript(%s)' % ("/".join( [up.local_dir, 'default.py'] )) )
 	except:
+		traceback.print_exc()
 		print "failed to start script update from backup copy!"

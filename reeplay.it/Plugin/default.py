@@ -4,46 +4,53 @@
  Written By BigBellyBilly
  bigbellybilly AT gmail DOT com	- bugs, comments, ideas ...
 
+ Please don't alter or re-publish this script without authors persmission.
+ Additional support may be found on xboxmediacenter forum.	
+
  - url = sys.argv[ 0 ]
  - handle = sys.argv[ 1 ]
  - params =  sys.argv[ 2 ]
 
 """
 
-__plugin__ = "reeplay.it"
-__scriptname__  = "reeplay.it"
-__version__ = '0.7'
-__author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '03-02-2009'
-
-import sys, os.path
 import xbmc, xbmcgui, xbmcplugin
-import os, traceback
+import sys, os, traceback
 from xml.sax.saxutils import unescape
 from xml.sax.saxutils import escape
 from pprint import pprint
 
-if os.name=='posix':    
-    DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
-else:
-    DIR_HOME= os.getcwd().replace(';','')
-DIR_USERDATA = os.path.join( "T:"+os.sep, "script_data", __plugin__ )
-DIR_SCRIPT_HOME = os.path.join( "Q:"+os.sep, "scripts", __scriptname__ )
-DIR_RESOURCES = os.path.join( DIR_SCRIPT_HOME, "resources" )
-DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES, "lib" )
-DIR_CACHE = os.path.join(DIR_USERDATA, "cache")
-sys.path.insert(0, DIR_RESOURCES_LIB)
+__plugin__ = "reeplay.it"
+__scriptname__  = "reeplay.it"
+__version__ = '0.9'
+__author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
+__svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
+__date__ = '10-02-2009'
+xbmc.output(__plugin__ + " Version: " + __version__ + " Date: " + __date__)
+
+# Shared resources
+DIR_HOME= os.getcwd().replace(';','')
+DIR_SCRIPT_HOME = '/'.join( [ "Q:", "scripts", __scriptname__] )
+DIR_RESOURCES_LIB = '/'.join( [DIR_SCRIPT_HOME, "resources", "lib"] ) # shares modules with script version
+DIR_USERDATA = '/'.join( ["T:", "script_data", __plugin__] )
+DIR_CACHE = '/'.join( [ DIR_USERDATA, "cache"] )
+sys.path.insert(0, xbmc.translatePath(DIR_RESOURCES_LIB) )
 
 # Load Language using xbmc builtin
 try:
     # 'resources' now auto appended onto path
-    __lang__ = xbmc.Language( DIR_SCRIPT_HOME ).getLocalizedString
+    __lang__ = xbmc.Language( xbmc.translatePath(DIR_SCRIPT_HOME) ).getLocalizedString
 except:
 	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Install a new XBMC build to run this script.")
+	xbmcgui.Dialog().ok("XBMC Language Error", "Install a new XBMC build to run this script.")
 
 from bbbLib import *
 import reeplayit
+
+debug("DIR_HOME=" + DIR_HOME)
+debug("DIR_SCRIPT_HOME=" + DIR_SCRIPT_HOME)
+debug("DIR_RESOURCES_LIB=" + DIR_RESOURCES_LIB)
+debug("DIR_USERDATA=" + DIR_USERDATA)
+debug("DIR_CACHE=" + DIR_CACHE)
 
 #################################################################################################################
 class ReeplayitPlugin:
@@ -176,7 +183,13 @@ class ReeplayitPlugin:
 				plsCount = int(li.getProperty(self.reeplayitLib.PROP_COUNT))
 
 				# context menu option - Play Playlist
-				menuCmd = "xbmc.ActivateWindow(videofiles,%s?%s=%s&%s=%s&%s=%s)" % (sys.argv[0], \
+#				menuCmd = "xbmc.ActivateWindow(videofiles,%s?%s=%s&%s=%s&%s=%s)" % (sys.argv[0], \
+#																self.PARAM_PLS_PLAYALL, plsId,
+#																self.PARAM_TITLE, plsTitle, \
+#																self.PARAM_PLS_COUNT, plsCount)
+
+				# use RunPlugin as its not creating a new dir - just doing an action
+				menuCmd = "xbmc.RunPlugin(%s?%s=%s&%s=%s&%s=%s)" % (sys.argv[0], \
 																self.PARAM_PLS_PLAYALL, plsId,
 																self.PARAM_TITLE, plsTitle, \
 																self.PARAM_PLS_COUNT, plsCount)
@@ -287,26 +300,26 @@ class ReeplayitPlugin:
 			if not source:
 				messageOK(__plugin__, __lang__(105), videoTitle)	# no video
 			else:
+#				xbmcPlaylist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+#				xbmcPlaylist.clear()
+#				xbmcPlaylist.add(source, li)
+#				playMedia(xbmcPlaylist)
 				playMedia(source, li)
 		except:
 			source = ""
 			traceback.print_exc()
 			messageOK("ERROR:", str(sys.exc_info()[ 1 ]))
 
-		self.debug( "< getVideo() source=%s" % source)
-		return source
-
+		self.debug( "< getVideo()")
 
 	########################################################################################################################
 	def playPlaylist(self, plsTitle, plsId, plsCount):
 		""" Discover a list of Categories within a Directory """ 
 		self.debug( "> playPlaylist() plsId=%s plsCount=%s" % (plsId,plsCount))
+		ok = False
 
 		try:
-			xbmcPlaylist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-			xbmcPlaylist.clear()
-
-			# delete existing data doc as were now getting every video not just a pagesize
+			# delete existing data docs as were now getting every video in pls, not by pagesize
 			reeplayit.deleteScriptCache(False)
 
 			dialogProgress.create(__lang__(0), __lang__(217), plsTitle) # DL playlist content
@@ -316,26 +329,34 @@ class ReeplayitPlugin:
 			videoCount = self.reeplayitLib.getPlaylist(plsId, pageSize=plsCount)
 			dialogProgress.close()
 
+			if not videoCount: raise "Empty"
+
+			# create a playlist and add items to it
+			xbmcPlaylist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+			xbmcPlaylist.clear()
+
 			playMode = self.settings.get(self.settings.SETTING_PLAY_MODE)
 			for idx in range(videoCount):
 				source, li = self.reeplayitLib.getVideo(idx, download=playMode)
 				if source and li:
 #						url = li.getProperty(self.reeplayitLib.PROP_URL)
 					xbmcPlaylist.add(source, li)
+				else:
+					break	# http error, so stop processing more videos
 
 			# play all in xbmc pls
 			debug("Playlist size=%d" % xbmcPlaylist.size())
-			if xbmcPlaylist.size() > 0:
-				if xbmcgui.Dialog().yesno(__lang__(0), __lang__(234), "","", __lang__(236), __lang__(235)):
-					xbmcPlaylist.shuffle()
-				playMedia(xbmcPlaylist)
-#				xbmc.executebuiltin("xbmc.ActivateWindow(videoplaylist)")
-			else:
-				messageOK(__lang__(0), __lang__(105))		# no videos
-		except:
-			traceback.print_exc()
-			handleException()
+			if xbmcPlaylist.size() <= 0: raise "Empty"
 
+			if xbmcgui.Dialog().yesno(__lang__(0), __lang__(234), "","", __lang__(236), __lang__(235)):
+				xbmcPlaylist.shuffle()
+			playMedia(xbmcPlaylist)
+#			xbmc.executebuiltin("Container.Refresh")
+		except "Empty":
+			self.debug("Empty raised")
+			messageOK(__lang__(0), __lang__(105))		# no videos
+		except:
+			handleException()
 
 		self.debug( "< playPlaylist()")
 
@@ -377,7 +398,7 @@ class ReeplayitPlugin:
 #######################################################################################################################    
 # BEGIN !
 #######################################################################################################################
-makeScriptDataDir() 
+makeDir(DIR_USERDATA) 
 makeDir(DIR_CACHE)
 
 try:

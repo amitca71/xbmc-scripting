@@ -11,13 +11,12 @@ import sys, os.path
 import xbmc, xbmcgui
 import os, re, unicodedata, traceback
 from string import strip, replace, find, rjust, capwords
-from xml.dom.minidom import parse, parseString
 from shutil import rmtree
 
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '09-02-2009'
+__date__ = '10-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -39,7 +38,6 @@ ACTION_A	            = 7     # A
 ACTION_HIGHLIGHT_ITEM	= 8		#
 ACTION_B	            = 9     # B
 ACTION_BACK	            = 10	# back btn
-ACTION_SHOW_INFO        = 11
 ACTION_X 	            = 18    # X
 ACTION_Y 	            = 34	# Y
 ACTION_LEFT_TRIGGER		= 111	# trigger left
@@ -99,7 +97,7 @@ REMOTE_UP               = (166, 89, )
 REMOTE_DOWN             = (167, 88, )
 REMOTE_INFO             = (195, 60, )
 REMOTE_BACK			    = (216, 39, )
-REMOTE_SELECT           = 244
+REMOTE_SELECT           = 11
 REMOTE_PLAY             = (234, 79, )
 REMOTE_TITLE            = (229, 26, )
 
@@ -130,7 +128,7 @@ CLICK_Y = ( ACTION_Y, PAD_Y, KEYBOARD_Y, )
 SELECT_ITEM = CLICK_A
 EXIT_SCRIPT = ( ACTION_BACK, PAD_BACK, ACTION_REMOTE_MENU, KEYBOARD_ESC, )
 CANCEL_DIALOG = CLICK_B
-CONTEXT_MENU = ( ACTION_WHITE, ACTION_SHOW_INFO, PAD_WHITE, KEYBOARD_HOME, ) + REMOTE_INFO
+CONTEXT_MENU = ( ACTION_WHITE, PAD_WHITE, KEYBOARD_HOME, ) + REMOTE_INFO
 LEFT_STICK_CLICK = (ACTION_LEFT_STICK, PAD_LEFT_STICK, )
 RIGHT_STICK_CLICK = (ACTION_RIGHT_STICK, PAD_RIGHT_STICK, )
 MOVEMENT_DPAD = ( ACTION_MOVE_LEFT, ACTION_MOVE_RIGHT, ACTION_MOVE_UP, ACTION_MOVE_DOWN, )
@@ -219,19 +217,12 @@ def handleException(txt=''):
 		messageOK(title, text)
 	except: pass
 
-#################################################################################################################
-def makeScriptDataDir():
-	try:
-#		scriptPath = os.path.join("T:"+os.sep, "script_data", __scriptname__)
-		return makeDir(DIR_USERDATA)
-	except:
-		return False
-
 #############################################################################################################
 def makeDir(dir):
 	try:
-		os.makedirs( xbmc.translatePath(dir) )
-		debug("bbbLib.makeDir() " + dir)
+		d = xbmc.translatePath(dir)
+		os.makedirs( d )
+		debug("bbbLib.makeDir() " + d)
 		return True
 	except:
 		return False
@@ -240,34 +231,39 @@ def makeDir(dir):
 def removeDir(dir, title="", msg="", msg2="", force=False):
 	if force or xbmcgui.Dialog().yesno(title, msg, msg2):
 		try:
-			rmtree(xbmc.translatePath(dir),ignore_errors=True)
-			debug("removeDir() done %s" % dir)
+			d = xbmc.translatePath(dir)
+			rmtree(d, ignore_errors=True)
+			debug("bbbLib.removeDir() " + d)
 		except: pass
 	
 #################################################################################################################
 # delete a single file
 def deleteFile(filename):
 	try:
-		os.remove(xbmc.translatePath(filename))
-		debug("bbbLib.file deleted: " + filename)
+		f = xbmc.translatePath(filename)
+		os.remove( f )
+		debug("bbbLib.deleteFile() " + f)
 	except: pass
 
 #################################################################################################################
 def readFile(filename):
 	try:
-		return file(xbmc.translatePath(filename)).read()
+		f = xbmc.translatePath(filename)
+		debug("bbbLib.readFile() " + f)
+		return file(f).read()
 	except:
 		return ""
 
 #################################################################################################################
 def fileExist(filename):
+	exists = False
 	try:
-		osFN = xbmc.translatePath(filename)
-		debug("fileExist() osFN=" + osFN)
-		if os.path.isfile(osFN) and os.path.getsize(osFN) > 0:
-			return True
+		f = xbmc.translatePath(filename)
+		if os.path.isfile(f) and os.path.getsize(f) > 0:
+			exists = True
 	except: pass
-	return False
+	debug("bbbLib.fileExist() %s  %s" % (f, exists))
+	return exists
 
 ##############################################################################################
 def doKeyboard(currentValue='', heading='', kbType=KBTYPE_ALPHA, hidden=False):
@@ -375,17 +371,35 @@ def saveFileObj( filename, saveObj ):
 
 #################################################################################################################
 def getReadmeFilename(home_dir=""):
-    debug("> getReadmeFilename()")
+    debug("> getReadmeFilename() home_dir=" + home_dir)
     filename = "readme.txt"
     base_path, language = getLanguagePath(home_dir)
-    fn = xbmc.translatePath(os.path.join( base_path, language, filename))
+    fn = bbbTranslatePath( [base_path, language, filename] )
     if not fileExist( fn ):
-        fn = xbmc.translatePath(os.path.join( base_path, "English", filename ))
+        fn = bbbTranslatePath( [base_path, "English", filename] )
         if not fileExist( fn ):
             fn = ''
-
     debug("< getReadmeFilename() %s" % fn)
     return fn
+
+##############################################################################################################    
+def getLanguagePath(home_dir=""):
+	debug("> getLanguagePath() home_dir=" + home_dir)
+	try:
+		if not home_dir:
+			home_dir = os.getcwd().replace(';','')
+		base_path = bbbTranslatePath( [home_dir, 'resources', 'language'] )
+		language = capwords(xbmc.getLanguage())
+		debug("xbmc language=" + language)
+		langPath = "/".join( base_path, language )
+		if not os.path.isdir(langPath):
+			debug("getLanguagePath() DIR not exist: " + langPath)
+			raise
+	except:
+		traceback.print_exc()
+		language = 'English'
+	debug("< getLanguagePath() path=%s lang=%s" % ( base_path, language ))
+	return base_path, language
 
 #############################################################################################################
 # pluginType = music, video, pictures
@@ -394,15 +408,15 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 	install = False
 	if not name:
 		name = __scriptname__
-	name += " Plugin"
 
 	try:
-		copyFromPath = xbmc.translatePath( os.path.join( DIR_HOME, "Plugin" ) )
-		copyFromFile = os.path.join( copyFromPath, 'default.py')
+		copyFromPath = bbbTranslatePath( [DIR_HOME, "Plugin"] )
+		copyFromFile = "/".join( [copyFromPath, 'default.py'] )
 		debug("copyFromFile=" + copyFromFile)
-		copyToPath = xbmc.translatePath( os.path.join( "Q:\\", "plugins", pluginType, name ) )
-#		copyToPath = xbmc.translatePath( os.path.join( "special://xbmc", "plugins", pluginType, name ) )
-		copyToFile = os.path.join( copyToPath, 'default.py')
+
+		copyToPath = bbbTranslatePath( ["Q:", "plugins", pluginType, name] )
+#		copyToPath = bbbTranslatePath( ["special://xbmc", "plugins", pluginType, name] )
+		copyToFile = "/".join( [copyToPath, 'default.py'] )
 		debug("copyToFile=" + copyToFile)
 
 		# set not exist if; path/file missing or previous installed is older
@@ -411,7 +425,7 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 		debug( "comparing fromSecs %d  toSecs %d"  % (copyFromFileSecs, copyToFileSecs))
 		install = (copyFromFileSecs > copyToFileSecs)
 	except:
-		debug( "paths dont exist." )
+		debug( "dest path not exist" )
 		print  str(sys.exc_info()[ 1 ])
 		install = True
 
@@ -422,11 +436,11 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 				rmtree( copyToPath,ignore_errors=True )
 			except: pass
 			copytree( copyFromPath, copyToPath )
-			debug("plugin installed OK")
+			debug("Plugin installed OK")
 			messageOK(__scriptname__, okMsg, pluginType + ": " + name)
 		except:
 			traceback.print_exc()
-			msg = "Plugin Install Failed\n" + str(sys.exc_info()[ 1 ])
+			msg = "Plugin install Failed\n" + str(sys.exc_info()[ 1 ])
 			messageOK(__scriptname__, msg)
 
 	debug("< installPlugin() install=%s" % install)
@@ -434,51 +448,35 @@ def installPlugin(pluginType, name='', okMsg="In plugins 'Add Source' to complet
 
 ##############################################################################################################    
 def playMedia(source, li=None):
-	debug("> playMedia() %s" % source)
-	success = False
+	debug("> playMedia()")
+	isPlaying = False
 
 	try:
 		if li:
+			debug("player source fn/url with li")
 			xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(source, li)
 		else:
-			xbmc.Player(xbmc.PLAYER_CORE_MPLAYER).play(source)
-		success = xbmc.Player().isPlaying()
+			debug("player source PlayList")
+			xbmc.Player().play(source)
+		isPlaying = xbmc.Player().isPlaying()
 	except:
 		traceback.print_exc()
 		debug('xbmc.Player().play() failed trying xbmc.PlayMedia() ')
 		try:
 			cmd = 'xbmc.PlayMedia(%s)' % source
 			xbmc.executebuiltin(cmd)
-			success = True
+			isPlaying = True
 		except:
 			handleException('playMedia()')
 
-	debug("< playMedia() success=%s" % success)
-	return success
+	debug("< playMedia() isPlaying=%s" % isPlaying)
+	return isPlaying
 
 ##############################################################################################################    
 def logFreeMem(msg=""):
     mem = xbmc.getFreeMem()
     debug( "Freemem=%sMB  %s" % (mem, msg))
     return mem
-
-##############################################################################################################    
-def getLanguagePath(home_dir=''):
-	try:
-		if not home_dir:
-			home_dir = os.getcwd().replace(';','')
-		base_path = xbmc.translatePath(os.path.join( home_dir, 'resources', 'language' ))
-		language = capwords(xbmc.getLanguage())
-		debug("xbmc language=" + language)
-		langPath = os.path.join( base_path, language )
-		if not os.path.isdir(langPath):
-			debug("getLanguagePath() DIR not exist: " + langPath)
-			raise
-	except:
-		traceback.print_exc()
-		language = 'English'
-	debug("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
-	return base_path, language
 
 #################################################################################################################
 def searchRegEx(data, regex, flags=re.IGNORECASE):
@@ -518,3 +516,6 @@ def saveData(data, fn, mode="w"):
         traceback.print_exc()
         return False
 
+######################################################################################
+def bbbTranslatePath(partsList):
+    return xbmc.translatePath( "/".join(partsList) )

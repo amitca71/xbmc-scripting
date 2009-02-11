@@ -8,7 +8,7 @@ import xbmc, xbmcgui, sys
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbSkinGUILib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '21-10-2008'
+__date__ = '10-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 PAD_A                   = 256
@@ -74,7 +74,7 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 		self.title = title
 		if fn:
 			try:
-				self.text = file(fn).read()
+				self.text = file(xbmc.translatePath(fn)).read()
 			except:
 				self.text = "Failed to load file: %s" % fn
 		else:
