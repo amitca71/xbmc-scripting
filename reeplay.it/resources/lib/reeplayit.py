@@ -12,7 +12,7 @@ from pprint import pprint
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "reeplayitLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '11-02-2009'
+__date__ = '18-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -22,21 +22,19 @@ __lang__ = sys.modules[ "__main__" ].__lang__
 from bbbLib import *
 from bbbSkinGUILib import TextBoxDialogXML
 
-##############################################################################################################
-##############################################################################################################
+################################################################################################
+################################################################################################
 class ReeplayitLib:
 	""" Reeplay.it data gatherer / store """
 
-	URL_BASE = "http://reeplay.it/"        # LIVE: "http://reeplay.it/" DEV: http://staging.reeplay.it
+	URL_BASE = "http://staging.reeplay.it/"        # LIVE: "http://reeplay.it/" DEV: http://staging.reeplay.it
 
-	def __init__(self, user, pwd, pageSize=200, vq=False, isPlugin=False, docType='xml'):
-		debug("ReeplayitLib() __init__ %s %s pageSize=%d vq=%s docType=%s isPlugin=%s" % (user, pwd, pageSize, vq, docType, isPlugin))
+	def __init__(self, user, pwd, pageSize=50, highVQ=True, docType='xml'):
+		debug("ReeplayitLib().__init__ %s pageSize=%d highVQ=%s docType=%s" % (user,pageSize,highVQ,docType))
 
-		self.user = user
 		self.pageSize = pageSize
 		self.docType = docType
-		self.isPlugin = isPlugin
-		self.setVideoProfile(vq)
+		self.setVideoProfile(highVQ)
 		
 		self.PROP_ID = "ID"					# pls id
 		self.PROP_COUNT = "COUNT"			# pls video count
@@ -64,28 +62,27 @@ class ReeplayitLib:
 			handleException("HTTP handlers")
 			return
 
-		self.URL_PLAYLISTS = self.URL_BASE + "users/%s/playlists." + self.docType
-		self.URL_PLAYLIST = self.URL_BASE + "users/%s/playlists/%s."+self.docType+"?page=%s&page_size=%s"
-		self.URL_VIDEO_INFO = self.URL_BASE + "users/%s/contents/%s." + self.docType + "?profile=%s"
+		self.URL_PLAYLISTS = self.URL_BASE + "users/"+user+"/playlists."+self.docType
+		self.URL_PLAYLIST = self.URL_BASE + "users/"+user+"/playlists/%s."+self.docType+"?page=%s&page_size=%s"
+		self.URL_VIDEO_INFO = self.URL_BASE + "users/"+user+"/contents/%s."+self.docType + "?profile=%s"
 
 		self.plsListItems = []
 		self.videoListItems = []
-		self.DEFAULT_THUMB_IMG = bbbTranslatePath( [DIR_HOME, "default.tbn"] )
-		self.isPluginAuth = False
+		self.DEFAULT_THUMB_IMG = os.path.join( DIR_HOME, "default.tbn" )
 
 	def debug(self, msg=""):
 		debug("%s.%s" % (self.__class__.__name__, msg))
 
-	##############################################################################################################
-	def setVideoProfile(self, vq):
-		self.vqProfile = ( 'xbmc_high', 'xbmc_standard' )[vq]
+	################################################################################################
+	def setVideoProfile(self, highVQ=True):
+		self.vqProfile = ( 'xbmc_standard','xbmc_high' )[highVQ]
 		self.debug("setVideoProfile() %s" % self.vqProfile)
 
-	##############################################################################################################
+	################################################################################################
 	def setPageSize(self, pageSize):
 		self.pageSize = pageSize
 
-	##############################################################################################################
+	################################################################################################
 	def retrieve(self, url, post=None, headers={}, fn=None):
 		""" Downloads an url. Returns: None = error , '' = cancelled """
 		self.debug("retrieve() %s" % url)
@@ -102,14 +99,14 @@ class ReeplayitLib:
 			handleException(__lang__(0))
 		return None
 
-	##############################################################################################################
+	################################################################################################
 	def set_report_hook(self, func, udata=None):
 		"""Set the download progress report handler."""
 		self.debug("set_report_hook()")
 		self.report_hook = func
 		self.report_udata = udata
 
-	##############################################################################################################
+	################################################################################################
 	def getPlaylists(self):
 		self.debug("> getPlaylists()")
 
@@ -119,12 +116,11 @@ class ReeplayitLib:
 			self.set_report_hook(self.progressHandler, dialogProgress)
 
 			# if exist, load from cache
-			playlistsURL = self.URL_PLAYLISTS % self.user
-			docFN = "/".join( [DIR_CACHE, os.path.basename(playlistsURL)] )
+			docFN = os.path.join( DIR_CACHE, os.path.basename(self.URL_PLAYLISTS) )
 			data = readFile(docFN)
 			if not data:
 				# not in cache, download
-				data = self.retrieve(playlistsURL)
+				data = self.retrieve(self.URL_PLAYLISTS)
 
 			if data:
 				items = self.parsePlaylists(data)
@@ -134,6 +130,12 @@ class ReeplayitLib:
 				for item in items:
 					try:
 						title, id, desc, count, updatedDate, imgURL = item
+
+						# convert YYYY-MM-DD to DD-MM-YYY
+						try:
+							updatedDate = "%s-%s-%s" % ( updatedDate[ 8:10 ], updatedDate[ 5:7 ], updatedDate[ :4 ] )
+						except:
+							print "bad date formatting updatedDate %s" % updatedDate
 
 						# get thumb image
 						imgName = os.path.basename(imgURL)
@@ -146,11 +148,11 @@ class ReeplayitLib:
 								imgFN = self.DEFAULT_THUMB_IMG
 
 						longTitle = "%s (%s)" % (title, count)
-						li = xbmcgui.ListItem(longTitle, desc, imgFN, imgFN)
+						li = xbmcgui.ListItem(longTitle, desc, "DefaultFolder.png", imgFN)
 						li.setProperty(self.PROP_ID, id)
 						li.setProperty(self.PROP_COUNT, str(count))
-						li.setInfo("video", {"Title" : title, "Size": count, \
-											"Album" : desc, "Date" : updatedDate})
+						li.setInfo("video", {"Title" : title, "Size": count, "Album" : desc, \
+											"Plot" : desc, "Date" : updatedDate})
 						self.plsListItems.append(li)
 					except:
 						traceback.print_exc()
@@ -162,7 +164,7 @@ class ReeplayitLib:
 		self.debug("< getPlaylists() count=%s" % count)
 		return count
 
-	##############################################################################################################
+	################################################################################################
 	def getPlaylist(self, plsId="", page=1, pageSize=0):
 		""" Download video list for playlist """
 		self.debug("> getPlaylist() plsId=%s page=%d pageSize=%d" % (plsId, page, pageSize))
@@ -175,11 +177,11 @@ class ReeplayitLib:
 			pageSize = self.pageSize
 
 		# load cached file
-		docFN = "/".join( [DIR_CACHE, "%s_page_%d.%s" % (plsId, page, self.docType)] )
+		docFN = os.path.join( DIR_CACHE, "%s_page_%d.%s" % (plsId, page, self.docType) )
 		data = readFile(docFN)
 		if not data:
 			# not cached, download
-			url = self.URL_PLAYLIST % (self.user, plsId, page, pageSize)
+			url = self.URL_PLAYLIST % (plsId, page, pageSize)
 			data = self.retrieve(url)
 			saveData(data, docFN)
 
@@ -201,6 +203,12 @@ class ReeplayitLib:
 						if not videoid:
 							continue
 
+						# convert YYYY-MM-DD to DD-MM-YYY
+						try:
+							captured = "%s-%s-%s" % ( captured[ 8:10 ], captured[ 5:7 ], captured[ :4 ] )
+						except:
+							print "bad date formatting captured %s" % captured
+
 						percent = int((itemCount * 100.0) / totalsize)
 						if percent != lastPercent and percent % 5 == 0:
 							lastPercent = percent
@@ -221,7 +229,7 @@ class ReeplayitLib:
 								imgFN = self.DEFAULT_THUMB_IMG
 
 						lbl2 = "%.1f mins" % (float(duration) / 60)
-						li = xbmcgui.ListItem(title, lbl2, imgFN, imgFN)
+						li = xbmcgui.ListItem(title, lbl2, "DefaultVideo.png", imgFN)
 						li.setInfo("video", {"Title" : title, "Date" : captured, "Duration" : duration})
 						li.setProperty(self.PROP_ID, videoid)
 						li.setProperty(self.PROP_URL, link)
@@ -231,7 +239,6 @@ class ReeplayitLib:
 
 				del items
 
-		dialogProgress.close()
 		# delete file if failed to parse etc
 		if not self.videoListItems:
 			deleteFile(docFN)
@@ -239,10 +246,10 @@ class ReeplayitLib:
 		self.debug("< getPlaylist() totalsize=%s" % totalsize)
 		return totalsize
 
-	##############################################################################################################
-	def getVideo(self, idx=-1, id="", title="", download=False):
-		""" Download the selected video info doc to get video url """
-		self.debug("> getVideo() idx=%s id=%s download=%s" % (idx, id, download))
+	################################################################################################
+	def getVideo(self, idx=-1, id="", title="", stream=False):
+		""" stream the selected video info doc to get video url """
+		self.debug("> getVideo() idx=%s id=%s stream=%s" % (idx, id, stream))
 		fn = None
 
 		# get LI info
@@ -257,64 +264,53 @@ class ReeplayitLib:
 			li = xbmcgui.ListItem( title )
 			li.setInfo("video", {"Title" : title})
 
-		try:
-			dialogProgress.create(__lang__(0),__lang__(222), title)
-			self.set_report_hook(self.progressHandler, dialogProgress)
-		except:
-			self.set_report_hook(None, None)
-			traceback.print_exc()
-
-		videoURL = self.getVideoMediaUrl(id)
+		fn = self.doesVideoExist(id)	# no need to get video info doc if we have video
+		if not fn:
+			videoURL = self.getVideoMediaUrl(id, title)
 		
 		# download and save video from its unique media-url
 		if videoURL:
 			# download video to cache
 			basename = os.path.basename(videoURL)
 			videoName = "%s_%s%s" % (id, self.vqProfile, os.path.splitext(basename)[1])		# eg ".mp4"
-			fn = bbbTranslatePath( [DIR_CACHE, videoName] )
-			if not fileExist(fn):
-				# if not in cache, do stream or download
-				if download:
-					self.debug("download video")
-					dialogProgress.update(0,  __lang__(223), title, videoName)
-					if not self.retrieve(videoURL, fn=fn):
-						deleteFile(fn)	# delete incase of partial DL
-						fn = ''
-				else:
-					# stream, so return url
-					self.debug("stream video")
-					fn = videoURL
+			fn = os.path.join( DIR_CACHE, videoName )
+			if not stream:
+				self.debug("download video")
+				dialogProgress.update(0,  __lang__(223), title)
+				if not self.retrieve(videoURL, fn=fn):
+					deleteFile(fn)	# delete incase of partial DL
+					fn = ''
 			else:
-				self.debug("video file exists")
-
-		dialogProgress.close()
+				self.debug("stream video")
+				fn = videoURL
 
 		self.debug("< getVideo() fn=%s li=%s" % (fn, li))
 		return (fn, li)
 
-	##############################################################################################################
-	def getVideoMediaUrl(self, videoId):
+	################################################################################################
+	def doesVideoExist(self, id):
+		""" Look for existing video file based on id and VQ """
+
+		exts = ('.ts','.mp4')
+		for ext in exts:
+			fn = os.path.join( DIR_CACHE, "%s_%s%s" % (id, self.vqProfile, ext) )
+			if fileExist(fn):
+				return fn
+		return None
+
+	################################################################################################
+	def getVideoMediaUrl(self, videoId, title=""):
 		""" Download the selected video info doc to get video url """
 		self.debug("> getVideoMediaUrl() videoId=%s" % videoId)
 
 		videoURL = ""
-		infoUrl = self.URL_VIDEO_INFO % (self.user, videoId, self.vqProfile)
+		infoUrl = self.URL_VIDEO_INFO % (videoId, self.vqProfile)
 		self.debug("infoUrl=" + infoUrl)
 
 		# if exist, load cached
-		docFN = "/".join( [DIR_CACHE, "%s_%s.%s" % (videoId, self.vqProfile, self.docType)] )
+		docFN = os.path.join( DIR_CACHE, "%s_%s.%s" % (videoId, self.vqProfile, self.docType) )
 		data = readFile(docFN)
 		if not data:
-			if self.isPlugin and not self.isPluginAuth:
-				debug("http authenticate ...")
-				# This is for Plugin; as it won't have done Auth. before getVideo() call
-				dialogProgress.update(0, "User Authentication ...")
-				if not self.retrieve(self.URL_PLAYLISTS % self.user):
-					dialogProgress.close()
-					messageOK("Error", __lang__(108))	# auth failed.
-					self.debug("< getVideoMediaUrl() failed auth.")
-					return None
-				self.isPluginAuth = True
 			# not cached, download
 			data = self.retrieve(infoUrl)
 			saveData(data, docFN)
@@ -323,27 +319,28 @@ class ReeplayitLib:
 		if data:
 			videoURL = self.parseVideo(data)
 		if not videoURL:
+			dialogProgress.close()
 			messageOK(__lang__(0), "Video Media URL missing!")
 			deleteFile(docFN) # incase its a bad info doc
 		
 		self.debug("< getVideoMediaUrl() videoURL=%s" % videoURL)
 		return videoURL
 
-	##############################################################################################################
+	################################################################################################
 	def getPlsLI(self, idx):
 		try:
 			return self.plsListItems[idx]
 		except:
 			return None
 
-	##############################################################################################################
+	################################################################################################
 	def getVideoLI(self, idx):
 		try:
 			return self.videoListItems[idx]
 		except:
 			return None
 
-	##############################################################################################################
+	################################################################################################
 	def getMaxPages(self, plsCount):
 		maxPages = int(plsCount / self.pageSize)
 		mod = plsCount % self.pageSize
@@ -352,7 +349,7 @@ class ReeplayitLib:
 		self.debug("getMaxPages() %d" % maxPages)
 		return maxPages
 
-	##############################################################################################################
+	################################################################################################
 	def progressHandler(self, count, totalsize, dlg):
 		"""Update progress dialog percent and return abort status."""
 
@@ -366,7 +363,7 @@ class ReeplayitLib:
 
 		return not dlg.iscanceled()
 
-	##############################################################################################################
+	################################################################################################
 	def parsePlaylists(self, doc):
 		""" Wrapper to call Playlists parsing """
 		self.debug("parsePlaylists()")
@@ -375,7 +372,7 @@ class ReeplayitLib:
 		else:
 			return parsePlaylistsXML(doc)
 
-	##############################################################################################################
+	################################################################################################
 	def parsePlaylist(self, doc):
 		""" Wrapper to call Playlist parsing """
 		self.debug("parsePlaylist()")
@@ -384,7 +381,7 @@ class ReeplayitLib:
 		else:
 			return parsePlaylistXML(doc)
 
-	##############################################################################################################
+	################################################################################################
 	def parseVideo(self, doc):
 		""" Wrapper to parse Video info doc  """
 		self.debug("parseVideo()")
@@ -395,7 +392,7 @@ class ReeplayitLib:
 
 
 
-##############################################################################################################
+################################################################################################
 def parsePlaylistsXML(doc):
 	""" Parse Playlists XML using regex to [ [], [], [] ... ] """
 	debug("parsePlaylistsXML()")
@@ -415,7 +412,7 @@ def parsePlaylistsXML(doc):
 	return data
 
 
-##############################################################################################################
+################################################################################################
 def parsePlaylistXML(doc):
 	""" Parse Playlist XML to get videos using regex """
 	debug("parsePlaylistXML()")
@@ -434,7 +431,7 @@ def parsePlaylistXML(doc):
 #		pprint (data)
 	return data
 
-##############################################################################################################
+################################################################################################
 def parsePlaylistsJSON(doc):
 	""" Parse Playlists JSON using eval to [ [], [], [] ... ] """
 	debug("parsePlaylistsJSON()")
@@ -464,7 +461,7 @@ def parsePlaylistsJSON(doc):
 	return data
 
 
-##############################################################################################################
+################################################################################################
 def parsePlaylistJSON(doc):
 	""" Parse Playlist JSON to get videos using eval """
 	debug("parsePlaylistJSON()")
@@ -496,12 +493,12 @@ def parsePlaylistJSON(doc):
 #		pprint (data)
 	return data
 
-##############################################################################################################
+################################################################################################
 def parseVideoXML(doc):
     """ Parse Video ID XML to get media url using regex """
     return searchRegEx(doc, '<media[_-]url>(.*?)</')        # _ or - depending on XML in use
 
-##############################################################################################################
+################################################################################################
 def parseVideoJSON(doc):
 	""" Parse Video ID XML to get media url using regex """
 
@@ -511,52 +508,63 @@ def parseVideoJSON(doc):
 #		pprint (data)
 	return data
 
-##############################################################################################################
-def deleteScriptCache(deleteAll=True):
+################################################################################################
+def deleteScriptCache(deleteVideos=True, deleteData=True):
 	""" Delete script cache contents according to settings """
-	debug("deleteScriptCache() deleteAll=%s" % deleteAll)
+	debug("deleteScriptCache() deleteVideos=%s deleteData=%s" % (deleteVideos, deleteData))
 	try:
-		if deleteAll:
-			# delete all by removing cache dir
-			from shutil import rmtree
-			rmtree( xbmc.translatePath(DIR_CACHE), ignore_errors=True )
-		else:
-			# Delete videos and xml
-			allFiles = os.listdir( xbmc.translatePath(DIR_CACHE) )
-			for f in allFiles:
-				fn, ext = os.path.splitext(f)
-				if ext in ('.mp4','.ts,','.flv','.xml','.json'):
-					deleteFN = "/".join( [DIR_CACHE, f] )
-	#				deleteFile(deleteFN)
+		deleteExts = []
+		if deleteData:
+			deleteExts += ['.xml','.json',]
+		if deleteVideos:
+			deleteExts += ['.mp4','.ts,','.flv']
+
+		# Delete videos and xml
+		allFiles = os.listdir( xbmc.translatePath(DIR_CACHE) )
+		for f in allFiles:
+			fn, ext = os.path.splitext(f)
+			if ext in deleteExts:
+				deleteFN = os.path.join( DIR_CACHE, f )
+#				deleteFile(deleteFN)
 	except:
 		handleException("deleteScriptCache()")
 
-##############################################################################################################
-##############################################################################################################
+########################################################################################################################
+def showTextFile(filename):
+    """ Show the text from a file """
+    debug( "showTextFile() " + filename)
+    try:
+        tbd = TextBoxDialogXML("DialogScriptInfo.xml", DIR_HOME)
+        tbd.ask( title=filename, fn=filename )
+        del tbd
+    except:
+        handleException()
+
+################################################################################################
+################################################################################################
 class ReeplayitSettings:
 	""" Settings for reeplay.it, allows same file to be shared by script and plugin """
 
 	SETTINGS_FILENAME = "/".join( [DIR_USERDATA, "settings.txt"] )
 	SETTING_USER = "user"
 	SETTING_PWD = "pwd"
-	SETTING_CHECK_UPDATE = "check_script_update_startup"
+	SETTING_CHECK_UPDATE = "check_update"
 	SETTING_PAGE_SIZE = "page_size"
-	SETTING_VQ = "video_quality"
-	SETTING_CACHE_ACTION = "cache_action"
-	SETTING_PLAY_MODE = "play_mode"
+	SETTING_VQ = "hq_video"
+	SETTING_DELETE_VIDEOS = "delete_videos"
+	SETTING_STREAM_VIDEO = "stream_videos"
 
 	SETTINGS_DEFAULTS = {
 		SETTING_USER : "",
 		SETTING_PWD : "",
 		SETTING_CHECK_UPDATE : False,
 		SETTING_PAGE_SIZE : 200,
-		SETTING_VQ : False,					# False = high, True = med
-		SETTING_CACHE_ACTION : False,			# False == All, True == Videos Only
-		SETTING_PLAY_MODE : False				# False == Stream, True == Download
+		SETTING_VQ : True,
+		SETTING_DELETE_VIDEOS : True,
+		SETTING_STREAM_VIDEO : True
 		}
 
 	def __init__(self):
-		self.debug("__init__")
 		self.load()
 
 	def debug(self, msg=""):
@@ -667,10 +675,10 @@ class ReeplayitSettings:
 		menu.append( _makeBool(self.SETTING_VQ, __lang__(306), __lang__(225), __lang__(226)) )
 
 		# CACHE ON EXIT
-		menu.append( _makeBool(self.SETTING_CACHE_ACTION, __lang__(307), __lang__(227), __lang__(228)) )
+		menu.append( _makeBool(self.SETTING_DELETE_VIDEOS, __lang__(307), __lang__(227), __lang__(228)) )
 
 		# PLAYBACK MODE
-		menu.append( _makeBool(self.SETTING_PLAY_MODE, __lang__(308), __lang__(231), __lang__(232)) )
+		menu.append( _makeBool(self.SETTING_STREAM_VIDEO, __lang__(308), __lang__(231), __lang__(232)) )
 
 		return menu
 
@@ -718,10 +726,10 @@ class ReeplayitSettings:
 		elif key == self.SETTING_VQ:
 			# video quality
 			newValue = self.boolToggle(key)
-		elif key == self.SETTING_CACHE_ACTION:
+		elif key == self.SETTING_DELETE_VIDEOS:
 			# cache action on exit
 			self.boolToggle(key)
-		elif key == self.SETTING_PLAY_MODE:
+		elif key == self.SETTING_STREAM_VIDEO:
 			# playback mode
 			self.boolToggle(key)
 

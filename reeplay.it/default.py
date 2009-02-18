@@ -20,18 +20,19 @@ import sys, os, traceback
 from string import find, strip, replace
 
 __scriptname__ = "reeplay.it"
-__version__ = '0.9'
+__version__ = '0.11'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/reeplay.it"
-__date__ = '11-02-2009'
+__date__ = '18-02-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
-DIR_HOME = os.getcwd().replace( ";", "" )
-DIR_RESOURCES_LIB = "/".join( [DIR_HOME, "resources", "lib"] )
+DIR_HOME= os.getcwd().replace(';','')
+DIR_RESOURCES = os.path.join( DIR_HOME, "resources" )
+DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES, "lib" )
 #DIR_USERDATA = "/".join( ["special://masterprofile","script_data", __scriptname__] )      # T:// - new drive
-DIR_USERDATA = "/".join( ["T:","script_data", __scriptname__] )  # translatePath() will convert to new special://
-DIR_CACHE = "/".join( [DIR_USERDATA, "cache"] )
+DIR_USERDATA = '/'.join( ["T:", "script_data", "video", __scriptname__] )
+DIR_CACHE = '/'.join( [ DIR_USERDATA, "cache"] )
 sys.path.insert(0, xbmc.translatePath(DIR_RESOURCES_LIB) )
 
 # Load Language using xbmc builtin
@@ -39,14 +40,16 @@ try:
     # 'resources' now auto appended onto path
     __lang__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
-	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("XBMC Language Error", "Install a new XBMC build to run this script.")
+	e = str( sys.exc_info()[ 1 ] )
+	print e
+	xbmcgui.Dialog().ok("XBMC Language Error", "Install a newer XBMC build.", e)
 
 import update
 from bbbLib import *
 import reeplayit
 
 debug("DIR_HOME=" + DIR_HOME)
+debug("DIR_RESOURCES=" + DIR_RESOURCES)
 debug("DIR_RESOURCES_LIB=" + DIR_RESOURCES_LIB)
 debug("DIR_USERDATA=" + DIR_USERDATA)
 debug("DIR_CACHE=" + DIR_CACHE)
@@ -484,7 +487,6 @@ makeDir(DIR_CACHE)
 try:
 	# check language loaded
 	xbmc.output( "__lang__ = %s" % __lang__ )
-	installPlugin('video', __scriptname__, __lang__(1015), )
 	myscript = ReeplayitGUI("script-reeplay-main.xml", DIR_HOME, "Default")
 	if myscript.ready:
 		myscript.doModal()
@@ -493,7 +495,6 @@ except:
 	handleException()
 
 # clean up on exit
-debug(__scriptname__ + ": exit, housekeeping ...")
 moduleList = ['bbbLib', 'bbbSkinGUILib', 'reeplayit', 'net']
 for m in moduleList:
 	try:
@@ -506,8 +507,3 @@ try:
 	del dialogProgress
 except: pass
 sys.modules.clear()
-
-# goto xbmc home window
-#try:
-#	xbmc.executebuiltin('XBMC.ReplaceWindow(0)')
-#except: pass

@@ -60,9 +60,9 @@
     <string id="303">Username:</string>
     <string id="304">Password:</string>
     <string id="305">Videos Per Page:</string>
-    <string id="306">Video Quality:</string>
-    <string id="307">Delete From Cache On Exit:</string>
-    <string id="308">Playback Mode:</string>
+    <string id="306">High Quality Video ?</string>
+    <string id="307">Delete Videos On Exit ?</string>
+    <string id="308">Stream Video ?</string>
 
     <!-- Update messages -->
     <string id="1000">Your version is up to date.</string>

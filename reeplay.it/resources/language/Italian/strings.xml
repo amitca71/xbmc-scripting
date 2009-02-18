@@ -60,9 +60,9 @@
     <string id="303">Nome utente:</string>
     <string id="304">Password:</string>
     <string id="305">Video per pagina:</string>
-    <string id="306">Qualità video:</string>
-    <string id="307">Svuota la cache in uscita:</string>
-    <string id="308">Modalità Riproduzione:</string>
+    <string id="306">Video ad alta qualita' ?</string>
+    <string id="307">Cancello i video in uscita ?</string>
+    <string id="308">Video streaming ?</string>
 
     <!-- Update messages -->
     <string id="1000">La versione é la più recente.</string>
