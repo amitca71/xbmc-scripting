@@ -1,4 +1,10 @@
  Version     Date
+ 1.18.2      ??/01/09
+                Fix: Dreambox - (non Enigma) retrieving timers.
+                Fix: pc_XMLTV - channels regex error
+                Updated: Language Strings
+                Updated: Skin tweaks
+                Updated: Library code
  1.18.1      ??/09/08 
                 Fix: All skins that were missing button icons etc
                 Fix: Self updateing. (You will need to manual update from v1.18)

@@ -6,6 +6,7 @@
 # REVISION HISTORY:
 # 10/09/07 - Created (from pc_tsreader)
 # 11/08/08 - Updated for myTV v1.18
+# 07/01/09 - Fix. channels regex error
 ############################################################################################################
 
 from mytvLib import *
@@ -13,6 +14,8 @@ from smbLib import ConfigSMB, smbConnect, smbFetchFile, parseSMBPath, isNewSMBFi
 
 import xbmcgui, re, time, os, smb
 from string import split
+
+__language__ = sys.modules["__main__"].__language__
 
 CHANNELS_REGEX = 'channel id="(.*?)".*?display-name.*?>(.*?)<'
 CHANNEL_REGEX = 'start="($DATE\d\d\d\d\d\d).*?channel="$CHID".*?title.*?>(.*?)<'
@@ -79,9 +82,7 @@ class ListingData:
 			self.checkedRemoteFileToday = True
 
 		if fileExist(self.localSMBFile):
-			progList = self.createChannelFiles(chID, int(fileDate))
-			if progList:
-				progList = setChannelEndTimes(progList)		# update endtimes
+			progList = self.createChannelFiles(chID, fileDate)
 		else:
 			debug("file missing " + self.localSMBFile)
 
@@ -134,22 +135,26 @@ class ListingData:
 	def createChannelFiles(self, chID, searchDate):
 		debug("> ListingData.createChannelFiles() chID=%s  searchDate=%s" % (chID, searchDate))
 
-		records = []
-		dialogProgress.update(0, "XML Parsing ...")
+		progList = []
+		dialogProgress.update(0, __language__(312))
 		data = readFile(self.localSMBFile)
 		regex = CHANNEL_REGEX.replace('$DATE',searchDate).replace('$CHID',chID)
 		matches = findAllRegEx(data, regex)
-		for prog in matches:
-			startDateTime = prog[0]
-			title = decodeEntities(prog[1])
+		if matches:
+			for prog in matches:
+				startDateTime = prog[0]
+				title = decodeEntities(prog[1])
 
-			# calc programme start time in secs since epoch based on programme date
-			startTimeSecs = time.mktime(time.strptime(startDateTime,"%Y%m%d%H%M%S"))
-			progList.append( {
-					TVData.PROG_STARTTIME : float(startTimeSecs),
-					TVData.PROG_ENDTIME : 0,
-					TVData.PROG_TITLE : title
-				} )
+				# calc programme start time in secs since epoch based on programme date
+				startTimeSecs = time.mktime(time.strptime(startDateTime,"%Y%m%d%H%M%S"))
+				progList.append( {
+						TVData.PROG_STARTTIME : float(startTimeSecs),
+						TVData.PROG_ENDTIME : 0,
+						TVData.PROG_TITLE : title
+					} )
+
+			if progList:
+				progList = setChannelEndTimes(progList)		# update endtimes
 
 		del data
 		debug("< ListingData.createChannelFiles() progs count=%s" % len(progList))

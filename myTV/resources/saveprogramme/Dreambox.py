@@ -383,7 +383,7 @@ class SaveProgramme:
 		return timersList	# None is error, [] is empty, otherwise contains data
 
 	############################################################################################################
-	def getTimersOld(doc):
+	def getTimersOld(self, doc):
 		debug("> getTimersOld()")
 		timersList = []
 

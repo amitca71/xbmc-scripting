@@ -27,9 +27,9 @@ import gc
 
 # Script doc constants
 __scriptname__ = "myTV"
-__version__ = '1.18.1'
+__version__ = '1.18.2'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '14-10-2008'
+__date__ = '01-02-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
