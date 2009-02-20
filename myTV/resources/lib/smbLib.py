@@ -58,7 +58,7 @@ def smbConnect(hostIP, smbPath):
 				debug("useLogin = %s" % useLogin)
 				if useLogin:
 					if not user or not password:
-						messageOK(__language__(954), "%s:%s" % (user,password))
+						messageOK(__language__(954), "SMB User / Password missing!" )
 					else:
 						try:
 							remote.login(user, password, domain)
@@ -209,6 +209,23 @@ def isNewSMBFile(remote, remoteInfo, localPath, remoteFile, silent=True):
 	newFileFound = (remoteFileSecs > localFileSecs) # greater secs means newer
 	debug("< isNewSMBFile() newFileFound: %s" % newFileFound)
 	return newFileFound
+
+###############################################################################################################
+def listDirSMB(remote, remoteInfo):
+	debug("> listDirSMB()")
+	fileList = []
+
+	if not remote or not remoteInfo:
+		messageOK(__language__(951), __language__(966))
+	else:
+		if DEBUG: print remoteInfo
+		domain,user,password,pcname,service,dirPath = remoteInfo
+
+		# list files on SMB of remote
+		fileList = remote.list_path(service, dirPath+'/*')
+
+	debug("< listDirSMB() count=%d" % len(fileList))
+	return fileList
 
 ###############################################################################################################
 def handleExceptionSMB(ex, title, msg=""):
