@@ -57,7 +57,9 @@ class ListingData:
 			data = readFile(localFN)
 			if data:
 				matches = parseDocList(data, CHANNELS_REGEX, "[channel_list]")
-				channelList = writeChannelsList(self.CHANNELS_FILENAME, matches)
+				if matches:
+					channelList = writeChannelsList(self.CHANNELS_FILENAME, matches)
+			deleteFile(localFN)
 		else:
 			# read in [channel id, channel name]
 			channelList = readChannelsList(self.CHANNELS_FILENAME)
@@ -93,7 +95,8 @@ class ListingData:
 
 
 				# fetch all files we dont have
-				for fn in dayFilesList:
+				MAX_COUNT = len(dayFilesList)
+				for count, fn in enumerate(dayFilesList):
 					try:
 						match = re.search(DM_FILENAME_REGEX, fn)
 						fnChID = match.group(3)
@@ -102,17 +105,22 @@ class ListingData:
 						continue
 					channelFN = os.path.join(DIR_CACHE, "%s_%s.dat" % (fnChID,fnDate))
 					if not fileExist(channelFN):
-						dataFN = os.path.join(self.cache, fn)
-						if self.getRemoteFile(fn, dataFN):
-							self.createChannelFiles(dataFN, channelFN)
-							deleteFile(dataFN)
+						dataFN = "DM_%s_%s" % (fnChID,fnDate)
+						dataFile = os.path.join(self.cache, dataFN)
+						percent = int( float( count * 100) / MAX_COUNT )
+						dialogProgress.update(percent, __language__(962), dataFN, " ")
+						if self.getRemoteFile(fn, dataFile, True):
+							self.createChannelFiles(dataFile, channelFN)
+							deleteFile(dataFile)
 
 			self.checkedRemoteFileToday = True
 
+		print "check for filename=" + filename
 		if fileExist(filename):
+			print "found filename"
 			progList = loadChannelFromFile(filename)
 
-		debug("< getChannel()")
+		debug("< ListingData.getChannel() prog count=%d" % len(progList))
 		return progList
 
 
@@ -123,17 +131,27 @@ class ListingData:
 		debug("> ListingData.createChannelFiles() dataFN=%s channelFN=%s" % (dataFN,channelFN))
 
 		progList = []
-		dialogProgress.update(0, __language__(312))
+#		dialogProgress.update(0, __language__(312))
 		data = readFile(dataFN)
 		matches = findAllRegEx(data, CHANNEL_REGEX)
 		if matches:
+			# convert from EPG using Julian epoch to python Proleptic epoch
+#			DAY_SECS = 86400
+#			EPG_PROLEPTIC_ZERO_DAY=678576
+#			EPG_PROLEPTIC_ZERO_DAY_SECS = (EPG_PROLEPTIC_ZERO_DAY * DAY_SECS)
 			for prog in matches:
+				print prog
+#				startTimeSecs = int(EPG_PROLEPTIC_ZERO_DAY_SECS + int(prog[0]))
+				print "%s = %s" % (prog[0], time.localtime(int(prog[0])))
+				
 				progList.append( {
 						TVData.PROG_STARTTIME : float(prog[0]),
 						TVData.PROG_ENDTIME : 0,
 						TVData.PROG_TITLE : decodeEntities(prog[2]),
 						TVData.PROG_DESC : decodeEntities(prog[3])
 					} )
+
+				print progList[-1]
 
 			if progList:
 				progList = setChannelEndTimes(progList)		# update endtimes
@@ -147,23 +165,23 @@ class ListingData:
 	############################################################################################################
 	# create a SMB connection and fetch remote file
 	############################################################################################################
-	def getRemoteFile(self, remoteFilename, localFilename='', fetchAlways=True):
-		debug("> ListingData().getRemoteFile() fetchAlways=%s" % fetchAlways)
+	def getRemoteFile(self, remoteFilename, localFilename='', silent=False):
+		debug("> ListingData().getRemoteFile()")
 		downloaded = False
 
 		if not self.connectionError:
 			if not self.remote:
 				self.remote, self.remoteInfo = smbConnect(self.smbIP, self.smbPath)
 
-			if self.remote and self.remoteInfo:
+			if not self.remote or not self.remoteInfo:
+				downloaded = None
+			else:
 				if not localFilename:
 					localFilename = os.path.join(self.cache, remoteFilename)
 
-				if fetchAlways or isNewSMBFile(self.remote, self.remoteInfo, localFilename, remoteFilename):
-					downloaded = smbFetchFile(self.remote, self.remoteInfo, localFilename, remoteFilename, silent=False)
-					if not downloaded:
-						self.connectionError = True
-			else:
+				downloaded = smbFetchFile(self.remote, self.remoteInfo, localFilename, remoteFilename, silent=silent)
+
+			if downloaded == None:
 				self.connectionError = True
 
 		debug("< ListingData.getRemoteFile() downloaded=%s connectionError=%s" % (downloaded, self.connectionError))
@@ -181,7 +199,7 @@ class ListingData:
 		self.smbRemoteFile = None
 		self.connectionError = False
 
-		configSMB = ConfigSMB(config, CONFIG_SECTION, self.name, fnDefaultValue=DAY_FILENAME)
+		configSMB = ConfigSMB(config, CONFIG_SECTION, self.name, fnDefaultValue='Not Used')
 		if reset:
 			configSMB.ask()
 

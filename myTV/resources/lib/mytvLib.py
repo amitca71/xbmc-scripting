@@ -11,6 +11,7 @@
   26/11/07 Modified getChannelsLIB() to use fetchCookieURL() which takes headers and reversed regex
   01/09/08 Updated for myTV v1.18
   12/09/08 Updated for myTV v1.18.1
+  23/02/09 - translatePath()
 """
 
 import sys,os.path
@@ -210,7 +211,7 @@ def writeChannelsList(filename, channels):
 
 	delimitedList = []
 	if channels:
-		f = open(filename,"w")
+		f = open(xbmc.translatePath(filename),"w")
 
 		# join & split so we can use decoded versions of data
 		for channel in channels:
@@ -290,11 +291,11 @@ def fetchXMLTV(userName,
 			debug('Logging in, fileCoding=' + fileCoding)
 			if fileCoding == 'native':
 				urldata = urllib2.urlopen(URL, strSoap)
-				outfile = open(fileName,'wb',262144)
+				outfile = open(xbmc.translatePath(fileName),'wb',262144)
 				repenc = False
 			else:
 				urldata = codecs.getreader('utf-8')(urllib2.urlopen(URL, strSoap), errors='replace')
-				outfile = codecs.open(fileName,'wb', fileCoding, 'replace', 262144)
+				outfile = codecs.open(xbmc.translatePath(fileName),'wb', fileCoding, 'replace', 262144)
 				repenc = True
 		except IOError, errobj:
 			debug("IOError")
@@ -536,7 +537,7 @@ class ManageTimers:
 	def writeTimer(self, fname, startTimeSecs, chID, durSecs, chName, progName, delURL="", progID=""):
 		debug("ManageTimers.writeTimer() startTimeSecs=%s chID=%s fn=%s" % (startTimeSecs,chID,fname))
 		try:
-			f = open(fname,"a+")
+			f = open(xbmc.translatePath(fname),"a+")
 			s = "%s~%s~%s~%s~%s~%s~%s\n" % \
 				(float(startTimeSecs), chID, int(durSecs), chName, progName, delURL, progID)
 			f.write(s)
@@ -889,13 +890,13 @@ class MYTVConfig:
 	KEY_DISPLAY_COLOUR_TEXT_ODD = "colour_epg_text_odd"
 	KEY_DISPLAY_COLOUR_TEXT_EVEN = "colour_epg_text_even"
 	KEY_DISPLAY_COLOUR_TEXT_FAV = "colour_epg_text_fav"
-	KEY_DISPLAY_FONT_TITLE = 'font_title'
-	KEY_DISPLAY_FONT_SHORT_DESC = 'font_short_desc'
-	KEY_DISPLAY_FONT_CHNAMES = 'font_chname'
-	KEY_DISPLAY_FONT_EPG = 'font_epg'
-	KEY_DISPLAY_EPG_ROW_HEIGHT = 'height_epg_row'
-	KEY_DISPLAY_EPG_ROW_GAP_HEIGHT = 'height_epg_row_gap'
-	KEY_DISPLAY_SKIN = 'skin'
+	KEY_DISPLAY_FONT_TITLE = "font_title"
+	KEY_DISPLAY_FONT_SHORT_DESC = "font_short_desc"
+	KEY_DISPLAY_FONT_CHNAMES = "font_chname"
+	KEY_DISPLAY_FONT_EPG = "font_epg"
+	KEY_DISPLAY_EPG_ROW_HEIGHT = "height_epg_row"
+	KEY_DISPLAY_EPG_ROW_GAP_HEIGHT = "height_epg_row_gap"
+	KEY_DISPLAY_SKIN = "skin"
 	KEY_DISPLAY_COLOUR_ARROWS = "colour_arrows"
 	KEY_DISPLAY_COLOUR_NOWTIME = "colour_nowtime_line"
 	KEY_DISPLAY_COLOUR_TIMERBAR = "colour_timerbar"
@@ -913,8 +914,7 @@ class MYTVConfig:
 
 	def __init__(self):
 		debug("> MYTVConfig.__init__")
-
-		self.configHelper = ConfigHelper(os.path.join(DIR_USERDATA, 'Config.dat'))
+		self.configHelper = ConfigHelper(os.path.join(DIR_USERDATA, "Config.dat"))
 		self.initAllDefaults()
 		debug("< MYTVConfig.__init__")
 
@@ -969,15 +969,15 @@ class MYTVConfig:
 		items[MYTVConfig.KEY_DISPLAY_FONT_EPG] = self.VALUE_DISPLAY_FONT_EPG
 		items[MYTVConfig.KEY_DISPLAY_EPG_ROW_HEIGHT] = self.VALUE_DISPLAY_EPG_ROW_HEIGHT
 		items[MYTVConfig.KEY_DISPLAY_EPG_ROW_GAP_HEIGHT] = self.VALUE_DISPLAY_EPG_ROW_GAP_HEIGHT
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_CHNAMES] = '0xFFFFFFFF'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_TEXT_ODD] = '0xFFFFFFFF'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_TEXT_EVEN] = '0xFFFFFFFF'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_TEXT_FAV] = '0xFFFFFFFF'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_TITLE] = '0xFFFFFFFF'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_SHORT_DESC] = '0xFFFFFFFF'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_ARROWS] = '0xFFFFFFCC'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_NOWTIME] = '0xFFFFFFCC'
-		items[MYTVConfig.KEY_DISPLAY_COLOUR_TIMERBAR] = '0xFF99FFFF'
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_CHNAMES] = "0xFFFFFFFF"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_TEXT_ODD] = "0xFFFFFFFF"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_TEXT_EVEN] = "0xFFFFFFFF"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_TEXT_FAV] = "0xFFFFFFFF"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_TITLE] = "0xFFFFFFFF"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_SHORT_DESC] = "0xFFFFFFFF"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_ARROWS] = "0xFFFFFFCC"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_NOWTIME] = "0xFFFFFFCC"
+		items[MYTVConfig.KEY_DISPLAY_COLOUR_TIMERBAR] = "0xFF99FFFF"
 		skinName = getSkinName()
 		items[MYTVConfig.KEY_DISPLAY_SKIN] = skinName
 
@@ -1005,7 +1005,7 @@ class MYTVConfig:
 	# if it exists, overright section settings with key/values from skin config file
 	# loads associated skin config (if exists) for whatever the current xbmc skin is DIR_EPG
 	###############################################################################################################
-	def loadSkinConfig(self, defaultDisplaySection, skinName=''):
+	def loadSkinConfig(self, defaultDisplaySection, skinName=""):
 		debug("> loadSkinConfig() skinName=%s" % skinName)
 
 		# save skinName
@@ -1017,21 +1017,25 @@ class MYTVConfig:
 			debug("skinDir missing %s" % skinDir)
 			skinName = self.VALUE_DISPLAY_DEFAULT_SKIN
 
-		skinFN = os.path.join(DIR_EPG, skinName, 'skin.dat')
+		skinFN = os.path.join(DIR_EPG, skinName, "skin.dat")
 		defaultDisplaySection[MYTVConfig.KEY_DISPLAY_SKIN] = skinName
 		try:
 			debug("skinFN=%s" % skinFN)
 			skinConfig = ConfigParser.ConfigParser()
 			skinConfig.readfp(open(skinFN))
+
 			# using items of the current config dict, find in skin config and overright
 			for key,value in defaultDisplaySection.items():
 				try:
-					defaultDisplaySection[key] = skinConfig.get('SKIN', key)
+					defaultDisplaySection[key] = skinConfig.get("SKIN", key).strip()
 				except:
 					# key not in skin config
-					print "SKIN section; setting defaults; unknown key %s" % key
+					print "SKIN section; setting defaults; unknown key=%s" % key
 
+			if DEBUG:
+				print "after load defaultDisplaySection=", defaultDisplaySection
 		except:
+			traceback.print_exc()
 			messageOK("SKIN LOAD ERROR","Failed to load skin config file.",skinFN)
 		debug("< loadSkinConfig()")
 		return defaultDisplaySection
@@ -1045,9 +1049,9 @@ class MYTVConfig:
 	def getDisplay(self, option):
 		value = self.configHelper.action(MYTVConfig.SECTION_DISPLAY, option)
 		if value and (isinstance(value, str) and \
-					(value.lower().endswith('.png') or \
-					value.lower().endswith('.gif') or \
-					value.lower().endswith('.jpg'))):
+					(value.lower().endswith(".png") or \
+					value.lower().endswith(".gif") or \
+					value.lower().endswith(".jpg"))):
 			return os.path.join(DIR_EPG, value)
 		else:
 			return value
@@ -1061,7 +1065,7 @@ class MYTVConfig:
 	def setSMB(self, option, value):
 		return self.configHelper.action(self.SECTION_SMB, option, value, mode=ConfigHelper.MODE_WRITE)
 
-	def action(self, section='', option='', value='', mode=None):
+	def action(self, section="", option="", value="", mode=None):
 		return self.configHelper.action(section, option, value, mode)
 
 #############################################################################################################
@@ -1070,28 +1074,28 @@ class MYTVConfig:
 class ConfigHelper:
 
 	# Config actions
-	MODE_SECTIONS = 'ls'			# list of sections
-	MODE_OPTIONS = 'lo'			# list options in the given section
-	MODE_ITEMS = 'li'				# list of items (name, value pairs) in the given section
-	MODE_INIT_OPTION = 'i'			# read, init option to a default value if not exists
-	MODE_INIT_SECTION = 'is'		# read, init option to a default value if not exists
-	MODE_READ = 'r'				# read in the given section
-	MODE_WRITE = 'w'				# write in the given section
-	MODE_REMOVE_SECTION = 'rs'		# remove section
-	MODE_REMOVE_OPTION = 'ro'		# remove option in the given section
-	MODE_HAS_SECTION ='hs'			# check if section exists
+	MODE_SECTIONS = "ls"			# list of sections
+	MODE_OPTIONS = "lo"			# list options in the given section
+	MODE_ITEMS = "li"				# list of items (name, value pairs) in the given section
+	MODE_INIT_OPTION = "i"			# read, init option to a default value if not exists
+	MODE_INIT_SECTION = "is"		# read, init option to a default value if not exists
+	MODE_READ = "r"				# read in the given section
+	MODE_WRITE = "w"				# write in the given section
+	MODE_REMOVE_SECTION = "rs"		# remove section
+	MODE_REMOVE_OPTION = "ro"		# remove option in the given section
+	MODE_HAS_SECTION ="hs"			# check if section exists
 
 	VALUE_YES = True
 	VALUE_NO = False
-	VALUE_NONE = 'None'
-	VALUE_NOT_SET = '?'
+	VALUE_NONE = "None"
+	VALUE_NOT_SET = "?"
 
 	def __init__(self, filename=''):
 		debug("> mytvLib.ConfigHelper.__init__")
 
 		self.reset()
 		if filename:
-			self.filename = xbmc.makeLegalFilename(filename)
+			self.filename = xbmc.makeLegalFilename(xbmc.translatePath(filename))
 			self.load()
 			self.showCP()
 		else:
@@ -1120,10 +1124,12 @@ class ConfigHelper:
 
 	def save(self): 
 		try:
-			self.cp.write(open(self.filename, "w+"))
+			self.cp.write(open(self.filename, "w"))
 			success = True
 		except:
 			success = False
+			print filename
+			traceback.print_exc()
 			messageOK("Config Save Failed","Check filename/space etc.")
 		return success
 
@@ -1288,7 +1294,12 @@ class TVRage:
 
 	###################################################################################################################
 	def onAction(self, action):
-		if action in EXIT_SCRIPT + CANCEL_DIALOG:
+		try:
+			actionID = action.getId()
+			buttonCode = action.getButtonCode()
+		except: return
+
+		if actionID in CANCEL_DIALOG + EXIT_SCRIPT or buttonCode in CANCEL_DIALOG + EXIT_SCRIPT:
 			self.deleteCache()
 			self.close()
 
@@ -1714,12 +1725,10 @@ class TVRageShowInfoXML(xbmcgui.WindowXMLDialog):
 	def onAction(self, action):
 		try:
 			actionID = action.getId()
-			if not actionID:
-				actionID = action.getButtonCode()
+			buttonCode = action.getButtonCode()
 		except: return
-		debug( "onAction(): actionID=%i" % actionID )
 
-		if actionID in EXIT_SCRIPT:
+		if actionID in EXIT_SCRIPT or buttonCode in EXIT_SCRIPT:
 			debug("TVRageShowInfoXML() EXIT_SCRIPT")
 			self.close()
 
@@ -2021,20 +2030,20 @@ def loadChannelFromFile(filename):
     progList = []
     try:
         # each row is a prog dict
-        filename = xbmc.makeLegalFilename(filename)
+        filename = xbmc.makeLegalFilename(xbmc.translatePath(filename))
         debug("legal filename=%s" % filename)
         for rec in open(filename,'r'):
             progList.append(eval( rec.strip() ))
     except:
         debug("error opening file")
-    debug("< loadChannelFromFile()")
+    debug("< loadChannelFromFile() prog count=%s" % len(progList))
     return progList
 
 def saveChannelToFile(progList, filename):
 	debug("> saveChannelToFile()")
 	saved = False
 	if progList:
-		filename = xbmc.makeLegalFilename(filename)
+		filename = xbmc.makeLegalFilename(xbmc.translatePath(filename))
 		debug("legal filename=%s" % filename)
 		if not fileExist(filename):
 			try:
@@ -2070,13 +2079,13 @@ def checkProgContinuity(channel):
 			if progIdx > 0 and startTime != lastEndTime:
 				# create empty prog if its a gap
 				if lastEndTime < startTime:
-					debug( "create empty prog to fill gap progIdx=%s lastEndTime=%i to=%i" % \
+					debug( "create empty prog to fill gap progIdx=%s lastEndTime=%s to=%s" % \
 						   (progIdx, lastEndTime,startTime) )
 					channel.insert(progIdx, createEmptyProg(lastEndTime, startTime))
 					progIdx += 1
 					added += 1
 				else:
-					debug( "overlapping times, set start to last end startTime=%i to lastEndTime=%i" % (startTime,lastEndTime) )
+					debug( "overlapping times, set start to last end startTime=%s to lastEndTime=%s" % (startTime,lastEndTime) )
 					prog[TVData.PROG_STARTTIME] = lastEndTime
 					overlapping += 1
 			lastEndTime = endTime
@@ -2179,7 +2188,7 @@ class TVChannels:
 			idx = self.channelsFirstProg[chIDX]
 		except:
 			idx = 0
-		debug("getChannelFirstProgIDX() chIDX=%i btn idx=%i" % (chIDX,idx))
+		debug("getChannelFirstProgIDX() chIDX=%s btn idx=%s" % (chIDX,idx))
 		return idx
 
 	def resetChannelFirstProgIDX(self):
@@ -2284,7 +2293,7 @@ class TVChannels:
 				elif lastEndTime and newFirstStartTime:
 					# check for gap
 					if lastEndTime != newFirstStartTime:
-						debug("fill gap lastEndTime=%i to=%i" % (lastEndTime,newFirstStartTime))
+						debug("fill gap lastEndTime=%s to=%s" % (lastEndTime,newFirstStartTime))
 						channel.append(createEmptyProg(lastEndTime, newFirstStartTime, True))
 
 				# append new progs to existing
@@ -2318,8 +2327,6 @@ class TVChannels:
 			if changed:
 				debug("updated channel sz=%i using progList sz=%i" % \
 					  (len(self.tvdata.getChannel(chIDX)), len(progList)))
-#				for i, prog in enumerate(self.tvdata.getChannel(chIDX)):
-#					print "%i %s -> %s %s" % (i, prog[TVData.PROG_STARTTIME],prog[TVData.PROG_ENDTIME],prog[TVData.PROG_TITLE])
 
 		debug("< storeChannel() changed=%s" % changed)
 		return changed
@@ -2393,7 +2400,8 @@ class TVChannels:
 								showingDialog = True
 							except: pass
 						else:
-							dialogProgress.update(0, displayDate, chName, fetchStr)
+							percent = int( float( fetchCount * 100) / MAX_FETCH )
+							dialogProgress.update(percent, displayDate, chName, fetchStr)
 
 						progList = dataSource.getChannel(filename, chID, chName, dayDelta, fileDate)
 						if progList:
@@ -2625,9 +2633,12 @@ class myTVFavShows(xbmcgui.Window):
 		self.favShowsList = []
 
 	def onAction(self, action):
-		if not action:
-			return
-		if action in CANCEL_DIALOG + EXIT_SCRIPT:
+		try:
+			actionID = action.getId()
+			buttonCode = action.getButtonCode()
+		except: return
+
+		if actionID in CANCEL_DIALOG + EXIT_SCRIPT or buttonCode in CANCEL_DIALOG +EXIT_SCRIPT:
 			self.close()
 
 	def onControl(self, control):
@@ -2863,7 +2874,7 @@ class myTVFavShows(xbmcgui.Window):
 			success = True
 		else:
 			try:
-				fp = open(self.FAVSHOWS_FILENAME, 'w')
+				fp = open(xbmc.translatePath(self.FAVSHOWS_FILENAME), 'w')
 				for showName, chID, chName in self.favShowsList:
 					chID = chID.encode('latin-1', 'replace').strip()
 					if not isinstance(showName, unicode):

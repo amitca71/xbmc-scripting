@@ -9,6 +9,7 @@
  13-02-07 - Changed the way it gets datasource and saves favShows
  24-08-07 - Fixed to work with myTV v1.17a
  18-08-08 - Updated for use with myTV v1.18
+ 23/02/09 - translatePath()
 """
 
 import sys,os.path,os
@@ -18,7 +19,7 @@ from string import replace,split,upper
 # Script doc constants
 __title__ = "FavShows"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '18-08-08'
+__date__ = '23-02-09'
 try:
 	__scriptname__ = sys.modules[ "__main__" ].__scriptname__
 	xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
@@ -33,17 +34,17 @@ except:
 		DIR_HOME = os.getcwd().replace( ";", "" )
 	DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 	DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-	DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )
+	DIR_USERDATA = xbmc.translatePath(os.path.join( "T:"+os.sep,"script_data", __scriptname__ ))
 	DIR_CACHE = os.path.join( DIR_USERDATA, "cache" )
 	sys.path.insert(0, DIR_RESOURCES_LIB)
 
-    # Load Language using xbmc builtin
-    try:
-        # 'resources' now auto appended onto path
-        __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
-        if not __language__( 0 ): raise
-    except:
-        xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language.", "Update your XBMC to a newer version.")
+	# Load Language using xbmc builtin
+	try:
+		# 'resources' now auto appended onto path
+		__language__ = xbmc.Language( DIR_HOME ).getLocalizedString
+		if not __language__( 0 ): raise
+	except:
+		xbmcgui.Dialog().ok("XBMC Language Error", "Failed to load xbmc.Language.", "Update your XBMC to a newer version.")
 
 
 from bbbLib import *

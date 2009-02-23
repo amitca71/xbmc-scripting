@@ -8,7 +8,7 @@
 
 __title__ = "AlarmClock"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '29-08-2008'
+__date__ = '23-02-2009'
 
 import sys,os.path,os
 import xbmc, xbmcgui, time, traceback
@@ -21,13 +21,10 @@ try:
 except:
 	__scriptname__ = "myTV"
 	xbmc.output("Loading: " + __title__ + " Date: " + __date__)
-	if os.name=='posix':
-		DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
-	else:
-		DIR_HOME = os.getcwd().replace( ";", "" )
+	DIR_HOME = os.getcwd().replace( ";", "" )
 	DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 	DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-	DIR_USERDATA = os.path.join( "T:"+os.sep,"script_data", __scriptname__ )
+	DIR_USERDATA = xbmc.translatePath(os.path.join( "T:"+os.sep,"script_data", __scriptname__ ))
 	DIR_CACHE = os.path.join( DIR_USERDATA, "cache" )
 	sys.path.insert(0, DIR_RESOURCES_LIB)
 	try:

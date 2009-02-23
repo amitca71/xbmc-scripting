@@ -9,6 +9,7 @@
   12/02/07 - Added selectSMB(), updated other funcs
   10/05/07 - Added getSMBFileSize()
   06/03/08 - Updated for myTV v1.18
+  23/02/09 - translatePath()
 
 """
 import sys,os.path
@@ -17,7 +18,7 @@ import xbmc, xbmcgui
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "smbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '17-11-2008'
+__date__ = '17-11-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 import smb, nmb
@@ -120,13 +121,15 @@ def smbFetchFile(remote, remoteInfo, localPath, remoteFile, silent=True):
 				dialogProgress.create(__language__(962), remotePath, localPath)
 
 			try:
-				f = open(localPath, "wb")
+				f = open(xbmc.translatePath(localPath), "wb")
 				remote.retr_file(service, remotePath, f.write)
 				f.close()
 			except smb.SessionError, ex:
+				success = None
 				if not silent or (ex[1] != 1 and ex[2] != 2):	# not found
 					handleExceptionSMB(ex, __language__(951), remotePath)
 			except:
+				success = None
 				handleException()
 			else:
 				success = fileExist(localPath)
@@ -136,7 +139,7 @@ def smbFetchFile(remote, remoteInfo, localPath, remoteFile, silent=True):
 			if not success:
 				deleteFile(localPath)
 
-	debug("< smbFetchFile() success="+str(success))
+	debug("< smbFetchFile() success=%s" % success)
 	return success
 
 ###################################################################################################
@@ -155,7 +158,7 @@ def smbSendFile(remote, share, localPath, remotePath, silent=False):
 
 		try:
 			debug("opening local file")
-			f = open(localPath, "rb")
+			f = open(xbmc.translatePath(localPath), "rb")
 			debug("sending file to share")
 			remote.stor_file(share, remotePath, f.read)
 			f.close()
@@ -193,7 +196,7 @@ def isNewSMBFile(remote, remoteInfo, localPath, remoteFile, silent=True):
 				dialogProgress.create(__language__(967), remotePath)
 
 			if fileExist(localPath):
-				localFileSecs = os.path.getmtime(localPath)
+				localFileSecs = os.path.getmtime(xbmc.translatePath(localPath))
 
 			# list files on SMB of remote filename, check modified timestamp
 			try:
@@ -305,7 +308,7 @@ def selectSMB(currentValue=''):
 	returnValue = ''
 	doc = ''
 
-	doc = readFile(os.path.join('Q:' + os.sep,'UserData','sources.xml'))
+	doc = readFile(os.path.join('Q:'+os.sep,'UserData','sources.xml'))
 	if doc:
 		# extract SMB paths from XBMC config file
 		menuList = []

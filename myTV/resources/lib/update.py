@@ -16,6 +16,7 @@ Changes:
 12-09-2008 use os.path.join instead of string +
 10-10-2008 Fix: to use xbmc.language from __main__
            Fix: Created folders replaced %20 with a space
+23/02/09 - translatePath()
 """
 
 import sys
@@ -34,7 +35,7 @@ class Update:
 		self.script = script.replace( ' ', '%20' )
 		self.base_url = "http://xbmc-scripting.googlecode.com/svn"
 		self.tags_url = "%s/tags/%s/" % ( self.base_url, self.script)
-		local_base_dir = os.path.join('Q:' + os.sep,'scripts')
+		local_base_dir = xbmc.translatePath(os.path.join('Q:'+os.sep,'scripts'))
 		self.local_dir = os.path.join(local_base_dir, script)
 		self.backup_base_dir = os.path.join(local_base_dir,'.backups')
 		self.local_backup_dir = os.path.join(self.backup_base_dir, script)
@@ -201,7 +202,7 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	try:
-		lang_path = os.path.join('Q:' + os.sep,'scripts', sys.argv[1])
+		lang_path = xbmc.translatePath(os.path.join('Q:'+os.sep,'scripts', sys.argv[1]))
 		up = Update(xbmc.Language( lang_path ).getLocalizedString, sys.argv[1])
 		up.removeOriginal()
 		up.downloadVersion(sys.argv[2])

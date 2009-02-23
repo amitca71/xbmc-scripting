@@ -18,4 +18,3 @@ file_epg_nofocus_fav = DarkYellow.png
 file_epg_focus = LightBlue.png
 height_epg_row = 30
 height_epg_row_gap = 3
-

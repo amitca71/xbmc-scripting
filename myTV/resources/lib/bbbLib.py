@@ -19,7 +19,7 @@ import zipstream
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "bbbLib"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '01-09-2008'
+__date__ = '23-02-2009'
 xbmc.output("Imported From: " + __scriptname__ + " title: " + __title__ + " Date: " + __date__)
 
 DIR_HOME = sys.modules[ "__main__" ].DIR_HOME
@@ -223,7 +223,7 @@ def handleException(txt=''):
 #################################################################################################################
 def makeScriptDataDir():
 	try:
-		scriptPath = os.path.join("T:"+os.sep,"script_data", __scriptname__)
+		scriptPath = xbmc.translatePath(os.path.join("T:"+os.sep,"script_data", __scriptname__))
 		os.makedirs(scriptPath)
 		debug("makeScriptDataDir() created=%s" % scriptPath )
 		return True
@@ -233,7 +233,7 @@ def makeScriptDataDir():
 #############################################################################################################
 def makeDir(dir):
 	try:
-		os.makedirs( dir )
+		os.makedirs( xbmc.translatePath(dir) )
 		debug("bbbLib.created dir: " + dir)
 		return True
 	except:
@@ -254,14 +254,14 @@ def removeDir(dir, title="", msg="", msg2="", force=False):
 # delete a single file
 def deleteFile(filename):
 	try:
-		os.remove(filename)
+		os.remove(xbmc.translatePath(filename))
 		debug("bbbLib.file deleted: " + filename)
 	except: pass
 
 #################################################################################################################
 def readFile(filename):
 	try:
-		return file(filename).read()
+		return file(xbmc.translatePath(filename)).read()
 	except:
 		return ""
 
@@ -269,7 +269,8 @@ def readFile(filename):
 def fileExist(filename):
 	exist = False
 	try:
-		if os.path.isfile(filename) and os.path.getsize(filename) > 0:
+		osFN = xbmc.translatePath(filename)
+		if os.path.isfile(osFN) and os.path.getsize(osFN) > 0:
 			exist = True
 	except: pass
 	return exist
@@ -279,8 +280,8 @@ def isFileNewer(oldFilename, newFilename):
 	new = True
 	try:
 		# returns secs since epoch
-		oldFileTime = os.path.getmtime(oldFilename)
-		newFileTime = os.path.getmtime(newFilename)
+		oldFileTime = os.path.getmtime(xbmc.translatePath(oldFilename))
+		newFileTime = os.path.getmtime(xbmc.translatePath(newFilename))
 		new = (newFileTime > oldFileTime)
 	except: pass
 	return new
@@ -990,7 +991,7 @@ def fetchURL(url, file='', params='', headers={}, isBinary=False, encodeURL=True
 	data = None
 	if not file:
 		# create temp file if needed
-		file = os.path.join(os.getcwd().replace( ";", "" ), "temp.html")
+		file = xbmc.translatePath(os.path.join(os.getcwd().replace( ";", "" ), "temp.html"))
 
 	# remove destination file if exists already
 	deleteFile(file)
@@ -1103,7 +1104,7 @@ def fetchCookieURL(url, fn='', params=None, headers={}, isBinary=False, encodeUR
 				mode = "w"
 			debug("writing data to file, mode=%s ..." % mode)
 			try:
-				f = open(fn,mode)
+				f = open(xbmc.translatePath(fn),mode)
 				f.write(data)
 				f.flush()
 				f.close()
@@ -1170,7 +1171,7 @@ def findAllRegEx(data, regex, flags=re.MULTILINE+re.IGNORECASE+re.DOTALL):
 
 #############################################################################################################
 def safeFilename(path, replaceCh='_'):
-	head, tail = os.path.split(path)
+	head, tail = os.path.split(xbmc.translatePath(path))
 	name, ext = os.path.splitext(tail)
 	return  os.path.join(head, cleanPunctuation(name, replaceCh) + ext)
 
@@ -1205,7 +1206,7 @@ def isHTMLLink(url):
 def loadFileObj( filename, dataType={} ):
     debug( "loadFileObj() " + filename)
     try:
-        file_handle = open( filename, "r" )
+        file_handle = open( xbmc.translatePath(filename), "r" )
         loadObj = eval( file_handle.read() )
         file_handle.close()
     except:
@@ -1222,7 +1223,7 @@ def loadFileObj( filename, dataType={} ):
 def saveFileObj( filename, saveObj ):
     debug( "saveFileObj() " + filename)
     try:
-        file_handle = open( filename, "w" )
+        file_handle = open( xbmc.translatePath(filename), "w" )
         file_handle.write( repr( saveObj ) )
         file_handle.close()
     except:
@@ -1238,6 +1239,7 @@ def listDir(path, ext='', fnRE='', getFullFilename=False, lower=False, upper=Fal
 		if ext[0] != '.':
 			ext = '.'+ext
 
+	path = xbmc.translatePath(path)
 	if os.path.isdir(path):
 		files = os.listdir(path)
 		for f in files:
@@ -1324,7 +1326,7 @@ class RSSParser2:
 		if url:
 			debug("parseString from URL")
 			if not file:
-				dir = os.getcwd().replace(';','')
+				dir = xbmc.translatePath(os.getcwd().replace(';',''))
 				file = os.path.join(dir, "temp.xml")
 			doc = fetchCookieURL(url, file)
 		elif file:
@@ -1473,9 +1475,9 @@ def getReadmeFilename():
     debug("> getReadmeFilename()")
     filename = "readme.txt"
     base_path, language = getLanguagePath()
-    fn = os.path.join( base_path, language, filename)
+    fn = xbmc.translatePath(os.path.join( base_path, language, filename))
     if not fileExist( fn ):
-        fn = os.path.join( base_path, "English", filename )
+        fn = xbmc.translatePath(os.path.join( base_path, "English", filename ))
 
     debug("< getReadmeFilename() %s" % fn)
     return fn
@@ -1496,7 +1498,7 @@ def installPlugin(pluginType, scriptname, checkOnly=True, msg=""):
 	try:
 		copyFromPath = xbmc.translatePath( os.path.join( DIR_HOME, "Plugin" ) )
 		copyFromFile = os.path.join( copyFromPath, 'default.py')
-		copyToPath = xbmc.translatePath( os.path.join( "Q:", "plugins", pluginType, name ) )
+		copyToPath = xbmc.translatePath( os.path.join( "Q:"+os.sep, "plugins", pluginType, name ) )
 		copyToFile = os.path.join( copyToPath, 'default.py')
 
 		# set not exist if; path/file missing or previous installed is older
@@ -1583,7 +1585,7 @@ def alphaOnlyText(text, subChar='-'):
 ##############################################################################################################    
 def getLanguagePath():
 	try:
-		base_path = os.path.join( os.getcwd().replace(';',''), 'resources', 'language' )
+		base_path = xbmc.translatePath(os.path.join( os.getcwd().replace(';',''), 'resources', 'language' ))
 		language = xbmc.getLanguage()
 		langPath = os.path.join( base_path, language )
 		if not os.path.exists(langPath):
@@ -1620,7 +1622,7 @@ def unzip(extract_path, filename, silent=False, msg=""):
 				cancelled = True
 				break
 
-		filePath = os.path.join(extract_path, entry)
+		filePath = xbmc.translatePath(os.path.join(extract_path, entry))
 		if filePath.endswith('/'):
 			if not os.path.isdir(filePath):
 				os.makedirs(filePath)
@@ -1647,7 +1649,7 @@ def unzip(extract_path, filename, silent=False, msg=""):
 		success = True
 		if namelist[0][-1] in ('\\/'):
 			namelist[0] = namelist[0][-1]
-		installed_path = os.path.join(extract_path, namelist[0])
+		installed_path = xbmc.translatePath(os.path.join(extract_path, namelist[0]))
 	
 	zip.close()
 	del zip

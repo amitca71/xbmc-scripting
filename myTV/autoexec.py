@@ -1,7 +1,7 @@
 # Adding this code to your own autoexec.py will cause all previously
 # saved myTV Alarm Clocks to be setup on XBMC startup.
 
-import xbmc
+import xbmc, os.path
 
-xbmc.executescript('Q:\\scripts\\myTV\\AlarmClock.py')
+xbmc.executescript(xbmc.translatePath(os.path.join('Q:'+os.sep,'scripts','myTV','AlarmClock.py')))
 

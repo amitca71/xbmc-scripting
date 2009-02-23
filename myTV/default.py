@@ -29,17 +29,14 @@ import gc
 __scriptname__ = "myTV"
 __version__ = '1.18.2'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '01-02-2009'
+__date__ = '23-02-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
-if os.name=='posix':    
-    DIR_HOME = os.path.abspath(os.curdir).replace(';','')		# Linux case
-else:
-	DIR_HOME = os.getcwd().replace( ";", "" )
+DIR_HOME = os.getcwd().replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-DIR_USERDATA = os.path.join( "T:"+os.sep, "script_data", __scriptname__ )
+DIR_USERDATA = xbmc.translatePath(os.path.join( "T:"+os.sep, "script_data", __scriptname__ ))
 DIR_GFX = os.path.join(DIR_RESOURCES,'gfx')
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
@@ -2682,7 +2679,7 @@ def callTVCom():
 
 	# import module
 	try:
-		pathHome = os.path.join("Q:", "Scripts", "tv.com")
+		pathHome = os.path.join("Q:"+os.sep, "Scripts", "tv.com")
 		pathSystem = os.path.join(pathHome, "System")
 		moduleName = "default"
 		pathFull = os.path.join( pathHome, moduleName + ".py" )
