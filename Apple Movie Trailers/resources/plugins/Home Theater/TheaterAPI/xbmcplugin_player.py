@@ -206,8 +206,8 @@ class Trivia( xbmcgui.WindowXML ):
 
 class Main:
     # base paths
-    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Video" )
-    BASE_DATA_PATH = os.path.join( xbmc.translatePath( "T:\\script_data" ), sys.modules[ "__main__" ].__script__ )
+    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "special://profile" ), "Thumbnails", "Video" )
+    BASE_DATA_PATH = os.path.join( xbmc.translatePath( "special://masterprofile/" ), "script_data", sys.modules[ "__main__" ].__script__ )
 
     def __init__( self ):
         self._get_settings()
@@ -238,7 +238,7 @@ class Main:
         self.settings[ "coming_attraction_videos" ] = xbmcplugin.getSetting( "coming_attraction_videos" )
         self.settings[ "feature_presentation_videos" ] = xbmcplugin.getSetting( "feature_presentation_videos" )
         self.settings[ "end_presentation_videos" ] = xbmcplugin.getSetting( "end_presentation_videos" )
-        self.settings[ "amt_db_path" ] = xbmcplugin.getSetting( "amt_db_path" )
+        self.settings[ "amt_db_path" ] = xbmc.translatePath( xbmcplugin.getSetting( "amt_db_path" ) )
 
     def _parse_argv( self ):
         # call _Info() with our formatted argv to create the self.args object

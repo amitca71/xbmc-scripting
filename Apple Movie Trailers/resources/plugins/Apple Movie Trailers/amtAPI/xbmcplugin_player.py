@@ -43,7 +43,7 @@ class _Info:
 
 class Main:
     # base paths
-    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Video" )
+    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "special://profile" ), "Thumbnails", "Video" )
 
     def __init__( self ):
         self._get_settings()
@@ -67,7 +67,7 @@ class Main:
         self.settings[ "mode" ] = int( xbmcplugin.getSetting( "mode" ) )
         self.settings[ "download_path" ] = xbmcplugin.getSetting( "download_path" )
         self.settings[ "mark_watched" ] = xbmcplugin.getSetting( "mark_watched" ) == "true"
-        self.settings[ "amt_db_path" ] = xbmcplugin.getSetting( "amt_db_path" )
+        self.settings[ "amt_db_path" ] = xbmc.translatePath( xbmcplugin.getSetting( "amt_db_path" ) )
         ##self.settings[ "player_core" ] = ( xbmc.PLAYER_CORE_MPLAYER, xbmc.PLAYER_CORE_DVDPLAYER, )[ int( xbmcplugin.getSetting( "player_core" ) ) ]
 
     def _download_video( self ):

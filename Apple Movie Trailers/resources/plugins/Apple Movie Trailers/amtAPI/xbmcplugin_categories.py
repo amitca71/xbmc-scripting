@@ -33,11 +33,11 @@ class Main:
         # no database was found so notify XBMC we're finished, false so no blank list is shown
         xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=False )
         # we use "U:\\" for linux, windows and osx for platform mode
-        drive = ( "U:\\", "Q:\\", )[ os.environ.get( "OS", "xbox" ) == "xbox" ]
+        drive = xbmc.translatePath( "special://home/" )
         # ask to run script to create the database
-        if ( os.path.isfile( os.path.join( xbmc.translatePath( drive + "scripts" ), sys.modules[ "__main__" ].__script__, "default.py" ) ) ):
+        if ( os.path.isfile( os.path.join( drive, "scripts", sys.modules[ "__main__" ].__script__, "default.py" ) ) ):
             if ( xbmcgui.Dialog().yesno( sys.modules[ "__main__" ].__plugin__, msg1, msg3 ) ):
-                xbmc.executebuiltin( "XBMC.RunScript(%s)" % ( os.path.join( xbmc.translatePath( drive + "scripts" ), sys.modules[ "__main__" ].__script__, "default.py" ) ), )
+                xbmc.executebuiltin( "XBMC.RunScript(%s)" % ( os.path.join( drive, "scripts", sys.modules[ "__main__" ].__script__, "default.py" ) ), )
         else:
             ok = xbmcgui.Dialog().ok( sys.modules[ "__main__" ].__plugin__, msg1, msg2, sys.modules[ "__main__" ].__svn_url__ )
 
@@ -108,7 +108,7 @@ class Main:
         return thumbnail
 
     def _fetch_records( self ):
-        records = Records( amt_db_path=xbmcplugin.getSetting( "amt_db_path" ) )
+        records = Records( amt_db_path=xbmc.translatePath( xbmcplugin.getSetting( "amt_db_path" ) ) )
         result = records.fetch( Query()[ "genres" ] )
         records.close()
         return result

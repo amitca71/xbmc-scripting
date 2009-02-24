@@ -8,7 +8,7 @@ __author__ = "Apple Movie Trailers (AMT) Team"
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/Apple%20Movie%20Trailers"
 __credits__ = "XBMC TEAM, freenode/#xbmc-scripting"
-__version__ = "pre-0.99.7.1"
+__version__ = "pre-0.99.7.2"
 __svn_revision__ = 0
 
 # Shared resources

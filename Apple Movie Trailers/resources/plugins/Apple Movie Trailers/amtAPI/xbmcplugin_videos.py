@@ -22,7 +22,7 @@ class _Info:
 
 class Main:
     # base paths
-    BASE_DATA_PATH = os.path.join( xbmc.translatePath( "T:\\script_data" ), sys.modules[ "__main__" ].__script__ )
+    BASE_DATA_PATH = os.path.join( xbmc.translatePath( "special://masterprofile/" ), "script_data", sys.modules[ "__main__" ].__script__ )
 
     def __init__( self ):
         self._get_settings()
@@ -40,7 +40,7 @@ class Main:
         self.settings[ "play_all" ] = xbmcplugin.getSetting( "play_all" ) == "true"
         self.settings[ "rating" ] = int( xbmcplugin.getSetting( "rating" ) )
         self.settings[ "mode" ] = int( xbmcplugin.getSetting( "mode" ) )
-        self.settings[ "download_path" ] = xbmcplugin.getSetting( "download_path" )
+        self.settings[ "download_path" ] = xbmc.translatePath( xbmcplugin.getSetting( "download_path" ) )
         self.settings[ "mark_watched" ] = xbmcplugin.getSetting( "mark_watched" ) == "true"
         self.settings[ "whole_words" ] = xbmcplugin.getSetting( "whole_words" ) == "true"
         #self.settings[ "player_core" ] = int( xbmcplugin.getSetting( "player_core" ) )
@@ -50,7 +50,7 @@ class Main:
         self.settings[ "fanart_color1" ] = xbmcplugin.getSetting( "fanart_color1" )
         self.settings[ "fanart_color2" ] = xbmcplugin.getSetting( "fanart_color2" )
         self.settings[ "fanart_color3" ] = xbmcplugin.getSetting( "fanart_color3" )
-        self.settings[ "amt_db_path" ] = xbmcplugin.getSetting( "amt_db_path" )
+        self.settings[ "amt_db_path" ] = xbmc.translatePath( xbmcplugin.getSetting( "amt_db_path" ) )
 
     def get_videos( self ):
         try:

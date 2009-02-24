@@ -20,7 +20,7 @@ class _Info:
 
 class Main:
     # base paths
-    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "P:\\Thumbnails" ), "Video" )
+    BASE_CACHE_PATH = os.path.join( xbmc.translatePath( "special://" ), "Thumbnails", "Video" )
     # add all video extensions wanted in lowercase
     VIDEO_EXT = xbmc.getSupportedMedia( "video" )
 
@@ -42,11 +42,11 @@ class Main:
         # no database was found so notify XBMC we're finished, false so no blank list is shown
         xbmcplugin.endOfDirectory( handle=int( sys.argv[ 1 ] ), succeeded=False )
         # we use "U:\\" for linux, windows and osx for platform mode
-        drive = ( "U:\\", "Q:\\", )[ os.environ.get( "OS", "xbox" ) == "xbox" ]
+        drive = xbmc.translatePath( "special://home/" )
         # ask to run script to create the database
-        if ( os.path.isfile( os.path.join( xbmc.translatePath( drive + "scripts" ), sys.modules[ "__main__" ].__script__, "default.py" ) ) ):
+        if ( os.path.isfile( os.path.join( drive, "scripts", sys.modules[ "__main__" ].__script__, "default.py" ) ) ):
             if ( xbmcgui.Dialog().yesno( sys.modules[ "__main__" ].__plugin__, msg1, msg3 ) ):
-                xbmc.executebuiltin( "XBMC.RunScript(%s)" % ( os.path.join( xbmc.translatePath( drive + "scripts" ), sys.modules[ "__main__" ].__script__, "default.py" ) ), )
+                xbmc.executebuiltin( "XBMC.RunScript(%s)" % ( os.path.join( drive, "scripts", sys.modules[ "__main__" ].__script__, "default.py" ) ), )
         else:
             ok = xbmcgui.Dialog().ok( sys.modules[ "__main__" ].__plugin__, msg1, msg2, sys.modules[ "__main__" ].__svn_url__ )
 
@@ -62,7 +62,7 @@ class Main:
         self.settings[ "fanart_color1" ] = xbmcplugin.getSetting( "fanart_color1" )
         self.settings[ "fanart_color2" ] = xbmcplugin.getSetting( "fanart_color2" )
         self.settings[ "fanart_color3" ] = xbmcplugin.getSetting( "fanart_color3" )
-        self.settings[ "amt_db_path" ] = xbmcplugin.getSetting( "amt_db_path" )
+        self.settings[ "amt_db_path" ] = xbmc.translatePath( xbmcplugin.getSetting( "amt_db_path" ) )
         # we need to set self.args.path
         self.args = _Info( path=self.settings[ "path" ] )
 

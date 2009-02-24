@@ -8,7 +8,7 @@
     <setting id="path" type="folder" enable="eq(-2,false)" source="video" label="30020" default="" />
     <setting type="lsep" label="30802" />
     <setting id="number_trailers" type="enum" values="0|1|2|3|4|5" label="30040" default="3" />
-    <setting id="amt_db_path" type="files" enable="!eq(-1,0)" source="local" mask="AMT.db" label="30250" default="P:\script_data\Apple Movie Trailers\AMT.db" />
+    <setting id="amt_db_path" type="files" enable="!eq(-1,0)" source="local" mask="AMT.db" label="30250" default="special://profile/script_data/Apple Movie Trailers/AMT.db" />
     <setting id="quality" type="enum" enable="!eq(-2,0)" lvalues="30051|30052|30053|30054|30055|30056" label="30050" default="2" />
     <setting id="only_hd" type="bool" enable="gt(-1,3) + !eq(-3,0)" label="30060" default="false" />
     <setting id="newest_only" type="bool" enable="!eq(-4,0)" label="30100" default="false" />

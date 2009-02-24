@@ -13,7 +13,7 @@ __author__ = "Nuka1195"
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/Apple%20Movie%20Trailers"
 __credits__ = "XBMC TEAM, freenode/#xbmc-scripting"
-__version__ = "1.4"
+__version__ = "1.5"
 
 
 if ( __name__ == "__main__" ):
