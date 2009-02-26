@@ -7,6 +7,7 @@
     <string id="100">Fehler!</string>
     <string id="101">Option für diese Liga nicht verfügbar!</string>
     <string id="102">Keine Information.[CR]Änderungen der Website!?</string>
+    <string id="103">BBC Media Player wird noch nicht unterstützt!</string>
 
     <!-- Prompt messages -->
     <string id="200">Aktualisierte Ligen werden heruntergeladen.</string>
@@ -63,6 +64,7 @@
     <string id="522">Script ChangeLog anzeigen</string>
     <string id="523">Ändere DatenQuelle</string>
     <string id="524">Beim Starten nach Updates suchen?</string>
+    <string id="525">Schriftart des Listeninhalts</string>
 
     <!-- misc menu/prompts -->
     <string id="530">Live Results</string>
@@ -123,8 +125,10 @@
     <string id="585">Schweden</string>
     <string id="586">Schweiz</string>
     <string id="587">Turkei</string>
-    <string id="588">Afrika</string>   
+    <string id="588">Afrika</string>     
     
+	<!-- LiveSportOn TV -->
+
 
     <!-- Update messages -->
     <string id="1000">Deine Version ist aktuell.</string>
