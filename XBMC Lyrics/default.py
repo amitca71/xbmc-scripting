@@ -1,7 +1,6 @@
 # main import's 
 import sys
 import os
-import xbmcgui
 import xbmc
 
 # Script constants 
@@ -10,7 +9,7 @@ __author__ = "XBMC Lyrics Team"
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/XBMC%20Lyrics"
 __credits__ = "XBMC TEAM, freenode/#xbmc-scripting"
-__version__ = "1.6.1"
+__version__ = "1.7"
 __svn_revision__ = 0
 
 # Shared resources 

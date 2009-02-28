@@ -16,7 +16,6 @@ import sys
 import os
 import xbmc
 import xbmcgui
-import threading
 
 from resources.lib.utilities import *
 
@@ -43,7 +42,6 @@ class GUI( xbmcgui.WindowXMLDialog ):
         self.setup_variables()
         self.get_settings()
         self.get_scraper()
-        self.getDummyTimer()
         self.getMyPlayer()
         self.show_viz_window()
 
@@ -59,7 +57,6 @@ class GUI( xbmcgui.WindowXMLDialog ):
     def setup_variables( self ):
         self.artist = None
         self.song = None
-        self.Timer = None
         self.controlId = -1
         self.allow_exception = False
 
@@ -201,7 +198,6 @@ class GUI( xbmcgui.WindowXMLDialog ):
                 self.myPlayerChanged( 2, True )
 
     def exit_script( self, restart=False ):
-        if ( self.Timer is not None ): self.Timer.cancel()
         self.close()
         if ( restart ): xbmc.executebuiltin( "XBMC.RunScript(%s)" % ( os.path.join( os.getcwd(), "default.py" ), ) )
 
@@ -248,12 +244,6 @@ class GUI( xbmcgui.WindowXMLDialog ):
             LOG( LOG_ERROR, "%s (rev: %s) %s::%s (%d) [%s]", __scriptname__, __svn_revision__, self.__class__.__name__, sys.exc_info()[ 2 ].tb_frame.f_code.co_name, sys.exc_info()[ 2 ].tb_lineno, sys.exc_info()[ 1 ], )
         return artist, song
 
-    # getDummyTimer() and self.Timer are currently used for the Player() subclass so when an onPlayback* event occurs, 
-    # it calls myPlayerChanged() immediately.
-    def getDummyTimer( self ):
-        self.Timer = threading.Timer( 60*60*60, self.getDummyTimer,() )
-        self.Timer.start()
-    
     def getMyPlayer( self ):
         self.MyPlayer = MyPlayer( xbmc.PLAYER_CORE_PAPLAYER, function=self.myPlayerChanged )
         self.myPlayerChanged( 2 )
