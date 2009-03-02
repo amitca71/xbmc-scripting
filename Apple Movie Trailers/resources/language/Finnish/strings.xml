@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-   <!--  Finnish 26.8.2008 -->
+   <!--  Finnish 2.3.2009 -->
   <string id="0">Apple Movie Trailers</string>
   <string id="1">xbmc media center</string>
-  <string id="2">Mikko 70</string>
+  <string id="2">Mika Pirinen</string>
     <!-- Dialog Messages -->
   <string id="36">Poistetaan vanhoja xml-tiedostoja...</string>
   <string id="37">Päivitetään lajityyppi tietoja...</string>
   <string id="38">Päivitetään lajityyppi ja esittely tietoja...</string>
   <string id="39">Toista kaikki</string>
-  <string id="40">Kaikki tiedot noudetaan, kesto n.10 - 60 minuuttia</string>
-  <string id="41">Päivitetään lajityypeittäin, kesto n.1 - 5 minuuttia</string>
+  <string id="40">Kaikki tiedot noudetaan, kestää n.10 - 60 minuuttia</string>
+  <string id="41">Päivitetään lajityypeittäin, kestää n.1 - 5 minuuttia</string>
   <string id="42"></string>
   <string id="43">Kirjataan tallenteet tietokantaan...</string>
   <string id="44">Tietokannan luonti...</string>
@@ -242,10 +242,10 @@
   <string id="1001">Tarkistetaan uusinta versiota...</string>
   <string id="1002">on uudempi</string>
   <string id="1003">Haluatko päivittää ohjelman?</string>
-  <string id="1004">Haetaan tiedostoluetteloa...</string>
+  <string id="1004">Noudetaan tiedostoluetteloa...</string>
   <string id="1005">Odota hetki..</string>
   <string id="1006">Versio</string>
-  <string id="1007">Haetaan:</string>
+  <string id="1007">Noudetaan:</string>
   <string id="1008">Polku:</string>
   <string id="1009">Tiedosto:</string>
   <string id="1010">Ohjelma tallennettiin kansioon:</string>
