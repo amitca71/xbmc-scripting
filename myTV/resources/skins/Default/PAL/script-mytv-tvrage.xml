@@ -1,0 +1,464 @@
+<window>
+	<defaultcontrol>102</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<type>dialog</type>
+	<animation effect="slide" end="0,576" time="200">WindowClose</animation> -->
+	<coordinates>
+		<system>1</system>
+		<posx>15</posx>
+		<posy>20</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+
+	<control type="image">
+		<description>background image</description>
+		<width>680</width>
+		<height>550</height>
+		<texture>dialog-panel.png</texture>
+	</control>
+
+	<control type="group">
+		<posx>25</posx>
+		<posy>15</posy>
+		<width>650</width>
+		<height>530</height>
+		<control type="image">
+			<description>logo</description>
+			<posx>120r</posx>
+			<posy>0</posy>
+			<width>117</width>
+			<height>23</height>
+			<texture>tvrage.gif</texture>
+			<aspectratio>keep</aspectratio>
+		</control>
+		<control type="label" id="100">
+			<description>title</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>600</width>
+			<align>center</align>
+			<label></label>
+			<font>special13</font>
+			<textcolor>FFFFFF33</textcolor>
+		</control>
+		<control type="image" id="101">
+			<description>photo</description>
+			<posx>10</posx>
+			<posy>25</posy>
+			<width>260</width>
+			<height>260</height>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<!-- DESCRIPTION -->
+		<control type="textbox" id="102">
+			<description>textarea</description>
+			<posx>10</posx>
+			<posy>290</posy>
+			<width>630</width>
+			<height>190</height>
+			<font>font11</font>
+			<textcolor>FFFFFFEE</textcolor>
+			<spinposx>580</spinposx>
+			<spinposy>185</spinposy>
+			<autoscroll time="3000" delay="4000" repeat="5000">!Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
+
+		<!-- INFO LABELS -->
+		<control type="label" id="110">
+			<posx>370</posx>
+			<posy>25</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>label1</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="111">
+			<posx>370</posx>
+			<posy>40</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Directors:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="112">
+			<description>Creators</description>
+			<posx>370</posx>
+			<posy>55</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Creators:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="113">
+			<description>Writers</description>
+			<posx>370</posx>
+			<posy>70</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Writers:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="114">
+			<description>Released</description>
+			<posx>370</posx>
+			<posy>85</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Released:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="115">
+			<description>Certs</description>
+			<posx>370</posx>
+			<posy>100</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Certs:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="116">
+			<description>Runtime</description>
+			<posx>370</posx>
+			<posy>115</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Runtime:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="117">
+			<description>SoundMix</description>
+			<posx>370</posx>
+			<posy>130</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>SoundMix:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="118">
+			<description>Aspect</description>
+			<posx>370</posx>
+			<posy>145</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Aspect:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="119">
+			<description>Genres</description>
+			<posx>370</posx>
+			<posy>160</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Genres:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="120">
+			<description>Countries</description>
+			<posx>370</posx>
+			<posy>175</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Countries:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="121">
+			<description>Languages</description>
+			<posx>370</posx>
+			<posy>190</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Languages:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="122">
+			<description>Soundtrack</description>
+			<posx>370</posx>
+			<posy>205</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Soundtrack:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="123">
+			<description>Awards</description>
+			<posx>370</posx>
+			<posy>220</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Awards:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="124">
+			<description>UserComment</description>
+			<posx>370</posx>
+			<posy>235</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>UserComment:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="125">
+			<description>Trivia</description>
+			<posx>370</posx>
+			<posy>250</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>Trivia:</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+		<control type="label" id="126">
+			<description>label 226</description>
+			<posx>370</posx>
+			<posy>265</posy>
+			<width>100</width>
+			<height>15</height>
+			<align>right</align>
+			<label>label 226</label>
+			<font>font10</font>
+			<textcolor>FF99FFFF</textcolor>
+		</control>
+
+		<!-- INFO LABEL DATA -->
+		<control type="label" id="210">
+			<description>rating</description>
+			<posx>375</posx>
+			<posy>25</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>IMDb Rating:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="211">
+			<description>Directors</description>
+			<posx>375</posx>
+			<posy>40</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Directors:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="212">
+			<description>Creators</description>
+			<posx>375</posx>
+			<posy>55</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Creators:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="213">
+			<description>Writers</description>
+			<posx>375</posx>
+			<posy>70</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Writers:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="214">
+			<description>Released</description>
+			<posx>375</posx>
+			<posy>85</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Released:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="215">
+			<description>Certs</description>
+			<posx>375</posx>
+			<posy>100</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Certs:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="216">
+			<description>Runtime</description>
+			<posx>375</posx>
+			<posy>115</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Runtime:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="217">
+			<description>SoundMix</description>
+			<posx>375</posx>
+			<posy>130</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>SoundMix:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="218">
+			<description>Aspect</description>
+			<posx>375</posx>
+			<posy>145</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Aspect:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="219">
+			<description>Genres</description>
+			<posx>375</posx>
+			<posy>160</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Genres:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="220">
+			<description>Countries</description>
+			<posx>375</posx>
+			<posy>175</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Countries:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="221">
+			<description>Languages</description>
+			<posx>375</posx>
+			<posy>190</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Languages:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="222">
+			<description>Soundtrack</description>
+			<posx>375</posx>
+			<posy>205</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Soundtrack:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="223">
+			<description>Awards</description>
+			<posx>375</posx>
+			<posy>220</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Awards:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="224">
+			<description>UserComment</description>
+			<posx>375</posx>
+			<posy>235</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>UserComment:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="225">
+			<description>Trivia</description>
+			<posx>375</posx>
+			<posy>250</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>Trivia:</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+		<control type="label" id="226">
+			<description>label 226</description>
+			<posx>375</posx>
+			<posy>265</posy>
+			<width>270</width>
+			<height>15</height>
+			<align>left</align>
+			<label>label 226</label>
+			<font>font10</font>
+			<textcolor>FFFFFFCC</textcolor>
+			<scroll>true</scroll>
+		</control>
+
+	</control>
+
+	</controls>
+</window>

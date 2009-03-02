@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">myTV</string>
+
+    <!-- Error messages -->
+    <string id="99">Error!</string>
+    <string id="100">Channel Fetch Listing Error!</string>
+    <string id="101">No Streams Found!</string>
+    <string id="102">Stream Unavailable</string>
+    <string id="103">There are no episodes available.</string>
+    <string id="104">No media link found!</string>
+    <string id="105">No Stream (.strm) files found in CACHE folder!</string>
+    <string id="106">Script TV.com Not Installed!</string>
+    <string id="107">Setup Incomplete!</string>
+    <string id="108">Programme data missing![CR]Possible data Template translation error?</string>
+    <string id="109">Error saving programme details to file</string>
+    <string id="110">Invalid Template[CR]Contains an unknown substitution value.</string>
+    <string id="111">DataSource Error!</string>
+    <string id="112">Unable to load Channel List</string>
+    <string id="113">No channels found!</string>
+    <string id="115">Error importing DataSource</string>
+    <string id="116">Error importing SaveProgramme</string>
+    <string id="117">No matches found!</string>
+    <string id="118">URL not found!</string>
+    <string id="119">Scraping failed!</string>
+    <string id="120">Schedule unavailable!</string>
+    <string id="122">Error cancelling alarm!</string>
+    <string id="123">Unusable programme!</string>
+    <string id="124">Duplicate Favourite!</string>
+    <string id="125">Programme already started!</string>
+    <string id="126">Duplicate alarm!</string>
+    <string id="127">No alarms found!</string>
+    <string id="128">IMDb search failed.[CR]Edit title name and try again?</string>
+    <string id="129">Record Timer Clashes with: </string>
+    <string id="130">No record timers found!</string>
+    <string id="132">Start and End Times</string>
+    <string id="133">Frequency required</string>
+    <string id="134">Invalid MAC![CR]Clear MAC to disable feature.</string>
+    <string id="135">Not yet awake, Retry WOL ?</string>
+    <string id="136">WOL Requires a SMB Path denied[CR]inorder to check its awake.</string>
+    <string id="137">SaveProgramme Error!</string>
+
+    <!-- Status messages -->
+    <string id="200">Delete Listings?</string>
+    <string id="201">Delete Channel List?</string>
+    <string id="202">Locating Video Files</string>
+    <string id="203">Channel Unavailable</string>
+    <string id="204">No Programme</string>
+    <string id="205">No Information</string>
+    <string id="206">Programme Information</string>
+    <string id="207">Downloading QuickInfo</string>
+    <string id="208">Downloading Summary</string>
+    <string id="209">Downloading Image</string>
+    <string id="210">Week: %s to %s (Select for Info)</string>
+    <string id="211">Date: %s (Select for Info)</string>
+    <string id="212">Downloading Channel Listings</string>
+    <string id="213">No Favourite Shows</string>
+    <string id="214">No supported video files found.</string>
+    <string id="215">Theme selected: %s</string>
+    <string id="216">Setup Incomplete, Setup now?</string>
+
+    <!-- script common messages -->
+    <string id="300">Please wait ...</string>
+    <string id="301">Success</string>
+    <string id="302">Failed</string>
+    <string id="303">Downloading ...</string>
+    <string id="304">Complete</string>
+    <string id="305">Confirm Deletion?</string>
+    <string id="306">Retry?</string>
+    <string id="307">Continue?</string>
+    <string id="308">Refresh List</string>
+    <string id="309">Setup now?</string>
+    <string id="311">Searching:</string>
+    <string id="312">Parsing ...</string>
+    <string id="313">Closing ...</string>
+    <string id="314">Retrying ...</string>
+    <string id="315">Unzipping ...</string>
+
+    <string id="320">Monday</string>
+    <string id="321">Tuesday</string>
+    <string id="322">Wednesday</string>
+    <string id="323">Thursday</string>
+    <string id="324">Friday</string>
+    <string id="325">Saturday</string>
+    <string id="326">Sunday</string>
+    <string id="327">Today</string>
+    <string id="328">Tomorrow</string>
+    <string id="329">Reset</string>
+    <string id="330">Yesterday</string>
+
+    <!-- Yes/No buttons -->
+    <string id="350">Yes</string>
+    <string id="351">No</string>
+    <string id="352">Folder</string>
+    <string id="353">File</string>
+    <string id="354">Download</string>
+    <string id="355">Cancel</string>
+    <string id="356">Delete</string>
+    <string id="357">Off</string>
+    <string id="358">On</string>
+    <string id="359">Stop</string>
+    <string id="360">OK</string>
+
+    <!-- Dialog titles -->
+    <string id="400">General Setup</string>
+
+    <!-- Footer labels -->
+    <string id="420">Select/View</string>
+    <string id="421">HD Channels</string>
+    <string id="422">Record</string>
+    <string id="423">Nav Lists</string>
+    <string id="424">IMDb</string>
+    <string id="425">Menu</string>
+    <string id="426">Cancel Record</string>
+    <string id="427">SD Channels</string>
+
+    <!-- menu options -->
+    <string id="500">Exit</string>
+    <string id="501">Main Menu</string>
+    <string id="502">Settings Menu</string>
+    <string id="503">Play Recording</string>
+    <string id="504">View HD Channels</string>
+    <string id="505">View ALL Channels</string>
+    <string id="506">Play Video From SMB</string>
+    <string id="507">Add Favourite</string>
+    <string id="508">View Favourite Shows</string>
+    <string id="509">Set Manual Record Timer</string>
+    <string id="510">Manage Favourites</string>
+    <string id="511">Manage Timers</string>
+    <string id="512">Play Playlist From Cache</string>
+    <string id="513">TV.com Lookup</string>
+    <string id="514">IMDb Lookup</string>
+    <string id="515">IMDb Manual Lookup</string>
+    <string id="516">Set Alarm Clock</string>
+    <string id="517">Manage Alarm Clocks</string>
+    <string id="518">TVRage.com</string>
+    <string id="519">LiveSportOnTV.com (UK)</string>
+    <string id="520">Cancel Favourite</string>
+
+    <!-- config menu options -->
+    <string id="530">Clear Listings Cache</string>
+    <string id="531">Select DataSource</string>
+    <string id="532">Setup DataSource</string>
+    <string id="533">Select TV Card</string>
+    <string id="534">Setup TV Card</string>
+    <string id="535">Fetch Remote Timers on Startup?</string>
+    <string id="536">24Hr Clock Format?</string>
+    <string id="537"></string>
+    <string id="538">Check For Timer Clashes?</string>
+    <string id="539">Channel Name/ID?</string>
+    <string id="540">Re-Order Channels</string>
+    <string id="541">Colours</string>
+    <string id="542">Genre Icons</string>
+    <string id="543">Genre Colours</string>
+    <string id="544">Fonts</string>
+    <string id="545">EPG Row Heights</string>
+    <string id="546">Setup SMB</string>
+    <string id="547">Edit Save Data Templates</string>
+    <string id="548">View Save Data Templates</string>
+    <string id="549">Enable LiveSportOnTV (UK) Option?</string>
+    <string id="550">View Script Readme</string>
+    <string id="551">View Script ChangeLog</string>
+    <string id="552">Master Reset</string>
+    <string id="553">Check For Script Update At Startup?</string>
+    <string id="554">Check For Script Update</string>
+    <string id="555">Wake On LAN MAC:</string>
+    <string id="556">Download Missing Logos</string>
+    <string id="557">Show Datasource name?</string>
+
+    <!-- misc menu/prompts -->
+    <string id="560">Channel Name Only</string>
+    <string id="561">Channel Name + ID</string>
+    <string id="562">Channel Name + Alt. ID</string>
+    <string id="563">Clear Cache?</string>
+    <string id="564">Delete Channel List?</string>
+    <string id="565">Save Filename Template:</string>
+    <string id="567">Select A Stream File</string>
+    <string id="568">Select File to View</string>
+    <string id="569">Enter Show Name</string>
+    <string id="572">Select A Font</string>
+    <string id="573">ROW Height:</string>
+    <string id="574">ROW GAP Height:</string>
+    <string id="575">Select Channel:</string>
+    <string id="576">Select Frequency:</string>
+    <string id="577">No Channel Name/ID</string>
+    <string id="581">Scheduled Week</string>
+    <string id="582">Scheduled Day</string>
+    <string id="583">Current Programme</string>
+    <string id="584">Search</string>
+    <string id="585">Select Country</string>
+    <string id="586">(Select To Delete)</string>
+    <string id="587">Next Week</string>
+    <string id="588">Previous Week</string>
+    <string id="589">Ignore clash?</string>
+    <string id="590">Repeat Recording?</string>
+    <string id="591">Frequency: </string>
+    <string id="592">Enter Programme Name: </string>
+    <string id="593">Programme Title: </string>
+    <string id="594">Programme Description: </string>
+    <string id="595">Channel Name: </string>
+    <string id="596">EPG Text: </string>
+    <string id="597">Select Channel To Be Moved (A)</string>
+    <string id="598">Move Channel (Set with A)</string>
+    <string id="599">Select Background and Text Colour:</string>
+    <string id="600">Select Background Colour:</string>
+    <string id="601">Select Text Colour:</string>
+    <string id="602">NEXT Background</string>
+    <string id="603">PREV Background</string>
+    <string id="604">NEXT Text</string>
+    <string id="605">PREV Text</string>
+    <string id="606">Turn OFF</string>
+    <string id="607">Wake On LAN</string>
+    <string id="608">Use Preferred TV Card ?</string>
+    <string id="609">Hidden? (X)</string>
+    <string id="610">Fetching Country Codes ...</string>
+    <string id="611">Select Country</string>
+    <string id="612">Fetching available logo names ...</string>
+    <string id="613">Checking for missing logos ...</string>
+    <string id="614">Skip Logo</string>
+    <string id="615">Select Logo: </string>
+    <string id="616">Select Language: </string>
+    <string id="617">Enabled? (A)</string>
+    <string id="618">Initializing navigation lists ...</string>
+
+
+    <!-- Datasource Common -->
+    <string id="700">Select Card Type</string>
+    <string id="701">Enter TV Card executable PATH</string>
+
+    <!-- Saveprogrammes Common -->
+    <string id="800">Record?</string>
+    <string id="801">Record Setup Failed!</string>
+    <string id="802">Programme already finished!</string>
+    <string id="803">Remaining programme duration too short!</string>
+    <string id="804">Enter Recording PATH</string>
+    <string id="805">Username:</string>
+    <string id="806">Password:</string>
+    <string id="807">Play whilst recording?</string>
+    <string id="808">Recording now set.</string>
+    <string id="809">No response from server!</string>
+    <string id="810">LiveTV Playback</string>
+    <string id="811">File not created by server!</string>
+    <string id="812">Server IP:</string>
+    <string id="813">Server PORT:</string>
+    <string id="814">Use Live TV Feature?</string>
+    <string id="815">Live TV Playback delay secs:</string>
+    <string id="816">Live TV Filename Flag:</string>
+    <string id="817">Live TV SMB Path:</string>
+    <string id="818">No TV Card</string>
+    <string id="819">Setting timer ...</string>
+    <string id="820">Starting playback ...</string>
+    <string id="821">Deleting Timer ...</string>
+    <string id="822">Stop Recording?</string>
+    <string id="823">Delete Timer?</string>
+    <string id="824">Downloading Timers ...</string>
+    <string id="825">View/Delete Timers</string>
+    <string id="826">View/Delete Recordings</string>
+    <string id="827">Downloading Recordings ...</string>
+    <string id="828">Delete Timer Failed!</string>
+    <string id="829">Check remote server is running.</string>
+    <string id="830">Error fetching remote timers!</string>
+    <string id="831">TV Card Model:</string>
+    <string id="832">TV Card .EXE Path:</string>
+    <string id="833">TV Card Record Path:</string>
+    <string id="834">Recording Already Scheduled!</string>
+    <string id="835">Pre Record Mins:</string>
+    <string id="836">Post Record Mins:</string>
+    <string id="837">Base Command:</string>
+
+    <!-- smbLib -->
+    <string id="950">SMB Path and/or Host IP are missing!</string>
+    <string id="951">SMB Error!</string>
+    <string id="952">SMB connection failed!</string>
+    <string id="953">Check PCName and IP are correct</string>
+    <string id="954">SMB Login Failed!</string>
+    <string id="955">Use PCNAME not IP in SMB path!</string>
+    <string id="956">SMB Auto Discover IP Failed!</string>
+    <string id="957">SMB Fetch Error!</string>
+    <string id="958">SMB Send Error!</string>
+    <string id="959">SMB Setup Incomplete!</string>
+    <string id="960">SMB Connection ...</string>
+    <string id="961">SMB connection success</string>
+    <string id="962">SMB Fetching file ...</string>
+    <string id="963">SMB Sending file ...</string>
+    <string id="964">SMB Please wait ...</string>
+    <string id="965">Remote filename is missing!</string>
+    <string id="966">No remote connection!</string>
+    <string id="967">Checking for updated file ...</string>
+    <string id="968">Setup SMB now?</string>
+    <string id="969">SMB Path:</string>
+    <string id="970">SMB IP:</string>
+    <string id="971">Select An Existing XBMC SMB Path</string>
+    <string id="972">Check SMB Connection</string>
+    <string id="973">Correct IP For PC Name?</string>
+    <string id="974">Invalid SMB path!</string>   
+    <string id="975">Invalid IP Format!</string>
+    <string id="976">Setup SMB</string>
+
+    <!-- imdbWin lib -->
+    <string id="980">IMDB Lookup</string>
+    <string id="981">IMDb Manual Lookup</string>
+    <string id="982">Searching IMDb ...</string>
+    <string id="983">IMDb Search Failed</string>
+    <string id="984">Edit title?</string>
+    <string id="985">Select Title</string>
+    <string id="986">Downloading Image ...</string>
+    <string id="987">Downloading Image Links ...</string>
+    <string id="988">Downloading Slideshow ...</string>
+    <string id="989">View SlideShow</string>
+
+    <!-- Update messages -->
+    <string id="1000">Your version is up to date.</string>
+    <string id="1001">Fetching current tagged versions...</string>
+    <string id="1002">is newer</string>
+    <string id="1003">Would you like to update?</string>
+    <string id="1004">Fetching file list...</string>
+    <string id="1005">Please wait...</string>
+    <string id="1006">Version</string>
+    <string id="1007">Fetching:</string>
+    <string id="1008">Path:</string>
+    <string id="1009">File:</string>
+    <string id="1010">Script updated, will now restart.</string>
+
+    <!-- Update error messages -->
+    <string id="1030">No tagged versions were found!</string>
+    <string id="1031">There was an error updating script!</string>
+
+</strings>

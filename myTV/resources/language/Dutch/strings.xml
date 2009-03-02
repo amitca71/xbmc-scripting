@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">myTV</string>
+
+    <!-- Error messages -->
+    <string id="99">Fout!</string>
+    <string id="100">Zender Fetch Lijst Fout!</string>
+    <string id="101">Geen Streams Gevonden!</string>
+    <string id="102">Stream Niet Beschikbaar</string>
+    <string id="103">Geen Episode Beschikbaar.</string>
+    <string id="104">Geen Media Connectie gevonden!</string>
+    <string id="105">Geen Stream (.strm) bestanden gevonden in CACHE map!</string>
+    <string id="106">Script TV.com Niet Geinstalleerd!</string>
+    <string id="107">Instellingen zijn onvolledig!</string>
+    <string id="108">Programma data ontbreekt![CR]Mogelijk data Template vertaal probleem?</string>
+    <string id="109">Bewaarfout van Programma details</string>
+    <string id="110">Ongeldige Template[CR]Bevat een ongekende vervangings waarde.</string>
+    <string id="111">Zenderbron Fout!</string>
+    <string id="112">Zenderlijst laden is mislukt</string>
+    <string id="113">Geen Zenders gevonden</string>
+    <string id="115">Fout importeren Zenderbron</string>
+    <string id="116">Fout importeren SaveProgramme</string>
+    <string id="117">Geen gelijkenissen gevonden!</string>
+    <string id="118">URL niet gevonden!</string>
+    <string id="119">Scraping mislukt!</string>
+    <string id="120">Tijdschema onbeschikbaar!</string>
+    <string id="122">Fout verwijderen alarm!</string>
+    <string id="123">Programma onbruikbaar!</string>
+    <string id="124">Favoriet al aanwezig!</string>
+    <string id="125">Programma is al bezig!</string>
+    <string id="126">Alarm al aanwezig!</string>
+    <string id="127">Geen alarmen gevonden!</string>
+    <string id="128">IMDb zoeken mislukt.[CR]Editeer titel naam, opnieuw proberen?</string>
+    <string id="129">Opneem Timer valt samen met: </string>
+    <string id="130">Geen Opneem timers gevonden!</string>
+    <string id="132">Start en Eind Tijden</string>
+    <string id="133">Frequentie vereist</string>
+    <string id="134">Ongeldig MAC adres![CR]Wis MAC voor desactivatie.</string>
+    <string id="135">Nog niet opgestart, WOL opnieuw proberen?</string>
+    <string id="136">WOL vereist een SMB Path[CR]inorder to check its awake.</string>
+    <string id="137">Opneem Fout!</string>
+
+    <!-- Status messages -->
+    <string id="200">Verwijder Lijsten?</string>
+    <string id="201">Verwijder Zenderlijst?</string>
+    <string id="202">Zoek Video Bestanden</string>
+    <string id="203">Zender niet beschikbaar</string>
+    <string id="204">Geen Programma</string>
+    <string id="205">Geen Informatie</string>
+    <string id="206">Programma Informatie</string>
+    <string id="207">Downloaden SnelInfo</string>
+    <string id="208">Downloaden Samenvatting</string>
+    <string id="209">Downloaden Beeld</string>
+    <string id="210">Week: %s tot %s (Selecteer voor Info)</string>
+    <string id="211">Datum: %s (Selecteer voor Info)</string>
+    <string id="212">Downloaden Zender Lijst ...</string>
+    <string id="213">Geen Favoriete Programma's</string>
+    <string id="214">Geen Zender informatie</string>
+    <string id="215">Thema geselecteerd: %s</string>
+    <string id="216">Onvolledige Instellingen, Nu instellen?</string>
+
+    <!-- script common messages -->
+    <string id="300">Even Geduld ...</string>
+    <string id="301">Success</string>
+    <string id="302">Probleem</string>
+    <string id="303">Downloaden ...</string>
+    <string id="304">Voltooid</string>
+    <string id="305">Bevestig verwijderen?</string>
+    <string id="306">Opnieuw?</string>
+    <string id="307">Doorgaan?</string>
+    <string id="308">Herlaad Lijst</string>
+    <string id="309">Nu Instellen?</string>
+    <string id="311">Zoeken:</string>
+    <string id="312">Ontleden</string>
+    <string id="313">Bezig met afsluiten ...</string>
+    <string id="314">Opnieuw proberen ...</string>
+
+    <string id="320">Maandag</string>
+    <string id="321">Dinsdag</string>
+    <string id="322">Woensdag</string>
+    <string id="323">Donderdag</string>
+    <string id="324">Vrijdag</string>
+    <string id="325">Zaterdag</string>
+    <string id="326">Zondag</string>
+    <string id="327">Vandaag</string>
+    <string id="328">Morgen</string>
+    <string id="329">Reset</string>
+	<string id="578">Gisteren</string>
+
+    <!-- Yes/No buttons -->
+    <string id="350">Ja</string>
+    <string id="351">Neen</string>
+    <string id="352">Map</string>
+    <string id="353">Bestand</string>
+    <string id="354">Download</string>
+    <string id="355">Annuleren</string>
+    <string id="356">Verwijderen</string>
+    <string id="357">Uit</string>
+    <string id="358">Aan</string>
+    <string id="359">Stop</string>
+    <string id="360">OK</string>
+
+    <!-- Dialog titles -->
+    <string id="400">Algemene Instellingen</string>
+    <string id="401">Instellingen Zenderbron</string>
+    <string id="402">Instellingen SaveProgramme</string>
+
+    <!-- Footer labels -->
+    <string id="420">Selecteer/Beeld</string>
+    <string id="421">HD Zenders</string>
+    <string id="422">Opnemen</string>
+    <string id="423">Nav Lijst</string>
+    <string id="424">IMDb</string>
+    <string id="425">Menu</string>
+    <string id="426">Annuleer Opnemen</string>
+    <string id="427">SD Zenders</string>
+
+    <!-- menu options -->
+    <string id="500">Afsluiten</string>
+    <string id="501">Hoofd Menu</string>
+    <string id="502">Instellingen Menu</string>
+    <string id="503">Afspelen Opgenomen Video</string>
+    <string id="504">Bekijk HD Zenders</string>
+    <string id="505">Bekijk ALLE Zenders</string>
+    <string id="506">Speel Video Vanaf SMB</string>
+    <string id="507">Voeg Favoriete Toe</string>
+    <string id="508">Bekijk Favoriet Programma's</string>
+    <string id="509">Manueel opnemen</string>
+    <string id="510">Beheer Favorieten</string>
+    <string id="511">Beheer Timers</string>
+    <string id="512">Afspelen Speellijst uit geheugen</string>
+    <string id="513">TV.com Opzoeken</string>
+    <string id="514">IMDb Opzoeken</string>
+    <string id="515">IMDb Manueel Opzoeken</string>
+    <string id="516">Instellen Alarm Klok</string>
+    <string id="517">Beheer Alarm Klok</string>
+    <string id="518">TVRage.com</string>
+    <string id="519">LiveSportOnTV.com (UK)</string>
+    <string id="520">Annuleer Favoriet</string>
+
+    <!-- config menu options -->
+    <string id="530">Wis tijdelijke data</string>
+    <string id="531">Selecteer Zenderbron</string>
+    <string id="532">Instellingen Zenderbron</string>
+    <string id="533">Selecteer TV-kaart</string>
+    <string id="534">Instellingen TV-kaart</string>
+    <string id="535">Fetch Remote Timers bij opstarten?</string>
+    <string id="536">24Hr Klok Formaat?</string>
+    <string id="538">Controleer overlapping opname?</string>
+    <string id="539">Zender Naam/ID?</string>
+    <string id="540">Volgorde Zenders</string>
+    <string id="541">Kleuren</string>
+    <string id="542">Genre Iconen</string>
+    <string id="543">Genre Kleuren</string>
+    <string id="544">Lettertypen</string>
+    <string id="545">EPG Rij Hoogte</string>
+    <string id="546">SMB Instellingen</string>
+    <string id="547">Bewerk opneem Templates</string>
+    <string id="548">Bekijk opneem Templates</string>
+    <string id="549">Activeer LiveSportOnTV (UK) Optie?</string>
+    <string id="550">Bekijk Script LeesMij</string>
+    <string id="551">Bekijk Script Modificaties</string>
+    <string id="552">Master Reset</string>
+    <string id="553">Controleer op nieuwe versie tijdens opstarten?</string>
+    <string id="554">Controleer op nieuwe versie?</string>
+    <string id="555">Wake On LAN MAC:</string>
+    <string id="556">Download Ontbrekende Zender Logos</string>
+
+    <!-- misc menu/prompts -->
+    <string id="560">Zender naam alleen</string>
+    <string id="561">Zender naam + ID</string>
+    <string id="562">Zender naam + Alt. ID</string>
+    <string id="563">Wis Geheugen?</string>
+    <string id="564">Verwijder Zender Lijst?</string>
+    <string id="565">Bewaar Bestand Template:</string>
+    <string id="567">Selecteer Een Stream Bestand</string>
+    <string id="568">Selecteer Bestand om te bekijken</string>
+    <string id="569">Geef programma naam</string>
+    <string id="572">Selecteer Lettertype</string>
+    <string id="573">RIJ Hooghte:</string>
+    <string id="574">RIJ SPATIE Hoogte:</string>
+    <string id="575">Selecteer Zender:</string>
+    <string id="576">Selecteer Frequenctie:</string>
+    <string id="577">Geen Zender naam/ID</string>
+    <string id="581">Wekelijkse Programma's</string>
+    <string id="582">Dagelijkse Programma's</string>
+    <string id="583">Huidig Programma</string>
+    <string id="584">Zoeken</string>
+    <string id="585">Selecteer Land</string>
+    <string id="586">(Selecteer Voor Verwijderen)</string>
+    <string id="587">Volgende Week</string>
+    <string id="588">Vorige Week</string>
+    <string id="589">Negeer Conflicten?</string>
+    <string id="590">Herhaal Opnemen?</string>
+    <string id="591">Frequentie: </string>
+    <string id="592">Geef Programma Naam: </string>
+    <string id="593">Programma Titel: </string>
+    <string id="594">Programma Beschrijving: </string>
+    <string id="595">Zender Naam: </string>
+    <string id="596">EPG Tekst: </string>
+    <string id="597">Selecteer Zender Om Te Verplaatsen</string>
+    <string id="598">Verplaats Zender en Druk A om te plaatsen</string>
+    <string id="599">Selecteer Achtergrond en Tekst Kleur:</string>
+    <string id="600">Selecteer Achtergrond Kleur:</string>
+    <string id="601">Selecteer Tekst Kleur:</string>
+    <string id="602">VOLGENDE Achtergrond</string>
+    <string id="603">VORIGE Achtergrond</string>
+    <string id="604">VOLGENDE Tekst</string>
+    <string id="605">VORIGE Tekst</string>
+    <string id="606">Uitschakelen</string>
+    <string id="607">Wake On LAN</string>
+    <string id="608">Gebruik Voorkeur TV kaart (SaveProgramme)?</string>
+    <string id="609">Onzichtbaar? (X)</string>
+    <string id="610">Fetching Land Codes ...</string>
+    <string id="611">Selecteer Land</string>
+    <string id="612">Fetching beschikbare logo namen ...</string>
+    <string id="613">Controle ontbrekende logos ...</string>
+    <string id="614">Sla Logo over</string>
+    <string id="615">Selecteer Logo: </string>
+    <string id="616">Selecteer Taal: </string>
+
+    <!-- Datasource Common -->
+    <string id="700">Selecteer TV-Kaart Type</string>
+    <string id="701">Geef TV-Kaart executable PATH</string>
+
+    <!-- Saveprogrammes Common -->
+    <string id="800">Opnemen?</string>
+    <string id="801">Opneem Instellingen Fout!</string>
+    <string id="802">Programma Al Beeindigd!</string>
+    <string id="803">Resterende Programma-tijd te kort!</string>
+    <string id="804">Geef Opneem PATH</string>
+    <string id="805">Geef Gebruiker ID</string>
+    <string id="806">Geef Passwoord</string>
+    <string id="807">Afspelen Terwijl Opnemen?</string>
+    <string id="808">Opname Ingesteld.</string>
+    <string id="809">Geen Reactie van server!</string>
+    <string id="810">LiveTV Afspelen</string>
+    <string id="811">Bestand door server niet gemaakt!</string>
+    <string id="812">Server IP</string>
+    <string id="813">Server PORT</string>
+    <string id="814">Gebruik Live TV toepassing?</string>
+    <string id="815">Live TV Afspelen vertraging secs:</string>
+    <string id="816">Live TV Bestandsnaam Flag:</string>
+    <string id="817">Live TV SMB Path:</string>
+    <string id="818">Geen TV Kaart</string>
+    <string id="819">Instelling opnemen ...</string>
+    <string id="820">Starten afspelen ...</string>
+    <string id="821">Bezig met Verwijderen Timer ...</string>
+    <string id="822">Opnemen Stoppen?</string>
+    <string id="823">Verwijderen Timer?</string>
+    <string id="824">Downloaden Timers ...</string>
+    <string id="825">Bekijk/Verwijder Timers</string>
+    <string id="826">Bekijk/Verwijder Opnames</string>
+    <string id="827">Downloaden Opnames ...</string>
+    <string id="828">Verwijderen Timer mislukt!</string>
+    <string id="829">Controleer remote server is running.</string>
+    <string id="830">Fout fetching remote timers!</string>
+    <string id="831">TV Kaart Model:</string>
+    <string id="832">TV Kaart .EXE Path:</string>
+    <string id="833">TV Kaart Opneem Path:</string>
+    <string id="834">Opname Al geprogrammeerd!</string>
+    <string id="835">Vooropname Minuten:</string>
+    <string id="836">Naopname Minuten:</string>
+
+    <!-- smbLib -->
+    <string id="950">SMB Path en/of Host IP ontbreken!</string>
+    <string id="951">SMB Fout!</string>
+    <string id="952">SMB connectie mislukt!</string>
+    <string id="953">Controleer PCName en IP adres</string>
+    <string id="954">SMB Inloggen Mislukt!</string>
+    <string id="955">Gebruik PCNAME niet IP in SMB path!</string>
+    <string id="956">SMB Auto Discover IP Mislukt!</string>
+    <string id="957">SMB Fetch Fout!</string>
+    <string id="958">SMB Send Fout!</string>
+    <string id="959">SMB Instellingen onvolledig!</string>
+    <string id="960">SMB Connectie ...</string>
+    <string id="961">SMB connection gelukt</string>
+    <string id="962">SMB Fetching bestand ...</string>
+    <string id="963">SMB Sending bestand ...</string>
+    <string id="964">SMB Even Geduld ...</string>
+    <string id="965">Remote bestandsnaam ontbreekt!</string>
+    <string id="966">Geen remote connectie!</string>
+    <string id="967">Controleren nieuwer bestand ...</string>
+    <string id="968">SMB nu instellen?</string>
+    <string id="969">SMB Path:</string>
+    <string id="970">SMB IP:</string>
+    <string id="971">Selecteer een bestaand XBMC SMB Path</string>
+    <string id="972">Controleer SMB Connectie</string>
+    <string id="973">Korrigeer IP voor PC Name: %s?</string>
+    <string id="974">Ongeldig SMB path!</string>
+    <string id="975">Ongeldig IP Formaat!</string>
+    <string id="976">SMB Instellingen</string>
+
+    <!-- imdbWin lib -->
+    <string id="980">IMDB Opzoeking</string>
+    <string id="981">IMDb Manuele Opzoeking</string>
+    <string id="982">Zoeken IMDb ...</string>
+    <string id="983">IMDb Opzoeking Mislukt</string>
+    <string id="984">Editeer titel?</string>
+    <string id="985">Selecteer Titel</string>
+    <string id="986">Downloaden Beeld ...</string>
+    <string id="987">Downloaden Foto Links ...</string>
+    <string id="988">Downloaden Voorstelling ...</string>
+    <string id="989">Bekijk Voorstelling</string>
+
+    <!-- Update messages -->
+    <string id="1000">Huidge Versie is reeds de laatste.</string>
+    <string id="1001">Fetching huidig tagged versie...</string>
+    <string id="1002">is nieuwer</string>
+    <string id="1003">Upgraden naar nieuwe versie?</string>
+    <string id="1004">Fetching Bestanden lijst...</string>
+    <string id="1005">Even Geduld...</string>
+    <string id="1006">Versie</string>
+    <string id="1007">Fetching:</string>
+    <string id="1008">Path:</string>
+    <string id="1009">Bestand:</string>
+    <string id="1010">Script vernieuwd, nu herstarten.</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Geen tagged versies gevonden!</string>
+    <string id="1031">Fout tijdens upgraden naar nieuwe versie!</string>
+
+</strings>

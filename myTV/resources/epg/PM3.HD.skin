@@ -1,0 +1,21 @@
+[SKIN]
+font_title = font13
+font_short_desc = font10
+font_epg = font11
+font_chname = font11
+colour_chnames = 0xFFFFFFFF
+colour_title = 0xFFFFFFFF
+colour_title_desc = 0xFFFFFFFF
+colour_epg_text_odd = 0xFFFFFFFF
+colour_epg_text_even= 0xFFFFFFFF
+colour_epg_text_fav = 0xFF000000
+colour_arrows = 0xFFFFFFCC
+colour_nowtime_line = 0xFFFFFFCC
+colour_timerbar = 0xFF99FFFF
+file_epg_nofocus_odd = PM3_Unfocused.png
+file_epg_nofocus_even = PM3_Unfocused.png
+file_epg_nofocus_fav = ProgressFront2.png
+file_epg_focus = ProgressFront.png
+height_epg_row = 50
+height_epg_row_gap = 3
+dialog_panel = dialog_panel.png

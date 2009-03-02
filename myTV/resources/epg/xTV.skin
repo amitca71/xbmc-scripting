@@ -1,0 +1,19 @@
+[SKIN]
+font_title = font18
+font_short_desc = font16
+font_epg = font16
+font_chname = font16
+colour_chnames= 0xFFFFFFFF
+colour_title = 0xFFFFFFFF
+colour_title_desc = 0xFFFFFFFF
+colour_epg_text_odd = 0xFFFFFFFF
+colour_epg_text_even= 0xFFFFFFFF
+colour_epg_text_fav = 0xFF000000
+file_epg_nofocus_odd = DarkBlue.png
+file_epg_nofocus_even = DarkBlue.png
+file_epg_nofocus_fav = DarkYellow.png
+file_epg_focus = LightBlue.png
+height_epg_row = 50
+height_epg_row_gap = 3
+colour_arrows = 0xFFFFFFCC
+Dialog_panel = button-menu-background.png

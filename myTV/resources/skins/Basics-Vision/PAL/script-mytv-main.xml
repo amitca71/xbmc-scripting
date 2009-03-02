@@ -1,0 +1,598 @@
+<window>
+<!--	<defaultcontrol>1300</defaultcontrol> -->
+	<allowoverlays>true</allowoverlays>
+	<controls>
+		<include>Common_Background</include>
+		<control type="group">
+			<!-- HEADER GROUP NAV LISTS -->
+			<control type="group" id="1000">
+				<posx>0</posx>
+				<posy>0</posy>
+				<visible>true</visible>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+				<control type="group">
+					<posx>14</posx>
+					<posy>76</posy>
+					<control type="image">
+						<description>Background</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>344</width>
+						<height>96</height>
+						<texture border="10,10,0,10">Info_Panel.png</texture>
+					</control>
+					<control type="image">
+						<description>Background</description>
+						<posx>344</posx>
+						<posy>0</posy>
+						<width>344</width>
+						<height>96</height>
+						<texture flipx="true" border="0,10,10,10">Info_Panel.png</texture>
+					</control>
+					<control type="image">
+						<description>LOGO image Background</description>
+						<posx>558</posx>
+						<posy>4</posy>
+						<width>131</width>
+						<height>92</height>
+						<texture border="10,10,0,10">Info_Panel.png</texture>
+					</control>
+					<control type="image" id="1010">
+						<description>LOGO image</description>
+						<posx>560</posx>
+						<posy>5</posy>
+						<width>130</width>
+						<height>90</height>
+						<visible>true</visible>
+						<texture>script-logo.png</texture>
+						<aspectratio>keep</aspectratio>
+<!--						<bordertexture border="4">folder-focus.png</bordertexture>
+						<bordersize>4</bordersize>  -->
+					</control>
+					<control type="label" id="1020">
+						<description>Title value</description>
+						<posx>10</posx>
+						<posy>20</posy>
+						<width>660</width>
+						<textcolor>red</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<label>Programme Title</label>
+						<font>font30</font>
+					</control>
+					<control type="label" id="1030">
+						<description>TITLE DESC control</description>
+						<posx>10</posx>
+						<posy>54</posy>
+						<width>480</width>
+						<label>-</label>
+						<font>font12</font>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+			</control>
+
+			<!-- EPG OUTER GROUP HOLDING CHANNEL NAMES GROUP, CHANNEL PROGRAMMES GROUP-->
+			<control type="group">
+				<posx>14</posx>
+				<posy>184</posy>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+				<control type="image">
+					<description>Main Background</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>346</width>
+					<height>326</height>
+					<texture border="10,10,0,10">Info_Panel.png</texture>
+				</control>
+				<control type="image">
+					<description>Main Background</description>
+					<posx>346</posx>
+					<posy>0</posy>
+					<width>346</width>
+					<height>326</height>
+					<texture flipx="true" border="0,10,10,10">Info_Panel.png</texture>
+				</control>
+			</control>
+			<!-- EPG OUTER GROUP HOLDING CHANNEL NAMES GROUP, CHANNEL PROGRAMMES GROUP-->
+			<control type="group" id="1300">
+				<posx>24</posx>
+				<posy>184</posy>
+				<height>330</height>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+				<control type="label" id="1310">
+					<description>channel name control</description>
+					<width>110</width>
+					<visible>false</visible>
+				</control>
+			</control>
+
+			<!-- FOOTER GROUP NAV LISTS -->
+			<control type="group" id="1100">
+				<posx>0</posx>
+				<posy>380</posy>
+				<height>156</height>
+				<visible>!Control.IsVisible(1200) + Control.IsEnabled(1000)</visible>
+				<animation effect="slide" time="200" end="0,156" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+				<animation effect="slide" time="200" start="0,156" acceleration="-1.1" condition="!Skin.HasSetting(animated)">Visible</animation>
+				<animation effect="slide" time="200" end="0,156" acceleration="1.1" condition="!Skin.HasSetting(animated)">Hidden</animation>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+				<!--  CHANNELS -->
+				<control type="list" id="1110">
+					<posx>144</posx>
+					<posy>10</posy>
+					<width>560</width>
+					<height>34</height>
+					<onleft>1110</onleft>
+					<onright>1110</onright>
+					<onup>1140</onup>
+					<ondown>1111</ondown>
+					<orientation>horizontal</orientation>
+					<viewtype label="list">list</viewtype>
+					<pagecontrol>1111</pagecontrol>
+					<focusposition>2</focusposition>
+					<itemlayout width="140">
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout width="140">
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+							<visible>!Control.HasFocus(1110)</visible>
+						</control>
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>red</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+							<visible>Control.HasFocus(1110)</visible>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="group">
+					<visible>Control.isVisible(1110)</visible>
+					<control type="scrollbar" id="1111">
+						<posx>134</posx>
+						<posy>40</posy>
+						<width>558</width>
+						<height>3</height>
+						<texturesliderbackground diffuse="AAFFFFFF">separator.png</texturesliderbackground>
+						<texturesliderbar></texturesliderbar>
+						<texturesliderbarfocus>progress_middle.png</texturesliderbarfocus>
+						<textureslidernib>-</textureslidernib>
+						<textureslidernibfocus>-</textureslidernibfocus>
+						<onup>1110</onup>
+						<ondown>1120</ondown>
+						<showonepage>false</showonepage>
+						<orientation>horizontal</orientation>
+					</control>
+				</control>
+				<!--  DAY-->
+				<control type="list" id="1120">
+					<posx>144</posx>
+					<posy>50</posy>
+					<width>560</width>
+					<height>40</height>
+					<onleft>1120</onleft>
+					<onright>1120</onright>
+					<onup>1111</onup>
+					<ondown>1121</ondown>
+					<orientation>horizontal</orientation>
+					<viewtype label="list">list</viewtype>
+					<pagecontrol>1121</pagecontrol>
+					<itemlayout width="140">
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout width="140">
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+							<visible>!Control.HasFocus(1120)</visible>
+						</control>
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>red</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+							<visible>Control.HasFocus(1120)</visible>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="group">
+					<visible>Control.isVisible(1120)</visible>
+					<control type="scrollbar" id="1121">
+						<posx>134</posx>
+						<posy>80</posy>
+						<width>558</width>
+						<height>3</height>
+						<texturesliderbackground diffuse="AAFFFFFF">separator.png</texturesliderbackground>
+						<texturesliderbar></texturesliderbar>
+						<texturesliderbarfocus>progress_middle.png</texturesliderbarfocus>
+						<textureslidernib>-</textureslidernib>
+						<textureslidernibfocus>-</textureslidernibfocus>
+						<onup>1120</onup>
+						<ondown>1130</ondown>
+						<showonepage>false</showonepage>
+						<orientation>horizontal</orientation>
+					</control>
+				</control>
+				<!-- HOUR -->
+				<control type="list" id="1130">
+					<posx>144</posx>
+					<posy>90</posy>
+					<width>560</width>
+					<height>40</height>
+					<onleft>1130</onleft>
+					<onright>1130</onright>
+					<onup>1121</onup>
+					<ondown>1131</ondown>
+					<orientation>horizontal</orientation>
+					<viewtype label="">list</viewtype>
+					<pagecontrol>1131</pagecontrol>
+					<itemlayout width="140">
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>DFFFFFFF</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+						</control>
+					</itemlayout>
+					<focusedlayout width="140">
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>FFFFFF99</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+							<visible>!Control.HasFocus(1130)</visible>
+						</control>
+						<control type="label">
+							<posx>70</posx>
+							<posy>0</posy>
+							<width>140</width>
+							<height>25</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<selectedcolor>FFe2ff43</selectedcolor>
+							<textcolor>red</textcolor>
+							<align>center</align>
+							<info>ListItem.Label</info>
+							<visible>Control.HasFocus(1130)</visible>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="group">
+					<visible>Control.isVisible(1130)</visible>
+					<control type="scrollbar" id="1131">
+						<posx>134</posx>
+						<posy>120</posy>
+						<width>558</width>
+						<height>3</height>
+						<texturesliderbackground diffuse="AAFFFFFF">separator.png</texturesliderbackground>
+						<texturesliderbar></texturesliderbar>
+						<texturesliderbarfocus>progress_middle.png</texturesliderbarfocus>
+						<textureslidernib>-</textureslidernib>
+						<textureslidernibfocus>-</textureslidernibfocus>
+						<onup>1130</onup>
+						<ondown>1140</ondown>
+						<showonepage>false</showonepage>
+						<orientation>horizontal</orientation>
+					</control>
+				</control>
+				<!-- Time reset button -->
+				<control type="button" id="1140">
+					<description>Time reset button</description>
+					<posx>159</posx>
+					<posy>140</posy>
+					<width>366</width>
+					<height>35</height>
+					<label>100</label>
+					<onup>1131</onup>
+					<ondown>1110</ondown>
+					<font>font15</font>
+					<texturenofocus>ListItem_Focus.png</texturenofocus>
+					<focusedcolor>red</focusedcolor>
+					<textcolor>white</textcolor>
+					<align>center</align>
+				</control>
+				<!-- INSTRUCTIONS -->
+				<control type="image">
+					<description>instructions Background</description>
+					<posx>19</posx>
+					<posy>5</posy>
+					<width>111</width>
+					<height>128</height>
+					<texture flipx="true" border="10,10,0,10">Info_Panel.png</texture>
+				</control>
+				<control type="image">
+					<description>Menu image</description>
+					<posx>25</posx>
+					<posy>9</posy>
+					<width>95</width>
+					<height>115</height>
+					<texture>footer_menu.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</control><!-- end group footer outer -->
+
+			<!-- FOOTER BUTTON GROUP -->
+			<control type="group" id="1200">
+				<posx>0</posx>
+				<posy>547</posy>
+				<height>30</height>
+				<visible>Control.IsEnabled(1000)</visible>
+				<animation effect="slide" time="200" start="0,30" acceleration="-1.1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+				<animation effect="slide" time="200" end="0,30" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+				<animation effect="slide" time="200" end="0,30"acceleration="1.1" condition="!Control.IsVisible(1200)">conditional</animation>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+
+				<control type="image">
+					<description>A button control</description>
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>25</width>
+					<height>25</height>
+					<visible>true</visible>
+					<texture>abutton.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label" id="1203">
+					<posx>40</posx>
+					<posy>10</posy>
+					<width>110</width>
+					<height>25</height>
+					<font>font10</font>
+					<label></label>
+					<align>left</align>
+				</control>
+
+				<control type="image" id="1202">
+					<description>B button control</description>
+					<posx>150</posx>
+					<posy>5</posy>
+					<width>25</width>
+					<height>25</height>
+					<visible>true</visible>
+					<texture>bbutton.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label" id="1201">
+					<posx>180</posx>
+					<posy>10</posy>
+					<width>110</width>
+					<height>25</height>
+					<font>font10</font>
+					<label></label>
+					<align>left</align>
+					<visible>Control.IsVisible(1202)</visible>
+				</control>
+
+				<control type="image">
+					<description>X button control</description>
+					<posx>290</posx>
+					<posy>5</posy>
+					<width>25</width>
+					<height>25</height>
+					<visible>true</visible>
+					<texture>xbutton.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label" id="1204">
+					<posx>320</posx>
+					<posy>10</posy>
+					<width>110</width>
+					<height>25</height>
+					<font>font10</font>
+					<label></label>
+					<align>left</align>
+				</control>
+
+				<control type="image">
+					<description>Y button control</description>
+					<posx>430</posx>
+					<posy>5</posy>
+					<width>25</width>
+					<height>25</height>
+					<visible>true</visible>
+					<texture>ybutton.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label" id="1205">
+					<posx>460</posx>
+					<posy>10</posy>
+					<width>60</width>
+					<height>25</height>
+					<font>font10</font>
+					<label></label>
+					<align>left</align>
+				</control>
+
+				<control type="image">
+					<description>white button control</description>
+					<posx>530</posx>
+					<posy>5</posy>
+					<width>25</width>
+					<height>25</height>
+					<visible>true</visible>
+					<texture>whitebutton.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label" id="1206">
+					<posx>560</posx>
+					<posy>10</posy>
+					<width>60</width>
+					<height>25</height>
+					<font>font10</font>
+					<label></label>
+					<align>left</align>
+				</control>
+
+				<control type="image">
+					<description>BACK button control</description>
+					<posx>630</posx>
+					<posy>5</posy>
+					<width>25</width>
+					<height>25</height>
+					<visible>true</visible>
+					<texture>backbutton.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label" id="1207">
+					<posx>660</posx>
+					<posy>10</posy>
+					<width>60</width>
+					<height>25</height>
+					<font>font10</font>
+					<label></label>
+					<align>left</align>
+				</control>
+
+			</control><!-- end group footer buttons -->
+
+			<control type="group">
+				<posx>14</posx>
+				<posy>520</posy>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+				<control type="image">
+					<posx>169r</posx>
+					<posy>0</posy>
+					<width>169</width>
+					<height>35</height>
+					<texture>Slider_focus_left.png</texture>
+					<include>Window_OpenClose_Animation</include>
+				</control>
+				<control type="image">
+					<posx>-14</posx>
+					<posy>0</posy>
+					<width>169</width>
+					<height>35</height>
+					<texture>Slider_focus_right.png</texture>
+					<include>Window_OpenClose_Animation</include>
+				</control>
+				<control type="label" id="1050">
+					<description>DATASOURCE label control</description>
+					<posx>15</posx>
+					<posy>0</posy>
+					<width>450</width>
+					<height>36</height>
+					<label>my_SaveProgramme</label>
+					<font>15</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label" id="1040">
+					<description>CLOCK label control</description>
+					<posx>681</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>36</height>
+					<label></label>
+					<font>15</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>720</width>
+				<height>72</height>
+				<texture>Topbar.png</texture>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+			</control>
+			<control type="label">
+				<description>Title label</description>
+				<posx>23</posx>
+				<posy>16</posy>
+				<width>338</width>
+				<height>34</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>MyTV - </label>
+				<font>font16b</font>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+			</control>
+			<control type="label" id="1060">
+				<description>DATASOURCE label control</description>
+				<posx>103</posx>
+				<posy>16</posy>
+				<width>338</width>
+				<height>34</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label></label>
+				<font>font16b</font>
+				<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+			</control>
+			<include>Common_Now_Playing</include>
+		</control>
+	</controls>
+</window>
