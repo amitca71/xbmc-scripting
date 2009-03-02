@@ -89,7 +89,7 @@ class TVRage:
 			if os.path.exists(DIR_CACHE):
 				files = os.listdir(DIR_CACHE)
 				for filename in files:
-					if not filename.startwith('tvrage_schedule') and filename.startswith('tvrage'):
+					if not filename.startswith('tvrage_schedule') and filename.startswith('tvrage'):
 						deleteFile(os.path.join(DIR_CACHE, filename))
 		except:
 			handleException("deleteCache()")

@@ -1,7 +1,8 @@
  Version     Date
- 1.18.2      ??/02/09
+ 1.19        ??/03/09
                 Fix: Dreambox - (non Enigma) retrieving timers.
                 Fix: pc_XMLTV - channels regex error
+                Fix: TVRage.com unicode logo name matching error.
                 Updated: Language Strings
                 Updated: Skin tweaks
                 Updated: Library code
@@ -10,6 +11,7 @@
                 Change: EPG themes setup
                 Change: Global vars usage
                 Change: Seperated some code to own modules. Aids script startup speed and smaller mem footprint.
+                Change: LiveSportOnTV (UK) downloads sport icons instead of coming with myTV. Also now purley based on RSS feed.
  1.18.1      ??/09/08 
                 Fix: All skins that were missing button icons etc
                 Fix: Self updateing. (You will need to manual update from v1.18)

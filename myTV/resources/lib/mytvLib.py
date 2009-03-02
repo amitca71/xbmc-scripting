@@ -236,11 +236,11 @@ def readChannelsList(filename, loadHidden=False):
 	channelList = []
 	try:
 		for readLine in file(filename):
-			ch = readLine.replace('\n','').split(',')
+			ch = readLine.replace('\n','').strip().split(',')
 			if loadHidden or ch[1][0] != '*':		# ch name
 				channelList.append(ch)
 	except:
-		debug("file missing")
+		print str( sys.exc_info()[ 1 ] )
 
 	debug("< readChannelsList() channel count: %s" % len(channelList))
 	return channelList
@@ -2977,7 +2977,7 @@ def downloadLogos(channelNames=[]):
 	debug("check which channels dont have a logo...")
 	if not channelNames:
 		channelNames = mytvGlobals.dataSource.getChannels()
-	missing = []
+	missingList = []
 #	dialogProgress.create(dialogTitle, __language__(613) )		# missing logos
 	for i, chData in enumerate(channelNames):
 		chID = logoSafeName(chData[0])
@@ -2986,11 +2986,11 @@ def downloadLogos(channelNames=[]):
 		chNameFn = xbmc.makeLegalFilename(os.path.join(DIR_LOGOS, chName+'.gif'))
 		
 		if not fileExist(chIDFn) and not fileExist(chNameFn):
-			missing.append(i)                                   # save the idx into channelNames
+			missingList.append(i)                                   # save the idx into channelNames
 #	dialogProgress.close()
-	debug("missing logos=%i" % len(missing))
+	debug("missing logos=%i" % len(missingList))
 
-	if not missing:
+	if not missingList:
 		debug("< downloadLogos() No missing logos")
 		return False
 
@@ -3057,7 +3057,7 @@ def downloadLogos(channelNames=[]):
 	logonames = []
 	urlMatches = parseDocList(doc, 'img src="(../icon/tv/.*?.gif)".*?html">(.*?)<')
 	for match in urlMatches:
-		logonames.append(match[1].lower())		# save name as lower for better comparison later
+		logonames.append(match[1].lower().decode('latin-1', "ignore"))		# save name as lower for better comparison later
 
 	if not logonames:
 		messageOK(dialogTitle, "No logos found on webpage!", country_url)
@@ -3071,10 +3071,10 @@ def downloadLogos(channelNames=[]):
 		menu.append(logoName)
 
 	debug("For each missing logo, prompt user to select nearest match...")
-	for i in missing:
-		chData = channelNames[i]
+	for missingIdx in missingList:
+		chData = channelNames[missingIdx]
 		chName = chData[1]
-		chName = unicode(chData[1], 'latin-1')
+		chName = unicode(chData[1], 'latin-1').lower()
 
 		# attempt to match missing logo to nearest logo name
 		chNameSZ = len(chName)
@@ -3084,7 +3084,9 @@ def downloadLogos(channelNames=[]):
 			startPos = 14
 		selectedPos = 1						# menu option 'skip logo'
 		for chName_w in range(startPos, 0, -1):
-			partChName = chName[:chName_w].lower()
+			partChName = chName[:chName_w]
+#			print "width=%d partChName='%s' type=%s" % (chName_w, partChName, type(partChName))
+			# search throu downloadded logo names for partial match to missing logo name
 			for i, logoname in enumerate(logonames):
 				if logoname.startswith(partChName):
 					selectedPos = i+2		# allow for exit, skip options
@@ -3094,7 +3096,7 @@ def downloadLogos(channelNames=[]):
 
 		# dialog to pick logo
 		selectDialog = DialogSelect()
-		title = "%s: %s" % (__language__(615), unicode(chName,'latin-1'))
+		title = "%s %s" % (__language__(615), chName)
 		selectDialog.setup(title, rows=len(menu), width=320, panel=mytvGlobals.DIALOG_PANEL, useY=True)
 		selectedPos, action = selectDialog.ask(menu, selectedPos)
 		if selectedPos <= 0:		# exit
