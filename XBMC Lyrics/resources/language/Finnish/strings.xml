@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
+<strings>    <!--   2.3.2009 Finnish   -->
     <string id="0">XBMC Lyrics</string>
-	<string id="1">xbmc Media Center</string>
-    <string id="2">Mikko 70</string>
-	<!--   9.7.2008 Finnish   -->
- 	<!-- User Messages -->
+    <string id="1">xbmc Media Center</string>
+    <string id="2">Mika pirinen</string>
+
+    <!-- User Messages -->
     <string id="100">Poikkeus</string>
     <string id="101">Tiedosto</string>
     <string id="102">Sulautettu</string>
@@ -22,7 +22,7 @@
     <string id="210">Säilytä sanoitusten Xbox yhteensopivuus</string>
     <string id="211">Tallenna sanoitukset lopputunnisteen kanssa</string>
 
-  <!-- Settings choices -->
+    <!-- Settings choices -->
     <string id="2070">%A - %T</string>
     <string id="2071">%A\%B\%T</string>
     <string id="2072">%A\%B\%N %T</string>
@@ -77,7 +77,7 @@
     <string id="1004">Noudetaan tiedostoluetteloa...</string>
     <string id="1005">Odota...</string>
     <string id="1006">Versio</string>
-    <string id="1007">Haetaan:</string>
+    <string id="1007">Noudetaan:</string>
     <string id="1008">Polku:</string>
     <string id="1009">Tiedosto:</string>
     <string id="1010">Ohjelma tallennettiin kansioon:</string>

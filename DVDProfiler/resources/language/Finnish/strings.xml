@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>    <!--  Finnish 9.1.2009  -->
+<strings>    <!--  Finnish 2.3.2009  -->
     <string id="0">DVDProfiler</string>
 
     <!-- Browse dialog headings -->
@@ -203,10 +203,10 @@
    <string id="1001">Tarkistetaan uusinta versiota...</string>
    <string id="1002">on uudempi</string>
    <string id="1003">Haluatko päivittää ohjelman?</string>
-   <string id="1004">Haetaan tiedostoluetteloa...</string>
+   <string id="1004">Noudetaan tiedostoluetteloa...</string>
    <string id="1005">Odota hetki..</string>
    <string id="1006">Versio</string>
-   <string id="1007">Haetaan:</string>
+   <string id="1007">Noudetaan:</string>
    <string id="1008">Polku:</string>
    <string id="1009">Tiedosto:</string> 
    <string id="1010">Ohjelma päivitetty, voit käynnistää uudelleen.</string>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!--   30.9.2008 Finnish   -->
+    <!--   2.3.2009 Finnish   -->
     <string id="0">BBC PodRadio</string>
 
     <!-- Messages -->
@@ -62,7 +62,7 @@
     <string id="1004">Noudetaan tiedostoluetteloa...</string>
     <string id="1005">Odota...</string>
     <string id="1006">Versio</string>
-    <string id="1007">Haetaan:</string>
+    <string id="1007">Noudetaan:</string>
     <string id="1008">Polku:</string>
     <string id="1009">Tiedosto:</string>
     <string id="1010">Ohjelma tallennettiin kansioon:</string>
