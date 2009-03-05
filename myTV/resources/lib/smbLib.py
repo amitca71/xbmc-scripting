@@ -27,10 +27,11 @@ import re
 from string import find
 from bbbLib import *
 from bbbGUILib import *
+import mytvGlobals
 
 __language__ = sys.modules[ "__main__" ].__language__
 
-dialogProgress = xbmcgui.DialogProgress()
+#dialogProgress = xbmcgui.DialogProgress()
 
 ###################################################################################################
 def smbConnect(hostIP, smbPath):
@@ -207,14 +208,14 @@ def isNewSMBFile(remote, remoteInfo, localPath, remoteFile, silent=True):
 			if not silent:
 				dialogProgress.close()
 
-	debug("local timestamp: %s  Remote timestamp: %s" % (localFileSecs,remoteFileSecs))
+		debug("local timestamp: %s  Remote timestamp: %s" % (localFileSecs,remoteFileSecs))
 	# check secs since epoch of files.
 	newFileFound = (remoteFileSecs > localFileSecs) # greater secs means newer
 	debug("< isNewSMBFile() newFileFound: %s" % newFileFound)
 	return newFileFound
 
 ###############################################################################################################
-def listDirSMB(remote, remoteInfo):
+def listDirSMB(remote, remoteInfo, fileMask="*"):
 	debug("> listDirSMB()")
 	fileList = []
 
@@ -225,9 +226,19 @@ def listDirSMB(remote, remoteInfo):
 		domain,user,password,pcname,service,dirPath = remoteInfo
 
 		# list files on SMB of remote
-		fileList = remote.list_path(service, dirPath+'/*')
+		if not dirPath.endswith('/'): dirPath += '/'
+		try:
+			p = "%s%s" % (dirPath, fileMask)
+			fileList = remote.list_path(service, p)
+			debug("dir list sz=%d" % len(fileList))
+		except:
+			traceback.print_exc()
+#			print str( sys.exc_info()[ 1 ] )
+			smbPath = mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH)
+			messageOK(__language__(951), __language__(974), smbPath )
+			fileList = None
 
-	debug("< listDirSMB() count=%d" % len(fileList))
+	debug("< listDirSMB()")
 	return fileList
 
 ###############################################################################################################
@@ -256,55 +267,12 @@ def handleExceptionSMB(ex, title, msg=""):
 		handleException("handleExceptionSMB()")
 
 
-#################################################################################################################
-def parseSMBPath(path):
-	if not path:
-		return None
-	# smb://domain;user:pass@pcname/share/folder
-#	m = re.match('^smb://(\w+);(\w+):([^@]+)@([^/]+)/([^/]+)(/?.*?)([^/]*)$', path) # with fn
-	m = re.match('^smb://(\w+);(\w+):([^@]+)@([^/]+)/([^/]+)(/?.*?)$', path) # without fn
-	if m:
-		xbmc.output("matches smb://domain;user:pass@pcname/share")
-		return m.groups() # 6 groups
-
-	# smb://user:pass@pcname/share/folder
-#	m = re.match('^smb://(\w+):([^@]+)@([^/]+)/([^/]+)(/?.*?)([^/]*)$', path)
-	m = re.match('^smb://(\w+):([^@]+)@([^/]+)/([^/]+)(/?.*?)$', path)   # without fn
-	if m:
-		xbmc.output("matches smb://user:pass@pcname/share/folder")
-		return '', m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
-
-	# smb://pcname/share/folder
-#	m = re.match('^smb://([^/]+)/([^/]+)(/?.*?)([^/]*)$', path)
-	m = re.match('^smb://([^/]+)/([^/]+)(/?.*?)$', path)   # without fn
-	if m:
-		xbmc.output("matches smb://pcname/share/folder")
-		return '', '', '', m.group(1), m.group(2), m.group(3)
-	return None
-
-#################################################################################################################
-def getIPFromName(pcname):
-	debug("> getIPFromName() pcname=%s" % pcname)
-	ip = ''
-	dialogProgress.create(__language__(976), __language__(964))
-	try:
-		ip = nmb.NetBIOS().gethostbyname(pcname)[0].get_ip()
-		dialogProgress.close()
-		if not xbmcgui.Dialog().yesno(__language__(973), pcname, ip):
-			ip = ''
-	except:
-		dialogProgress.close()
-		messageOK(__language__(956), pcname)
-		ip=''
-	debug("< getIPFromName() ip=%s" % ip)
-	return ip
-
 
 #######################################################################################################################    
 # Discover a list of pre-defined SMB
 #######################################################################################################################    
 def selectSMB(currentValue=''):
-	debug("> selectSMB()")
+	debug("> selectSMB() currentValue=%s" % currentValue)
 	returnValue = ''
 	doc = ''
 
@@ -345,41 +313,38 @@ def selectSMB(currentValue=''):
 # fnTitle - Menu option title to use that represents Remote Filename
 #################################################################################################################
 class ConfigSMB:
-	def __init__(self, parentConfig, section="SMB", title="", \
-				fnTitle='Remote Filename:',fnDefaultValue='', pathDefaultValue='', ipDefaultValue=''):
-		debug("> smbLib.ConfigSMB().__init__ section="+section)
+	def __init__(self, title="", fnTitle='', fnDefaultValue='', pathDefaultValue='', ipDefaultValue=''):
+		debug("> smbLib.ConfigSMB().__init__")
 
-		self.config = parentConfig
-		self.configSection = section
 		if title:
 			self.title = title
 		else:
 			self.title = __language__(976)
-		self.EXAMPLE_SMB_PATH = 'smb://user:pass@pcname/share/folder/'
-
-		self.KEY_SMB_PATH = "smb_path"
-		self.KEY_SMB_IP = "smb_pc_ip"
-		self.KEY_SMB_FILE = "smb_filename"
 
 		self.MENU_OPT_SMB_PATH = __language__(969)
 		self.MENU_OPT_SMB_IP = __language__(970)
 		self.MENU_OPT_SMB_FILE = fnTitle
 		self.MENU_OPT_SMB_SETUP_FROM_EXIST = __language__(971)
 		self.MENU_OPT_SMB_CONN_CHECK = __language__(972)
-
 		self.menuOptions = [
 			[__language__(500), None, None],
-			[self.MENU_OPT_SMB_PATH, self.KEY_SMB_PATH, pathDefaultValue],
-			[self.MENU_OPT_SMB_IP, self.KEY_SMB_IP, ipDefaultValue],
-			[self.MENU_OPT_SMB_FILE, self.KEY_SMB_FILE, fnDefaultValue],
+			[self.MENU_OPT_SMB_PATH, mytvGlobals.config.KEY_SMB_PATH, pathDefaultValue],
+			[self.MENU_OPT_SMB_IP, mytvGlobals.config.KEY_SMB_IP, ipDefaultValue],
+			[self.MENU_OPT_SMB_FILE, mytvGlobals.config.KEY_SMB_FILE, fnDefaultValue],
 			[self.MENU_OPT_SMB_SETUP_FROM_EXIST, None, None],
 			[self.MENU_OPT_SMB_CONN_CHECK, None, None]
 			]
 
+		# remove smb filename if not requested
+		if not fnTitle:
+			del self.menuOptions[3]
+			self.fnRequired = False
+		else:
+			self.fnRequired = True
+
 		self.TITLE = 0
 		self.CONFIG_KEY = 1
 		self.DEFAULT_VALUE = 2
-		self.NO_VALUE = '?'
 		self.menu = []
 
 		debug("< smbLib.ConfigSMB().__init__")
@@ -391,7 +356,7 @@ class ConfigSMB:
 			if configKey == None:		# no config KEY
 				label2 = ''
 			else:
-				value = self.config.action(self.configSection, configKey)
+				value = mytvGlobals.config.getSMB(configKey)
 				if not value:
 					label2 = ''
 				else:
@@ -401,33 +366,10 @@ class ConfigSMB:
 		debug("< ConfigSMB.createMenuList()")
 		return menu
 
-	def saveSMBPath(self, smbPath):
-		debug("> saveSMBPath() smbPath="+smbPath)
-		success = False
-		remoteInfo = parseSMBPath(smbPath)
-		if DEBUG: print "remoteInfo=", remoteInfo
-		if not remoteInfo:
-			messageOK(__language__(951), __language__(966))
-		else:
-			if smbPath[-1] != '/': smbPath += '/'
-			domain,user,password,pcname,service,dirPath = remoteInfo
-			self.config.action(self.configSection, self.KEY_SMB_PATH, \
-							   smbPath, self.config.configHelper.MODE_WRITE)
-			if find(pcname,'.') < 0:				# is a PCNAME?
-				success = True	                    # save & parse was OK
-				ip = getIPFromName(pcname)			# discover IP
-				if ip:
-					self.config.action(self.configSection, self.KEY_SMB_IP, ip, self.config.configHelper.MODE_WRITE)
-			else:
-				messageOK(__language__(959),__language__(955), self.EXAMPLE_SMB_PATH)
-
-		debug("< saveSMBPath() success="+str(success))
-		return success
-
 	def checkAll(self, silent=False):
 		debug("smbLib.checkAll()")
 		ip, path, fn = self.getSMBDetails()
-		if ip and path and fn:
+		if ip and path and ((self.fnRequired == False) or (self.fnRequired and fn)):
 			debug("ConfigSMB.checkAll() True")
 			return (ip, path, fn)
 		else:
@@ -437,10 +379,9 @@ class ConfigSMB:
 			return None
 
 	def getSMBDetails(self):
-		details = (self.config.action(self.configSection, self.KEY_SMB_IP), \
-				self.config.action(self.configSection, self.KEY_SMB_PATH), \
-				self.config.action(self.configSection, self.KEY_SMB_FILE))
-		return details
+		return ( mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_IP), \
+				mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH), \
+				mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_FILE) )
 
 	# show this dialog and wait until it's closed
 	def ask(self):
@@ -459,7 +400,7 @@ class ConfigSMB:
 			# get menu selected value
 			key = menu[selectedPos].getLabel()
 			value = menu[selectedPos].getLabel2()
-			if not value or value == self.NO_VALUE:
+			if not value:
 				try:
 					value = self.menuOptions[selectedPos][self.DEFAULT_VALUE]
 					if value == None:
@@ -468,27 +409,27 @@ class ConfigSMB:
 					value = ''
 
 			if key == self.MENU_OPT_SMB_PATH:
-				title = "%s eg. %s" % (self.MENU_OPT_SMB_PATH, self.EXAMPLE_SMB_PATH)
-				value = doKeyboard(value, title)
-				if value:
-					changed = self.saveSMBPath(value)
-
+				smbPath, ip = enterSMB(value)
+				if smbPath and smbPath != value:
+					changed = True
 			elif key == self.MENU_OPT_SMB_IP:
 				value = doKeyboard(value, self.MENU_OPT_SMB_IP, KBTYPE_IP)
 				if value:
-					self.config.action(self.configSection, self.KEY_SMB_IP, value, self.config.configHelper.MODE_WRITE)
+					mytvGlobals.config.setSMB(mytvGlobals.config.KEY_SMB_IP, value)
 					changed = True
 
 			elif key == self.MENU_OPT_SMB_FILE:
-				value = doKeyboard(value, self.MENU_OPT_SMB_FILE)
+				value = doKeyboard(value, self.MENU_OPT_SMB_FILE, KBTYPE_ALPHA)
 				if value:
-					self.config.action(self.configSection, self.KEY_SMB_FILE, value, self.config.configHelper.MODE_WRITE)
+					mytvGlobals.config.setSMB(mytvGlobals.config.KEY_SMB_FILE, value)
 					changed = True
 
 			elif key == self.MENU_OPT_SMB_SETUP_FROM_EXIST:
 				value = selectSMB(value)
 				if value:
-					changed = self.saveSMBPath(value)
+					smbPath, ip = enterSMB(value)
+					if smbPath and smbPath != value:
+						changed = True
 
 			elif key == self.MENU_OPT_SMB_CONN_CHECK:
 				smbDetails = self.checkAll()
@@ -502,36 +443,37 @@ class ConfigSMB:
 		return changed
 
 #################################################################################################################
-def enterSMB(smbPath='', title=''):
-	if not title:
-		title = "Enter SMB Path:"
-	value = doKeyboard(smbPath, title, KBTYPE_ALPHA)
-	if value:
-		smbPath, ip = getSMBPathIP(value)
+def enterSMB(smbPath='', title='', saveOnly=False):
+	debug("> enterSMB() smbPath="+smbPath)
+	if not saveOnly:
+		if not title:
+			title = __language__(969) + " eg. 'smb://user:pass@pcname/share/folder/"	# smb path
+		smbPath = doKeyboard(smbPath, title, KBTYPE_ALPHA)
+	if smbPath:
+		if smbPath[-1] != '/': smbPath += '/'
+		smbPath, ip = getSMBPathIP(smbPath)
+		if smbPath:
+			mytvGlobals.config.setSMB(mytvGlobals.config.KEY_SMB_PATH, smbPath)
+		if ip:
+			mytvGlobals.config.setSMB(mytvGlobals.config.KEY_SMB_IP, ip)
 	else:
 		ip = ''
 		smbPath = ''
+	debug("< enterSMB() smbPath=%s" % smbPath)
 	return smbPath, ip
-
-#################################################################################################################
-def isIP(host):
-	result = re.match('^\d+\.\d+\.\d+\.\d+$', host)
-	debug("isIP(): host=%s %s" % (host, result))
-	return result
 
 #################################################################################################################
 def getSMBPathIP(smbPath, isSMBBasePathOnly=False):
 	debug("> getSMBPathIP() %s" % smbPath)
 	success = False
 	ip = ""
-	if smbPath.endswith('/'): smbPath = smbPath[:-1]
 	if not isSMBBasePathOnly:
 		remoteInfo = parseSMBPath(smbPath)
 	else:
 		remoteInfo = parseSMBBasePath(smbPath)
 	if DEBUG: print remoteInfo
 
-	if remoteInfo and smbPath:
+	if remoteInfo:
 		domain,user,password,pcname,share,dirPath = remoteInfo
 		if '.' not in pcname:										# PCNAME not an IP
 			ip = getIPFromName(pcname)								# discover IP
@@ -545,17 +487,75 @@ def getSMBPathIP(smbPath, isSMBBasePathOnly=False):
 	return smbPath, ip
 
 #################################################################################################################
+def getIPFromName(pcname):
+	debug("> getIPFromName() pcname=%s" % pcname)
+	ip = ''
+	dialogProgress.create(__language__(976), __language__(964))
+	try:
+		ip = nmb.NetBIOS().gethostbyname(pcname)[0].get_ip()
+		dialogProgress.close()
+		if not xbmcgui.Dialog().yesno(__language__(973), pcname, ip):
+			ip = ''
+	except:
+		dialogProgress.close()
+		messageOK(__language__(956), pcname)
+		ip=''
+	debug("< getIPFromName() ip=%s" % ip)
+	return ip
+
+#################################################################################################################
+def isIP(host):
+	result = re.match('^\d+\.\d+\.\d+\.\d+$', host)
+	debug("isIP(): host=%s %s" % (host, result))
+	return result
+
+#################################################################################################################
 def parseSMBBasePath(path):
 	# smb://user:pass@pcname
-	m = re.match('^smb://(\w+):([^@]+)@([^/]+)$', path)
+	m = re.match('^smb://(\w+):([^@]+)@([^/]+)/{0,1}$', path)
 	if m:
 		xbmc.output("matches smb://user:pass@pcname")
 		return ('', m.group(1), m.group(2), m.group(3), '', '', '')
 
 	# smb://pcname
-	m = re.match('^smb://([^/]+)$', path)
+	m = re.match('^smb://([^/]+)/{0,1}$', path)
 	if m:
-		xbmc.output("matches smb://pcname")
-		return ('', '', '', m.group(1), '', '', '')
+		if '@' not in path:
+			xbmc.output("matches smb://pcname")
+			return ('', '', '', m.group(1), '', '', '')
+
+	return None
+
+#################################################################################################################
+# optional folder and filename
+#################################################################################################################
+def parseSMBPath(path):
+	if not path:
+		return None
+	# smb://domain;user:pass@pcname/share/folder
+	m = re.match('^smb://(\w+);(\w+):([^@]+)@([^/]+)/([^/]+)(/?.*?)$', path) # without fn
+	if m:
+		xbmc.output("matches smb://domain;user:pass@pcname/share/folder")
+		return m.groups() # 6 groups
+
+	# smb://user:pass@pcname/share/folder
+	m = re.match('^smb://(\w+):([^@]+)@([^/]+)/([^/]+)(/?.*?)$', path)   # without fn
+	if m:
+		xbmc.output("matches smb://user:pass@pcname/share/folder")
+		return '', m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+
+	# smb://pcname/share/folder
+	m = re.match('^smb://([^/]+)/([^/]+)(/?.*?)$', path)
+	if m:
+		if '@' not in path:
+			xbmc.output("matches smb://pcname/share/folder")
+			return '', '', '', m.group(1), m.group(2), m.group(3)
+
+	# smb://pcname/share
+	m = re.match('^smb://([^/]+)/([^/]+)/{0,1}$', path)
+	if m:
+		if '@' not in path:
+			xbmc.output("matches smb://pcname/share")
+			return '', '', '', m.group(1), m.group(2), m.group(3)
 
 	return None

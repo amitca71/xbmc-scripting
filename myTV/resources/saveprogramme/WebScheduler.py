@@ -22,15 +22,14 @@ from string import replace, lower
 from mytvLib import *
 from bbbGUILib import *
 import mytvGlobals
-from smbLib import parseSMBPath,getSMBFileSize,smbConnect,enterSMB
+from smbLib import parseSMBPath, getSMBFileSize, smbConnect
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 ################################################################################################
 class SaveProgramme:
 	def __init__(self, cachePath=""):
-		debug("> SaveProgramme().__init__")
+		debug("SaveProgramme().__init__")
 
 		self.cache = cachePath
 		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
@@ -53,8 +52,6 @@ class SaveProgramme:
 		self.ACTION_SYSTEM = '02'
 		self.configSaveProgramme = ConfigSaveProgramme()
 
-		debug("< SaveProgramme().__init__")
-
 	def getName(self):
 		return self.name
 
@@ -64,9 +61,6 @@ class SaveProgramme:
 	def saveMethod(self):
 		return SAVE_METHOD_CUSTOM
 		
-	def getSMB(self):
-		return self.configSaveProgramme.getSMB()
-
 	############################################################################################################
 	def config(self, reset=True):
 		debug("> config() reset=%s" % reset)
@@ -80,7 +74,7 @@ class SaveProgramme:
 				self.SERVER = "http://%s:%s" % (self.IP, self.PORT)
 				self.USE_LIVE_TV = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_USE_LIVE_TV)
 				self.LIVE_TITLE_FLAG = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_LIVE_TITLE_FLAG)
-				self.SMB = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_SMB)
+				self.SMB = self.configSaveProgramme.getSMB()
 		except:
 			handleException()
 
@@ -195,7 +189,7 @@ class SaveProgramme:
 			if file_size > 0:
 				play_command = "%s%s" % (self.SMB, filename)
 				if playMedia(play_command):
-					xbmc.executebuiltin('XBMC.ActivateWindow(2005)')	# WINDOW_FULLSCREEN_VIDEO, 12005
+					xbmc.executebuiltin('XBMC.ActivateWindow(2005)')	# WINDOW_FULLSCREEN_VIDEO, 2005
 					success = True
 			else:
 				messageOK(self.name, __language__(811), filename)
@@ -611,7 +605,7 @@ class SaveProgramme:
 
 		if menuList > 1:
 			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(503), rows=len(menuList), width=670, panel=DIALOG_PANEL)
+			selectDialog.setup(__language__(503), rows=len(menuList), width=670, panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos, action = selectDialog.ask(menuList)
 			if selectedPos > 0:
 				rssItem = rssItems[selectedPos-1]
@@ -634,7 +628,7 @@ class SaveProgramme:
 		debug("> getRepeatType()")
 		menuList = [__language__(500), 'Once','Daily','Weekly','Monthly','Week Day']
 		selectDialog = DialogSelect()
-		selectDialog.setup('Select Repeat Type', width=300, rows=len(menuList), panel=DIALOG_PANEL)
+		selectDialog.setup('Select Repeat Type', width=300, rows=len(menuList), panel=mytvGlobals.DIALOG_PANEL)
 		selectedPos,action = selectDialog.ask(menuList)
 
 		# selectedPos will match type value (eg Daily == 1)
@@ -659,14 +653,13 @@ class ConfigSaveProgramme:
 		self.KEY_PORT = 'port'
 		self.KEY_USE_LIVE_TV = 'use_live_tv'
 		self.KEY_LIVE_TITLE_FLAG = 'live_title_flag'
-		self.KEY_SMB = 'playback_smb'
 
 		self.configData = [
 			[self.KEY_IP,__language__(812),'192.168.1.100',KBTYPE_IP],
 			[self.KEY_PORT,__language__(813),'8429',KBTYPE_NUMERIC],
 			[self.KEY_USE_LIVE_TV,__language__(814),False, KBTYPE_YESNO],
 			[self.KEY_LIVE_TITLE_FLAG, __language__(816),'-XBMC-',KBTYPE_ALPHA],
-			[self.KEY_SMB, __language__(817), "smb://user:pass@PCNAME/share/folder", KBTYPE_SMB]
+			[mytvGlobals.config.KEY_SMB_PATH, __language__(817), '', KBTYPE_SMB]
 			]
 
 		debug("< ConfigSaveProgramme().init()")
@@ -688,17 +681,16 @@ class ConfigSaveProgramme:
 				debug("missing value for mandatory key=%s" % key)
 				success = False
 
-		if success:
-			# check special conditions
-			if self.getValue(self.KEY_USE_LIVE_TV) and not self.getValue(self.KEY_SMB):
-				debug("live tv requested but missing smb")
-				success = False
+		# check special conditions
+		if self.getValue(self.KEY_USE_LIVE_TV) and not self.getSMB():
+			debug("live tv requested but missing smb")
+			success = False
 
 		debug("< ConfigSaveProgramme.checkValues() success=%s" % success)
 		return success
 
 	def getSMB(self):
-		return mytvGlobals.config.action(self.CONFIG_SECTION, self.KEY_SMB)
+		return mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH)
 
 	def getValue(self, key):
 		return mytvGlobals.config.action(self.CONFIG_SECTION, key)

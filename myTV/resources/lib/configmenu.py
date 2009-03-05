@@ -228,16 +228,15 @@ def configClock():
 	mytvGlobals.config.setSystem(MYTVConfig.KEY_SYSTEM_CLOCK, value)
 	return True
 
-
 ############################################################################################################
 def configSMB(reset=True):
     debug("> configSMB() reset=%s" % reset)
     success = False
-    from smbLib import ConfigSMB
-    cSMB = ConfigSMB(mytvGlobals.config, MYTVConfig.SECTION_SMB, __language__(546), \
-                          fnTitle=__language__(565), \
-                          fnDefaultValue=MYTVConfig.VALUE_SMB_FILE,\
-                          pathDefaultValue=MYTVConfig.VALUE_SMB_PATH)
+    isLibLoaded = sys.modules.has_key('smbLib')
+    if not isLibLoaded:
+        from smbLib import ConfigSMB
+
+    cSMB = ConfigSMB(__language__(976))
     while not success:
         if not reset:
             smbDetails = cSMB.checkAll(silent=True)
@@ -250,7 +249,8 @@ def configSMB(reset=True):
             cSMB.ask()
             reset = False	# allows changes to be checked
 
-    del sys.modules['smbLib']
+    if not isLibLoaded: # wasnt loaded at beginning so ok to remove
+        del sys.modules['smbLib']
     debug("< myTV.configSMB() success= %s" % success)
     return success
 
@@ -826,6 +826,8 @@ def configWOL():
 
     debug("< configWOL()")
 
+
+
 #################################################################################################################
 class ButtonColorPicker(xbmcgui.WindowDialog):
 	def __init__(self):
@@ -1070,3 +1072,4 @@ class ButtonColorPicker(xbmcgui.WindowDialog):
 			self.backgFile = None
 			self.textColor = None
 			self.close()
+

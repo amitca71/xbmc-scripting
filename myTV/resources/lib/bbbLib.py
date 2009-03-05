@@ -256,35 +256,38 @@ def removeDir(dir, title="", msg="", msg2="", force=False):
 def deleteFile(filename):
 	try:
 		os.remove(xbmc.translatePath(filename))
-		debug("bbbLib.file deleted: " + filename)
-	except: pass
+		debug("deleteFile() deleted: " + filename)
+	except:
+		print str( sys.exc_info()[ 1 ] )
 
 #################################################################################################################
 def readFile(filename):
 	try:
 		return file(xbmc.translatePath(filename)).read()
 	except:
+		print str( sys.exc_info()[ 1 ] )
 		return ""
 
 #################################################################################################################
 def fileExist(filename):
-	exist = False
 	try:
 		osFN = xbmc.translatePath(filename)
 		if os.path.isfile(osFN) and os.path.getsize(osFN) > 0:
-			exist = True
-	except: pass
-	return exist
+			return True
+	except:
+		print str( sys.exc_info()[ 1 ] )
+	return False
 
 #################################################################################################################
 def isFileNewer(oldFilename, newFilename):
-	new = True
+	new = False
 	try:
 		# returns secs since epoch
 		oldFileTime = os.path.getmtime(xbmc.translatePath(oldFilename))
 		newFileTime = os.path.getmtime(xbmc.translatePath(newFilename))
 		new = (newFileTime > oldFileTime)
-	except: pass
+	except:
+		print str( sys.exc_info()[ 1 ] )
 	return new
 
 ##############################################################################################
@@ -1149,9 +1152,15 @@ def extractURLName(data):
 	return link, name
 
 #################################################################################################################
-def searchRegEx(data, regex, flags=re.IGNORECASE):
+def searchRegEx(data, regex, flags=re.IGNORECASE, firstMatchOnly=True):
 	try:
-		value = re.search(regex, data, flags).group(1)
+		value = ""
+		match = re.search(regex, data, flags)
+		if match:
+			if firstMatchOnly:
+				value = match.group(1)
+			else:
+				value = match.groups()
 	except:
 		value = ""
 	return value

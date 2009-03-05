@@ -24,16 +24,14 @@
 # 11/08/08 Updated for myTV - added setup via GUI - required record format has changed. see above
 ############################################################################################################
 
+import os, smb
 from mytvLib import *
-import xbmcgui, re, time, os, smb
-from string import split
-from smbLib import ConfigSMB, smbConnect, smbFetchFile, parseSMBPath, isNewSMBFile
+from smbLib import ConfigSMB, smbConnect, smbFetchFile, isNewSMBFile
 import mytvGlobals
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
-SAMBA_FILENAME = '$CHID_$DATE.dat'		# DONT CHANGE THIS !
+SMB_FILENAME = '$CHID_$DATE.dat'		# DONT CHANGE THIS !
 
 class ListingData:
 	def __init__(self, cache):
@@ -42,8 +40,15 @@ class ListingData:
 		self.cache = cache
 		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
 		self.CHANNELS_FILENAME = os.path.join(cache, "Channels_"+ self.name + ".dat")
-		self.remote = None
+		self.connectionError = False
 		self.isConfigured = False
+
+		# smb vars
+		self.remote = None
+		self.remoteInfo = None
+		self.smbIP = None
+		self.smbPath = None
+		self.smbRemoteFile = None
 
 	def getName(self):
 		return self.name
@@ -73,7 +78,7 @@ class ListingData:
 	# fileDate = use to calc programme start time in secs since epoch.
 	# return Channel class or -1 if http fetch error, or None for other
 	def getChannel(self, filename, chID, chName, dayDelta, fileDate):
-		debug("ListingData.getChannel() dayDelta: %s chID=%s fileDate=%s" % (dayDelta,chID,fileDate))
+		debug("> ListingData.getChannel() dayDelta: %s chID=%s fileDate=%s" % (dayDelta,chID,fileDate))
 		progList = []
 
 		# create Channel from data file
@@ -81,31 +86,8 @@ class ListingData:
 			if self.getRemoteFile(os.path.basename(filename)):
 				progList = loadChannelFromFile(filename)
 
+		debug("< ListingData.getChannel()")
 		return progList
-
-	############################################################################################################
-	def config(self, reset=False):
-		debug("> ListingData.config() reset=%s" % reset)
-		CONFIG_SECTION = 'DATASOURCE_' + self.getName()
-		self.remote = None
-		self.remoteInfo = None
-		self.smbIP = None
-		self.smbPath = None
-		self.smbRemoteFile = None
-		self.connectionError = False
-
-		configSMB = ConfigSMB(mytvGlobals.config, CONFIG_SECTION, self.name, fnDefaultValue=SAMBA_FILENAME)
-		if reset:
-			configSMB.ask()
-
-		smbDetails = configSMB.checkAll(silent=True)
-		if smbDetails:
-			self.smbIP, self.smbPath, self.smbRemoteFile = smbDetails
-			self.isConfigured = True
-
-		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
-		return self.isConfigured
-		
 
 	############################################################################################################
 	# create a SMB connection and fetch remote file
@@ -114,19 +96,39 @@ class ListingData:
 		downloaded = False
 
 		if not self.connectionError:
-			if not self.remote:
+			if not self.remote or not self.remoteInfo:
 				self.remote, self.remoteInfo = smbConnect(self.smbIP, self.smbPath)
 
 			if self.remote and self.remoteInfo:
 				if not localFilename:
 					localFilename = os.path.join(self.cache, remoteFilename)
-
 				if fetchAlways or isNewSMBFile(self.remote, self.remoteInfo, localFilename, remoteFilename):
 					downloaded = smbFetchFile(self.remote, self.remoteInfo, localFilename, remoteFilename, silent=False)
-					if not downloaded:
+					if downloaded == None:
 						self.connectionError = True
 			else:
 				self.connectionError = True
 
 		debug("< ListingData.getRemoteFile() downloaded=%s connectionError=%s" % (downloaded, self.connectionError))
 		return downloaded
+
+	############################################################################################################
+	def config(self, reset=False):
+		debug("> ListingData.config() reset=%s" % reset)
+
+
+		title = "%s - %s" % (self.name, __language__(976))
+		configSMB = ConfigSMB(title, fnTitle=__language__(977), fnDefaultValue=SMB_FILENAME)
+		if reset:
+			configSMB.ask()
+
+		smbDetails = configSMB.checkAll(silent=True)
+		if smbDetails:
+			self.smbIP, self.smbPath, self.smbRemoteFile = smbDetails
+			self.isConfigured = True
+		else:
+			self.isConfigured = False
+		self.connectionError = False	# will allow a retry after a config change
+
+		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
+		return self.isConfigured

@@ -9,12 +9,10 @@
 # 07/01/09 - Fix. channels regex error
 ############################################################################################################
 
+import time, os, smb
 from mytvLib import *
-from smbLib import ConfigSMB, smbConnect, smbFetchFile, parseSMBPath, isNewSMBFile
+from smbLib import ConfigSMB, smbConnect, smbFetchFile, isNewSMBFile
 import mytvGlobals
-
-import xbmcgui, re, time, os, smb
-from string import split
 
 __language__ = sys.modules["__main__"].__language__
 
@@ -28,13 +26,18 @@ class ListingData:
 
 		self.cache = cache
 		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
-		self.channelListURL = ""
-		self.channelURL = ""
 		self.CHANNELS_FILENAME = os.path.join(cache,"Channels_"+ self.name + ".dat")
 		self.localSMBFile = os.path.join(cache, XMLTV_FILE)
 		self.isConfigured = False
 		self.checkedRemoteFileToday = False
+		self.connectionError = False
 
+		# smb vars
+		self.remote = None
+		self.remoteInfo = None
+		self.smbIP = None
+		self.smbPath = None
+		self.smbRemoteFile = None
 
 	def getName(self):
 		return self.name
@@ -44,26 +47,25 @@ class ListingData:
 	# return: list [chID, chName]
 	############################################################################################################
 	def getChannels(self):
-		debug("ListingData.getChannels()")
-		if not self.isConfigured:
-			return []
-
+		debug("> ListingData.getChannels()")
 		channelList = []
-		# fetch file if not exists
-		if not fileExist(self.CHANNELS_FILENAME):
-			# if no local XML file, fetch from SMB
-			if not fileExist(self.localSMBFile):
-				self.getRemoteFile()
+		if self.isConfigured:
+			# fetch file if not exists
+			if not fileExist(self.CHANNELS_FILENAME):
+				# if no local XML file, fetch from SMB
+				if not fileExist(self.localSMBFile):
+					self.getRemoteFile()
 
-			# extract data from file using regex - this is specific to this file format
-			data = readFile(self.localSMBFile)
-			if data:
-				matches = findAllRegEx(data, CHANNELS_REGEX)
-				channelList = writeChannelsList(self.CHANNELS_FILENAME, matches)
-		else:
-			# read in [channel id, channel name]
-			channelList = readChannelsList(self.CHANNELS_FILENAME)
+				# extract data from file using regex - this is specific to this file format
+				data = readFile(self.localSMBFile)
+				if data:
+					matches = findAllRegEx(data, CHANNELS_REGEX)
+					channelList = writeChannelsList(self.CHANNELS_FILENAME, matches)
+			else:
+				# read in [channel id, channel name]
+				channelList = readChannelsList(self.CHANNELS_FILENAME)
 
+		debug("< ListingData.getChannels()")
 		return channelList
 
 
@@ -77,17 +79,17 @@ class ListingData:
 	def getChannel(self, filename, chID, chName, dayDelta, fileDate):
 		debug("> ListingData.getChannel() dayDelta: %s chID=%s fileDate=%s" % (dayDelta,chID,fileDate))
 		progList = []
+		if self.isConfigured:
+			if not self.checkedRemoteFileToday:
+				self.getRemoteFile(False) # fetch only if newer
+				self.checkedRemoteFileToday = True
 
-		if not self.checkedRemoteFileToday:
-			self.getRemoteFile(False) # fetch only if newer
-			self.checkedRemoteFileToday = True
+			if fileExist(self.localSMBFile):
+				progList = self.createChannelFiles(chID, fileDate)
+			else:
+				debug("file missing " + self.localSMBFile)
 
-		if fileExist(self.localSMBFile):
-			progList = self.createChannelFiles(chID, fileDate)
-		else:
-			debug("file missing " + self.localSMBFile)
-
-		debug("< getChannel()")
+		debug("< ListingData.getChannel()")
 		return progList
 
 	############################################################################################################
@@ -98,16 +100,14 @@ class ListingData:
 		downloaded = False
 
 		if not self.connectionError:
-			if not self.remote:
+			if not self.remote or not self.remoteInfo:
 				self.remote, self.remoteInfo = smbConnect(self.smbIP, self.smbPath)
 
 			if self.remote and self.remoteInfo:
 				if fetchAlways or isNewSMBFile(self.remote, self.remoteInfo, self.localSMBFile, self.smbRemoteFile):
 					downloaded = smbFetchFile(self.remote, self.remoteInfo, self.localSMBFile, self.smbRemoteFile, silent=False)
-					if not downloaded:
+					if downloaded == None:
 						self.connectionError = True
-					else:
-						self.highestDate = 0	#reset
 			else:
 				self.connectionError = True
 
@@ -139,9 +139,9 @@ class ListingData:
 		progList = []
 		dialogProgress.update(0, __language__(312))
 		data = readFile(self.localSMBFile)
-		regex = CHANNEL_REGEX.replace('$DATE',searchDate).replace('$CHID',chID)
-		matches = findAllRegEx(data, regex)
-		if matches:
+		if data:
+			regex = CHANNEL_REGEX.replace('$DATE',searchDate).replace('$CHID',chID)
+			matches = findAllRegEx(data, regex)
 			for prog in matches:
 				startDateTime = prog[0]
 				title = decodeEntities(prog[1])
@@ -165,16 +165,9 @@ class ListingData:
 	def config(self, reset=False):
 		debug("> ListingData.config() reset=%s" % reset)
 		success = False
-		CONFIG_SECTION = 'DATASOURCE_' + self.getName()
-		self.remote = None
-		self.remoteInfo = None
-		self.smbIP = None
-		self.smbPath = None
-		self.smbRemoteFile = None
-		self.connectionError = False
-		self.highestDate = 0
 
-		configSMB = ConfigSMB(mytvGlobals.config, CONFIG_SECTION, self.name, fnDefaultValue=XMLTV_FILE)
+		title = "%s - %s" % (self.name, __language__(976))
+		configSMB = ConfigSMB(title, fnTitle=__language__(977), fnDefaultValue=XMLTV_FILE)
 		if reset:
 			configSMB.ask()
 
@@ -182,7 +175,9 @@ class ListingData:
 		if smbDetails:
 			self.smbIP, self.smbPath, self.smbRemoteFile = smbDetails
 			self.isConfigured = True
+		else:
+			self.isConfigured = False
+		self.connectionError = False	# will allow a retry after a config change
 
-		debug("< ListingData.config() self.isConfigured=%s" % self.isConfigured)
+		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
 		return self.isConfigured
-

@@ -29,7 +29,7 @@ import gc
 __scriptname__ = "myTV"
 __version__ = '1.18.2'
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
-__date__ = '02-03-2009'
+__date__ = '03-03-2009'
 xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -46,11 +46,12 @@ try:
     # 'resources' now auto appended onto path
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
-	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.")
+	e = str( sys.exc_info()[ 1 ] )
+	print e
+	xbmcgui.Dialog().ok("XBMC Builtin Error", "Update XBMC to run this script", e)
 
 import mytvGlobals
-from bbbLib import *								# requires __language__ to be defined
+from bbbLib import *
 from mytvLib import *
 from bbbGUILib import *
 

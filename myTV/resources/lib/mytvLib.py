@@ -649,7 +649,7 @@ class ManageTimers:
 			header = "%s %s" % (__language__(511),__language__(586))
 			while not timer:
 				selectDialog = DialogSelect()
-				selectDialog.setup(header, width=670, rows=len(menu),font=FONT10, panel=DIALOG_PANEL)
+				selectDialog.setup(header, width=670, rows=len(menu),font=FONT10, panel=mytvGlobals.DIALOG_PANEL)
 				selectedPos,action = selectDialog.ask(menu)
 				if selectedPos <= 0:
 					break
@@ -756,7 +756,7 @@ def selectDataSource():
 
 	# popup dialog to select choice
 	selectDialog = DialogSelect()
-	selectDialog.setup(__language__(531), rows=len(menuList), imageWidth=30, imageHeight=30, width=300, panel=DIALOG_PANEL)
+	selectDialog.setup(__language__(531), rows=len(menuList), imageWidth=30, imageHeight=30, width=300, panel=mytvGlobals.DIALOG_PANEL)
 	selectedPos, action = selectDialog.ask(menuList, icons=flags)
 	if selectedPos > 0:
 		modFilename = menuList[selectedPos]
@@ -781,12 +781,11 @@ def configDataSource(forceReset=True):
 	debug("> configDataSource() forceReset=%s" % forceReset)
 	success = False
 
-#	global dataSource
 	while not success:
 		try:
 			success = mytvGlobals.dataSource.config(forceReset)	# force reset
 			if not success:
-				if not xbmcgui.Dialog().yesno(__language__(532), __language__(216)):	# setup now?
+				if not xbmcgui.Dialog().yesno(__language__(532), mytvGlobals.dataSource.getName(), __language__(216)):	# setup now?
 					break
 				else:
 					forceReset = True
@@ -840,7 +839,7 @@ def selectSaveProgramme():
 
 	# popup dialog to select choice
 	selectDialog = DialogSelect()
-	selectDialog.setup(__language__(533), rows=len(menuList), width=270, panel=DIALOG_PANEL)
+	selectDialog.setup(__language__(533), rows=len(menuList), width=270, panel=mytvGlobals.DIALOG_PANEL)
 	selectedPos, action = selectDialog.ask(menuList)
 	if selectedPos > 0:
 		if selectedPos == 1:
@@ -982,7 +981,7 @@ class MYTVConfig:
 	KEY_SMB_IP = "smb_pc_ip"
 	KEY_SMB_FILE = "smb_filename"
 
-	VALUE_SMB_FILE = 'mytv_rec_$Y$M$D_$H$I_$l.bat'
+#	VALUE_SMB_FILE = 'mytv_rec_$Y$M$D_$H$I_$l.bat'
 	VALUE_SMB_PATH = 'smb://user:pass@PCNAME/share/folder/'
 
 	VALUE_SAVE_PROG_NOTV = __language__(818)
@@ -1112,14 +1111,14 @@ class MYTVConfig:
 		self.configHelper.initSection(MYTVConfig.SECTION_DISPLAY, items)
 		debug("< mytvConfig.initSectionDisplay()")
 
-	def initSectionSMB(self):
-		debug("mytvConfig.initSectionSMB()")
-		items = {}
-		items[MYTVConfig.KEY_SMB_PATH] = MYTVConfig.VALUE_SMB_PATH
-		items[MYTVConfig.KEY_SMB_IP] = ""
-		items[MYTVConfig.KEY_SMB_FILE] = MYTVConfig.VALUE_SMB_FILE
-		# inits any missing values
-		self.configHelper.initSection(MYTVConfig.SECTION_SMB, items)
+#	def initSectionSMB(self):
+#		debug("mytvConfig.initSectionSMB()")
+#		items = {}
+#		items[MYTVConfig.KEY_SMB_PATH] = MYTVConfig.VALUE_SMB_PATH
+#		items[MYTVConfig.KEY_SMB_IP] = ""
+#		items[MYTVConfig.KEY_SMB_FILE] = MYTVConfig.VALUE_SMB_FILE
+#		# inits any missing values
+#		self.configHelper.initSection(MYTVConfig.SECTION_SMB, items)
 
 	###############################################################################################################
 	# if it exists, overright section settings with key/values from skin config file
@@ -1256,19 +1255,17 @@ class ConfigHelper:
 	def boolToYesNo(self, value):
 		if isinstance(value, bool):
 			if value:
-				result = __language__(350)	# YES
+				return __language__(350)	# YES
 			else:
-				result = __language__(351)	# NO
+				return __language__(351)	# NO
 		else:
-			result = value
-		return result
+			return value
 
 	def yesNoToBool(self, value):
 		if value and value.lower() in ('yes', __language__(350)):	# YES
-			result = True
+			return True
 		else:
-			result = False
-		return result
+			return False
 
 	# Create sections and set ConfigParser options from options supplied, 
 	# only overwrite if no value exists, then saves to file.
@@ -1384,7 +1381,7 @@ def getDayDelta(newDOW):
 	return dayDelta
 
 ###################################################################################################################
-# configOptionsMenu
+# configOptionsMenu - menu to setup options
 # configData = [configkey, label, defaultValue, kbType]
 ###################################################################################################################
 def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
@@ -1395,8 +1392,6 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 	REC_DEFAULT_VALUE = 2
 	REC_KB_TYPE = 3
 
-	global config
-
 	def __enterValue(currValue, defaultValue, key, kbType, title):
 		if currValue in (None,""):
 			currValue = defaultValue
@@ -1404,20 +1399,6 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 		if value != None:	# cancelled
 			mytvGlobals.config.action(section, key, value, mode=ConfigHelper.MODE_WRITE)
 		return value
-
-	def __enterSMB(currValue, defaultValue, key, title):
-		# enter SMB path and discover IP from PCNAME, save both
-		changed = False
-		if not currValue:
-			currValue = defaultValue
-		smbPath, ip = enterSMB(currValue, title)
-		if smbPath:
-			mytvGlobals.config.action(section, key, smbPath, mode=ConfigHelper.MODE_WRITE)
-			if ip:
-				# but of a fudge as it expect sections ip key to be called 'ip' !
-				mytvGlobals.config.action(section, "ip", ip, mode=ConfigHelper.MODE_WRITE)
-				changed = True
-		return changed
 
 	def __enterSubMenu(currValue, options, key, title):
 		# determine menu width
@@ -1433,7 +1414,7 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 		except:
 			selectedPos = 0
 		dlg = DialogSelect()
-		dlg.setup(title, rows=len(options), panel=DIALOG_PANEL, width=width)
+		dlg.setup(title, rows=len(options), panel=mytvGlobals.DIALOG_PANEL, width=width)
 		selectedPos, action = dlg.ask(options, selectedPos)
 		if selectedPos >= 0:
 			value = options[selectedPos]
@@ -1449,7 +1430,10 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 			label = rec[REC_LABEL]
 			label2 = ''
 			if configKey:
-				label2 = mytvGlobals.config.action(section, configKey)
+				if configKey == MYTVConfig.KEY_SMB_PATH:
+					label2 = mytvGlobals.config.getSMB(MYTVConfig.KEY_SMB_PATH)
+				else:
+					label2 = mytvGlobals.config.action(section, configKey)
 				if label2 == None:
 					label2 = ''
 				else:
@@ -1463,7 +1447,7 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 	while True:
 		menu = __makeMenu()
 		selectDialog = DialogSelect()
-		selectDialog.setup(menuTitle, width=menuWidth, rows=len(menu), panel=DIALOG_PANEL)
+		selectDialog.setup(menuTitle, width=menuWidth, rows=len(menu), panel=mytvGlobals.DIALOG_PANEL)
 		selectedPos, action = selectDialog.ask(menu, selectedPos)
 		if selectedPos <= 0:
 			break # exit selected
@@ -1473,7 +1457,8 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 
 		# enter new value and save to config
 		if kbType == KBTYPE_SMB:
-			if __enterSMB(currValue, defaultValue, key, label):
+			smbPath, ip = enterSMB(currValue, label)
+			if smbPath and smbPath != currValue:
 				changed = True
 		elif kbType == KBTYPE_YESNO:
 			if configYesNo(menuTitle, label, key, section):
@@ -2536,7 +2521,7 @@ class myTVFavShows(xbmcgui.Window):
 					menu.append(xbmcgui.ListItem(showName, chName))
 
 				selectDialog = DialogSelect()
-				selectDialog.setup(heading, rows=len(menu), width=600, panel=DIALOG_PANEL)
+				selectDialog.setup(heading, rows=len(menu), width=600, panel=mytvGlobals.DIALOG_PANEL)
 				selectedPos, acton = selectDialog.ask(menu)
 				if selectedPos <= 0:
 					break		# stop

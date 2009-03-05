@@ -39,6 +39,7 @@
     <string id="135">Not yet awake, Retry WOL ?</string>
     <string id="136">WOL Requires a SMB Path denied[CR]inorder to check its awake.</string>
     <string id="137">SaveProgramme Error!</string>
+    <string id="138">No Files Found!</string>
 
     <!-- Status messages -->
     <string id="200">Delete Listings?</string>
@@ -58,6 +59,7 @@
     <string id="214">No supported video files found.</string>
     <string id="215">Theme selected: %s</string>
     <string id="216">Setup Incomplete, Setup now?</string>
+    <string id="217">Deleteing Files ...</string>
 
     <!-- script common messages -->
     <string id="300">Please wait ...</string>
@@ -279,10 +281,10 @@
     <string id="958">SMB Send Error!</string>
     <string id="959">SMB Setup Incomplete!</string>
     <string id="960">SMB Connection ...</string>
-    <string id="961">SMB connection success</string>
-    <string id="962">SMB Fetching file ...</string>
-    <string id="963">SMB Sending file ...</string>
-    <string id="964">SMB Please wait ...</string>
+    <string id="961">SMB Connection success!</string>
+    <string id="962">SMB Fetching File ...</string>
+    <string id="963">SMB Sending File ...</string>
+    <string id="964">SMB Please Wait ...</string>
     <string id="965">Remote filename is missing!</string>
     <string id="966">No remote connection!</string>
     <string id="967">Checking for updated file ...</string>
@@ -295,6 +297,7 @@
     <string id="974">Invalid SMB path!</string>   
     <string id="975">Invalid IP Format!</string>
     <string id="976">Setup SMB</string>
+    <string id="977">Remote File:</string>
 
     <!-- imdbWin lib -->
     <string id="980">IMDB Lookup</string>
