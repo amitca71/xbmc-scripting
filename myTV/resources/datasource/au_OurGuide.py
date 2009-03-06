@@ -14,7 +14,6 @@ import xbmcgui, re, time
 from os import path
 from base64 import decodestring
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 STATES = ('NSW','NT','QLD','SA','TAS','VIC','WA')
@@ -155,7 +154,7 @@ class ListingData:
 
 		if reset or not self.state:
 			selectDialog = DialogSelect()
-			selectDialog.setup("Select STATE:", width=350, rows=len(STATES), panel=DIALOG_PANEL)
+			selectDialog.setup("Select STATE:", width=350, rows=len(STATES), panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos, action = selectDialog.ask(STATES)
 			if selectedPos >= 0:
 				self.state = STATES[selectedPos]
@@ -164,7 +163,7 @@ class ListingData:
 		if not self.region and self.state:
 			regionList = REGIONS[self.state]
 			selectDialog = DialogSelect()
-			selectDialog.setup("Select REGION:", width=350, rows=len(regionList), panel=DIALOG_PANEL)
+			selectDialog.setup("Select REGION:", width=350, rows=len(regionList), panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos, action = selectDialog.ask(regionList)
 			if selectedPos >= 0:
 				self.region = regionList[selectedPos]

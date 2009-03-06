@@ -2053,9 +2053,10 @@ def saveProgrammeSMB(channelInfo, programme, data='', showSuccess=False):
 	ip = mytvGlobals.config.getSMB(MYTVConfig.KEY_SMB_IP)
 	smbPath = mytvGlobals.config.getSMB(MYTVConfig.KEY_SMB_PATH)
 	if not configFilename or not ip or not smbPath:
-		from configmenu import configsmb
-		doSave = configSMB(False)
-		del sys.modules['configmenu']
+		from smbLib import ConfigSMB
+		cSMB = ConfigSMB()
+		cSMB.ask()
+		doSave = cSMB.checkAll()
 	else:
 		doSave = True
 

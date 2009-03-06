@@ -6,10 +6,10 @@ import xbmc, xbmcgui
 import sys, os.path
 from bbbLib import *
 from bbbGUILib import DialogSelect
+import mytvGlobals
 
 __language__ = sys.modules[ "__main__" ].__language__
 DIR_GFX = sys.modules[ "__main__" ].DIR_GFX     			# should be in default.py
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 
 class LiveSportOnTV:
 
@@ -166,7 +166,7 @@ class LiveSportOnTV:
 				menu.insert(0, xbmcgui.ListItem(__language__(500), ''))	# exit
 				menuIcons.insert(0,'')									# exit icon
 				selectDialog = DialogSelect()
-				selectDialog.setup(listTitle, imageWidth=25,width=720, rows=len(menu), itemHeight=24, font=FONT10, panel=DIALOG_PANEL)
+				selectDialog.setup(listTitle, imageWidth=25,width=720, rows=len(menu), itemHeight=24, font=FONT10, panel=mytvGlobals.DIALOG_PANEL)
 				selectedPos,action = selectDialog.ask(menu, icons=menuIcons)
 		debug("< LiveSportOnTV.displaySport")
 
@@ -189,7 +189,7 @@ class LiveSportOnTV:
 		while menu:
 			selectDialog = DialogSelect()
 			selectDialog.setup(imageWidth=25, width=300, rows=len(menu), itemHeight=25,
-							   banner=os.path.join(DIR_GFX, 'livesportontv_logo.gif'), panel=DIALOG_PANEL)
+							   banner=os.path.join(DIR_GFX, 'livesportontv_logo.gif'), panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos,action = selectDialog.ask(menu, selectedPos,icons=menuIcons)
 			if selectedPos <= 0:				# exit selected
 				break

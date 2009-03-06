@@ -14,7 +14,6 @@ from bbbGUILib import *
 import mytvGlobals
 from string import replace
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 ################################################################################################
@@ -255,7 +254,7 @@ class ConfigSaveProgramme:
 		for data in self.configData:
 			key = data[0]
 			value = self.getValue(key)
-			if not value:
+			if value in (None,""):
 				debug("missing value for mandatory key=%s" % key)
 				success = False
 

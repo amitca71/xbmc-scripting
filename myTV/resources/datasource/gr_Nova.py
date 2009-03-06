@@ -13,7 +13,6 @@ import mytvGlobals
 import xbmcgui, re, time
 from os import path
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules[ "__main__" ].__language__
 
 # chid, chname
@@ -165,7 +164,7 @@ class ListingData:
 
 		if reset or not self.lang:
 			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(616), width=350, rows=len(LANGS), panel=DIALOG_PANEL)
+			selectDialog.setup(__language__(616), width=350, rows=len(LANGS), panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos, action = selectDialog.ask(LANGS)
 			if selectedPos >= 0:
 				self.lang = LANGS[selectedPos]

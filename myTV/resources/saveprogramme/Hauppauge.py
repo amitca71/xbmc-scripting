@@ -30,7 +30,6 @@ from bbbGUILib import *
 import mytvGlobals
 from string import replace
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 # NOVA tv card
@@ -264,7 +263,7 @@ class ConfigSaveProgramme:
 		origCardType = self.getValue(self.KEY_CARD_TYPE)
 		options = self.CARD_TYPES.keys()
 		dlg = DialogSelect()
-		dlg.setup(__language__(831), rows=len(options), panel=DIALOG_PANEL, width=280)
+		dlg.setup(__language__(831), rows=len(options), panel=mytvGlobals.DIALOG_PANEL, width=280)
 		selectedPos, action = dlg.ask(options)
 		if selectedPos < 0:
 			return
@@ -280,7 +279,7 @@ class ConfigSaveProgramme:
 
 		configData = [
 			[self.KEY_PATH_EXE,__language__(832), exePath, KBTYPE_ALPHA],
-			[self.KEY_PATH_REC, __language__(833), "G:\\My Documents\\myTV\\", KBTYPE_ALPHA],
+			[self.KEY_PATH_REC, __language__(833), os.path.join('G:','My Documents','myTV'), KBTYPE_ALPHA],
 			[self.KEY_USER, __language__(805), "SYSTEM", KBTYPE_ALPHA],
 			[self.KEY_PASS, __language__(806), "", KBTYPE_ALPHA],
 			[self.KEY_BASE_CMD, __language__(837), self.BASE_CMD, KBTYPE_ALPHA],
@@ -320,9 +319,6 @@ class ConfigSaveProgramme:
 
 		debug("< ConfigSaveProgramme.checkValues() success=%s" % success)
 		return success
-
-	def getCardType(self):
-		return self.getValue(self.KEY_CARD_TYPE)
 
 	def getSchTaskCMD(self):
 		debug("> getSchTaskCMD()")

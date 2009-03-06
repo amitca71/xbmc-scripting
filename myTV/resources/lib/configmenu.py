@@ -8,6 +8,7 @@ from bbbLib import *
 from bbbGUILib import DialogSelect
 from mytvLib import *
 from bbbSkinGUILib import TextBoxDialogXML
+from smbLib import ConfigSMB
 import mytvGlobals
 
 __language__ = sys.modules[ "__main__" ].__language__
@@ -53,7 +54,7 @@ class ConfigMenu:
 			[__language__(543), ConfigGenreColours().ask, mytvGlobals.INIT_PART],
 			[__language__(545), configEPGRows, mytvGlobals.INIT_DISPLAY],
 			[__language__(557), configShowDSSP, mytvGlobals.INIT_DISPLAY, MYTVConfig.KEY_SYSTEM_SHOW_DSSP],
-			[__language__(546), configSMB, mytvGlobals.INIT_NONE],
+			[__language__(546), ConfigSMB().ask, mytvGlobals.INIT_NONE],
 			[__language__(547), configEditTemplate, mytvGlobals.INIT_NONE, MYTVConfig.KEY_SYSTEM_SAVE_TEMPLATE],
 			[__language__(548), ProgrammeSaveTemplate().viewTemplates,mytvGlobals.INIT_NONE],
 			[__language__(549), configLSOTV, mytvGlobals.INIT_NONE, MYTVConfig.KEY_SYSTEM_USE_LSOTV],
@@ -232,9 +233,7 @@ def configClock():
 def configSMB(reset=True):
     debug("> configSMB() reset=%s" % reset)
     success = False
-    isLibLoaded = sys.modules.has_key('smbLib')
-    if not isLibLoaded:
-        from smbLib import ConfigSMB
+    from smbLib import ConfigSMB
 
     cSMB = ConfigSMB(__language__(976))
     while not success:
@@ -249,8 +248,6 @@ def configSMB(reset=True):
             cSMB.ask()
             reset = False	# allows changes to be checked
 
-    if not isLibLoaded: # wasnt loaded at beginning so ok to remove
-        del sys.modules['smbLib']
     debug("< myTV.configSMB() success= %s" % success)
     return success
 

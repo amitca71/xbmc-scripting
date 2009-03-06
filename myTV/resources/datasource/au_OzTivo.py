@@ -287,7 +287,7 @@ class ListingData:
 			except:
 				selectedPos = 0
 			selectDialog = DialogSelect()
-			selectDialog.setup("Region:", width=300, rows=len(REGIONS), panel=DIALOG_PANEL)
+			selectDialog.setup("Region:", width=300, rows=len(REGIONS), panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos, action = selectDialog.ask(REGIONS, selectedPos)
 			if selectedPos >= 0:
 				self.region = REGIONS[selectedPos]

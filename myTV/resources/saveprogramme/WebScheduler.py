@@ -28,11 +28,13 @@ __language__ = sys.modules["__main__"].__language__
 
 ################################################################################################
 class SaveProgramme:
+
+	NAME = 	os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
+	
 	def __init__(self, cachePath=""):
 		debug("SaveProgramme().__init__")
 
 		self.cache = cachePath
-		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
 		self.channelList = []
 		self.EPG_FILENAME = cachePath + 'WebScheduler_schedules_$DATE.xml'
 		self.BASE_URL = '/servlet/EpgDataRes'
@@ -53,7 +55,7 @@ class SaveProgramme:
 		self.configSaveProgramme = ConfigSaveProgramme()
 
 	def getName(self):
-		return self.name
+		return self.NAME
 
 	def isConfigured(self):
 		return self.configSaveProgramme.checkValues()
@@ -69,12 +71,12 @@ class SaveProgramme:
 				self.configSaveProgramme.reset()
 			success = self.isConfigured()
 			if success:
-				self.IP = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_IP)
+				self.SMB = self.configSaveProgramme.getValue(mytvGlobals.config.KEY_SMB_PATH)
+				self.IP = self.configSaveProgramme.getValue(mytvGlobals.config.KEY_SMB_IP)
 				self.PORT = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_PORT)
 				self.SERVER = "http://%s:%s" % (self.IP, self.PORT)
 				self.USE_LIVE_TV = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_USE_LIVE_TV)
 				self.LIVE_TITLE_FLAG = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_LIVE_TITLE_FLAG)
-				self.SMB = self.configSaveProgramme.getSMB()
 		except:
 			handleException()
 
@@ -93,7 +95,7 @@ class SaveProgramme:
 		title = programme[TVData.PROG_TITLE]
 		schedLink = programme[TVData.PROG_SCHEDLINK]
 		if not schedLink:
-			messageOK(self.name, "Programme Add Link missing!", title, chName)
+			messageOK(self.NAME, "Programme Add Link missing!", title, chName)
 			debug("< SaveProgramme.run() failed")
 			return False
 
@@ -135,12 +137,12 @@ class SaveProgramme:
 		if fetchCookieURL(url, encodeURL=False):
 			success = True
 		else:
-			messageOK(self.name, __language__(809))
+			messageOK(self.NAME, __language__(809))
 			schedID = ''
 
 		# play prog
 		if success and playProg:
-			if xbmcgui.Dialog().yesno(self.name, __language__(807)):
+			if xbmcgui.Dialog().yesno(self.NAME, __language__(807)):
 				debug("do playProg")
 				schedID,status = self.getXMLSchedIDByTitle(title)			# using orig title name
 #				schedID = self.getLogSchedID(logTitle)						# using url parsed title name
@@ -192,7 +194,7 @@ class SaveProgramme:
 					xbmc.executebuiltin('XBMC.ActivateWindow(2005)')	# WINDOW_FULLSCREEN_VIDEO, 2005
 					success = True
 			else:
-				messageOK(self.name, __language__(811), filename)
+				messageOK(self.NAME, __language__(811), filename)
 		debug("< playFile() success=%s" % success)
 		return success
 
@@ -286,7 +288,7 @@ class SaveProgramme:
 #					print "bad schedule unpack", schedule
 #
 #		else:
-#			messageOK(self.name, 'Schedule ID not found!', findTitle)
+#			messageOK(self.NAME, 'Schedule ID not found!', findTitle)
 #
 #		dialogProgress.close()
 #		debug("< getLogSchedID() schedID=%s" % schedID)
@@ -317,7 +319,7 @@ class SaveProgramme:
 						dialogProgress.update(int((retryCount*100)/MAX_RETRYS), msg)
 
 			if not filename:
-				messageOK(self.name,'Playback file not found!', filename)
+				messageOK(self.NAME,'Playback file not found!', filename)
 
 		debug("< getPlaybackFilename() filename=%s" % filename)
 		return filename.strip()
@@ -428,7 +430,7 @@ class SaveProgramme:
 		debug("> getSchedulesHTML() preRecSecs=%s postRecSecs=%s" % (preRecSecs, postRecSecs))
 
 		timersList = []
-		dialogProgress.create(self.name, __language__(824))
+		dialogProgress.create(self.NAME, __language__(824))
 		doc = fetchCookieURL(self.SERVER + self.SCHEDULE_HTML_URL)
 		if doc:
 			debug("process schedules")
@@ -508,7 +510,7 @@ class SaveProgramme:
 #		debug("> SaveProgramme().getTimersWithPadding()")
 #		timersList = None
 #
-#		dialogProgress.create(self.name, "")
+#		dialogProgress.create(self.NAME, "")
 #		if self.preRecSecs == None or self.postRecSecs == None:
 #			# fetch PRE & POST recording buffer mins
 #			dialogProgress.update(0, "Finding Timer Padding Mins ...")
@@ -527,7 +529,7 @@ class SaveProgramme:
 #					except: pass
 #
 #				if self.preRecSecs == None or self.postRecSecs == None:
-#					messageOK(self.name,"Could not get Timer Padding Mins.","Unable to calculate true schedule times.")
+#					messageOK(self.NAME,"Could not get Timer Padding Mins.","Unable to calculate true schedule times.")
 #
 #		if self.preRecSecs != None and self.postRecSecs != None:
 #			timersList = self.getSchedulesHTML(self.preRecSecs, self.postRecSecs)
@@ -544,29 +546,29 @@ class SaveProgramme:
 		debug("> SaveProgramme().deleteTimer()")
 		success = False
 
-		msgTitle = "%s: %s" % (__language__(511), self.name)
+		msgTitle = "%s: %s" % (__language__(511), self.NAME)
 		# check its status
 		progName = timer[ManageTimers.REC_PROGNAME]
 #		schedID,status = self.getXMLSchedIDByTitle(progName)					# using orig title name
 		delURL = timer[ManageTimers.REC_DEL_URL]
 		schedID = self.parseURLSchedID(delURL)									# find using id from delURL
 		if not schedID:
-			messageOK(self.name, "Required SchedID not found!", progName, delURL)
+			messageOK(self.NAME, "Required SchedID not found!", progName, delURL)
 			debug("< SaveProgramme().deleteTimer()")
 			return False
 
 		# DO STOP IF RUNNING, LOOP UNTIL STOPPED
 		# loop while running, to resend STOP
 		canDelete = True
-		dialogProgress.create(self.name)
+		dialogProgress.create(self.NAME)
 		while self.getSchedulesXMLByID(schedID):
-			if xbmcgui.Dialog().yesno(self.name, __language__(822)):				# stop recording ?
+			if xbmcgui.Dialog().yesno(self.NAME, __language__(822)):				# stop recording ?
 				self.sendAction(self.ACTION_STOP, schedID, waitsecs=2)
 			else:
 				canDelete = False
 
 		# DELETE TIMER ON SERVER
-#		if canDelete and xbmcgui.Dialog().yesno(self.name, __language__(823)):		# delete timer ?
+#		if canDelete and xbmcgui.Dialog().yesno(self.NAME, __language__(823)):		# delete timer ?
 		if canDelete:		# delete timer ?
 			self.sendAction(self.ACTION_DELETE, schedID, waitsecs=2)
 			success = True
@@ -649,48 +651,48 @@ class ConfigSaveProgramme:
 		self.CONFIG_SECTION = 'SAVEPROGRAMME_WEBSCHEDULER'
 
 		# CONFIG KEYS
-		self.KEY_IP = 'ip'
 		self.KEY_PORT = 'port'
 		self.KEY_USE_LIVE_TV = 'use_live_tv'
 		self.KEY_LIVE_TITLE_FLAG = 'live_title_flag'
 
 		self.configData = [
-			[self.KEY_IP,__language__(812),'192.168.1.100',KBTYPE_IP],
+			[mytvGlobals.config.KEY_SMB_PATH, __language__(817), '', KBTYPE_SMB],
+			[mytvGlobals.config.KEY_SMB_IP,__language__(812),'192.168.1.100',KBTYPE_IP],
 			[self.KEY_PORT,__language__(813),'8429',KBTYPE_NUMERIC],
 			[self.KEY_USE_LIVE_TV,__language__(814),False, KBTYPE_YESNO],
-			[self.KEY_LIVE_TITLE_FLAG, __language__(816),'-XBMC-',KBTYPE_ALPHA],
-			[mytvGlobals.config.KEY_SMB_PATH, __language__(817), '', KBTYPE_SMB]
+			[self.KEY_LIVE_TITLE_FLAG, __language__(816),'-XBMC-',KBTYPE_ALPHA]
 			]
 
 		debug("< ConfigSaveProgramme().init()")
 
 	def reset(self):
 		debug("ConfigSaveProgramme.reset()")
-		configOptionsMenu(self.CONFIG_SECTION, self.configData, __language__(534))
+		title = "%s - %s" % (SaveProgramme.NAME, __language__(534))
+		configOptionsMenu(self.CONFIG_SECTION, self.configData,  title)
 
 	# check we have all required config options
 	def checkValues(self):
 		debug("> ConfigSaveProgramme.checkValues()")
-
 		success = True
+
 		# check mandatory keys have values
-		mandatoryKeys = (self.KEY_IP,self.KEY_PORT,self.KEY_USE_LIVE_TV,self.KEY_LIVE_TITLE_FLAG)
+		mandatoryKeys = (mytvGlobals.config.KEY_SMB_IP,self.KEY_PORT,self.KEY_USE_LIVE_TV,self.KEY_LIVE_TITLE_FLAG)
 		for key in mandatoryKeys:
 			value = self.getValue(key)
-			if not value:
+			if value in (None, ''):
 				debug("missing value for mandatory key=%s" % key)
 				success = False
 
 		# check special conditions
-		if self.getValue(self.KEY_USE_LIVE_TV) and not self.getSMB():
+		if self.getValue(self.KEY_USE_LIVE_TV) and not self.getValue(mytvGlobals.config.KEY_SMB_PATH):
 			debug("live tv requested but missing smb")
 			success = False
 
 		debug("< ConfigSaveProgramme.checkValues() success=%s" % success)
 		return success
 
-	def getSMB(self):
-		return mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH)
-
 	def getValue(self, key):
-		return mytvGlobals.config.action(self.CONFIG_SECTION, key)
+		if key in(mytvGlobals.config.KEY_SMB_PATH, mytvGlobals.config.KEY_SMB_IP, mytvGlobals.config.KEY_SMB_FILE):
+			return mytvGlobals.config.getSMB(key)
+		else:
+			return mytvGlobals.config.action(self.CONFIG_SECTION, key)

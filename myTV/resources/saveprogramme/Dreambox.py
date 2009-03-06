@@ -26,7 +26,6 @@ from bbbGUILib import *
 import mytvGlobals
 from string import zfill, find
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 # CHANNELS - Translates Channel ID into Dreambox REF ID
@@ -232,12 +231,12 @@ class SaveProgramme:
 				self.configSaveProgramme.reset()
 			success = self.isConfigured()
 			if success:
-				serverIP = self.configSaveProgramme.getServerIP()
-				serverUser = self.configSaveProgramme.getServerUser()
-				serverPwd = self.configSaveProgramme.getServerPwd()
-				self.preRecMins = self.configSaveProgramme.getPreRecMins()
-				self.postRecMins = self.configSaveProgramme.getPostRecMins()
-				self.isEnigma = self.configSaveProgramme.getModel()
+				serverIP = self.configSaveProgramme.getValue(mytvGlobals.config.KEY_SMB_IP)
+				serverUser = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_USER)
+				serverPwd = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_PASS)
+				self.preRecMins = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_PRE_REC)
+				self.postRecMins = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_POST_REC)
+				self.isEnigma = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_IS_ENIGMA)
 
 				# URLs
 				if serverUser and serverPwd:
@@ -512,7 +511,6 @@ class ConfigSaveProgramme:
 		self.CONFIG_SECTION = 'SAVEPROGRAMME_DREAMBOX'
 
 		# CONFIG KEYS
-		self.KEY_IP = 'ip'
 		self.KEY_USER = 'user'
 		self.KEY_PASS = 'pwd'
 		self.KEY_PRE_REC = 'pre_rec'
@@ -521,7 +519,7 @@ class ConfigSaveProgramme:
 
 		# Uncomment the ONE that works for your web server interface
 		self.configData = [
-			[self.KEY_IP,__language__(812),'192.168.1.3',KBTYPE_IP],
+			[mytvGlobals.config.KEY_SMB_IP,__language__(812),'192.168.1.100',KBTYPE_IP],
 			[self.KEY_USER,__language__(805),'root',KBTYPE_ALPHA],
 			[self.KEY_PASS,__language__(806),'dreambox',KBTYPE_ALPHA],
 			[self.KEY_PRE_REC,__language__(835),'1',KBTYPE_NUMERIC],
@@ -553,18 +551,8 @@ class ConfigSaveProgramme:
 		debug("< ConfigSaveProgramme.checkValues() success=%s" % success)
 		return success
 
-	def getServerIP(self):
-		return self.getValue(self.KEY_IP)
-	def getServerUser(self):
-		return self.getValue(self.KEY_USER)
-	def getServerPwd(self):
-		return self.getValue(self.KEY_PASS)
-	def getPreRecMins(self):
-		return int(self.getValue(self.KEY_PRE_REC))
-	def getPostRecMins(self):
-		return int(self.getValue(self.KEY_POST_REC))
-	def getModel(self):
-		return self.getValue(self.KEY_IS_ENIGMA)
-
 	def getValue(self, key):
-		return mytvGlobals.config.action(self.CONFIG_SECTION, key)
+		if key in(mytvGlobals.config.KEY_SMB_PATH, mytvGlobals.config.KEY_SMB_IP, mytvGlobals.config.KEY_SMB_FILE):
+			return mytvGlobals.config.getSMB(key)
+		else:
+			return mytvGlobals.config.action(self.CONFIG_SECTION, key)

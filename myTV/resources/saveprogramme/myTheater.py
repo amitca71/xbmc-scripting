@@ -20,7 +20,6 @@ from mytvLib import *
 import mytvGlobals
 from string import replace
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 
@@ -346,9 +345,9 @@ class SaveProgramme:
 				success = self.configSaveProgramme.reset()
 			success = self.isConfigured()
 			if success:
-				pathEXE = self.configSaveProgramme.getPathEXE()
-				self.preRecMins = self.configSaveProgramme.getPreRecMins()
-				self.postRecMins = self.configSaveProgramme.getPostRecMins()
+				pathEXE = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_PATH_EXE)
+				self.preRecMins = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_PRE_REC)
+				self.postRecMins = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_POST_REC)
 
 				# EG "C:\Program Files\MyTheatre\MTStart.exe" /RECORD /DUR 123 /CHID 3316 /EVENT "Days and Passions"
 				# This is the windows XP cmd line to create a Schedule Task
@@ -445,7 +444,7 @@ class ConfigSaveProgramme:
 		self.KEY_POST_REC = 'post_rec'
 
 		self.configData = [
-			[self.KEY_PATH_EXE,__language__(832),'C:\\Program Files\\MyTheatre\\MTStart.exe',KBTYPE_ALPHA],
+			[self.KEY_PATH_EXE,__language__(832), os.path.join( 'C:','Program Files','MyTheatre','MTStart.exe' ),KBTYPE_ALPHA],
 			[self.KEY_PRE_REC,__language__(835),'2',KBTYPE_NUMERIC],
 			[self.KEY_POST_REC,__language__(836),'2',KBTYPE_NUMERIC]
 			]
@@ -471,13 +470,6 @@ class ConfigSaveProgramme:
 
 		debug("< ConfigSaveProgramme.checkValues() success=%s" % success)
 		return success
-
-	def getPathEXE(self):
-		return self.getValue(self.KEY_PATH_EXE)
-	def getPreRecMins(self):
-		return int(self.getValue(self.KEY_PRE_REC))
-	def getPostRecMins(self):
-		return int(self.getValue(self.KEY_POST_REC))
 
 	def getValue(self, key):
 		return mytvGlobals.config.action(self.CONFIG_SECTION, key)

@@ -218,7 +218,7 @@ class ListingData:
 		langCodes = ['nl','fr']
 		while not self.country_code:
 			selectDialog = DialogSelect()
-			selectDialog.setup(__language__(616), rows=len(menu), width=200, panel=DIALOG_PANEL)
+			selectDialog.setup(__language__(616), rows=len(menu), width=200, panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos, action = selectDialog.ask(menu)
 			if selectedPos >= 0:
 				self.country_code = langCodes[selectedPos]

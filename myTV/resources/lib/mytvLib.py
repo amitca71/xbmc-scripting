@@ -111,7 +111,7 @@ def startTimeToSecs(lastStartTime, startTime, baseDate):
 # Download url and regex parse it to extract description.
 ############################################################################################################
 def getDescriptionLink(link, regex, startStr='', endStr='', decodeSet='latin-1', headers={}):
-	debug("> getDescriptionLink()")
+	debug("> mytvLib.getDescriptionLink()")
 	description = ''
 	doc = fetchCookieURL(link, headers=headers)
 	if doc and doc != -1:
@@ -129,7 +129,7 @@ def getDescriptionLink(link, regex, startStr='', endStr='', decodeSet='latin-1',
 	if not description:
 		debug("no description found")
 
-	debug("< getDescriptionLink()")
+	debug("< mytvLib.getDescriptionLink()")
 	return description
 
 
@@ -163,7 +163,7 @@ def removeDupList(list):
 # sorted	-  sort results
 ############################################################################################################
 def getChannelsLIB(url, filename, regex, startStr='', endStr='', reversed=False, headers={}, sorted=True, removeStr=''):
-	debug("> getChannelsLIB() %s" % filename)
+	debug("> mytvLib.getChannelsLIB() %s" % filename)
 	channelList = []
 
 	# download if not got it
@@ -203,14 +203,14 @@ def getChannelsLIB(url, filename, regex, startStr='', endStr='', reversed=False,
 	else:
 		channelList = readChannelsList(filename)
 
-	debug("< getChannelsLIB() channels=%s" % len(channelList))
+	debug("< mytvLib.getChannelsLIB() channels=%s" % len(channelList))
 	return channelList
 
 ############################################################################################################
 # Write a comma delimited channels list.  ie chID, chName
 ############################################################################################################
 def writeChannelsList(filename, channels):
-	debug("> writeChannelsList()")
+	debug("> mytvLib.writeChannelsList()")
 
 	delimitedList = []
 	if channels:
@@ -225,13 +225,13 @@ def writeChannelsList(filename, channels):
 
 		f.close()
 
-	debug("< writeChannelsList()")
+	debug("< mytvLib.writeChannelsList()")
 	return delimitedList
 
 ############################################################################################################
 # ignore 'hidden' channels, those with * as first ch
 def readChannelsList(filename, loadHidden=False):
-	debug("> readChannelsList()")
+	debug("> mytvLib.readChannelsList()")
 
 	channelList = []
 	try:
@@ -242,7 +242,7 @@ def readChannelsList(filename, loadHidden=False):
 	except:
 		print str( sys.exc_info()[ 1 ] )
 
-	debug("< readChannelsList() channel count: %s" % len(channelList))
+	debug("< mytvLib.readChannelsList() channel count: %s" % len(channelList))
 	return channelList
 
 
@@ -260,7 +260,7 @@ def fetchXMLTV(userName,
 			URL='http://webservices.schedulesdirect.tmsdatadirect.com/schedulesdirect/tvlistings/xtvdService',
 			Realm='TMSWebServiceRealm',
 			fileCoding='latin-1'):
-	debug("> fetchXMLTV() " + fileName)
+	debug("> mytvLib.fetchXMLTV() " + fileName)
 	success = False
 
 	displayDate = getDisplayDate(fetchDate)
@@ -342,7 +342,7 @@ def fetchXMLTV(userName,
 		deleteFile(fileName)
 
 	dialogProgress.close()
-	debug("< fetchXMLTV() success=%s" % success)
+	debug("< mytvLib.fetchXMLTV() success=%s" % success)
 	return success
 
 #######################################################################################################################    
@@ -360,19 +360,19 @@ class ManageTimers:
 	REC_PROG_ID = 6
 
 	def __init__(self, saveToFile=True):
-		debug("> ManageTimers.init() saveToFile=%s" % saveToFile)
+		debug("> mytvLib.ManageTimers.init() saveToFile=%s" % saveToFile)
 		self.saveToFile = saveToFile
 		self.timers = []
 		self.PREFIX = 'timers_'
 		self.EXT = '.dat'
 		self.DIR_CACHE = os.path.join(DIR_USERDATA, "timers")
 		makeDir(self.DIR_CACHE)
-		debug("< ManageTimers.init()")
+		debug("< mytvLib.ManageTimers.init()")
 
 	# get a list of all timer files.
 	# Option to get only get files date >= today
 	def getTimerFiles(self, anyDate=False):
-		debug("> getTimerFiles() anyDate=%s" % anyDate)
+		debug("> mytvLib.getTimerFiles() anyDate=%s" % anyDate)
 		filelist = []
 
 		if os.path.isdir(self.DIR_CACHE):
@@ -387,11 +387,11 @@ class ManageTimers:
 					if anyDate or fileDate >= today:
 						filelist.append(fname)
 
-		debug("< getTimerFiles() file count=%s" % len(filelist))
+		debug("< mytvLib.getTimerFiles() file count=%s" % len(filelist))
 		return filelist
 
 	def load(self):
-		debug("> ManageTimers.load()")
+		debug("> mytvLib.ManageTimers.load()")
 		self.timers = []
 		filelist = self.getTimerFiles()	# get all timer files
 
@@ -402,11 +402,11 @@ class ManageTimers:
 		# sort into startTimeSecs order
 		self.timers.sort()
 #		self.timers.reverse()
-		debug("< ManageTimers.load() timers=%s" % len(self.timers))
+		debug("< mytvLib.ManageTimers.load() timers=%s" % len(self.timers))
 		return self.timers
 
 	def loadFile(self, fname):
-		debug("> ManageTimers.loadFile() fname="+fname)
+		debug("> mytvLib.ManageTimers.loadFile() fname="+fname)
 		timers = []
 		try:
 			# open and read timers
@@ -428,13 +428,13 @@ class ManageTimers:
 		except:
 			debug("file missing")
 
-		debug("< ManageTimers.loadFile() timers=%s" % len(timers))
+		debug("< mytvLib.ManageTimers.loadFile() timers=%s" % len(timers))
 		return timers
 
 	# get timers as a list [startTime, chID]
 	# get timers as a list [progID]
 	def getTimers(self, forceLoad=False):
-		debug("> ManageTimers.getTimers()")
+		debug("> mytvLib.ManageTimers.getTimers()")
 
 		if forceLoad:
 			self.load()
@@ -458,13 +458,13 @@ class ManageTimers:
 			if progID:
 				timersProgIDList.append(progID)
 
-		debug("< ManageTimers.getTimers() timersDict sz=%s timersProgIDList sz=%s" % (len(timersDict), len(timersProgIDList)))
+		debug("< mytvLib.ManageTimers.getTimers() timersDict sz=%s timersProgIDList sz=%s" % (len(timersDict), len(timersProgIDList)))
 		return timersDict, timersProgIDList
 
 	# load all timers in the file where this timers resides.
 	# find timer, remove and write new file
 	def deleteTimer(self, startTime):
-		debug("> ManageTimers.deleteTimer() startTime=%s" % startTime)
+		debug("> mytvLib.ManageTimers.deleteTimer() startTime=%s" % startTime)
 
 		deleted = False
 		if self.saveToFile:
@@ -494,7 +494,7 @@ class ManageTimers:
 			for startTimeSecs,chID,durSecs,chName,progName,delURL,progID in timers:
 				self.writeTimer(fname, startTimeSecs, chID, durSecs, chName, progName, delURL, progID)
 
-		debug("< ManageTimers.deleteTimer() deleted=%s" % deleted)
+		debug("< mytvLib.ManageTimers.deleteTimer() deleted=%s" % deleted)
 		return deleted
 
 	def deleteTimerFile(self, startTime):
@@ -508,7 +508,7 @@ class ManageTimers:
 		makeDir(self.DIR_CACHE)
 
 	def saveTimer(self, programme, channelInfo):
-		debug("> ManageTimers.saveTimer()")
+		debug("> mytvLib.ManageTimers.saveTimer()")
 
 		startTimeSecs = programme[TVData.PROG_STARTTIME]
 		endTimeSecs = programme[TVData.PROG_ENDTIME]
@@ -533,7 +533,7 @@ class ManageTimers:
 			self.writeTimer(fname, startTimeSecs, chID, durSecs, chName, progName, delURL, progID)
 		self.timers.append((startTimeSecs, chID, durSecs, chName, progName, delURL, progID))
 		timersDict, timersProgIDList = self.getTimers()
-		debug("< ManageTimers.saveTimer() timersDict sz=%s timersProgIDList sz=%s" % (len(timersDict), len(timersProgIDList)))
+		debug("< mytvLib.ManageTimers.saveTimer() timersDict sz=%s timersProgIDList sz=%s" % (len(timersDict), len(timersProgIDList)))
 		return timersDict, timersProgIDList
 
 	def writeTimer(self, fname, startTimeSecs, chID, durSecs, chName, progName, delURL="", progID=""):
@@ -552,7 +552,7 @@ class ManageTimers:
 		return os.path.join(self.DIR_CACHE, self.PREFIX+fileDate+self.EXT)
 
 	def checkTimerClash(self, programme):
-		debug("> ManageTimers.checkTimerClash()")
+		debug("> mytvLib.ManageTimers.checkTimerClash()")
 
 		startTime = programme[TVData.PROG_STARTTIME]
 		endTime = programme[TVData.PROG_ENDTIME]
@@ -576,12 +576,12 @@ class ManageTimers:
 					clash = True
 				break
 
-		debug("< ManageTimers.checkTimerClash() clash=%s" % clash)
+		debug("< mytvLib.ManageTimers.checkTimerClash() clash=%s" % clash)
 		return clash
 
 	# list of timers [startTimeSecs, chID, durSecs, chName, progName, delURL, progID]
 	def refreshTimerFiles(self, newTimersList):
-		debug("> ManageTimers.refreshTimerFiles()")
+		debug("> mytvLib.ManageTimers.refreshTimerFiles()")
 
 		if self.saveToFile:
 			self.deleteAllTimerFiles()
@@ -614,11 +614,11 @@ class ManageTimers:
 			self.timers.append((startTimeSecs, chID, durSecs, chName, progName, delURL, progID))
 
 		timersDict, timersProgIDList = self.getTimers()
-		debug("< ManageTimers.refreshTimerFiles()")
+		debug("< mytvLib.ManageTimers.refreshTimerFiles()")
 		return timersDict, timersProgIDList
 
 	def __createMenu(self):
-		debug("> ManageTimers.__createMenu()")
+		debug("> mytvLib.ManageTimers.__createMenu()")
 
 		menuList = []
 		if self.timers:
@@ -632,13 +632,13 @@ class ManageTimers:
 				lbl2 = "%s, %smins" % (displayDate,durMins)
 				menuList.append(xbmcgui.ListItem(lbl1, label2=lbl2))
 
-		debug("< ManageTimers.__createMenu()")
+		debug("< mytvLib.ManageTimers.__createMenu()")
 		return menuList
 
 
 	# show menu of timers , return timer rec chosen
 	def ask(self):
-		debug("> ManageTimers.ask()")
+		debug("> mytvLib.ManageTimers.ask()")
 
 		timer = []
 		if not self.timers:
@@ -659,14 +659,14 @@ class ManageTimers:
 				if xbmcgui.Dialog().yesno(__language__(823), progName, progDate):		# delete ?
 					timer = self.timers[selectedPos-1]	# allow for exit opt
 
-		debug("< ManageTimers.ask()")
+		debug("< mytvLib.ManageTimers.ask()")
 		return timer
 
 #######################################################################################################################    
 # Import<somename>_DataSource.py as determined by configuration file.
 #######################################################################################################################    
 def importDataSource(modFilename=''):
-	debug("> importDataSource() modFilename="+modFilename)
+	debug("> mytvLib.importDataSource() modFilename="+modFilename)
 	success = False
 	try:
 		del mytvGlobals.dataSource
@@ -726,7 +726,7 @@ def importDataSource(modFilename=''):
 				mytvGlobals.saveProgramme = None
 
 	sys.path
-	debug("< importDataSource() dataSource: %s" % mytvGlobals.dataSource)
+	debug("< mytvLib.importDataSource() dataSource: %s" % mytvGlobals.dataSource)
 	return mytvGlobals.dataSource
 
 #################################################################################################################
@@ -740,7 +740,7 @@ def canDataSourceConfig():
 # Choose a data source from a list of files named <somename>_DataSource.py in subfolder
 #################################################################################################################
 def selectDataSource():
-	debug("> selectDataSource()")
+	debug("> mytvLib.selectDataSource()")
 
 	# create menu items from datasource files
 	currModFilename = mytvGlobals.config.getSystem(MYTVConfig.KEY_SYSTEM_DATASOURCE)
@@ -771,14 +771,14 @@ def selectDataSource():
 
 	del selectDialog
 
-	debug("< selectDataSource() modFilename: %s" % modFilename)
+	debug("< mytvLib.selectDataSource() modFilename: %s" % modFilename)
 	return modFilename
 
 #################################################################################################################
 # Re-configure datasource. Not all datasource require configuring.
 #################################################################################################################
 def configDataSource(forceReset=True):
-	debug("> configDataSource() forceReset=%s" % forceReset)
+	debug("> mytvLib.configDataSource() forceReset=%s" % forceReset)
 	success = False
 
 	while not success:
@@ -792,7 +792,7 @@ def configDataSource(forceReset=True):
 		except:
 			handleException("configDataSource()")
 
-	debug("< configDataSource() success=%s" % success)
+	debug("< mytvLib.configDataSource() success=%s" % success)
 	return success
 
 
@@ -800,7 +800,7 @@ def configDataSource(forceReset=True):
 # Re-configure saveprogramme. Not all saveprogramme require configuring.
 #################################################################################################################
 def configSaveProgramme(reset=True):
-	debug("> configSaveProgramme() reset=%s" % reset)
+	debug("> mytvLib.configSaveProgramme() reset=%s" % reset)
 	success = False
 
 #	global saveProgramme
@@ -810,16 +810,17 @@ def configSaveProgramme(reset=True):
 				success = mytvGlobals.saveProgramme.config(reset)
 				if not success:
 					# setup now ?
-					if xbmcgui.Dialog().yesno(__language__(534),__language__(216)):
+					if xbmcgui.Dialog().yesno(mytvGlobals.saveProgramme.getName(), __language__(216)):
 						reset = True
 					else:
 						break		# quit anyway
 		except AttributeError:
+			debug("saveProgramme has no config()")
 			success = True
 		except:
 			handleException("configSaveProgramme()")
 
-	debug("< configSaveProgramme() success=%s" % success)
+	debug("< mytvLib.configSaveProgramme() success=%s" % success)
 	return success
 
 
@@ -827,7 +828,7 @@ def configSaveProgramme(reset=True):
 # Choose a SaveProgramme module from a list of files named SaveProgramme_<somename>.py in subfolder
 #################################################################################################################
 def selectSaveProgramme():
-	debug("> selectSaveProgramme()")
+	debug("> mytvLib.selectSaveProgramme()")
 	spName = None
 
 	# create menu
@@ -848,7 +849,7 @@ def selectSaveProgramme():
 			spName = menuList[selectedPos]
 		mytvGlobals.config.setSystem(MYTVConfig.KEY_SYSTEM_SAVE_PROG, spName)
 
-	debug("< selectSaveProgramme() %s" % spName)
+	debug("< mytvLib.selectSaveProgramme() %s" % spName)
 	return spName
 
 #######################################################################################################################    
@@ -857,7 +858,7 @@ def selectSaveProgramme():
 # "" is No TV Card to be used.
 #######################################################################################################################    
 def importSaveProgramme():
-	debug("> importSaveProgramme()")
+	debug("> mytvLib.importSaveProgramme()")
 	success = False
 #	global saveProgramme
 	try:
@@ -892,14 +893,14 @@ def importSaveProgramme():
 		mytvGlobals.saveProgramme = None
 		success = True              # pretend it all ok now
 	sys.path
-	debug("< importSaveProgramme() success=%s" % success)
+	debug("< mytvLib.importSaveProgramme() success=%s" % success)
 	return success
 
 #################################################################################################################
 # clear listsings cache of files based on date in filename.
 #################################################################################################################
 def clearCache(forceDelete=False):
-	debug("> clearCache() forceDelete=%s" % forceDelete)
+	debug("> mytvLib.clearCache() forceDelete=%s" % forceDelete)
 
 	if forceDelete or xbmcgui.Dialog().yesno(__language__(0), __language__(530), __language__(200)):
 		deleteCacheFiles(0)
@@ -911,7 +912,7 @@ def clearCache(forceDelete=False):
 		if xbmcgui.Dialog().yesno(__language__(0), __language__(530),__language__(201)):
 			deleteFile(getChannelListFilename())
 
-	debug("< clearCache() done=%s" % done)
+	debug("< mytvLib.clearCache() done=%s" % done)
 	return done
 
 #################################################################################################################
@@ -932,7 +933,7 @@ def getChannelListFilename():
 # default to 3days
 #################################################################################################################
 def deleteCacheFiles(ageSecs=259200):
-	debug("> deleteCacheFiles() ageSecs %s " % ageSecs)
+	debug("> mytvLib.deleteCacheFiles() ageSecs %s " % ageSecs)
 
 	if os.path.exists(DIR_CACHE):
 		# to clear all files, set delete time to a time in future
@@ -945,29 +946,30 @@ def deleteCacheFiles(ageSecs=259200):
 			if fileDate and int(fileDate) <= deleteDate:
 				deleteFile(os.path.join(DIR_CACHE, filename))
 
-	debug("< deleteCacheFiles()")
+	debug("< mytvLib.deleteCacheFiles()")
 
 #################################################################################################################
 # Config a YES/No option and save if changed
 #################################################################################################################
 def configYesNo(title, prompt, key, section, yesButton="", noButton=""):
-	debug("> configYesNo()")
-	changed = False
+	debug("> mytvLib.configYesNo()")
 
 	# load orig value
-	if yesButton or noButton:
-		newValue = xbmcgui.Dialog().yesno(title, prompt, '', '', noButton, yesButton)
+	currValue = mytvGlobals.config.action(section, key)
+	if currValue in (True, False):
+		newValue = not currValue			
 	else:
-		newValue = xbmcgui.Dialog().yesno(title, prompt)	# lang default yes & no
-	# convert to bool
-	if newValue:
-		newValue = True
-	else:
-		newValue = False
+		if yesButton or noButton:
+			newValue = bool( xbmcgui.Dialog().yesno(title, prompt, '', '', noButton, yesButton))
+		else:
+			newValue = bool( xbmcgui.Dialog().yesno(title, prompt))	# lang default yes & no
 
-	success = mytvGlobals.config.action(section, key, newValue, mode=ConfigHelper.MODE_WRITE)
-	debug("< configYesNo() success=%s" % success)
-	return success
+	print currValue, newValue
+	changed = (currValue != newValue)
+	if changed:
+		mytvGlobals.config.action(section, key, newValue, mode=ConfigHelper.MODE_WRITE)
+	debug("< mytvLib.configYesNo() changed=%s" % changed)
+	return changed
 
 #############################################################################################################
 class MYTVConfig:
@@ -1032,21 +1034,21 @@ class MYTVConfig:
 	VALUE_SYSTEM_SAVE_PROG_NOTV = "No TV"
 
 	def __init__(self):
-		debug("> MYTVConfig.__init__")
+		debug("> mytvLib.MYTVConfig.__init__")
 		self.configHelper = ConfigHelper(os.path.join(DIR_USERDATA, "Config.dat"))
 		self.initAllDefaults()
-		debug("< MYTVConfig.__init__")
+		debug("< mytvLib.MYTVConfig.__init__")
 
 	def initAllDefaults(self):
-		debug("> mytvConfig.initAllDefaults()")
+		debug("> mytvLib.mytvConfig.initAllDefaults()")
 		# setting defaults will create options that are missing
 		self.initSectionSystem()
 		self.initSectionDisplay()	# setup default items
 #		self.initSectionSMB()
-		debug("< mytvConfig.initAllDefaults()")
+		debug("< mytvLib.mytvConfig.initAllDefaults()")
 
 	def reset(self):
-		debug("> mytvConfig.reset()")
+		debug("> mytvLib.mytvConfig.reset()")
 		if xbmcgui.Dialog().yesno(__language__(552),__language__(307)):
 			self.configHelper.reset()
 			self.configHelper.deleteConfigFile()
@@ -1054,11 +1056,11 @@ class MYTVConfig:
 			reset = True
 		else:
 			reset = False
-		debug("< mytvConfig.reset()")
+		debug("< mytvLib.mytvConfig.reset()")
 		return reset
 
 	def initSectionSystem(self):
-		debug("> mytvConfig.initSectionSystem()")
+		debug("> mytvLib.mytvConfig.initSectionSystem()")
 		items = {}
 		items[MYTVConfig.KEY_SYSTEM_DATASOURCE] = ""
 		items[MYTVConfig.KEY_SYSTEM_CLOCK] = ConfigHelper.VALUE_YES
@@ -1073,10 +1075,10 @@ class MYTVConfig:
 		items[MYTVConfig.KEY_SYSTEM_SHOW_DSSP] = True
 		# inits any missing values
 		self.configHelper.initSection(MYTVConfig.SECTION_SYSTEM, items)
-		debug("< mytvConfig.initSectionSystem()")
+		debug("< mytvLib.mytvConfig.initSectionSystem()")
 
 	def initSectionDisplay(self):
-		debug("> mytvConfig.initSectionDisplay()")
+		debug("> mytvLib.mytvConfig.initSectionDisplay()")
 		items = {}
 		# set all keys with a default
 		items[MYTVConfig.KEY_DISPLAY_NOFOCUS_ODD] = "DarkBlue.png"
@@ -1109,7 +1111,7 @@ class MYTVConfig:
 
 		# save section into cp
 		self.configHelper.initSection(MYTVConfig.SECTION_DISPLAY, items)
-		debug("< mytvConfig.initSectionDisplay()")
+		debug("< mytvLib.mytvConfig.initSectionDisplay()")
 
 #	def initSectionSMB(self):
 #		debug("mytvConfig.initSectionSMB()")
@@ -1125,7 +1127,7 @@ class MYTVConfig:
 	# loads associated skin config (if exists) for whatever the current xbmc skin is DIR_EPG
 	###############################################################################################################
 	def loadSkinConfig(self, displayItems, skinName):
-		debug("> loadSkinConfig()")
+		debug("> mytvLib.loadSkinConfig()")
 
 		skinFN = os.path.join(DIR_EPG, skinName+".skin")
 		debug("skinFN=%s" % skinFN)
@@ -1146,7 +1148,7 @@ class MYTVConfig:
 				traceback.print_exc()
 				messageOK("SKIN LOAD ERROR","Failed to load skin config file.",skinFN)
 
-		debug("< loadSkinConfig()")
+		debug("< mytvLib.loadSkinConfig()")
 		return displayItems
 
 	def getSystem(self, option):
@@ -1278,10 +1280,7 @@ class ConfigHelper:
 	# this does all the real work on ConfigParser
 	def action(self, section='', option='', value='', mode=None):
 		if not mode: mode = self.MODE_READ
-		debugStr = "> ConfigHelper.action() mode=%s section=%s option=%s" % (mode,section,option)
-		if value:
-			debugStr += " value=%s" % value
-		debug(debugStr)
+		debug("> mytvLib.ConfigHelper.action() mode=%s section=%s option=%s value=%s" % (mode,section,option, value))
 		retValue = None
 
 		if mode==self.MODE_READ:
@@ -1346,7 +1345,7 @@ class ConfigHelper:
 		if retValue == "None":
 			retValue = None
 
-		debug("< ConfigHelper.action() retValue=%s" % retValue)
+		debug("< mytvLib.ConfigHelper.action() retValue=%s" % retValue)
 		return retValue
 
 	def __setOption(self, section, option, value):
@@ -1369,7 +1368,7 @@ def getDisplayDate(fileDate):
 ###################################################################################################################
 # return days from today
 def getDayDelta(newDOW):
-	debug("> getDayDelta() from newDOW=%s" % newDOW)
+	debug("> mytvLib.getDayDelta() from newDOW=%s" % newDOW)
 	dow = date.today().weekday()
 	if newDOW == dow:
 		dayDelta = 0
@@ -1377,7 +1376,7 @@ def getDayDelta(newDOW):
 		dayDelta = (newDOW - dow)
 	else:
 		dayDelta = (7 - dow) + newDOW
-	debug("< getDayDelta() dayDelta=%s" % dayDelta)
+	debug("< mytvLib.getDayDelta() dayDelta=%s" % dayDelta)
 	return dayDelta
 
 ###################################################################################################################
@@ -1385,7 +1384,7 @@ def getDayDelta(newDOW):
 # configData = [configkey, label, defaultValue, kbType]
 ###################################################################################################################
 def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
-	debug("> configOptionsMenu()")
+	debug("> mytvLib.configOptionsMenu()")
 
 	REC_KEY = 0
 	REC_LABEL = 1
@@ -1430,14 +1429,13 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 			label = rec[REC_LABEL]
 			label2 = ''
 			if configKey:
-				if configKey == MYTVConfig.KEY_SMB_PATH:
-					label2 = mytvGlobals.config.getSMB(MYTVConfig.KEY_SMB_PATH)
+				if configKey in (MYTVConfig.KEY_SMB_PATH, MYTVConfig.KEY_SMB_IP, MYTVConfig.KEY_SMB_FILE):
+					label2 = mytvGlobals.config.getSMB(configKey)
 				else:
 					label2 = mytvGlobals.config.action(section, configKey)
 				if label2 == None:
 					label2 = ''
-				else:
-					label2 = mytvGlobals.config.configHelper.boolToYesNo(label2)
+				label2 = mytvGlobals.config.configHelper.boolToYesNo(label2)
 			menu.append(xbmcgui.ListItem(label, label2))
 		return menu
 
@@ -1473,7 +1471,7 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 					changed = True
 		del selectDialog
 
-	debug("< configOptionsMenu() changed=%s" % changed)
+	debug("< mytvLib.configOptionsMenu() changed=%s" % changed)
 	return changed
 
 
@@ -1625,7 +1623,7 @@ class TVData:
 		return value
 
 def loadChannelFromFile(filename):
-    debug("> loadChannelFromFile()")
+    debug("> mytvLib.loadChannelFromFile()")
     progList = []
     try:
         # each row is a prog dict
@@ -1635,11 +1633,11 @@ def loadChannelFromFile(filename):
             progList.append(eval( rec.strip() ))
     except:
         debug("error opening file")
-    debug("< loadChannelFromFile() prog count=%s" % len(progList))
+    debug("< mytvLib.loadChannelFromFile() prog count=%s" % len(progList))
     return progList
 
 def saveChannelToFile(progList, filename):
-	debug("> saveChannelToFile()")
+	debug("> mytvLib.saveChannelToFile()")
 	saved = False
 	if progList:
 		filename = xbmc.makeLegalFilename(xbmc.translatePath(filename))
@@ -1658,12 +1656,12 @@ def saveChannelToFile(progList, filename):
 			debug("file exists, progs not written")
 	else:
 		deleteFile(filename)
-	debug("< saveChannelToFile() saved=%s" % saved)
+	debug("< mytvLib.saveChannelToFile() saved=%s" % saved)
 	return saved
 
 # check all progs times follow and fill in gaps
 def checkProgContinuity(channel):
-	debug("> checkProgContinuity()")
+	debug("> mytvLib.checkProgContinuity()")
 	if len(channel) > 1:
 		# 1) all start/end times match up
 		# 2) any gap in progs filled in with empty prog
@@ -1692,7 +1690,7 @@ def checkProgContinuity(channel):
 
 		if added or overlapping:
 			debug( "checkProgContinuity() added=%s overlapping=%s prog sz=%s" % (added,overlapping,len(channel)) )
-	debug("< checkProgContinuity()")
+	debug("< mytvLib.checkProgContinuity()")
 	return channel
 
 ###################################################################################################################
@@ -1734,7 +1732,7 @@ class TVChannels:
 	CHAN_IDALT = 2
 
 	def __init__(self):
-		debug("> TVChannels() init")
+		debug("> mytvLib.TVChannels() init")
 
 		# how to load channel programmes into channel data store
 		self.LOAD_DATA_PREFIX = -1
@@ -1744,7 +1742,7 @@ class TVChannels:
 		self.reset()
 		self.loadLogoFilenames()
 
-		debug("< TVChannels() init ")
+		debug("< mytvLib.TVChannels() init ")
 
 	def reset(self):
 		debug("TVChannels.reset()")
@@ -1794,7 +1792,7 @@ class TVChannels:
 		self.channelsFirstProg = {}
 
 	def getLogo(self, allChIDX):
-		debug("> getLogo() allChIDX=%i" % allChIDX)
+		debug("> mytvLib.getLogo() allChIDX=%i" % allChIDX)
 
 		def getLogoFilesIdx(name):
 			idx = -1
@@ -1846,7 +1844,7 @@ class TVChannels:
 			if chID and filename:
 				self.datasourceLogos[chID] = xbmc.makeLegalFilename(filename)
 
-		debug("< getLogo() " + filename)
+		debug("< mytvLib.getLogo() " + filename)
 		return filename
 
 
@@ -1856,7 +1854,7 @@ class TVChannels:
 	# ensure channel prog start/end continuity
 	################################################################################################################
 	def storeChannel(self, appendORprefix, chIDX, progList, chID, chName, chAltID):
-		debug("> storeChannel() appendORprefix=%s chIDX=%s chID=%s" % (appendORprefix,chIDX,chID))
+		debug("> mytvLib.storeChannel() appendORprefix=%s chIDX=%s chID=%s" % (appendORprefix,chIDX,chID))
 		changed = False
 
 		# is channel in data store?
@@ -1927,7 +1925,7 @@ class TVChannels:
 				debug("updated channel sz=%i using progList sz=%i" % \
 					  (len(self.tvdata.getChannel(chIDX)), len(progList)))
 
-		debug("< storeChannel() changed=%s" % changed)
+		debug("< mytvLib.storeChannel() changed=%s" % changed)
 		return changed
 
 	################################################################################################################
@@ -1940,7 +1938,7 @@ class TVChannels:
 	# loadDataAction - indicates to prefix or append new programmes into channels store
 	################################################################################################################
 	def loadChannels(self, actualChIDX, epgChIDX, maxFetch, dayDelta, fileDate, loadDataAction):
-		debug("> ******* loadChannels() actualChIDX=%s epgChIDX=%s maxFetch=%s dayDelta=%s fileDate=%s loadDataAction=%s" % \
+		debug("> mytvLib.******* loadChannels() actualChIDX=%s epgChIDX=%s maxFetch=%s dayDelta=%s fileDate=%s loadDataAction=%s" % \
 				  (actualChIDX, epgChIDX, maxFetch, dayDelta, fileDate, loadDataAction))
 
 		logFreeMem("loadChannels start")
@@ -2046,14 +2044,14 @@ class TVChannels:
 #		print "self.tvdata.channelInfo=", self.tvdata.channelInfo
 
 		logFreeMem("loadChannels end")
-		debug("< loadChannels() fetchCount=%s" % fetchCount)
+		debug("< mytvLib.loadChannels() fetchCount=%s" % fetchCount)
 		return fetchCount
 
 	#############################################################################################################
 	# get prog on channel whos end time is after given time.
 	#############################################################################################################
 	def getProgAtTime(self, chIDX, intervalSecs):
-		debug("> getProgAtTime() chIDX=%s intervalSecs=%s" % (chIDX, intervalSecs))
+		debug("> mytvLib.getProgAtTime() chIDX=%s intervalSecs=%s" % (chIDX, intervalSecs))
 #		startSecs = time.clock()
 #		print "startSecs=%s" % startSecs
 
@@ -2092,7 +2090,7 @@ class TVChannels:
 #		endSecs = time.clock()
 #		print "endSecs=%s" % endSecs
 #		print "process secs=%s" % (endSecs - startSecs)
-		debug("< getProgAtTime() progIDX=%i" % progIDX)
+		debug("< mytvLib.getProgAtTime() progIDX=%i" % progIDX)
 		return progIDX
 
 # data file date
@@ -2106,7 +2104,7 @@ class TVChannels:
 
 # Channel list, each channel is a list holding [chid, ch name<,alt ch id>]
 	def loadDatasourceChannelNames(self, justHDChannels=False):
-		debug("> loadDatasourceChannelNames() justHDChannels=%s" % justHDChannels)
+		debug("> mytvLib.loadDatasourceChannelNames() justHDChannels=%s" % justHDChannels)
 #		global dataSource
 		self.channelNames = mytvGlobals.dataSource.getChannels()
 		sz = 0
@@ -2117,11 +2115,11 @@ class TVChannels:
 		else:
 			sz = len(self.channelNames)
 
-		debug("< loadDatasourceChannelNames() channels=%s" % sz)
+		debug("< mytvLib.loadDatasourceChannelNames() channels=%s" % sz)
 		return sz
 
 	def getHDChannels(self, countOnly=False):
-		debug("> getHDChannels() countOnly=%s" % countOnly)
+		debug("> mytvLib.getHDChannels() countOnly=%s" % countOnly)
 		hdList = []
 		if self.channelNames:
 			for ch in self.channelNames:
@@ -2131,7 +2129,7 @@ class TVChannels:
 			if not countOnly and hdList:
 				self.channelNames = hdList[:]	# copy
 		sz = len(hdList)
-		debug("< getHDChannels() count=%s" % sz)
+		debug("< mytvLib.getHDChannels() count=%s" % sz)
 		return sz
 
 	def getChannelNames(self):
@@ -2208,7 +2206,7 @@ class myTVFavShows(xbmcgui.Window):
 	FAVSHOWS_FILENAME = os.path.join(DIR_USERDATA, 'favshows.dat')
 	
 	def __init__(self):
-		debug("> myTVFavShows().init")
+		debug("> mytvLib.myTVFavShows().init")
 
 		self.favShowsList = []
 #		global dataSource
@@ -2224,7 +2222,7 @@ class myTVFavShows(xbmcgui.Window):
 			messageOK("No DataSource imported","Use myTV to configure a DataSource.")
 
 		self.tvdata = TVData()
-		debug("< myTVFavShows().init")
+		debug("< mytvLib.myTVFavShows().init")
 
 	def deleteSaved(self):
 		debug("favShows.deleteSaved()")
@@ -2266,7 +2264,7 @@ class myTVFavShows(xbmcgui.Window):
 			self.favShowsCONTROLS[self.CTRL_PREV_BTN].setVisible(self.currentTime > self.startupCurrentTime)
 
 	def ask(self):
-		debug("> myTVFavShows.ask()")
+		debug("> mytvLib.myTVFavShows.ask()")
 
 		if not self.favShowsList:
 			messageOK(__language__(508), __language__(213))
@@ -2276,10 +2274,10 @@ class myTVFavShows(xbmcgui.Window):
 			self.loadLists(daysList)
 			self.doModal()
 
-		debug("< myTVFavShows.FavSHows().ask()")
+		debug("< mytvLib.myTVFavShows.FavSHows().ask()")
 
 	def setupFavShowDisplay(self):
-		debug("> myTVFavShows.setupFavShowDisplay")
+		debug("> mytvLib.myTVFavShows.setupFavShowDisplay")
 
 		setResolution(self)
 		xbmcgui.lock()
@@ -2417,19 +2415,19 @@ class myTVFavShows(xbmcgui.Window):
 
 		self.setFocus(self.favShowsCONTROLS[self.CTRL_NEXT_BTN])
 		xbmcgui.unlock()
-		debug("< myTVFavShows.setupFavShowDisplay")
+		debug("< mytvLib.myTVFavShows.setupFavShowDisplay")
 
 	def addToFavShows(self, showName, chID, chName):
-		debug("> myTVFavShows.addToFavShows()")
+		debug("> mytvLib.myTVFavShows.addToFavShows()")
 		success = False
 
 		if not showName:
 			messageOK(__language__(507), __language__(123))
-			debug("< myTVFavShows.addToFavShows() bad prog")
+			debug("< mytvLib.myTVFavShows.addToFavShows() bad prog")
 			return False
 
 		elif not xbmcgui.Dialog().yesno(__language__(507), chName, showName):	# add ?
-			debug("< myTVFavShows.addToFavShows() cancelled")
+			debug("< mytvLib.myTVFavShows.addToFavShows() cancelled")
 			return False
 
 		elif not self.favShowsList:
@@ -2451,21 +2449,21 @@ class myTVFavShows(xbmcgui.Window):
 		else:
 			messageOK(__language__(507), __language__(124))
 
-		debug("< myTVFavShows.addToFavShows() success=%s" % success)
+		debug("< mytvLib.myTVFavShows.addToFavShows() success=%s" % success)
 		return success
 
 	def loadFavShows(self):
-		debug("> myTVFavShows.loadFavShows()")
+		debug("> mytvLib.myTVFavShows.loadFavShows()")
 		self.favShowsList = []
 		if fileExist(self.FAVSHOWS_FILENAME):
 			for readLine in file(self.FAVSHOWS_FILENAME):
 				title, chID, chName = readLine.split('~')
 				self.favShowsList.append([title.decode('latin-1', 'replace').strip(), \
 								chID, chName.decode('latin-1', 'replace').strip()])
-		debug("< myTVFavShows.loadFavShows() sz: %s" % len(self.favShowsList))
+		debug("< mytvLib.myTVFavShows.loadFavShows() sz: %s" % len(self.favShowsList))
 
 	def saveFavShows(self):
-		debug("> myTVFavShows.saveFavShows()")
+		debug("> mytvLib.myTVFavShows.saveFavShows()")
 		success = False
 		if not self.favShowsList:
 			deleteFile(self.FAVSHOWS_FILENAME)
@@ -2488,11 +2486,11 @@ class myTVFavShows(xbmcgui.Window):
 			except:
 				deleteFile(self.FAVSHOWS_FILENAME)
 				handleException()
-		debug("< myTVFavShows.saveFavShows() success=%s" % success)
+		debug("< mytvLib.myTVFavShows.saveFavShows() success=%s" % success)
 		return success
 
 	def getTitles(self):
-		debug("> myTVFavShows.getTitles()")
+		debug("> mytvLib.myTVFavShows.getTitles()")
 		if not self.favShowsList:
 			self.loadFavShows()
 
@@ -2500,11 +2498,11 @@ class myTVFavShows(xbmcgui.Window):
 		for title, chID, chName in self.favShowsList:
 			titleList.append(title)
 
-		debug("< myTVFavShows.getTitles() sz: %s" % len(titleList))
+		debug("< mytvLib.myTVFavShows.getTitles() sz: %s" % len(titleList))
 		return titleList
 
 	def manageFavShows(self):
-		debug("> myTVFavShows.manageFavShows()")
+		debug("> mytvLib.myTVFavShows.manageFavShows()")
 
 		deleted = False
 		if not self.favShowsList:
@@ -2535,11 +2533,11 @@ class myTVFavShows(xbmcgui.Window):
 
 			if deleted:
 				self.saveFavShows()	# write whole list
-		debug("< myTVFavShows.manageFavShows() deleted="+str(deleted))
+		debug("< mytvLib.myTVFavShows.manageFavShows() deleted="+str(deleted))
 		return deleted
 
 	def deleteShow(self, title, chID):
-		debug("> myTVFavShows.deleteShow() title=%s chID=%s" % (title, chID))
+		debug("> mytvLib.myTVFavShows.deleteShow() title=%s chID=%s" % (title, chID))
 
 		if xbmcgui.Dialog().yesno(__language__(510), title, "", "", __language__(355), __language__(356)):
 			# find show on channel
@@ -2552,11 +2550,11 @@ class myTVFavShows(xbmcgui.Window):
 					deleted = True
 					break
 
-		debug("< myTVFavShows.deleteShow() deleted=%s" % deleted)
+		debug("< mytvLib.myTVFavShows.deleteShow() deleted=%s" % deleted)
 		return deleted
 
 	def searchFavShows(self, showList, currentTime):
-		debug("> myTVFavShows.searchFavShows() currentTime=" + str(currentTime))
+		debug("> mytvLib.myTVFavShows.searchFavShows() currentTime=" + str(currentTime))
 		dialogProgress.create(__language__(508), __language__(300))
 
 		# for each day, examine just the channel stored against show
@@ -2602,12 +2600,12 @@ class myTVFavShows(xbmcgui.Window):
 			currentTime += 86400					# add 1 day
 
 		dialogProgress.close()
-		debug("< myTVFavShows.searchFavShows()")
+		debug("< mytvLib.myTVFavShows.searchFavShows()")
 		return daysList
 
 	# load shows into relevant day list
 	def loadLists(self, daysList):
-		debug("> myTVFavShows.loadLists()")
+		debug("> mytvLib.myTVFavShows.loadLists()")
 		xbmcgui.lock()
 
 		currentTime = self.currentTime
@@ -2629,7 +2627,7 @@ class myTVFavShows(xbmcgui.Window):
 
 			currentTime += 86400	# add 1 day
 		xbmcgui.unlock()
-		debug("< myTVFavShows.loadLists()")
+		debug("< mytvLib.myTVFavShows.loadLists()")
 
 
 ###################################################################################################################
@@ -2640,7 +2638,7 @@ class TVTime:
 	DAY_SECS = 86400
 
 	def __init__(self):
-		debug("> **** TVTime() init ****")
+		debug("> mytvLib.**** TVTime() init ****")
 		self.intervalMins = 30
 		self.intervalSecs = self.intervalMins * 60
 		debug("intervalMins: " + str(self.intervalMins) + "  intervalSecs: " + str(self.intervalSecs))
@@ -2650,7 +2648,7 @@ class TVTime:
 		self.startupTime = 0
 
 		self.reset()
-		debug("< **** TVTime() currentTime: " + str(self.currentTime))
+		debug("< mytvLib.**** TVTime() currentTime: " + str(self.currentTime))
 
 	def reset(self):
 		debug("TVTime.reset()")
@@ -2688,7 +2686,7 @@ class TVTime:
 		return newTime
 
 	def setupTimeBar(self, intervals, use24Clock=True):
-		debug("> setupTimeBar()  intervals=%s use24Clock=%s" % (intervals, use24Clock))
+		debug("> mytvLib.setupTimeBar()  intervals=%s use24Clock=%s" % (intervals, use24Clock))
 		
 		self.timeIntervals = []
 		date = time.strftime("%a %d %b",time.localtime(self.currentTime))
@@ -2707,11 +2705,11 @@ class TVTime:
 			secs += self.intervalSecs
 
 		sz = len(self.timeIntervals)
-		debug("< setupTimeBar() sz=%s" % sz)
+		debug("< mytvLib.setupTimeBar() sz=%s" % sz)
 		return sz
 
 	def roundDownToInterval(self, secs):
-		debug("> roundDownToInterval() secs: " + str(secs))
+		debug("> mytvLib.roundDownToInterval() secs: " + str(secs))
 		localtime = time.localtime(secs)
 
 		if(localtime.tm_min < self.intervalMins):
@@ -2721,7 +2719,7 @@ class TVTime:
 			debug("set tm_min to 30")
 			leftoverSecs = (localtime.tm_min * 60) + localtime.tm_sec - self.HALF_HOUR_SECS	# SETS TM_MIN = 30
 		secs -= leftoverSecs
-		debug("< roundDownToInterval() secs: " + str(secs))
+		debug("< mytvLib.roundDownToInterval() secs: " + str(secs))
 		return secs
 
 	def getTimeIntervalSZ(self):
@@ -2753,10 +2751,10 @@ class TVTime:
 		debug("updateCurrentTime() new currentTime: " + str(self.currentTime))
 
 	def timeToSecs(self, baseTime, hour, mins):
-		debug("> timeToSecs() baseTime=%s hour=%s mins=%s" % (baseTime, hour, mins))
+		debug("> mytvLib.timeToSecs() baseTime=%s hour=%s mins=%s" % (baseTime, hour, mins))
 		newTimeStr = str(getTodayDate(baseTime))
 		self.currentTime = time.mktime(time.strptime(newTimeStr,"%Y%m%d%H%M"))
-		debug("< timeToSecs() currentTime=%s" % self.currentTime)
+		debug("< mytvLib.timeToSecs() currentTime=%s" % self.currentTime)
 
 	def resetToMidnight(self):
 		self.timeToSecs(time.localtime(), "00", "00")
@@ -2794,7 +2792,7 @@ def logoSafeName(text):
 #######################################################################################################################    
 class ProgrammeSaveTemplate:
 	def __init__(self):
-		debug("> ProgrammeSaveTemplate.init()")
+		debug("> mytvLib.ProgrammeSaveTemplate.init()")
 
 		self.TEMPLATES = [['C','Channel ID', self.getChannelID],
 						['c','Channel Name', self.getChannelName],
@@ -2823,10 +2821,10 @@ class ProgrammeSaveTemplate:
 		self.VALUE = 1
 		self.FUNC = 2
 		self.prog = None
-		debug("< ProgrammeSaveTemplate.init()")
+		debug("< mytvLib.ProgrammeSaveTemplate.init()")
 
 	def viewTemplates(self):
-		debug("> ProgrammeSaveTemplate.viewTemplates()")
+		debug("> mytvLib.ProgrammeSaveTemplate.viewTemplates()")
 		menu = [__language__(500)]
 		for key,value,func in self.TEMPLATES:
 			menu.append(xbmcgui.ListItem(self.PREFIX+key, label2=value))
@@ -2835,13 +2833,13 @@ class ProgrammeSaveTemplate:
 		selectDialog.setup(__language__(548), rows=len(menu), panel=mytvGlobals.DIALOG_PANEL)
 		selectDialog.ask(menu)
 		del selectDialog
-		debug("< ProgrammeSaveTemplate.viewTemplates()")
+		debug("< mytvLib.ProgrammeSaveTemplate.viewTemplates()")
 
 	def getTemplates(self):
 		return self.TEMPLATES
 
 	def validTemplate(self, text):
-		debug("> validTemplate: template: %s " % text)
+		debug("> mytvLib.validTemplate: template: %s " % text)
 		success = False
 
 		if text:
@@ -2856,7 +2854,7 @@ class ProgrammeSaveTemplate:
 				if not success:
 					break	# abort search
 
-		debug("< validTemplate() success=%s" % success)
+		debug("< mytvLib.validTemplate() success=%s" % success)
 		return success
 
 	def getFunc(self,key):
@@ -2870,7 +2868,7 @@ class ProgrammeSaveTemplate:
 		return findAllRegEx(template, regex)
 
 	def format(self, channelInfo, prog, template):
-		debug("> format()")
+		debug("> mytvLib.format()")
 		self.channelInfo = channelInfo
 		self.prog = prog
 		try:
@@ -2883,7 +2881,7 @@ class ProgrammeSaveTemplate:
 			handleException("ProgrammeSaveTemplate().format()")
 			template = ''
 
-		debug("< format()")
+		debug("< mytvLib.format()")
 		return template
 
 	def getChannelID(self):
@@ -2956,7 +2954,7 @@ class ProgrammeSaveTemplate:
 
 #################################################################################################################
 def downloadLogos(channelNames=[]):
-	debug("> downloadLogos()")
+	debug("> mytvLib.downloadLogos()")
 
 	dialogTitle = __language__(556)
 	debug("check which channels dont have a logo...")
@@ -2976,7 +2974,7 @@ def downloadLogos(channelNames=[]):
 	debug("missing logos=%i" % len(missingList))
 
 	if not missingList:
-		debug("< downloadLogos() No missing logos")
+		debug("< mytvLib.downloadLogos() No missing logos")
 		return False
 
 	# DOWNLOAD AVAILABLE COUNTRY LOGOS
@@ -2995,7 +2993,7 @@ def downloadLogos(channelNames=[]):
 	if not doc:
 		messageOK(dialogTitle, "Missing countries logo webpage!", COUNTRIES_URL, os.path.basename(COUNTRIES_FILE))
 		deleteFile(COUNTRIES_FILE)
-		debug("< downloadLogos() no country page")
+		debug("< mytvLib.downloadLogos() no country page")
 		return False
 
 	# get datasource in use country code
@@ -3016,7 +3014,7 @@ def downloadLogos(channelNames=[]):
 	selectDialog.setup(__language__(611), rows=len(menu), width=300, panel=mytvGlobals.DIALOG_PANEL)
 	selectedPos, action = selectDialog.ask(menu,selectedPos)
 	if selectedPos <= 0:
-		debug("< downloadLogos() no country picked")
+		debug("< mytvLib.downloadLogos() no country picked")
 		return False
 
 	# get country page
@@ -3034,7 +3032,7 @@ def downloadLogos(channelNames=[]):
 	if not doc:
 		messageOK(dialogTitle, "Failed to fetch logo page", country_url)
 		deleteFile(country_fn)
-		debug("< downloadLogos() False")
+		debug("< mytvLib.downloadLogos() False")
 		return False
 
 	# extract logo filename & name
@@ -3047,7 +3045,7 @@ def downloadLogos(channelNames=[]):
 	if not logonames:
 		messageOK(dialogTitle, "No logos found on webpage!", country_url)
 		deleteFile(country_fn)
-		debug("< downloadLogos() False")
+		debug("< mytvLib.downloadLogos() False")
 		return False
 
 	# make menu of available logo filenames
@@ -3098,7 +3096,7 @@ def downloadLogos(channelNames=[]):
 
 	# reload logo filenames
 	deleteFile(country_fn)
-	debug("< downloadLogos() True")
+	debug("< mytvLib.downloadLogos() True")
 	return True
 
 ######################################################################################
@@ -3135,7 +3133,7 @@ def updateScript(silent=False):
 # checkAwake - if have SMB path, checks HOST & port 139
 ############################################################################################################################
 def sendWOL(checkAwake=True):
-	debug("> sendWOL() checkAwake=%s" % checkAwake)
+	debug("> mytvLib.sendWOL() checkAwake=%s" % checkAwake)
 	isAwake = True
 	mac = mytvGlobals.config.getSystem(MYTVConfig.KEY_SYSTEM_WOL)
 	if mac:
@@ -3180,7 +3178,7 @@ def sendWOL(checkAwake=True):
 
 		del sys.modules['wol']
 
-	debug("< sendWOL() isAwake=%s" % isAwake)
+	debug("< mytvLib.sendWOL() isAwake=%s" % isAwake)
 	return isAwake
 
 

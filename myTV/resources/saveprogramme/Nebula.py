@@ -43,7 +43,6 @@ from bbbGUILib import *
 import mytvGlobals
 from string import zfill, find, upper
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 # NOTE: ALL NEBULA SERVER SETTINGS NOW SET VIA myTV AT FIRST RUN & CONFIG MENU
@@ -192,9 +191,9 @@ class SaveProgramme:
 				success = self.configSaveProgramme.reset()
 			success = self.isConfigured()
 			if success:
-				isServerVersionPre35 = self.configSaveProgramme.isServerVersionPre35()
-				serverIP = self.configSaveProgramme.getServerIP()
-				serverPort = self.configSaveProgramme.getServerPort()
+				isServerVersionPre35 = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_VERSION)
+				serverIP = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_IP)
+				serverPort = self.configSaveProgramme.getValue(self.configSaveProgramme.KEY_PORT)
 				self.BASE_URL = "http://%s:%s/" % (serverIP,serverPort)
 
 				# Timers
@@ -261,7 +260,7 @@ class SaveProgramme:
 		while True:
 			# popup dialog to select choice
 			selectDialog = DialogSelect()
-			selectDialog.setup(title, width=680, rows=len(menuList), panel=DIALOG_PANEL)
+			selectDialog.setup(title, width=680, rows=len(menuList), panel=mytvGlobals.DIALOG_PANEL)
 			selectedPos,action = selectDialog.ask(menuList, selectedPos)
 			if selectedPos <= 0:
 				break
@@ -541,8 +540,8 @@ class ConfigSaveProgramme:
 
 		success = True
 		# check mandatory keys have values
-		mandatoryKeys = (self.KEY_VERSION,self.KEY_IP,self.KEY_PORT)
-		for key in mandatoryKeys:
+		for rec in self.configData:
+			key = rec[0]
 			value = self.getValue(key)
 			if value in (None, "","0"):
 				debug("missing value for mandatory key=%s" % key)
@@ -550,13 +549,6 @@ class ConfigSaveProgramme:
 
 		debug("< ConfigSaveProgramme.checkValues() success=%s" % success)
 		return success
-
-	def isServerVersionPre35(self):
-		return (self.getValue(self.KEY_VERSION) == __language__(350))	# yes
-	def getServerIP(self):
-		return self.getValue(self.KEY_IP)
-	def getServerPort(self):
-		return self.getValue(self.KEY_PORT)
 
 	def getValue(self, key):
 		return mytvGlobals.config.action(self.CONFIG_SECTION, key)

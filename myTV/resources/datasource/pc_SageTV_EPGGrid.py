@@ -17,7 +17,6 @@ from mytvLib import *
 import mytvGlobals
 import xbmc,xbmcgui, re, time, os.path
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 class ListingData:

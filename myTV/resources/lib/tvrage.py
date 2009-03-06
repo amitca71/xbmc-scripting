@@ -12,8 +12,6 @@ __language__ = sys.modules[ "__main__" ].__language__
 DIR_GFX = sys.modules[ "__main__" ].DIR_GFX     			# should be in default.py
 DIR_CACHE = sys.modules["__main__"].DIR_CACHE
 DIR_DATASOURCE_GFX = sys.modules["mytvLib"].DIR_DATASOURCE_GFX
-#global DIALOG_PANEL
-#DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 
 class TVRage:
 

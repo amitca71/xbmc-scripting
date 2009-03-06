@@ -19,7 +19,6 @@ from bbbGUILib import *
 import mytvGlobals
 from mytvLib import *
 
-DIALOG_PANEL = sys.modules["mytvLib"].DIALOG_PANEL
 __language__ = sys.modules["__main__"].__language__
 
 DISEQC_91 = '91.0W'
@@ -213,7 +212,7 @@ class ConfigSaveProgramme:
 	def getPort(self):
 		return self.getValue(self.KEY_PORT)
 	def is22khz(self):
-		return (self.getValue(self.KEY_IS22KHZ) == __language__(350))	# yes
+		return self.getValue(self.KEY_IS22KHZ)
 	def getPlaybackOutput(self):
 		return self.getValue(self.KEY_PLAYBACK_OUTPUT)
 	def getStreamFile(self):
