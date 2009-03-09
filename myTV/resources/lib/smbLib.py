@@ -274,25 +274,23 @@ def handleExceptionSMB(ex, title, msg=""):
 def selectSMB(currentValue=''):
 	debug("> selectSMB() currentValue=%s" % currentValue)
 	returnValue = ''
-	doc = ''
 
 	doc = readFile("/".join( ['Q:','UserData','sources.xml'] ))
 	if doc:
 		# extract SMB paths from XBMC config file
 		menuList = []
 		prefix = 'smb://'
-		regex = '<path>('+prefix+'.*)</path>'
+		regex = '<path>('+prefix+'.*?)</path>'
 		findRe = re.compile(regex, re.IGNORECASE)
 		matches = findRe.findall(doc)
-		if matches:
-			# remove empty & examples
-			for match in matches:
-				if match == prefix or 'username' in match or 'DOMAIN' in match:
-					continue
-				try:
-					menuList.index(match)
-				except:
-					menuList.append(match)	# not exist already, add
+		# remove empty & examples
+		for match in matches:
+			if match == prefix or 'username' in match or 'DOMAIN' in match:
+				continue
+			try:
+				menuList.index(match)
+			except:
+				menuList.append(match)	# not exist already, add
 
 		# set to currentValue
 		try:
@@ -304,7 +302,7 @@ def selectSMB(currentValue=''):
 		if selectedPos >= 0:
 			returnValue = menuList[selectedPos]
 
-	debug("< selectSMB() returnValue= " + returnValue)
+	debug("< selectSMB() returnValue=%s" % returnValue)
 	return returnValue
 
 

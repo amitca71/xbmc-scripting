@@ -184,7 +184,7 @@ class ListingData:
 			]
 
 		if reset:
-			configOptionsMenu(CONFIG_SECTION, configData, self.name, width=350)
+			configOptionsMenu(CONFIG_SECTION, configData, self.name, 350)
 
 		self.USER = mytvGlobals.config.action(CONFIG_SECTION, KEY_USER)
 		self.PWD = mytvGlobals.config.action(CONFIG_SECTION, KEY_PASS)

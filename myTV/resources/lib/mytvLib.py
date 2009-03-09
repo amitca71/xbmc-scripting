@@ -28,7 +28,7 @@ from shutil import copytree
 import mytvGlobals
 from bbbLib import *
 from bbbGUILib import *
-from smbLib import enterSMB
+from smbLib import enterSMB, selectSMB
 
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __title__ = "mytvLib"
@@ -1431,12 +1431,15 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 			if configKey:
 				if configKey in (MYTVConfig.KEY_SMB_PATH, MYTVConfig.KEY_SMB_IP, MYTVConfig.KEY_SMB_FILE):
 					label2 = mytvGlobals.config.getSMB(configKey)
+					menu.append(xbmcgui.ListItem(label, label2))
+					menu.append(xbmcgui.ListItem(__language__(971), ''))	# select from existing
 				else:
 					label2 = mytvGlobals.config.action(section, configKey)
-				if label2 == None:
-					label2 = ''
-				label2 = mytvGlobals.config.configHelper.boolToYesNo(label2)
-			menu.append(xbmcgui.ListItem(label, label2))
+					label2 = mytvGlobals.config.configHelper.boolToYesNo(label2)
+					if label2 == None:
+						label2 = ''
+					menu.append(xbmcgui.ListItem(label, label2))
+
 		return menu
 
 	# DO MENU, SELCT OPT, GET VALUE, SAVE TO CONFIG
@@ -1450,8 +1453,15 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 		if selectedPos <= 0:
 			break # exit selected
 
-		key, label, defaultValue, kbType = configData[selectedPos-1]    # defaultValue could be a list of options
-		currValue = menu[selectedPos].getLabel2()
+		if menu[selectedPos].getLabel() == __language__(971):		# select from existing
+			kbType = KBTYPE_SMB
+			label = ""
+			currValue = selectSMB()
+			if not currValue: continue
+		else:
+			key, label, defaultValue, kbType = configData[selectedPos-1]    # defaultValue could be a list of options
+			currValue = menu[selectedPos].getLabel2()
+			
 
 		# enter new value and save to config
 		if kbType == KBTYPE_SMB:

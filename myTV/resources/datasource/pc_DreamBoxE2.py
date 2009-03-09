@@ -1,7 +1,10 @@
 ############################################################################################################
 # TV Data source: 
 # Notes:
-# Pulls DM cretaed day files from Dreambox Enigma2.
+# Pulls DM created day files from Dreambox Enigma2.
+#
+# Setup your DM to create the individual Day Filesusing a filename that matches that you specify in this
+# datasource setup. (Setup on first run or throu Config menu)
 #
 # REVISION HISTORY:
 # 20/02/09 - Created
@@ -16,10 +19,9 @@ from pprint import pprint
 
 __language__ = sys.modules["__main__"].__language__
 
-CHANNELS_REGEX = '^(\d+)=[1|2|3],(.*?)[,\n]'
-CHANNEL_REGEX = '^(\d+)###(.*?)###(.*?)###(.*?)$'
-DM_FILENAME_REGEX = 'australiasat###(.*?)_(\d+)-(\d+)###(\d+)'
-DM_CONF_FILENAME = 'australiasat-channel_list.conf'
+# DON'T CHANGE THESE UNLESS THEY NO LONGER MATCH
+CHANNELS_REGEX = '^(\d+)=[1|2|3],(.*?)[,\n]'		# chID, chName
+CHANNEL_REGEX = '^(\d+)###(.*?)###(.*?)###(.*?)$'	# starttimesecs (not used), display time, title, desc
 
 class ListingData:
 	def __init__(self, cache):
@@ -51,8 +53,8 @@ class ListingData:
 			# fetch file if not exists
 			if not fileExist(self.CHANNELS_FILENAME):
 				# fetch from SMB
-				remoteFN = "/".join( [self.smbPath, DM_CONF_FILENAME] )
-				localFN = os.path.join(self.cache, DM_CONF_FILENAME)
+				remoteFN = "/".join( [self.smbPath, self.DM_CONF_FILENAME] )
+				localFN = os.path.join(self.cache, self.DM_CONF_FILENAME)
 				response = xbmc.executehttpapi("FileCopy(%s,%s)" % (remoteFN, localFN))
 				debug("httpapi response=%s" % response)
 
@@ -83,8 +85,6 @@ class ListingData:
 		progList = []
 
 		if self.isConfigured and not self.connectionError and not self.checkedRemoteFileToday:
-#			if not self.remote or not self.remoteInfo:
-#				self.remote, self.remoteInfo = smbConnect(self.smbIP, self.smbPath)
 
 			# fetch all DM day files for chID
 			dialogProgress.update(0, "Querying Dreambox ...", " ", " ")
@@ -106,18 +106,17 @@ class ListingData:
 				fetchedDMDict = {}
 				for count, remoteBMFilename in enumerate(remoteFileList):
 					try:
-						match = re.search(DM_FILENAME_REGEX, remoteBMFilename.strip())
+						match = re.search(self.DM_FILENAME_REGEX, remoteBMFilename)
 						if not match: continue
-						fnChName = match.group(1)
-						fnChID = match.group(2)
-						fnDate = match.group(4)
+						fnChID = match.group(1)
+						fnDate = match.group(2)
 
 						channelFN = xbmc.makeLegalFilename(os.path.join(DIR_CACHE, "%s_%s.dat" % (fnChID,fnDate)))
 						if not fileExist(channelFN):
-							remoteBMBasename = os.path.basename(remoteBMFilename.strip())
+							remoteBMBasename = os.path.basename(remoteBMFilename.strip()) #.replace('+','%2B')
 							localBMFilename = xbmc.makeLegalFilename(os.path.join(self.cache, "DM_%s_%s.dat" % (fnChID,fnDate)))
 							percent = int( (count * 100.0) / MAX_COUNT )
-							dialogProgress.update(percent, __language__(962), fnChName, remoteBMBasename)
+							dialogProgress.update(percent, __language__(962), remoteBMBasename)
 
 							response = xbmc.executehttpapi("FileCopy(%s,%s)" % (remoteBMFilename, localBMFilename))
 							debug("httpapi response=%s" % response)
@@ -131,28 +130,7 @@ class ListingData:
 						print str( sys.exc_info()[ 1 ] )
 						print "except during remoteFilename=" + localBMFilename
 
-				# now process all the DM data file into myTV data files
-#				pprint (fetchedDMDict.items())
-#				MAX_COUNT = len(fetchedDMDict)
-#				debug("fetchedDMDict count=%d" % MAX_COUNT)
-#				if DEBUG:
-#					pprint (fetchedDMDict)
-#				count = 0
-#				for channelFN, localBMFilename in fetchedDMDict.items():
-#					percent = int( (count * 100.0) / MAX_COUNT )
-#					dialogProgress.update(percent, __language__(312), \
-#										os.path.basename(localBMFilename), os.path.basename(channelFN))
-#					self.createChannelFiles(localBMFilename, channelFN, localBMFilename[-8:])
-#					count += 1
-
-				# remove all DM files
-#				dialogProgress.update(percent, __language__(217), " ", " ")
-#				for localBMFilename in fetchedDMDict.values():
-#					deleteFile(localBMFilename)
-
-				print "check for filename=" + filename
 				if fileExist(filename):
-					print "found filename"
 					progList = loadChannelFromFile(filename)
 
 			self.checkedRemoteFileToday = True
@@ -196,6 +174,41 @@ class ListingData:
 
 	############################################################################################################
 	def config(self, reset=False):
+		debug("> ListingData.config() reset=%s" % reset)
+
+		CONFIG_SECTION = 'DATASOURCE_' + self.getName()
+
+		# CONFIG KEYS
+		KEY_CHANNELS_FN = 'dm_channels_fn'
+		KEY_DM_FN = 'dm_channel_fn'
+
+		# Uncomment the ONE that works for your web server interface
+		configData = [
+			[KEY_CHANNELS_FN,"DM Channels Filename:", "australiasat-channel_list.conf", KBTYPE_ALPHA],
+			[KEY_DM_FN,"DM Channel Day Filename:", "australiasat###(\d+).*?###(\d+)", KBTYPE_ALPHA],
+			[mytvGlobals.config.KEY_SMB_PATH, __language__(969), '', KBTYPE_SMB]
+			]
+
+		def _check():
+			self.DM_CONF_FILENAME = mytvGlobals.config.action(CONFIG_SECTION, KEY_CHANNELS_FN)
+			self.DM_FILENAME_REGEX = mytvGlobals.config.action(CONFIG_SECTION, KEY_DM_FN)
+			self.smbPath = mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH)
+			
+			success = bool( self.smbPath and self.DM_CONF_FILENAME and self.DM_FILENAME_REGEX )
+			debug("_check() success=%s" % success)
+			return success
+
+		if reset:
+			title = "%s - %s" % (self.name, __language__(976)) # __language__(534)
+			configOptionsMenu(CONFIG_SECTION, configData, title)
+		self.isConfigured = _check()
+
+		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
+		return self.isConfigured
+
+
+	############################################################################################################
+	def configOLD(self, reset=False):
 		debug("> ListingData.config() reset=%s" % reset)
 
 		title = "%s - %s" % (self.name, __language__(976))
