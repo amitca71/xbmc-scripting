@@ -578,7 +578,9 @@ class Trailers:
                 temp_url = element.getiterator( self.ns( "PictureView" ) )[ 2 ].get( "url" )
                 if temp_url:
                     if "/mpaa" in temp_url:
-                        rating_url = fetcher.urlretrieve( self.base_url + temp_url )
+                        if ( not temp_url.startswith( "http://" ) ):
+                            temp_url = "http://images.apple.com" + temp_url
+                        rating_url = fetcher.urlretrieve( temp_url )
                         if rating_url:
                             self.rating_url = os.path.basename( rating_url )
                             self.rating = os.path.split( temp_url )[ 1 ][ : -4 ].replace( "mpaa_", "" )
