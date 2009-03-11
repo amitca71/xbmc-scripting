@@ -20,8 +20,8 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '08-12-2008'
-__version__ = "1.7.5"
+__date__ = '11-03-2009'
+__version__ = "1.8"
 xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
 
 # Shared resources
@@ -37,7 +37,17 @@ try:
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
 	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Dialog().ok("xbmc.Language Error (Old XBMC Build)", "Script needs at least XBMC 'Atlantis' build to run.","Use script v1.7.2 instead.")
+	xbmcgui.Diaxbmc.output().ok("xbmc.Language Builtin Error", "Update XBMC manually to run this version.","Or use script v1.7.2 instead.")
+
+# check if build is special:// aware - set roots paths accordingly
+XBMC_HOME = 'special://home'
+XBMC_PROFILE = 'special://masterprofile'
+if not os.path.isdir(xbmc.translatePath(XBMC_HOME)):	# if fails to convert to Q:, old builds
+	xbmc.output("XBMC not 'special://' aware, fallback to old paths")
+	XBMC_HOME = 'Q:'
+	XBMC_PROFILE = 'T:'
+xbmc.output("XBMC_HOME=%s" % XBMC_HOME)
+xbmc.output("XBMC_PROFILE=%s" % XBMC_PROFILE)
 
 from sgmllib import SGMLParser
 import urllib
@@ -57,6 +67,8 @@ EXIT_SCRIPT = ( 9, 10, 247, 275, 61467, )
 CANCEL_DIALOG = EXIT_SCRIPT + ( 216, 257, 61448, )
 TEXTBOX_XML_FILENAME = "DialogScriptInfo.xml"       # xbmc skin supplied textbox viewer
 
+def log(msg):
+	xbmc.output("[%s]: %s" % (__scriptname__, msg))
 
 #############################################################################################################
 class Parser( SGMLParser ):
@@ -70,7 +82,7 @@ class Parser( SGMLParser ):
 			if ( key == "href" and value.find( "/STABLE/" ) == -1 and value.find( "ARCHIVE/" ) == -1 \
 				and value.find( "/t3ch/XBMC-SVN" ) != -1 and value.find( ".rar" ) != -1 ):
 				self.url = value
-				xbmc.output("SVN T3CH build archive found! " + self.url)
+				log("SVN T3CH build archive found! " + self.url)
 				break
 
 		if not self.url:
@@ -79,32 +91,30 @@ class Parser( SGMLParser ):
 				if key == "href" and value.find( "/repository/" ) != -1 and value.find( "ARCHIVE/" ) == -1 \
 					and value.find( "/XBMC-" ) != -1 and value.find( ".rar" ) != -1:
 					self.url = value
-					xbmc.output("STABLE T3CH build archive found! " + self.url)
+					log("STABLE T3CH build archive found! " + self.url)
 					break
 
 #############################################################################################################
 class Main:
 	def __init__( self, runMode ):
-		xbmc.output("> __init__()")
+		log("> __init__()")
 
 		self.runMode = runMode
-		xbmc.output("runMode=" + str(runMode))
+		log("runMode=" + str(runMode))
 		self.isSilent = (runMode != RUNMODE_NORMAL)
-		xbmc.output("isSilent=" + str(self.isSilent))
+		log("isSilent=" + str(self.isSilent))
 
 		self.HOME_URL_LIST = ("http://t3ch.yi.se/", "http://217.118.215.116/")
 		self.FTP_URL_LIST = ("http://ftp1.srv.endpoint.nu/", "http://ftp3.srv.endpoint.nu/")
 		self.FTP_REPOSITORY_URL = "pub/repository/t3ch/"
 		self.FTP_REPOSITORY_ARCHIVE_URL = self.FTP_REPOSITORY_URL + "ARCHIVE/"
 
-		self.isPartialDownload = False		# indicate that last download was cancelled, rar might be partial
-
 		# init settings folder
-		self.SCRIPT_DATA_DIR = os.path.join( "T:\\script_data", __scriptname__ )
-		makeDir(self.SCRIPT_DATA_DIR)
+		SCRIPT_DATA_DIR = xbmc.translatePath("/".join( [XBMC_PROFILE, "script_data", __scriptname__] ))
+		makeDir(SCRIPT_DATA_DIR)
 
 		# SETTINGS
-		self.SETTINGS_FILENAME = os.path.join( self.SCRIPT_DATA_DIR, "settings.txt" )
+		self.SETTINGS_FILENAME = os.path.join( SCRIPT_DATA_DIR, "settings.txt" )
 		self.SETTING_SHORTCUT_DRIVE = "shortcut_drive"
 		self.SETTING_SHORTCUT_NAME = "dash_shortcut_name"
 		self.SETTING_UNRAR_PATH = "unrar_path"
@@ -115,8 +125,8 @@ class Main:
 		self.SETTING_CHECK_NEW_BUILD = "check_new_build"
 
 		# COPY INCLUDES
-		self.INCLUDES_FILENAME = os.path.join( self.SCRIPT_DATA_DIR, "includes.txt" )
-		self.EXCLUDES_FILENAME = os.path.join( self.SCRIPT_DATA_DIR, "excludes.txt" )
+		self.INCLUDES_FILENAME = os.path.join( SCRIPT_DATA_DIR, "includes.txt" )
+		self.EXCLUDES_FILENAME = os.path.join( SCRIPT_DATA_DIR, "excludes.txt" )
 
 		self._init_includes_excludes()
 		self.settings = self._load_file_obj( self.SETTINGS_FILENAME, {} )
@@ -143,12 +153,12 @@ class Main:
 			if (self.runMode == RUNMODE_NORMAL) or (remote_short_build_name and self.runMode == RUNMODE_SILENT):
 				self._menu( url, remote_archive_name, remote_short_build_name )
 
-		xbmc.output("< __init__() done")
+		log("< __init__() done")
 
 
 	######################################################################################
 	def _check_settings( self, forceSetup=False ):
-		xbmc.output( "_check_settings() forceSetup=%s" % forceSetup)
+		log( "_check_settings() forceSetup=%s" % forceSetup)
 		while forceSetup or not self._set_default_settings(False):
 			self.isSilent = False							# come out of silent inorder to setup
 			self._settings_menu()							# enter settings
@@ -157,7 +167,7 @@ class Main:
 	######################################################################################
 	def _set_default_settings( self, forceReset=False ):
 		""" set settings to default values if not exist """
-		xbmc.output( "> _set_default_settings() forceReset="+str(forceReset) )
+		log( "> _set_default_settings() forceReset="+str(forceReset) )
 		success = True
 		# __language__(402), # yes
 		# __language__(403), # no
@@ -177,29 +187,33 @@ class Main:
 			if forceReset or not self.settings.has_key( key ) or self.settings[key] in ("",None):
 				self.settings[key] = defaultValue
 				if not forceReset:
-					xbmc.output( "Using default value for setting: %s" % key )
+					log( "Using default value for setting: %s" % key )
 					success = False
 			elif key in (self.SETTING_CHECK_NEW_BUILD, self.SETTING_NOTIFY_NOT_NEW, \
 						 self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP, self.SETTING_XFER_USERDATA, self.SETTING_PROMPT_DEL_RAR):
 				# convert old settings that used YES, NO to True, False
 				if not isinstance(self.settings[key], bool) or self.settings[key] not in (True, False):
 					self.settings[key] = (self.settings[key] == __language__(402))	# yes = True
-					xbmc.output("translated old setting to bool. %s %s" % (key, self.settings[key]))
+					log("translated old setting to bool. %s %s" % (key, self.settings[key]))
 					success = False													# will force a save from menu
 
-		xbmc.output( "< _set_default_settings() success=%s" % success)
+		log( "< _set_default_settings() success=%s" % success)
 		return success
 		
 	######################################################################################
 	def _load_file_obj( self, filename, dataType ):
-		xbmc.output( "_load_file_obj() " + filename)
+		log( "_load_file_obj() " + filename)
+		load_obj = None
 		try:
-			file_handle = open( filename, "r" )
-			load_obj = eval( file_handle.read() )
-			file_handle.close()
+			if os.path.isfile(filename):
+				file_handle = open( filename, "r" )
+				load_obj = eval( file_handle.read() )
+				file_handle.close()
 		except:
 			handleException()
-			xbmc.output( "_load_file_obj() failed to load, using data type default as empty.")
+
+		if load_obj == None:
+			log( "_load_file_obj() file missing, setting to empty.")
 			if isinstance(dataType, dict):
 				load_obj = {}
 			elif isinstance(dataType, list):
@@ -210,7 +224,7 @@ class Main:
 
 	######################################################################################
 	def _save_file_obj( self, filename, save_obj ):
-		xbmc.output( "_save_file_obj() " + filename)
+		log( "_save_file_obj() " + filename)
 		try:
 			file_handle = open( filename, "w" )
 			file_handle.write( repr( save_obj ) )
@@ -221,7 +235,7 @@ class Main:
 
 	######################################################################################
 	def _browse_for_path( self, heading, default_path='', dialog_type=3):
-		xbmc.output( "_browse_for_path() default_path=" + default_path + " dialog_type="+str(dialog_type) )
+		log( "_browse_for_path() default_path=%s dialog_type=%s" % (default_path, dialog_type) )
 		dialog = xbmcgui.Dialog()
 		skinName = xbmc.getSkinDir()
 		if skinName.find("MC360") >= 0:		# for just MC360
@@ -230,7 +244,7 @@ class Main:
 
 	######################################################################################
 	def _pick_shortcut_drive( self):
-		xbmc.output( "_pick_shortcut_drive()" )
+		log( "_pick_shortcut_drive()" )
 		options = [__language__(650), "C:\\", "E:\\", "F:\\"]
 		selectDialog = xbmcgui.Dialog()
 		selected = selectDialog.select( __language__( 202 ), options )
@@ -241,7 +255,7 @@ class Main:
 
 	######################################################################################
 	def _browse_dashname(self, dash_name=''):
-		xbmc.output( "> _browse_dashname() curr dash_name="+dash_name)
+		log( "> _browse_dashname() curr dash_name="+dash_name)
 		try:
 			xbeFiles = [__language__(650), __language__(652)]
 
@@ -253,12 +267,12 @@ class Main:
 				drive = self.settings["shortcut_drive"]
 			except:
 				drive = "C:\\"
-			xbmc.output( "checking for names on drive=" + drive)
+			log( "checking for names on drive=" + drive)
 			# find all existing dash name
 			allFiles = os.listdir( drive )
 			for f in allFiles:
 				fn, ext = os.path.splitext(f)
-				if fn != 'msdash' and (ext in ['.xbe','.cfg']):
+				if fn != 'msdash' and (ext.lower() in ['.xbe','.cfg']):
 					try:
 						xbeFiles.index(fn)
 					except:
@@ -270,12 +284,11 @@ class Main:
 				selected = selectDialog.select( __language__( 201 ), xbeFiles )
 				if selected <= 0:						# quit
 					break
-				elif selected == 1:
+				elif selected == 1:						# keyboard
 					dash_name = getKeyboard(dash_name, __language__( 201 ))
-					if dash_name[-1] in ['\\','/']:
+					if dash_name and dash_name[-1] in ['\\','/']:
 						dash_name = dash_name[:-1]
-				else:
-					# select dash name form list
+				else:									# selected from existing
 					dash_name = xbeFiles[selected]
 
 				if dash_name:
@@ -285,13 +298,13 @@ class Main:
 
 		except:
 			handleException("_browse_dashname()")
-		xbmc.output( "< _browse_dashname() final dash_name="+dash_name)
+		log( "< _browse_dashname() final dash_name="+dash_name)
 		return dash_name
 
 
 	######################################################################################
 	def _check_build_date( self, url ):
-		xbmc.output( "> _check_build_date() %s" % url )
+		log( "> _check_build_date() %s" % url )
 
 		archive_name = ''
 		short_build_name = ''
@@ -314,43 +327,44 @@ class Main:
 		except:
 			traceback.print_exc()
 
-		xbmc.output("< _check_build_date() archive_name=%s short_build_name=%s" % (archive_name, short_build_name))
+		log("< _check_build_date() archive_name=%s short_build_name=%s" % (archive_name, short_build_name))
 		return (archive_name, short_build_name)
 
 	######################################################################################
 	def _get_archive_info(self, source):
 		""" parse local file or url to get build info """
-		xbmc.output( "> _get_archive_info()")
+		log( "> _get_archive_info() ")
 		filenameInfo = ()
 		orig_archive_name = os.path.basename( source )
 		while not filenameInfo:
 			try:
 				# parse archive filename
-				xbmc.output( "parsing source=" + source)
+				log( "parsing source=%s" % source)
 				archive_name = os.path.basename( source )      		# with ext, YYYY-MM-DD -> YYYYMMDD
 				found_build_date = searchRegEx(archive_name.replace('-',''), '(\d\d\d\d\d\d\d\d)') 
 				found_build_date_secs = time.mktime( time.strptime(found_build_date,"%Y%m%d") )
 				short_build_name = "T3CH_%s" % (found_build_date)		# used as installation folder name
 				filenameInfo = (orig_archive_name, found_build_date, found_build_date_secs, short_build_name)
 			except:
-				xbmc.output("exception parsing filename: %s" % archive_name)
-				traceback.print_exc()
+				print str( sys.exc_info()[ 1 ] )
+				dialogOK("Invalid Archive Name", archive_name, "eg. XBMC-YYYYMMDD.rar")
 
 			if not filenameInfo:
 				# unable to parse, ask for save name with a date
 				if dialogYesNo( __language__(0), __language__(321), archive_name, __language__(535) + " ?"):
 					source = "XBMC-%s.rar" % getKeyboard("", "%s. (YYYYMMDD)" % __language__(535))
 				else:
+					filenameInfo = ()
 					break
 
-		xbmc.output("< _get_archive_info() " + str(filenameInfo))
+		log("< _get_archive_info()")
 		return filenameInfo
 
 	######################################################################################
 	def _menu( self, url, remote_archive_name="", remote_short_build_name="" ):
-		xbmc.output( "_menu() url=" + str(url) )
-		xbmc.output( "remote_archive_name=" + remote_archive_name)
-		xbmc.output( "remote_short_build_name=" + remote_short_build_name)
+		log( "_menu() url=" + str(url) )
+		log( "remote_archive_name=" + remote_archive_name)
+		log( "remote_short_build_name=" + remote_short_build_name)
 
 		selectDialog = xbmcgui.Dialog()
 		heading = "%s v%s (XBMC:%s): %s" % (__language__( 0 ), __version__, \
@@ -358,7 +372,7 @@ class Main:
 												__language__( 600 ))
 
 		def _make_menu(local_archive_name=''):
-			xbmc.output("_make_menu()")
+			log("_make_menu()")
 			self.opt_exit = __language__(650)
 			self.opt_view_logs = __language__(611)
 			# if archive name, show it on menu for download
@@ -405,20 +419,13 @@ class Main:
 			# Only include found rar if not a result of a previous cancelled download, as may be partial.
 			local_archive_name = ''
 			local_short_build_name = ''
+			archive_list = []
 			if not self.isSilent:
-				local_rar_file = self._get_local_archive()
-				if local_rar_file:
-					# assume local rars under 40meg are partial downloads and delete them
-					rar_filepath = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], local_rar_file)
-					fsize = os.path.getsize(rar_filepath)
-					if self.isPartialDownload or fsize < 40000000:
-						xbmc.output("suspected incompleted rar, fsize=%s self.isPartialDownload=%s" % (fsize, self.isPartialDownload))
-						deleteFile(rar_filepath)
-					else:
-						try:
-							local_archive_name, found_build_date, found_build_date_secs, local_short_build_name = self._get_archive_info(local_rar_file)
-						except:
-							local_archive_name = '' # failed parsing local rar, don't add to menu
+				archive_list = self._get_local_archive()
+				if len(archive_list) == 1:
+					local_archive_name = archive_list[0]
+				elif len(archive_list) > 1:
+					local_archive_name = __language__(536)		# choose multiple
 
 			# build menu
 			options = _make_menu(local_archive_name)
@@ -426,7 +433,7 @@ class Main:
 			# show menu
 			if not self.isSilent:
 				selectedIdx = selectDialog.select( heading, options )
-				xbmc.output("menu selectedIdx=%s" % selectedIdx)
+				log("menu selectedIdx=%s" % selectedIdx)
 				if selectedIdx <= 0:		# quit
 					return
 				selectedOpt = options[selectedIdx]
@@ -463,17 +470,28 @@ class Main:
 					if url:
 						remote_archive_name, remote_short_build_name = self._check_build_date( url )
 			elif selectedOpt == self.opt_local:											# local archive install
-				if local_archive_name:
-					self.archive_name = local_archive_name
-					self.short_build_name = local_short_build_name
-					if self._process('', False, False):
-						if dialogYesNo( __language__( 0 ), __language__( 512 )):		# reboot ?
-							xbmc.executebuiltin( "XBMC.Reboot" )
-						break
+				if len(archive_list) == 1:
+					local_rar_file = archive_list[0]
+				else:
+					local_rar_file = ""
+					selectDialog = xbmcgui.Dialog()
+					selectedPos = selectDialog.select( __language__( 536 ), archive_list )
+					if selectedPos >= 0:
+						local_rar_file = archive_list[selectedPos]
+					del selectDialog
+				if local_rar_file:
+					local_archive_name, found_build_date, found_build_date_secs, local_short_build_name = self._get_archive_info(local_rar_file)
+					if local_archive_name:
+						self.archive_name = local_archive_name
+						self.short_build_name = local_short_build_name
+						if self._process('', False, False):
+							if dialogYesNo( __language__( 0 ), __language__( 512 )):		# reboot ?
+								xbmc.executebuiltin( "XBMC.Reboot" )
+							break
 			elif selectedOpt == self.opt_maint_copy:									# copy includes
-				self._maintain_includes()
+				self._maintain_incl_excl(True)
 			elif selectedOpt == self.opt_maint_del:										# delete excludes
-				self._maintain_excludes()
+				self._maintain_incl_excl(False)
 			elif selectedOpt == self.opt_switch:										# change to another t3ch
 				if self._switch_builds_menu():
 					break
@@ -481,14 +499,14 @@ class Main:
 				self._delete_old_t3ch()
 			elif selectedOpt == self.opt_update_script:									# update script
 				if self._update_script(False):											# never silent from config menu
-					xbmc.output("script updating ... closing current instance")
+					log("script updating ... closing current instance")
 					break
 			elif selectedOpt == self.opt_settings:										# settings
 				self._check_settings(forceSetup=True)
 
 	#####################################################################################
 	def _switch_builds_menu(self):
-		xbmc.output( "> _switch_builds_menu() ")
+		log( "> _switch_builds_menu() ")
 
 		reboot = False
 		selectedBuildName = ''
@@ -516,38 +534,45 @@ class Main:
 						reboot = True
 						xbmc.executebuiltin( "XBMC.Reboot" )
 
-		xbmc.output( "< _switch_builds_menu() ")
+		log( "< _switch_builds_menu() ")
 		return reboot
 
 
 	######################################################################################
 	def _get_local_archive(self):
-		""" return latest T3CH archive found in install dir. Matches filenames of XBMC*YYYY-DD-MM*.<zip|rar> """
-		xbmc.output("> _get_local_archive()")
-		archive_file = ""
-		flist = []
+		""" return list of T3CH archives found in install dir. Matches filenames of XBMC*YYYY-DD-MM*.<zip|rar> """
+		log("> _get_local_archive()")
+		archive_list = []
 		try:
 			files = os.listdir( self.settings[ self.SETTING_UNRAR_PATH ] )
 			for f in files:
+				log("checking f=" + f)
 				if searchRegEx(f, '(XBMC.*?\d+-\d+-\d+.*?(?:.rar|.zip))') or \
 					searchRegEx(f, '(XBMC.*?\d\d\d\d\d\d\d\d.*?(?:.rar|.zip))'):
-					flist.append(f)
+
+					# assume local rars under 40meg are partial downloads and delete them
+					rar_filepath = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], f)
+					fsize = os.path.getsize(rar_filepath)
+					if fsize < 40000000:
+						log("deleting suspected incompleted rar, fsize=%s %s" % (fsize, f))
+						deleteFile(rar_filepath)
+					else:
+						archive_list.append(f)
 
 			# sort to get latest
-			if flist:
-				flist.sort()
-				flist.reverse()
-				archive_file = flist[0]
+			if archive_list:
+				archive_list.sort()
+				archive_list.reverse()
 		except:
 			traceback.print_exc()
-		xbmc.output("< _get_local_archive() archive_file=" + archive_file)
-		return archive_file
+		log("< _get_local_archive() archive_list=%s" % archive_list)
+		return archive_list
 
 
 	######################################################################################
 	def _check_sfv(self, archive_local_filepath):
 		""" Download SFV for latest T3CH build, then check against RAR """
-		xbmc.output( "> _check_sfv()" )
+		log( "> _check_sfv()" )
 		success = False
 
 		# make full path + filename using remote archive filename
@@ -564,7 +589,7 @@ class Main:
 			if doc:
 				# compare against archive actual local filename, which may be diff. to remote filename
 				# due to being renamed cos of filename length.
-				xbmc.output("checking sfv entry for %s %s" % (split_name, archive_local_filepath))
+				log("checking sfv entry for %s %s" % (split_name, archive_local_filepath))
 				sfv = SFVCheck.SFVCheck(sfvDoc=doc)
 				success = sfv.check(split_name, archive_local_filepath)
 				if success == None:
@@ -575,7 +600,7 @@ class Main:
 			success = dialogYesNo( __language__( 0 ), __language__( 320 ) )
 		elif not success:
 			dialogOK( __language__( 0 ), __language__(315) )
-		xbmc.output( "< _check_sfv() success=%s" % success)
+		log( "< _check_sfv() success=%s" % success)
 		return success
 
 	######################################################################################
@@ -583,7 +608,7 @@ class Main:
 	######################################################################################
 	def _check_free_mem(self, driveSpaceRequiredMb=180, ramCheck=True):
 		""" check installation drive has enough freespace and enough free ram """
-		xbmc.output( "> _check_free_mem() driveSpaceRequiredMb=%s ramCheck=%s" % (driveSpaceRequiredMb, ramCheck))
+		log( "> _check_free_mem() driveSpaceRequiredMb=%s ramCheck=%s" % (driveSpaceRequiredMb, ramCheck))
 
 		success = False
 		drive = os.path.splitdrive( self.settings[self.SETTING_UNRAR_PATH] )[0][0]	# eg C from (C:, path)
@@ -591,7 +616,7 @@ class Main:
 
 		# convert info to MB
 		drive_freespaceMb = int(searchRegEx(drive_freespace_info, '(\d+)'))		# extract space number
-		xbmc.output("Drive=%s  Freespace=%sMB  Required=%sMB" % (drive, drive_freespaceMb, driveSpaceRequiredMb))
+		log("Drive=%s  Freespace=%sMB  Required=%sMB" % (drive, drive_freespaceMb, driveSpaceRequiredMb))
 
 		if drive_freespaceMb < driveSpaceRequiredMb:
 			msg = __language__(530)  % (drive, drive_freespaceMb, driveSpaceRequiredMb)
@@ -603,35 +628,35 @@ class Main:
 			# warn if low, but can continue if OK'd
 			freememMb = xbmc.getFreeMem()
 			freeMemRecMb = 31		# 31 seems ok, always rez dependant eg. 480p 16:9 == 42mb
-			xbmc.output( "Freemem=%sMB  Recommended=%sMB" % ( freememMb, freeMemRecMb ) )
+			log( "Freemem=%sMB  Recommended=%sMB" % ( freememMb, freeMemRecMb ) )
 			if freememMb < freeMemRecMb:
 				msg = __language__( 531 ) % (freememMb, freeMemRecMb)
 				success = xbmcgui.Dialog().yesno( __language__( 0 ), __language__(317), msg, __language__(532) )
 			else:
 				success = True
 
-		xbmc.output( "< _check_free_mem() success=%s" % success)
+		log( "< _check_free_mem() success=%s" % success)
 		return success
 
 	######################################################################################
 	def _process( self, url='', useSFV=True, downloadOnly=False ):
 		""" Download, Extract and Install new T3CH build, from a url or local archive """
-		xbmc.output( "> _process() url=%s useSFV=%s downloadOnly=%s" % (url, useSFV, downloadOnly))
+		log( "> _process() url=%s useSFV=%s downloadOnly=%s" % (url, useSFV, downloadOnly))
 
 		success = False
 		try:
 			# ensure remote filename doesnt exceed xbox filesystem local filename length limit
 			if url and len(self.archive_name) > 42:		# xbox filename limit
 				archive_name = "%s.rar" % self.short_build_name.replace("T3CH", "XBMC")
-				xbmc.output("remote archive filename too long, renamed")
+				log("remote archive filename too long, renamed")
 			else:
 				archive_name = self.archive_name
 
 			# create work paths
 			extract_path = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], self.short_build_name)
-			xbmc.output( "extract_path= " + extract_path )
+			log( "extract_path= " + extract_path )
 			archive_file = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], archive_name )
-			xbmc.output( "archive_file= " + archive_file )
+			log( "archive_file= " + archive_file )
 
 			# determine which mem (RAM / hdd) check to do according to process action
 			ramCheck = True
@@ -644,7 +669,7 @@ class Main:
 				driveSpaceRequiredMb = 120		# local archive unpack, install
 
 			if not downloadOnly and not self._check_free_mem(driveSpaceRequiredMb, ramCheck):
-				xbmc.output("< _process() success=False")
+				log("< _process() success=False")
 				return False
 
 			if url:
@@ -657,7 +682,7 @@ class Main:
 			else:
 				have_file = fileExist(archive_file)
 
-			xbmc.output( "have_file=%s" % have_file)
+			log( "have_file=%s" % have_file)
 			if downloadOnly:
 				success = True
 			elif have_file:
@@ -692,12 +717,12 @@ class Main:
 							deleteFile(archive_file)					# remove RAR
 		except:
 			handleException("process()")
-		xbmc.output("< _process() success=%s" % success)
+		log("< _process() success=%s" % success)
 		return success
 
 	######################################################################################
 	def _init_includes_excludes(self, forceReset=False):
-		xbmc.output("_init_includes_excludes() forceReset=%s" % forceReset)
+		log("_init_includes_excludes() forceReset=%s" % forceReset)
 
 		self.includes = []
 		self.excludes = []
@@ -714,7 +739,7 @@ class Main:
 		# remove old bad include paths
 		try:
 			self.includes.remove("plugins\\")
-			xbmc.output("includes; removed 'plugins\\'")
+			log("includes; removed 'plugins\\'")
 			changed = True
 		except: pass
 		if forceReset or changed:
@@ -726,8 +751,8 @@ class Main:
 
 	######################################################################################
 	def _hardcoded_includes(self):
-		""" Additional files/folders for post installation copying. All relative to Q:\ """
-		xbmc.output("_hardcoded_includes()")
+		""" Additional files/folders for post installation copying. All relative to XBMC root """
+		log("_hardcoded_includes()")
 		changed = False
 		# add if not already included
 		srcList = [ "skin\\", "screensavers\\", "scripts\\", "plugins\\video", "plugins\\pictures", \
@@ -740,14 +765,14 @@ class Main:
 		# change 'mispelt 'videos' to 'video'
 		try:
 			self.includes.remove("plugins\\videos")
-			xbmc.output("includes 'plugins\\videos' removed")
+			log("includes 'plugins\\videos' removed")
 		except: pass
 		return changed
 
 	######################################################################################
 	def _hardcoded_excludes(self):
 		""" Additional files/folders for post installation deleting. All relative to extract_path\\XBMC """
-		xbmc.output("_hardcoded_excludes()")
+		log("_hardcoded_excludes()")
 		changed = False
 		srcList = [ "..\\_tools", "..\\win32", "..\\Changelog.txt", "..\\copying.txt", "..\\keymapping.txt" ]
 		for src in srcList:
@@ -758,7 +783,7 @@ class Main:
 
 	######################################################################################
 	def _get_latest_version( self ):
-		xbmc.output( "_get_latest_version()" )
+		log( "_get_latest_version()" )
 		url = ""
 		for baseUrl in self.HOME_URL_LIST:
 			doc = readURL( baseUrl, __language__( 502 ), self.isSilent )
@@ -772,7 +797,7 @@ class Main:
 
 	######################################################################################
 	def _parse_html_source( self, htmlsource ):
-		xbmc.output( "_parse_html_source()" )
+		log( "_parse_html_source()" )
 		try:
 			parser = Parser()
 			parser.feed( htmlsource )
@@ -784,7 +809,7 @@ class Main:
 
 	######################################################################################
 	def _fetch_current_build( self, url, file_name ):
-		xbmc.output( "> _fetch_current_build() %s -> %s" % (url, file_name) )
+		log( "> _fetch_current_build() %s -> %s" % (url, file_name) )
 		success = False
 		try:
 			self.reporthook_msg1 = __language__( 503 )
@@ -809,8 +834,7 @@ class Main:
 			dialogOK( __language__( 0 ), __language__( 303 ), isSilent=self.isSilent )
 
 		urllib.urlcleanup()
-		self.isPartialDownload = not success
-		xbmc.output("< _fetch_current_build() success=%s isPartialDownload=%s " % (success,self.isPartialDownload))
+		log("< _fetch_current_build() success=%s " % (success))
 		return success
 
 	######################################################################################
@@ -828,7 +852,7 @@ class Main:
 
 	######################################################################################
 	def _extract( self, file_name, extract_path ):
-		xbmc.output( "> _extract() file_name=%s extract_path=%s"  % (file_name, extract_path))
+		log( "> _extract() file_name=%s extract_path=%s"  % (file_name, extract_path))
 		success = False
 
 		# check extract destination folder doesnt exist
@@ -836,7 +860,7 @@ class Main:
 			# ask to overwrite 
 			if not dialogYesNo(__language__( 0 ), __language__( 314 ), extract_path, \
 							yesButton=__language__( 402 ), noButton=__language__( 403 )):
-				xbmc.output( "< _extract() no overwrite. False")
+				log( "< _extract() no overwrite. False")
 				return False
 
 		# use a new dialog cos an update shows an empty bar that ppl expect to move
@@ -850,26 +874,26 @@ class Main:
 		try:
 			fsize = os.path.getsize(file_name)
 			if file_name.endswith("rar"):
-				xbmc.output("RAR filetype... fsize=%s" % fsize)
+				log("RAR filetype... fsize=%s" % fsize)
 				if fsize > 69000000 and not dialogYesNo( __language__( 0 ), __language__( 322 ) ):
 					success = False
 				else:
 					xbmc.executebuiltin( "XBMC.extract(%s,%s)" % ( file_name, extract_path, ), )
 					success = True
 			else:
-				xbmc.output("ZIP filetype... fsize=%s" % fsize)
+				log("ZIP filetype... fsize=%s" % fsize)
 				# unpack ZIP, then rename to reqd short path name
 				success, installed_path = unzip(self.settings[ self.SETTING_UNRAR_PATH ], file_name, self.isSilent, __language__(504))
 				if success:
 					if os.path.isdir(extract_path):
 						os.rmdir(extract_path)
-						xbmc.output("removed existing dir we wish to rename too " + extract_path)
+						log("removed existing dir we wish to rename too " + extract_path)
 
 					for retry in range(3):
 						try:
 							time.sleep(2)
 							os.rename(installed_path, extract_path)
-							xbmc.output("installation dir renamed to " + extract_path)
+							log("installation dir renamed to " + extract_path)
 							break
 						except:
 							traceback.print_exc()
@@ -886,16 +910,16 @@ class Main:
 				# remove partial extract
 				try:
 					rmtree( extract_path, ignore_errors=True )
-					xbmc.output("extract failed, extract path rmtree done")
+					log("extract failed, extract path rmtree done")
 				except: pass
 				dialogOK( __language__( 0 ), __language__( 312 ), extract_path )
 
-		xbmc.output( "< _extract() success=%s" % success )
+		log( "< _extract() success=%s" % success )
 		return success
 
 	######################################################################################
 	def _check_extract(self, extract_path):
-		xbmc.output( "> _check_extract() extract_path=" + extract_path)
+		log( "> _check_extract() extract_path=" + extract_path)
 		success = False
 
 		# inform user of os path checking
@@ -919,10 +943,10 @@ class Main:
 			isPath = True
 			for p in check_path_list:
 				isPath = os.path.isdir(p)
-				xbmc.output("%s %s" % (p, isPath))
+				log("%s %s" % (p, isPath))
 				if not isPath:
 					break
-			xbmc.output("checkCount=" + str(count) + " isPath="+str(isPath) + " isFile="+str(isFile))
+			log("checkCount=" + str(count) + " isPath="+str(isPath) + " isFile="+str(isFile))
 
 			if not isFile or not isPath:
 				if count < MAX-1:
@@ -939,12 +963,12 @@ class Main:
 				break
 
 		dialogProgress.close()
-		xbmc.output( "< _check_extract() success=%s" % success )
+		log( "< _check_extract() success=%s" % success )
 		return success
 
 	######################################################################################
 	def _view_t3ch_changelog( self, ):
-		xbmc.output( "_view_t3ch_changelog()" )
+		log( "_view_t3ch_changelog()" )
 		doc = ""
 		for ftpUrl in self.FTP_URL_LIST:
 			url = "%s%sT3CH-README_1ST.txt" % (ftpUrl, self.FTP_REPOSITORY_URL)
@@ -961,7 +985,7 @@ class Main:
 
 	######################################################################################
 	def _view_xbmc_changelog( self, ):
-		xbmc.output( "_view_xbmc_changelog()" )
+		log( "_view_xbmc_changelog()" )
 		doc = ""
 		# read from several home urls until get connection and doc
 		for url in self.HOME_URL_LIST:
@@ -976,9 +1000,9 @@ class Main:
 			dialogOK( __language__( 0 ), __language__( 310 ))
 
 	######################################################################################
-	def _view_script_doc( self, readmeORchangelog):
-		xbmc.output( "_view_script_doc() readmeORchangelog=" +str(readmeORchangelog))
-		if readmeORchangelog:		# readme
+	def _view_script_doc( self, isReadme):
+		log( "_view_script_doc() isReadme=%s" % isReadme)
+		if isReadme:		# readme
 			title = "%s: %s" % (__language__(0), __language__(414))
 
 			# determine language path
@@ -987,10 +1011,10 @@ class Main:
 			if ( not fileExist( fn ) ):
 				fn = os.path.join( base_path, "English", "readme.txt" )
 		else:
+			# changelog
 			title = "%s: %s" % (__language__(0), __language__(415))
-			fn = os.path.join(DIR_RESOURCES, "changelog.txt")
+			fn = os.path.join(DIR_HOME, "changelog.txt")
 
-		xbmc.output("fn=" + fn)
 		# read and display
 		if not fileExist(fn):
 			doc = "File is missing! " + fn
@@ -1003,17 +1027,17 @@ class Main:
 
 	######################################################################################
 	def _copy_user_data(self, extract_path):
-		xbmc.output( "> _copy_user_data() " + extract_path )
+		log( "> _copy_user_data() " + extract_path )
 		success = False
 
 		try:
-			curr_build_userdata_path = "T:\\"
-			new_build_userdata_path = os.path.join( extract_path, "XBMC", "UserData")
+			curr_build_userdata_path = xbmc.translatePath(XBMC_PROFILE)
+			new_build_userdata_path = os.path.join( extract_path, "XBMC", "userdata")
 
 			# remove new build UserData
 			checkMAX = 5
 			for checkCount in range(checkMAX):
-				xbmc.output("rmtree UserData checkCount=%i" % checkCount)
+				log("rmtree UserData checkCount=%i" % checkCount)
 				percent = int( checkCount * 100.0 / checkMAX )
 				self._dialog_update( __language__(0), __language__( 510 ), pct=percent, time=2)
 				rmtree( new_build_userdata_path, ignore_errors=True )
@@ -1023,7 +1047,7 @@ class Main:
 
 			# Copytree current UserData to new build
 			try:
-				xbmc.output("copytree UserData %s -> %s" % (curr_build_userdata_path,new_build_userdata_path) )
+				log("copytree UserData %s -> %s" % (curr_build_userdata_path,new_build_userdata_path) )
 				self._dialog_update( __language__(0), __language__( 511 ), time=2) 
 				copytree( curr_build_userdata_path, new_build_userdata_path )
 				success = True
@@ -1031,13 +1055,13 @@ class Main:
 				dialogOK("Copy UserData Error","Failed to copytree:", curr_build_userdata_path, new_build_userdata_path)
 		except:
 			handleException("_copy_user_data()", __language__( 306 ))
-		xbmc.output( "< _copy_user_data() success=%s" % success )
+		log( "< _copy_user_data() success=%s" % success )
 		return success
 
 
 	######################################################################################
 	def _update_shortcut(self, extract_path):
-		xbmc.output( "> _update_shortcut() " +extract_path )
+		log( "> _update_shortcut() " +extract_path )
 
 		success = False
 		# get users prefered booting dash name eg. XBMC.xbe
@@ -1045,18 +1069,18 @@ class Main:
 		dash_name = self.settings[self.SETTING_SHORTCUT_NAME]
 		shortcut_drive = self.settings[self.SETTING_SHORTCUT_DRIVE]
 		shortcut_xbe_file = os.path.join( shortcut_drive, dash_name + ".xbe" )
-		xbmc.output( "shortcut_xbe_file= " + shortcut_xbe_file )
+		log( "shortcut_xbe_file= " + shortcut_xbe_file )
 		shortcut_cfg_file = os.path.join( shortcut_drive, dash_name + ".cfg" )
-		xbmc.output( "shortcut_cfg_file= " + shortcut_cfg_file )
+		log( "shortcut_cfg_file= " + shortcut_cfg_file )
 
 		# backup CFG shortcut
 		if fileExist( shortcut_cfg_file ):
 			copy( shortcut_cfg_file, shortcut_cfg_file + "_old" )
-			xbmc.output( "backup of cfg made to _old" )
+			log( "backup of cfg made to _old" )
 
 		# if shortcutname has dir prefix, ensure it exists
 		prefix_dir = os.path.dirname(shortcut_xbe_file)
-		xbmc.output("prefix_dir="+prefix_dir)
+		log("prefix_dir="+prefix_dir)
 		if prefix_dir and not os.path.isdir(prefix_dir):
 			makeDir(prefix_dir)
 
@@ -1066,7 +1090,7 @@ class Main:
 		if fileExist( shortcut_xbe_file ):
 			# DOES EXIST, check if diff
 			if not filecmp.cmp( src_xbe_file, shortcut_xbe_file ):
-				xbmc.output( "Shortcuts differ. Backup shortcut XBE: copy %s -> %s" % (shortcut_xbe_file, shortcut_xbe_file + "_old"))
+				log( "Shortcuts differ. Backup shortcut XBE: copy %s -> %s" % (shortcut_xbe_file, shortcut_xbe_file + "_old"))
 				copy( shortcut_xbe_file, shortcut_xbe_file + "_old" )
 			else:
 				copy_xbe = False		# same file, no copy reqd
@@ -1074,43 +1098,43 @@ class Main:
 		try:
 			# create new shortcut cfg path - this points to the new T3CH XBMC build xbe
 			boot_path = os.path.join( extract_path, "XBMC", "default.xbe" )
-			xbmc.output( "new cfg boot_path= " + boot_path )
+			log( "new cfg boot_path= " + boot_path )
 			# write new cfg to .CFG_NEW
 			shortcut_cfg_file_new = shortcut_cfg_file + "_new"
-			xbmc.output( "shortcut_cfg_file_new= " + shortcut_cfg_file_new )
+			log( "shortcut_cfg_file_new= " + shortcut_cfg_file_new )
 			# delete any existing .CFG_NEW
 			deleteFile(shortcut_cfg_file_new)
-			xbmc.output( "write '%s' into file %s" % (boot_path, shortcut_cfg_file_new) )
+			log( "write '%s' into file %s" % (boot_path, shortcut_cfg_file_new) )
 			file(shortcut_cfg_file_new,'w').write(boot_path)
 
 			# switch to new cfg now ?
-			xbmc.output( "Copy TEAM XBMC xbe required? %s" % copy_xbe)
+			log( "Copy TEAM XBMC xbe required? %s" % copy_xbe)
 			if self.isSilent or dialogYesNo( __language__( 0 ), __language__( 519 ), __language__( 520 ),__language__( 521  ),yesButton=__language__( 404 ), noButton=__language__(405) ):
 				# copy TEAM XBMC shortcut xbe into place (if reqd)
 				if copy_xbe:
-					xbmc.output( "TEAM XBMC xbe: copy %s -> %s" % (src_xbe_file, shortcut_xbe_file))
+					log( "TEAM XBMC xbe: copy %s -> %s" % (src_xbe_file, shortcut_xbe_file))
 					copy(src_xbe_file, shortcut_xbe_file)
 
-				xbmc.output( "AUTO cfg copies: copy %s -> %s" % (shortcut_cfg_file_new, shortcut_cfg_file) )
+				log( "AUTO cfg copies: copy %s -> %s" % (shortcut_cfg_file_new, shortcut_cfg_file) )
 				copy(shortcut_cfg_file_new, shortcut_cfg_file)
 				time.sleep(1)
 				success = True
 			else:
-				xbmc.output( "MANUAL cfg copies" )
+				log( "MANUAL cfg copies" )
 		except:
 			handleException("_update_shortcut()", __language__( 307 ))
 
-		xbmc.output( "< _update_shortcut() success=%s" % success )
+		log( "< _update_shortcut() success=%s" % success )
 		return success
 
 	######################################################################################
 	def _copy_folder(self, src_path, dest_path):
-		xbmc.output( "_copy_folder() src_path=" + src_path + " dest_path=" + dest_path)
+		log( "_copy_folder() src_path=" + src_path + " dest_path=" + dest_path)
 
 		try:
 			# check source folder exists!
 			if not os.path.exists( src_path ):
-				xbmc.output( "source folder doesnt exist! abort copy" )
+				log( "source folder doesnt exist! abort copy" )
 				return
 
 			# start copy of source tree
@@ -1120,8 +1144,7 @@ class Main:
 
 			files = os.listdir(src_path)
 			TOTAL = len(files)
-			count = 0
-			for f in files:
+			for count, f in enumerate(files):
 				# ignore parent dirs
 				if f in ['.','..']: continue
 
@@ -1130,49 +1153,48 @@ class Main:
 
 				if not fileExist( dest_file ):
 					if not self.isSilent:
-						dialogProgress.update( int(100 / TOTAL) * count, __language__( 515 ), src_file)
+						percent = int( count * 100.0 / TOTAL )
+						dialogProgress.update( percent, __language__( 515 ), src_file)
 						if dialogProgress.iscanceled(): break
 					if os.path.isdir( src_file ):
 						# copy directory
 						copytree( src_file, dest_file )
-						xbmc.output("copied tree OK " + src_file)
+						log("copied tree OK " + src_file)
 					else:
 						# copy file
 						copy( src_file, dest_file )
-						xbmc.output("copied file OK " + src_file)
+						log("copied file OK " + src_file)
 				else:
-					xbmc.output( "ignored as exists in T3CH: " + dest_file)
-				count += 1
+					log( "ignored as exists in T3CH: " + dest_file)
 		except:
 			handleException("_copy_folder()", __language__( 308 ))
 
 	######################################################################################
 	def _copy_includes(self): 
-		xbmc.output( "_copy_includes() ")
+		log( "_copy_includes() ")
 
 		TOTAL = len(self.includes)
-		count = 0
 		extract_path = self.settings[self.SETTING_UNRAR_PATH]
-		for path in self.includes:
+		for count, path in enumerate(self.includes):
 			try:
-				if not path.startswith("Q:\\"): 
-					src_path = os.path.join("Q:\\", path)
+				if not path.startswith(XBMC_HOME): 
+					src_path = xbmc.translatePath( "/".join( [XBMC_HOME, path] ) )
 				else:
-					src_path = path
-				dest_path = os.path.join( extract_path, self.short_build_name, "XBMC", path )
+					src_path = xbmc.translatePath( path )
+				
+				dest_path = xbmc.translatePath( os.path.join( extract_path, self.short_build_name, "XBMC", path ) )
 				if not self.isSilent:
 					percent = int( count * 100.0 / TOTAL )
 					self._dialog_update( __language__(0), __language__( 515 ), src_path, dest_path, pct=percent )
 					if dialogProgress.iscanceled(): break
 				localCopy(src_path, dest_path, self.isSilent)
-				count += 1
 			except:
 				handleException("_copy_includes() path="+path)
 
 
 	######################################################################################
 	def _delete_excludes(self):
-		xbmc.output( "_delete_excludes() ")
+		log( "_delete_excludes() ")
 
 		TOTAL = len(self.excludes)
 		count = 0
@@ -1189,7 +1211,7 @@ class Main:
 					percent = int( count * 100.0 / TOTAL )
 					self._dialog_update( __language__(0), __language__( 516 ), dest_path, pct=percent )
 				if path[-1] in ["\\","/"] or os.path.isdir(dest_path):
-					xbmc.output( "rmtree " + dest_path )
+					log( "rmtree " + dest_path )
 					rmtree(dest_path, ignore_errors=True)
 				else:
 					deleteFile(dest_path)
@@ -1198,117 +1220,24 @@ class Main:
 				handleException("_delete_excludes() path="+path)
 
 	######################################################################################
-	def _maintain_includes(self):
-		xbmc.output( "_maintain_includes() ")
-
+	def _maintain_incl_excl(self, isIncludes):
+		log( "_maintain_incl_excl() isIncludes=%s" % isIncludes)
 		try:
-			selectDialog = xbmcgui.Dialog()
-			while True:
-				# make menu
+			# make menu
+			options = [__language__(650), __language__(651)]    # exit, add new
+			if isIncludes:
+				title = __language__( 615 )
 				self.includes.sort()
-				options = [__language__(650), __language__(651)]
 				options.extend(self.includes)
-
-				# show menu
-				selected = selectDialog.select( __language__( 615 ), options )
-				if selected <= 0:						# quit
-					break
-
-				path = ""
-				deleteOption = False
-				addOption = False
-				if selected == 1:						# add new
-					addOption = True
-					path, type = self._select_file_folder(path)
-					if path and \
-						((type in [0,3] and self._isRestrictedFolder(path)) or \
-						(type == 1 and self._isRestrictedFile(path))):
-						path = ''
-				else:									# remove or edit
-					deleteOption = True
-					path = options[selected]
-					# ask what action to take (remove, edit)
-					if not dialogYesNo( __language__( 0 ), path, yesButton=__language__(406), noButton=__language__(407)):
-						path, type = self._select_file_folder(path)		# edit
-						addOption = True
-
-				if path:
-					if deleteOption:
-						del self.includes[selected-2]									# del
-
-					if addOption:
-						# add if not a duplicat
-						try:
-							self.includes.index(path)
-						except:
-							self.includes.append(path)
-
-			# save to file
-			self._save_file_obj(self.INCLUDES_FILENAME, self.includes)
-		except:
-			handleException("_maintain_includes()")
-
-	######################################################################################
-	def _maintain_excludes(self):
-		xbmc.output( "_maintain_excludes() ")
-		try:
-			def _pick_file(path=''):
-				FILE = 1
-				FOLDER = 0
-				if not path:
-					# add new
-					if dialogYesNo(__language__(0), __language__(525), yesButton=__language__(408), noButton=__language__(409)):
-						type = FOLDER
-					else:
-						type = FILE
-				else:
-					# editing existing
-					path = os.path.join("Q:\\", path)
-					path,filename = os.path.split(path)
-					if not filename:
-						type = FOLDER
-					else:
-						type = FILE
-
-				try:
-					if not path:
-						path = "Q:\\"
-
-					# always pick folder first
-					path = self._browse_for_path(__language__(204), path, FOLDER)
-					if not path or path[0] != "Q":
-						raise
-
-					if path[-1] not in ["\\","/"]:
-						path += "\\"
-
-					# enter filename using keyboard
-					if type == FILE:
-						path = getKeyboard(path, __language__(207))
-						# ensure filename entered
-						basename = os.path.basename(path)
-						if not basename:
-							raise
-
-					bare_dest_path = str(os.path.splitdrive( path )[1])	# get path+filename, no drive
-					if bare_dest_path and bare_dest_path[0] in ["/", "\\"]:
-						bare_dest_path = bare_dest_path[1:]
-					path = bare_dest_path.replace('/','\\')
-				except:
-					path = ''
-
-				xbmc.output("_pick_file() final path=" + path + " type="+str(type))
-				return path, type
-			
+			else:
+				title = __language__( 618 )
+				self.excludes.sort()
+				options.extend(self.excludes)
 			selectDialog = xbmcgui.Dialog()
 			while True:
-				# make menu
-				self.excludes.sort()
-				options = [__language__(650), __language__(651)]
-				options.extend(self.excludes)
 
 				# show menu
-				selected = selectDialog.select( __language__( 618 ), options )
+				selected = selectDialog.select( title, options )
 				if selected <= 0:						# quit
 					break
 
@@ -1316,60 +1245,68 @@ class Main:
 				deleteOption = False
 				addOption = False
 				if selected == 1:						# add new
-					addOption = True
-					path, type = _pick_file()
+					path, type = self._select_file_folder()
 					if path and \
-						((type in [0,3] and self._isRestrictedFolder(path)) or \
-						(type == 1 and self._isRestrictedFile(path))):
+						((type in [0,3] and self._isRestrictedFolder(path)) or (type == 1 and self._isRestrictedFile(path))):
 						path = ''
-
+						log("ignore restricted file \ folder")
+					else:
+						addOption = True
 				else:									# remove or edit
-					deleteOption = True
+					deleteOption = True							# to del orig opt
 					path = options[selected]
 					# ask what action to take (remove, edit)
 					if not dialogYesNo( __language__( 0 ), path, yesButton=__language__(406), noButton=__language__(407)):
-						path, type = _pick_file(path)					# edit
-						addOption = True
+						path = getKeyboard(path, __language__(207))		# edit - (if not cancelled or changed)
+						if path:
+							addOption = True							# to add amended as new
 
 				if path:
 					if deleteOption:
-						del self.excludes[selected-2]									# del
+						del options[selected]
 
 					if addOption:
-						# add if not a duplicat
+						# add if not a duplicate
 						try:
-							self.excludes.index(path)
+							options.index(path)
 						except:
-							self.excludes.append(path)
+							options.append(path)
 
 			# save to file
-			self._save_file_obj(self.EXCLUDES_FILENAME, self.excludes)
+			if isIncludes:
+				self.includes = options[2:]
+				self._save_file_obj(self.INCLUDES_FILENAME, self.includes)
+			else:
+				self.excludes = options[2:]
+				self._save_file_obj(self.EXCLUDES_FILENAME, self.excludes)
 		except:
-			handleException("_maintain_excludes()")
+			handleException("_maintain_incl_excl()")
 
 	#####################################################################################
 	def _isRestrictedFolder(self, path):
-		if (os.path.dirname(path).lower() in ["q:\\","credits","language","media","screensavers","scripts","skin","sounds","system","credits","visualisations"]):
-			dialogOK(__language__(0), __language__(313))
+		p = os.path.dirname(path)
+		if p and p.lower() in ["special://xbmc", "q:/","credits","language","media","screensavers","scripts","skin","sounds","system","credits","visualisations"]:
+			dialogOK(__language__(0), __language__(313), p)
 			restricted = True
 		else:
 			restricted = False
-		xbmc.output("_isRestrictedFolder() " + str(restricted))
+		log("_isRestrictedFolder() %s %s" % (restricted, p))
 		return restricted
 
 	#####################################################################################
 	def _isRestrictedFile(self, path):
-		if (os.path.basename(path).lower() in ["default.xbe"]):
-			dialogOK(__language__(0), __language__(313))
+		p = os.path.basename(path)
+		if p and p.lower() in ["default.xbe"]:
+			dialogOK(__language__(0), __language__(313), p)
 			restricted = True
 		else:
 			restricted = False
-		xbmc.output("_isRestrictedFile() " + str(restricted))
+		log("_isRestrictedFile() %s %s" % (restricted, p))
 		return restricted
 
 	#####################################################################################
 	def _select_file_folder(self, path=""):
-		xbmc.output( "> _select_file_folder() path="+path)
+		log( "> _select_file_folder() path="+path)
 		FILE = 1
 		FOLDER = 0
 		if not path:
@@ -1380,7 +1317,7 @@ class Main:
 				type = FILE
 		else:
 			# editing existing
-			path = os.path.join("Q:\\", path)
+			path = "/".join( [XBMC_HOME, path] )
 			if path[-1] in ["\\","/"]:
 				type = FOLDER
 			else:
@@ -1388,24 +1325,27 @@ class Main:
 
 		try:
 			if not path:
-				path = "Q:\\"
+				path = XBMC_HOME # just incase
 
 			if type == FILE:
 				msg = __language__(203)
 			else:
 				msg = __language__(204)
-			path = self._browse_for_path(msg, path, type)
-			if not path or path[0] != "Q":
+			value = self._browse_for_path(msg, path, type)
+			if not value or value == path or value == XBMC_HOME or not value.startswith(XBMC_HOME):
+				log("none, unchanged or restricted value %s" % value)
 				raise
+			path = value
 
-			bare_dest_path = str(os.path.splitdrive( path )[1])	# get path+filename, no drive
+			bare_dest_path = str(os.path.splitdrive( path )[1])			# get path+filename, no drive
 			if bare_dest_path and bare_dest_path[0] in ["/", "\\"]:
 				bare_dest_path = bare_dest_path[1:]
-			path = bare_dest_path.replace('/','\\')
+			path = bare_dest_path			#.replace('/','\\')
 		except:
+			print str( sys.exc_info()[ 1 ] )
 			path = ''
 
-		xbmc.output("< _select_file_folder() final path=" + path + " type=" +str(type))
+		log("< _select_file_folder() final path=%s type=%s" % (path, type))
 		return path, type
 
 	#####################################################################################
@@ -1419,7 +1359,7 @@ class Main:
 
 	#####################################################################################
 	def _delete_old_t3ch(self):
-		xbmc.output( "_delete_old_t3ch() ")
+		log( "_delete_old_t3ch() ")
 
 		# find all t3ch builds
 		oldBuilds = self._find_local_t3ch_dirs()
@@ -1447,7 +1387,7 @@ class Main:
 
 	#####################################################################################
 	def _find_local_t3ch_dirs(self):
-		xbmc.output( "> _find_local_t3ch_dirs() ")
+		log( "> _find_local_t3ch_dirs() ")
 		dirList = []
 
 		# get curr build name
@@ -1463,12 +1403,12 @@ class Main:
 				if buildName and buildName != curr_build_date:
 					dirList.append(buildName)
 
-		xbmc.output( "< _find_local_t3ch_dirs() dir count=%s" % len(dirList))
+		log( "< _find_local_t3ch_dirs() dir count=%s" % len(dirList))
 		return dirList
 	
 	#####################################################################################
 	def _find_web_builds(self):
-		xbmc.output( "> _find_web_builds() ")
+		log( "> _find_web_builds() ")
 		buildList = []
 		doc = ""
 		for baseUrl in self.HOME_URL_LIST:
@@ -1489,13 +1429,13 @@ class Main:
 							buildList.append(filename)
 					except: pass
 
-		xbmc.output( "< _find_web_builds() build count=%s" % len(buildList))
+		log( "< _find_web_builds() build count=%s" % len(buildList))
 		return buildList
 
 	#####################################################################################
 	def _web_builds_menu(self):
 		""" Find web old archive, show in a menu, select and download archive """
-		xbmc.output( "> _web_builds_menu() ")
+		log( "> _web_builds_menu() ")
 
 		buildsList = self._find_web_builds()
 		if buildsList:
@@ -1528,7 +1468,7 @@ class Main:
 						xbmcgui.Dialog().ok(__language__( 0 ), __language__( 318 ))		# all servers unavailable
 						break
 
-		xbmc.output("< _web_builds_menu()")
+		log("< _web_builds_menu()")
 
 	#####################################################################################
 	def _get_current_build_info(self):
@@ -1536,17 +1476,17 @@ class Main:
 		curr_build_date_fmt = time.strptime(buildDate,"%b %d %Y")
 		curr_build_date_secs = time.mktime(curr_build_date_fmt)
 		curr_build_date = time.strftime("T3CH_%Y-%m-%d", curr_build_date_fmt)
-		xbmc.output( "_get_current_build_info() curr_build_date="+curr_build_date + " curr_build_date_secs= " + str(curr_build_date_secs ))
+		log( "_get_current_build_info() curr_build_date="+curr_build_date + " curr_build_date_secs= " + str(curr_build_date_secs ))
 		return (curr_build_date_secs, curr_build_date)
 
 	######################################################################################
 	def _update_script( self, isSilent=False):
-		xbmc.output( "> _update_script() isSilent=%s" % isSilent)
+		log( "> _update_script() isSilent=%s" % isSilent)
 
 		updated = False
 		up = update.Update(__language__, __scriptname__)
 		version = up.getLatestVersion(isSilent)
-		xbmc.output("Current Version: " + __version__ + " Tag Version: " + version)
+		log("Current Version: " + __version__ + " Tag Version: " + version)
 		if version != "-1":				# check for err
 			if __version__ < version:
 				if ( dialogYesNo( __language__(0), \
@@ -1562,12 +1502,12 @@ class Main:
 			dialogOK(__language__(0), __language__(1030))
 
 		del up
-		xbmc.output( "< _update_script() updated=%s" % updated)
+		log( "< _update_script() updated=%s" % updated)
 		return updated
 
 	#####################################################################################
 	def _settings_menu(self):
-		xbmc.output( "_settings_menu() ")
+		log( "_settings_menu() ")
 
 		def _translate_bool(value):
 			if value:
@@ -1623,7 +1563,7 @@ class Main:
 
 			elif selected == 5:															# unrar path
 				value = self._browse_for_path( __language__( 200 ), self.settings[self.SETTING_UNRAR_PATH] )
-				if value and value[0] != "Q":
+				if value and not value.startswith(XBMC_HOME):
 					self.settings[self.SETTING_UNRAR_PATH] = value
 
 			elif selected == 6:															# notify when not new
@@ -1662,11 +1602,11 @@ class Main:
 # If dest exists, not overwritten unlexx overwrite = True
 ######################################################################################
 def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
-	xbmc.output( "localCopy() %s -> %s overwrite=%s" % (src_path, dest_path, overwrite))
+	log( "localCopy() %s -> %s overwrite=%s" % (src_path, dest_path, overwrite))
 
 	try:	
 		if not os.path.exists(src_path):
-			xbmc.output("src_path not exist, stop")
+			log("src_path not exist, stop")
 			return
 
 		# if source is a path, ensure dest_path root exists
@@ -1681,11 +1621,11 @@ def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
 				except:
 					handleException("localCopy() FILE COPY", src_path, dest_path )
 			else:
-				xbmc.output( "isFile; dest file exists, ignored: " + dest_path)
+				log( "isFile; dest file exists, ignored: " + dest_path)
 		else:
 			# DIR
 			files = os.listdir(src_path)
-			xbmc.output("isdir; file count=%s" % len(files))
+			log("isdir; file count=%s" % len(files))
 			for f in files:
 				src_file = os.path.join( src_path, f )
 				dest_file = os.path.join( dest_path, f )
@@ -1695,7 +1635,7 @@ def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
 						do_copy = True
 						if os.path.isdir( dest_file ):					# does dest dir exist ?
 							if overwrite:								# overwrite if requested
-								xbmc.output("isDir; overwrite; remove existing: " + dest_file)
+								log("isDir; overwrite; remove existing: " + dest_file)
 								os.rmdir(dest_file)
 								time.sleep(2)
 							else:
@@ -1703,16 +1643,16 @@ def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
 
 						if do_copy:
 							# copy directory
-							xbmc.output("isDir; copytree dir: %s -> %s" % (src_file, dest_file))
+							log("isDir; copytree dir: %s -> %s" % (src_file, dest_file))
 							makeDir( os.path.dirname(dest_file) )
 							copytree( src_file, dest_file )
 						else:
-							xbmc.output("isDir; dest dir exists, ignored: " + dest_file)
+							log("isDir; dest dir exists, ignored: " + dest_file)
 					else:
 						if overwrite or not fileExist( dest_file ):
 							copy( src_file, dest_file )
 						else:
-							xbmc.output("isDir; dest file exists, ignored: " + dest_file)
+							log("isDir; dest file exists, ignored: " + dest_file)
 				except:
 					handleException("localCopy() DIR COPY", src_file, dest_file )
 	except:
@@ -1721,11 +1661,13 @@ def localCopy(src_path, dest_path, isSilent=False, overwrite=False):
 
 #################################################################################################################
 def getKeyboard(default, heading, hidden=False):
-	keyboard = xbmc.Keyboard( default, heading )
+	keyboard = xbmc.Keyboard( default, heading, hidden )
 	keyboard.doModal()
 	if ( keyboard.isConfirmed() ):
-		default = keyboard.getText().strip()
-	return default
+		text = keyboard.getText().strip()
+		if text != default:		# changed
+			return text
+	return ''
 
 #################################################################################################################
 def dialogOK(title, line1='', line2='',line3='', isSilent=False, time=3):
@@ -1753,7 +1695,7 @@ def dialogYesNo(title="", line1="", line2="",line3="", yesButton="", noButton=""
 
 #################################################################################################################
 def handleException(title="", msg="", msg2=""):
-	xbmc.output( "handleException()" )
+	log( "handleException()" )
 	try:
 		dialogProgress.close()
 		title += " EXCEPTION!"
@@ -1765,8 +1707,8 @@ def handleException(title="", msg="", msg2=""):
 #################################################################################################################
 def makeDir( dir ):
 	try:
-		os.makedirs(dir)
-		xbmc.output( "made dir: " + dir)
+		os.makedirs(xbmc.translatePath(dir))
+		log( "made dir: " + dir)
 		return True
 	except:
 		return False
@@ -1779,7 +1721,7 @@ def deleteFile( file_name ):
 		for count in range(3):
 			try:
 				os.remove( file_name )
-				xbmc.output( "file deleted: " + file_name )
+				log( "file deleted: " + file_name )
 				success = True
 				break
 			except:
@@ -1792,14 +1734,14 @@ def deleteFile( file_name ):
 def searchRegEx(data, regex, flags=re.IGNORECASE):
 	try:
 		value = re.search(regex, data, flags).group(1)
+		log("searchRegEx() value: " + value)
 	except:
 		value = ""
-	xbmc.output("searchRegEx() value: " + value)
 	return value
 
 ######################################################################################
 def readURL( url, msg='', isSilent=False):
-	xbmc.output( "readURL() isSilent=%s %s" % (isSilent,url))
+	log( "readURL() isSilent=%s %s" % (isSilent,url))
 
 	if not isSilent:
 		root, name = os.path.split(url)
@@ -1831,7 +1773,7 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 		pass
 		
 	def onInit( self ):
-		xbmc.output( "TextBoxDialogXML.onInit()" )
+		log( "TextBoxDialogXML.onInit()" )
 		try:
 			self.getControl( 3 ).setLabel( self.title )		# may not have an ID assigned
 		except: pass
@@ -1848,7 +1790,7 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 			self.close()
 
 	def ask(self, title, text ):
-		xbmc.output("TextBoxDialogXML().ask()")
+		log("TextBoxDialogXML().ask()")
 		self.title = title
 		self.text = text
 		self.doModal()		# causes window to be drawn
@@ -1856,7 +1798,7 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 #################################################################################################################
 def unzip(extract_path, filename, silent=False, msg=""):
 	""" unzip an archive, using ChunkingZipFile to write large files as chunks if necessery """
-	xbmc.output("> unzip() extract_path=" + extract_path + " filename=" + filename)
+	log("> unzip() extract_path=" + extract_path + " filename=" + filename)
 	success = False
 	cancelled = False
 	installed_path = ""
@@ -1866,7 +1808,7 @@ def unzip(extract_path, filename, silent=False, msg=""):
 	names=zip.namelist()
 	infos=zip.infolist()
 	max_files = len(namelist)
-	xbmc.output("max_files=%s" % max_files)
+	log("max_files=%s" % max_files)
 
 	for file_count, entry in enumerate(namelist):
 		info = infos[file_count]
@@ -1884,7 +1826,7 @@ def unzip(extract_path, filename, silent=False, msg=""):
 			if not os.path.isdir(filePath):
 				os.makedirs(filePath)
 		elif (info.file_size + info.compress_size) > 25000000:
-			xbmc.output( "LARGE FILE: f sz=%s  c sz=%s  reqd sz=%s %s" % (info.file_size, info.compress_size, (info.file_size + info.compress_size), entry ))
+			log( "LARGE FILE: f sz=%s  c sz=%s  reqd sz=%s %s" % (info.file_size, info.compress_size, (info.file_size + info.compress_size), entry ))
 			outfile=file(filePath, 'wb')
 			fp=zip.readfile(entry)
 			fread=fp.read
@@ -1908,7 +1850,7 @@ def unzip(extract_path, filename, silent=False, msg=""):
 	
 	zip.close()
 	del zip
-	xbmc.output("< unzip() success=%s installed_path=%s" % (success, installed_path))
+	log("< unzip() success=%s installed_path=%s" % (success, installed_path))
 	return success, installed_path
 
 ##############################################################################################################    
@@ -1918,11 +1860,11 @@ def getLanguagePath():
 		language = xbmc.getLanguage()
 		langPath = os.path.join( base_path, language )
 		if not os.path.exists(langPath):
-			xbmc.output("getLanguagePath() path not exist: " + langPath)
+			log("getLanguagePath() path not exist: " + langPath)
 			raise
 	except:
 		language = 'English'
-	xbmc.output("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
+	log("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
 	return base_path, language
 
 #################################################################################################################
@@ -1941,18 +1883,18 @@ except:
 	runMode = RUNMODE_NORMAL
 
 try:
-	xbmc.output( "__language__ = %s" % __language__ )
+	log( "__language__ = %s" % __language__ )
 	Main(runMode)
 except:
-	print __scriptname__, sys.exc_info()[ 1 ]
+	log( str(sys.exc_info()[ 1 ]) )
 
-xbmc.output(__scriptname__ + " script exit and housekeeping ...")
+log(" EXIT and housekeeping ...")
 # clean up on exit
 moduleList = ['zipstream','SFVCheck']
 for m in moduleList:
 	try:
 		del sys.modules[m]
-		xbmc.output(__scriptname__ + " removed module: " + m)
+		log(" Removed module: " + m)
 	except: pass
 
 # remove globals

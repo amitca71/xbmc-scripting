@@ -16,6 +16,7 @@ Changes:
 12-09-2008 use os.path.join instead of string +
 10-10-2008 Fix: to use xbmc.language from __main__
            Fix: Created folders replaced %20 with a space
+23/02/09 - translatePath()
 """
 
 import sys
@@ -28,19 +29,26 @@ from shutil import copytree, rmtree
 
 class Update:
 	""" Update Class: used to update scripts from http://code.google.com/p/xbmc-scripting/ """
-	def __init__( self, language, script ):
+
+	URL_BASE_SCRIPTING = "http://xbmc-scripting.googlecode.com/svn"
+	URL_BASE_ADDONS = "http://xbmc-addons.googlecode.com/svn"
+	
+	def __init__( self, language, script, svnUrl="" ):
 		xbmc.output( "Update().__init__" )
+
 		self._ = language
 		self.script = script.replace( ' ', '%20' )
-		self.base_url = "http://xbmc-scripting.googlecode.com/svn"
-		self.tags_url = "%s/tags/%s/" % ( self.base_url, self.script)
-		local_base_dir = os.path.join('Q:' + os.sep,'scripts')
+		if not svnUrl:
+			svnUrl = self.URL_BASE_SCRIPTING
+
+		self.tags_url = "%s/tags/%s/" % ( svnUrl, self.script)
+		local_base_dir = xbmc.translatePath("/".join( ['Q:','scripts'] ))
 		self.local_dir = os.path.join(local_base_dir, script)
 		self.backup_base_dir = os.path.join(local_base_dir,'.backups')
 		self.local_backup_dir = os.path.join(self.backup_base_dir, script)
 
 		xbmc.output("script=" + script)
-		xbmc.output("base_url=" + self.base_url)
+		xbmc.output("base_url=" + svnUrl)
 		xbmc.output("tags_url=" + self.tags_url)
 		xbmc.output("local_dir=" + self.local_dir)
 		xbmc.output("local_backup_dir=" + self.local_backup_dir)
@@ -66,7 +74,7 @@ class Update:
 						# append folders to those we're looping throu and store file
 						for item in itemList:
 							if item[-1] == "/":
-								folders.append( ("%s/%s" % (folders[ 0 ], item)) )
+								folders.append( ("%s/%s" % (folders[ 0 ], item)).replace('//','/') )
 							else:
 								script_files.append( ("%s/%s" % (folders[ 0 ], item)).replace('//','/') )
 					else:
@@ -180,6 +188,7 @@ class Update:
 			return doc
 		except:
 			traceback.print_exc()
+			xbmcgui.Dialog().ok( self._(0),  str( sys.exc_info()[ 1 ] ))
 			return None
 
 	def parseHTMLSource( self, htmlsource ):
@@ -201,10 +210,10 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	try:
-		lang_path = os.path.join('Q:' + os.sep,'scripts', sys.argv[1])
+		lang_path = xbmc.translatePath("/".join( ['Q:','scripts', sys.argv[1]] ))
 		up = Update(xbmc.Language( lang_path ).getLocalizedString, sys.argv[1])
 		up.removeOriginal()
 		up.downloadVersion(sys.argv[2])
-		xbmc.executebuiltin('XBMC.RunScript(%s)'%(up.local_dir+'\\default.py'))
+		xbmc.executebuiltin('XBMC.RunScript(%s)' % os.path.join(up.local_dir, 'default.py'))
 	except:
 		print "failed to start script update from backup copy!"
