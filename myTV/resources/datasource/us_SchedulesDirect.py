@@ -178,8 +178,8 @@ class ListingData:
 
 		# config key, title, defaultValue, kbtype
 		configData = [
-			[KEY_USER, __language__(805), 'SchedulesDirect Username', KBTYPE_ALPHA],
-			[KEY_PASS, __language__(806), 'SchedulesDirect Password', KBTYPE_ALPHA],
+			[KEY_USER, __language__(805), '', KBTYPE_ALPHA],
+			[KEY_PASS, __language__(806), '', KBTYPE_ALPHA],
 			[KEY_DST, "Enable Daylight Saving Time?", False, KBTYPE_YESNO]
 			]
 

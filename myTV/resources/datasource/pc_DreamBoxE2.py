@@ -216,14 +216,33 @@ class ListingData:
 		if reset:
 			configSMB.ask()
 
-		smbDetails = configSMB.checkAll(silent=True)
-		if smbDetails:
-			self.smbIP, self.smbPath, self.smbRemoteFile = smbDetails
-			self.isConfigured = True
-		else:
-			self.isConfigured = False
-		self.connectionError = False	# will allow a retry after a config change
+		# CONFIG KEYS
+		KEY_CHANNELS_FN = 'dm_channels_fn'
+		KEY_DM_FN = 'dm_channel_fn'
+
+		# Uncomment the ONE that works for your web server interface
+		configData = [
+			[KEY_CHANNELS_FN,"DM Channels Filename:", "australiasat-channel_list.conf", KBTYPE_ALPHA],
+			[KEY_DM_FN,"DM Channel Day Filename:", "australiasat###(\d+).*?###(\d+)", KBTYPE_ALPHA],
+			[mytvGlobals.config.KEY_SMB_PATH,"SMB Path:", '', KBTYPE_SMB]
+			]
+
+		def _check():
+			self.DM_CONF_FILENAME = mytvGlobals.config.action(CONFIG_SECTION, KEY_CHANNELS_FN)
+			self.DM_FILENAME_REGEX = mytvGlobals.config.action(CONFIG_SECTION, KEY_DM_FN)
+			self.smbPath = mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH)
+			
+			success = bool( self.smbPath and self.DM_CONF_FILENAME and self.DM_FILENAME_REGEX )
+			debug("_check() success=%s" % success)
+			return success
+
+		if reset:
+			title = "%s - %s" % (self.name, __language__(976)) # __language__(534)
+			configOptionsMenu(CONFIG_SECTION, configData, title)
+		self.isConfigured = _check()
 
 		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
 		return self.isConfigured
+
+
 

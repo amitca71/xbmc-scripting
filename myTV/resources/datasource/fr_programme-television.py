@@ -5,6 +5,7 @@
 # Changelog:
 # 05/11/07 Fixed due to site change.
 # 10-03-2008 Updated for myTV v1.18
+# 10-03-2009 re fixed.
 ############################################################################################################
 
 from mytvLib import *
@@ -31,7 +32,7 @@ class ListingData:
 	def getChannels(self):
 		debug("ListingData.getChannels()")
 		regex = "option value=\"(\d+)\">(.*?)<"
-		return getChannelsLIB(self.channelListURL, self.CHANNELS_FILENAME, regex, ">Chaines<",'</select>')
+		return getChannelsLIB(self.channelListURL, self.CHANNELS_FILENAME, regex)
 
 
 	# download channel data, using either dayDelta or dataDate.
@@ -73,7 +74,7 @@ class ListingData:
 			# for each prog extract info
 			reStartTime = '(\d\d:\d\d)'
 			reDescLink = 'href="(.*?)"'
-			reTitle = '(?:titrepc|lientitregc|titrejournalpc)">(.*?)<'
+			reTitle = '(?:titrepc|lientitregc|titrejournalpc)">(.*?)</'
 			reGenre = 'typepc">(.*?)<'
 			reDesc = 'TexteResume">(.*?)<'
 			reEpisodeName = 'sstitrepc">(.*?)<'

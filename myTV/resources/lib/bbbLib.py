@@ -363,6 +363,7 @@ def parseDocList(doc, regex, startStr='', endStr=''):
 		findRe = re.compile(regex, re.DOTALL + re.MULTILINE + re.IGNORECASE)
 		matchList = findRe.findall(doc[startPos:endPos])
 	except:
+		traceback.print_exc()
 		matchList = []
 
 	if matchList:

@@ -1431,6 +1431,8 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 			if configKey:
 				if configKey in (MYTVConfig.KEY_SMB_PATH, MYTVConfig.KEY_SMB_IP, MYTVConfig.KEY_SMB_FILE):
 					label2 = mytvGlobals.config.getSMB(configKey)
+					if label2 == None:
+						label2 = ''
 					menu.append(xbmcgui.ListItem(label, label2))
 					menu.append(xbmcgui.ListItem(__language__(971), ''))	# select from existing
 				else:

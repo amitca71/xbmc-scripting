@@ -5,12 +5,14 @@
 # Changelog:
 # 21-11-07 created as an alternative for nl_TVGids
 # 10-03-2008 Updated for myTV v1.18
+# 10-03-09 Fix. but genre matching removed inorder to get it workng.
 ############################################################################################################
 
 from mytvLib import *
 
 import xbmcgui, re, time
 from os import path
+from pprint import pprint
 
 # Translate genre to english
 GENRE_TRANSLATIONS = {
@@ -61,7 +63,7 @@ class ListingData:
 		lastStartTime = 0 
 
 		# download data file if file doesnt exists
-		dataFilename = os.path.join(self.cache, "%s_%s.html" % (chID, fileDate))
+		dataFilename = xbmc.makeLegalFilename(os.path.join(self.cache, "%s_%s.html" % (chID, fileDate)))
 		if not fileExist(dataFilename):
 			url = self.channelURL + "&dag=" + str(dayDelta) + "&" + chID + "=on"
 			doc = fetchCookieURL(url, dataFilename, headers=self.HEADERS)
@@ -73,20 +75,22 @@ class ListingData:
 
 		doc = doc.decode('latin-1','replace')
 
+		# GENRE MATCHING REMOVED UNTIL I CAN WORK OUT WHY ITS MAKING ALL CHANNELS HAVE SAME PROGS
+		# IF THIS BIT OF CODE IS DONE.
 		# fetch listings filtered by genre, each one added here will slow down the whole process
 		# extract prog link as key
-		regex = '>\d+:\d+ - \d+:\d+<.*?href=\"(.*?)\"'
-		genreURL = self.channelURL + '&medium=TV&dag=' + str(dayDelta) + '&guide='
+#		regex = '>\d+:\d+ - \d+:\d+<.*?href=\"(.*?)\"'
+#		genreURL = self.channelURL + '&medium=TV&dag=' + str(dayDelta) + '&guide='
 		progsGenreDict = {}
-		for genre in GENRES_TO_FIND:
-			genreFilename = os.path.join(self.cache, "%s_%s_%s.html" % (self.name,genre,fileDate))
-			progs = self._findChannelGenre(genreURL + genre, regex, genreFilename)
+#		for genre in GENRES_TO_FIND:
+#			genreFilename = xbmc.makeLegalFilename(os.path.join(self.cache, "%s_%s_%s.html" % (self.name,genre,fileDate)))
+#			progs = self._findChannelGenre(genreURL + genre, regex, genreFilename)
+#
+#			# make prog the key and save genre against it
+#			for prog in progs:
+#				progsGenreDict[prog] = self.translateGenre(genre)
 
-			# make prog the key and save genre against it
-			for prog in progs:
-				progsGenreDict[prog] = self.translateGenre(genre)
-
-		regex = '"pt">(\d+:\d+)<.*?href="(.*?)".*?"title">(.*?)<.*?<br />(.*?)</a'
+		regex = '>(\d+:\d+)<.*?href="(.*?)".*?"title">(.*?)<.*?<br />(.*?)</a'
 		matches = parseDocList(doc, regex, "Programmaoverzicht","</form>")
 		if matches:
 			for match in matches:
@@ -97,10 +101,10 @@ class ListingData:
 					desc = cleanHTML(decodeEntities(match[3]))
 
 					# prog stored with a genre  ?
-					try:
-						progGenre = progsGenreDict[link]
-					except:
-						progGenre = ""
+#					try:
+#						progGenre = progsGenreDict[link]
+#					except:
+#						progGenre = ""
 
 					descLink = decodeEntities(link)
 					if descLink:
@@ -109,20 +113,22 @@ class ListingData:
 					# convert starttime to secs since epoch
 					secsEpoch = startTimeToSecs(lastStartTime, startTime, fileDate)
 					lastStartTime = secsEpoch
-	#				print title, startTime, progGenre
+#					print title, startTime, progGenre
 					progList.append( {
 							TVData.PROG_STARTTIME : float(secsEpoch),
 							TVData.PROG_ENDTIME : 0,
 							TVData.PROG_TITLE : title,
-							TVData.PROG_GENRE : progGenre,
+#							TVData.PROG_GENRE : progGenre,
 							TVData.PROG_DESC : desc,
 							TVData.PROG_DESCLINK : descLink
 						} )
 				except:
+					print str( sys.exc_info()[ 1 ] )
 					print "bad programme scrape", match
 
 			progList = setChannelEndTimes(progList)		# update endtimes
 
+#		pprint (progList)
 		return progList
 
 	# load page based on a genre, store prog
@@ -130,12 +136,12 @@ class ListingData:
 		debug("> ListingData._findChannelGenre() %s" % genreFilename)
 
 		if not fileExist(genreFilename):
-			doc = fetchCookieURL(url, genreFilename, headers=self.HEADERS)
+			genredoc = fetchCookieURL(url, genreFilename, headers=self.HEADERS)
 		else:
-			doc = readFile(genreFilename)
+			genredoc = readFile(genreFilename)
 
-		if doc:
-			progsList = findAllRegEx(doc, regex)
+		if genredoc:
+			progsList = findAllRegEx(genredoc, regex)
 		else:
 			progsList = []
 

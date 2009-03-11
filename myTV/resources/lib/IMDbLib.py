@@ -19,6 +19,7 @@ Changelog:
 18/01/08 Fix: regex for Cast
 29/08/08 Fix: looks for Popular and Exact , Approx matches, fix unicode lookups
 03/10/08 Change: Improved title name cleaning.
+10/03/09 Fix: Exact search re
 """
 
 import os,sys,re,urllib,string, urlparse,traceback,unicodedata
@@ -303,7 +304,7 @@ class IMDbSearch:
 			  or string.find(page, 'Approx Matches') != -1:
 			log( "found 'Popular' and/or 'Exact' or 'Approx' matches" )
 			# title code, title, year
-			search = re.compile('href="/title/([t0-9]*)/">(.*?)</a> *\(([0-9]*)')		# updated 11/12/2007
+			search = re.compile('href="/title/([t0-9]*)/".*?>(.*?)</a> *\(([0-9]*)')		# updated 10/03/2009
 			matches = search.findall(page)
 			if matches:
 				for a in matches:

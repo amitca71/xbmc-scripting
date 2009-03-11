@@ -7,6 +7,7 @@
 # Changelog
 # 13-11-06 Fix: regex & start_str to get channels
 #          Fix: prevent -1 daydelta fetches (caused HTTP 500 error)
+# 11-03-09 Fix: base url & params changed. Now based on two html pages per channel.
 ############################################################################################################
 
 from mytvLib import *
@@ -53,31 +54,29 @@ class ListingData:
 		lastStartTime = 0 
 
 		# download data file if file doesnt exists
-		dataFilename = os.path.join(self.cache, "%s_%s.html" % (chID, fileDate))
-		if not fileExist(dataFilename):
-			formatTime = time.strptime(fileDate,"%Y%m%d")
-			urlDate = time.strftime("%d %B %Y", formatTime)
+		formatTime = time.strptime(fileDate,"%Y%m%d")
+		urlDate = time.strftime("%d %B %Y", formatTime)
+		prog_times = ('time5','time6')
+		for prog_time in prog_times:
+			dataFilename = os.path.join(self.cache, "%s_%s_%s.html" % (prog_time, chID, fileDate))
 			# make POST params
 			postData = {
 				'programme_day' : urlDate,
-				'programme_time' : 'All Day',
-				'Channel' : chID
+				'programme_time' : prog_time,
+				'channelid' : chID
 				}
 			params = urllib.urlencode(postData)
 			doc = fetchURL(self.CHANNEL_URL, dataFilename, params=params)
-		else:
-			doc = readFile(dataFilename)
 
-		if not doc:
-			return doc
+			if not doc:
+				continue
 
-		doc = doc.decode('latin-1','replace')
+			doc = doc.decode('latin-1','replace')
 
-		# HH:MM, data -  which may/not contain href and name
-		regex = '>(\d\d:\d\d).*?programme">(.*?)</td.*?<td.*?>(.*?)</td'
-		startStr = "<h3>%s<" % chName
-		matches = parseDocList(doc, regex, startStr,'</table>')
-		if matches:
+			# HH:MM, data -  which may/not contain href and name
+			regex = '>(\d\d:\d\d).*?programme">(.*?)</td.*?<td.*?>(.*?)</td'
+			startStr = "<h3>%s<" % chName
+			matches = parseDocList(doc, regex, startStr,'</table>')
 			for match in matches:
 				startTime = match[0]
 				title = decodeEntities(cleanHTML(match[1]))
@@ -95,8 +94,7 @@ class ListingData:
 						TVData.PROG_DESC : desc
 					} )
 
-			progList = setChannelEndTimes(progList)		# update endtimes
-
+		progList = setChannelEndTimes(progList)		# update endtimes
 		return progList
 
 	# Download url and regex parse it to extract description.

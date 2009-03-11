@@ -6,6 +6,7 @@
 #
 # CHANGELOG
 # 22-08-08 Created
+# 10-03-09 Downloads gzip instead of zip archive. Fix XML parsing
 ############################################################################################################
 
 from mytvLib import *
@@ -15,6 +16,7 @@ import xbmcgui, re, time
 from string import split, replace, find, rfind, atoi, zfill
 from os import path
 import gc	# garbage collection
+import gzip
 
 __language__ = sys.modules["__main__"].__language__
 
@@ -26,8 +28,8 @@ class ListingData:
 		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
 		self.CHANNELS_FN = os.path.join(cache,"Channels_"+ self.name + ".dat")
 		self.BASE_URL = 'http://static.xmltv.info/'
-		self.ZIP_URL = self.BASE_URL + 'tv.xml.zip'
-		self.ZIP_FN = os.path.join(cache, 'tv_%s.zip' % self.getTodayDate())
+		self.ARCHIVE_URL = self.BASE_URL + 'tv.xml.gz'
+		self.ARCHIVE_FN = os.path.join(cache, 'tv_%s.gz' % self.getTodayDate())
 		self.XML_FN = ""
 
 		debug("< __init__")
@@ -51,10 +53,10 @@ class ListingData:
 			# get XML file and extract channels from that
 			dialogProgress.create(self.name, __language__(212))
 			self.XML_FN = self.getXMLFilename()
-			if self.downloadZip():
+			if self.downloadArchive():
 				doc = readFile(self.XML_FN)
 				# use regex, its quicker !
-				matches = findAllRegEx(doc, 'channel id="(.*?)".*?name.*?>(.*?)<')	# chID, chName
+				matches = findAllRegEx(doc, 'channel id=["\'](.*?)["\'].*?name.*?>(.*?)</')	# chID, chName
 				if matches:
 					for chID, chName in matches:
 						channels.append([chID, chName])
@@ -92,10 +94,10 @@ class ListingData:
 
 		# get last online update date
 		self.XML_FN = self.getXMLFilename()
-		if not fileExist(self.XML_FN) and not self.downloadZip():
+		if not fileExist(self.XML_FN) and not self.downloadArchive():
 			return None	# error
 
-		dialogProgress.update(0, __language__(312), self.XML_FN )
+		dialogProgress.update(0, __language__(312), os.path.basename(self.XML_FN) )
 		xml = readFile(self.XML_FN)
 		if not xml:
 			debug( "XML file empty!")
@@ -104,7 +106,7 @@ class ListingData:
 
 		# process all channels all dates in XML, so we don't have to do it again
 		saveChannels = {}
-		CHANNEL_RE = 'programme start="(\d+).*?stop="(\d+).*?channel="(.*?)".*?title.*?>(.*?)</t'
+		CHANNEL_RE = "<programme channel='(.*?)' stop='(\d{1,12}).*?start='(\d{1,12}).*?title.*?>(.*?)</t"	# 10/03/09
 		channelList = readChannelsList(self.CHANNELS_FN)
 		matches = findAllRegEx(xml, CHANNEL_RE)
 		if matches:
@@ -112,17 +114,17 @@ class ListingData:
 			for match in matches:
 				try:
 #					print match
-					startDateTime = match[0]
+					progChID = match[0]
 					stopDateTime = match[1]
-					progChID = match[2]
+					startDateTime = match[2]
 					title = decodeEntities(unicodeToAscii(match[3]))	#.decode('utf8','replace')
-					startDate = startDateTime[:DATE_SZ]
 					if not startDateTime or not title or not progChID:
 						continue
 
 					# convert to secs
-					startTimeSecs = time.mktime(time.strptime(startDateTime,"%Y%m%d%H%M%S"))
-					stopTimeSecs = time.mktime(time.strptime(stopDateTime,"%Y%m%d%H%M%S"))
+					startDate = startDateTime[:DATE_SZ]
+					startTimeSecs = time.mktime(time.strptime(startDateTime,"%Y%m%d%H%M"))
+					stopTimeSecs = time.mktime(time.strptime(stopDateTime,"%Y%m%d%H%M"))
 
 					progInfo = {
 							TVData.PROG_STARTTIME : float(startTimeSecs),
@@ -177,29 +179,41 @@ class ListingData:
 	#
 	# get current region archive, unpack and rename using todays date
 	#
-	def downloadZip(self):
-		debug("> ListingData.downloadZip()")
+	def downloadArchive(self):
+		debug("> ListingData.downloadArchive()")
 		success = False
-		zipBasename = os.path.basename(self.ZIP_FN)
-		dialogProgress.update(0, __language__(303), self.ZIP_URL, zipBasename )
-#		if fileExist(self.ZIP_FN) or fetchURL(self.ZIP_URL, self.ZIP_FN, isBinary=True):
-		if fetchURL(self.ZIP_URL, self.ZIP_FN, isBinary=True):
-			# unpack archive
-			success, installed_path = unzip(self.cache, self.ZIP_FN, False, __language__(315))
-			if success:
-				try:
-					# rename unpacked xml file to one with date
-					deleteFile(self.XML_FN)
-					debug("XML rename %s to %s" % (installed_path, self.XML_FN))
-					os.rename(installed_path, self.XML_FN)
-					success = fileExist(self.XML_FN)
-				except:
-					handleException("downloadZip() rename file")
+		archiveBasename = os.path.basename(self.ARCHIVE_FN)
+		dialogProgress.update(0, __language__(303), self.ARCHIVE_URL, archiveBasename )
+#		if fileExist(self.ARCHIVE_FN) or fetchURL(self.ARCHIVE_URL, self.ARCHIVE_FN, isBinary=True):
+		if fetchURL(self.ARCHIVE_URL, self.ARCHIVE_FN, isBinary=True):
+			try:
+				deleteFile(self.XML_FN)	# delete any existing
+				# unpack archive
+				ext = os.path.splitext(archiveBasename)
+				if ext == '.zip':
+					success, installed_path = unzip(self.cache, self.ARCHIVE_FN, False, __language__(315))
+					if success:
+							# rename unpacked xml file to one with date
+							deleteFile(self.XML_FN)
+							debug("XML rename %s to %s" % (installed_path, self.XML_FN))
+							os.rename(installed_path, self.XML_FN)
+				else:
+					debug("unpack gzipfile " + self.ARCHIVE_FN)
+					dialogProgress.update(0, __language__(315), archiveBasename, " ")
+					zfile = gzip.GzipFile(self.ARCHIVE_FN)
+					debug("reading gzip file")
+					content = zfile.read()
+					debug("writing to file " + self.XML_FN)
+					file(self.XML_FN,'w').write(content)
+					zfile.close()
+			except:
+				handleException("downloadArchive()")
 
+		success = fileExist(self.XML_FN)
 		if not success:
-			messageOK("Download File Failed!", self.ZIP_URL, zipBasename)
+			messageOK("Download File Failed!", self.ARCHIVE_URL, archiveBasename)
 			
-		debug("< ListingData.downloadZip() success=%s" % success)
+		debug("< ListingData.downloadArchive() success=%s" % success)
 		return success
 
 

@@ -3,6 +3,12 @@
                 Fix: Dreambox - (non Enigma) retrieving timers.
                 Fix: pc_XMLTV - channels regex error
                 Fix: TVRage.com unicode logo name matching error.
+                Fix: IMDb 'exact or close match' regex.
+                Fix: datasource de_XMLTV
+                Fix: datasource fr_programme_television
+                Fix: datasource: ie_entertainment
+                Fix: (maybe) us_SchedulesDirect (needs a/c verification)
+                Fix: datasource: nl_omroep
                 Updated: Language Strings
                 Updated: Skin tweaks
                 Updated: Library code
