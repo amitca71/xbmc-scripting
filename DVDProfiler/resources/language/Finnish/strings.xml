@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>    <!--  Finnish 2.3.2009  -->
+<strings>    <!--  Finnish 11.3.2009  -->
     <string id="0">DVDProfiler</string>
 
     <!-- Browse dialog headings -->
@@ -212,6 +212,6 @@
    <string id="1010">Ohjelma päivitetty, voit käynnistää uudelleen.</string>
 
     <!-- Update error messages -->
-    <string id="1030">Uusinta versiota ei löytynyt!</string>
+    <string id="1030">Uutta versiota ei löytynyt!</string>
     <string id="1031">Päivitys ei onnistunut!</string>
 </strings>

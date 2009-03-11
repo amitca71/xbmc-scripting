@@ -75,7 +75,7 @@
     <string id="1002">on uudempi</string>
     <string id="1003">Haluatko päivittää ohjelman?</string>
     <string id="1004">Noudetaan tiedostoluetteloa...</string>
-    <string id="1005">Odota...</string>
+    <string id="1005">Odota hetki...</string>
     <string id="1006">Versio</string>
     <string id="1007">Noudetaan:</string>
     <string id="1008">Polku:</string>
@@ -83,6 +83,6 @@
     <string id="1010">Ohjelma tallennettiin kansioon:</string>
 
     <!-- Update error messages -->
-    <string id="1030">Uusinta versiota ei löytynyt!</string>
+    <string id="1030">Uutta versiota ei löytynyt!</string>
     <string id="1031">Päivitys ei onnistunut!</string>
 </strings>

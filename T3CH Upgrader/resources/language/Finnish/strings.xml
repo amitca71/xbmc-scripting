@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
+<strings>    <!--  Finnish 11.3.2009 -->
     <string id="0">T3CH XBMC-päivitys</string>
-    <!--  Finnish v.24.11.2008 -->
 
     <!-- Browse dialog headings -->
     <string id="200">Asennuspolku (esim. E:\apps)</string>
@@ -93,6 +92,7 @@
     <string id="533">Pelkkä lataus vai lataus ja asennus ?</string>
     <string id="534">Tarkista</string>
     <string id="535">Anna päivämäärä</string>
+    <string id="536">Valitse arkistosta</string>
 
     <!-- Menu Titles -->
     <string id="600">Päävalikko</string>
@@ -131,13 +131,13 @@
 
   <!-- Update messages -->  
   <string id="1000">Ohjelmasi on jo ajantasalla.</string>
-  <string id="1001">Tarkistetaan päivityksiä...</string>
+  <string id="1001">Tarkistetaan uusinta versiota...</string>
   <string id="1002">on uudempi</string>
   <string id="1003">Haluatko päivittää ohjelman?</string>
-  <string id="1004">Haetaan tiedostoluetteloa...</string>
+  <string id="1004">Noudetaan tiedostoluetteloa...</string>
   <string id="1005">Odota hetki..</string>
   <string id="1006">Versio</string>
-  <string id="1007">Haetaan:</string>
+  <string id="1007">Noudetaan:</string>
   <string id="1008">Polku:</string>
   <string id="1009">Tiedosto:</string>
 
