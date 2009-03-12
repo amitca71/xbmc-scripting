@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>    <!--  Finnish 11.3.2009 -->
+<strings>    <!--  Finnish 12.3.2009 -->
     <string id="0">T3CH XBMC-päivitys</string>
 
     <!-- Browse dialog headings -->
@@ -109,20 +109,20 @@
     <string id="619">Päivitä skripti</string>
     <string id="620">Asenna paikallisesta sijainnista:</string>
     <string id="621">Asenna vanha versio internetistä</string>
-    <string id="622">Nouda uusi T3CH-asennuspaketti</string>
+    <string id="622">Tarkista uusi T3CH-asennuspaketti</string>
 
    <!-- Settings Options -->
     <string id="630">Dashin sijainti asema:</string>
     <string id="631">Dashin kynnistysnimi:</string>
     <string id="632">Asennuspolku:</string>
     <string id="633">Ilmoita uudesta T3CH-paketista?</string>
-    <string id="634">Tarkista päivitykset käynnistyessä</string>
+    <string id="634">Tarkista skriptin päivitykset käynnistyessä</string>
     <string id="635">Siirrä UserData T3CH-kansioon?</string>
     <string id="636">Oletus asetukset</string>
     <string id="637">Palauta oletus tiedostokopio ja -poisto luettelot</string>
     <string id="638">Kysy ennen T3CH varmuuskopion poistoa?</string>
     <string id="639">Näytä skriptin ohje/muutoshistoria</string>
-    <string id="640">Tarkistaanko päivitykset käynnistyessä?</string>
+    <string id="640">Tarkistaanko uuden T3ch-paketin saatavuus käynnistyessä?</string>
 
     <!-- Misc Menu Options Options -->
     <string id="650">Poistu</string>
