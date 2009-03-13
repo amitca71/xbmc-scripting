@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-   <!--  Finnish 2.3.2009 -->
+   <!--  Finnish 13.3.2009 -->
   <string id="0">Apple Movie Trailers</string>
   <string id="1">xbmc media center</string>
   <string id="2">Mika Pirinen</string>
@@ -110,7 +110,7 @@
   <string id="200">Valitse:</string>
   <string id="201">Ulkoasu</string>
   <string id="202">Kuvanlaatu</string>
-  <string id="203">Toimintatapa</string>
+  <string id="203">Toistotapa</string>
   <string id="204">Tallennuskansio</string>
   <string id="205">Toista kaikki esittelyt</string>
   <string id="206">Kuvakenäkymä</string>

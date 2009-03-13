@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!--    Finnish 13.3.2009 -->
+    <string id="30000">Haluttu esittelyn kuvanlaatu</string>
+    <string id="30001">Matala</string>
+    <string id="30002">Keski</string>
+    <string id="30003">Korkea</string>
+    <string id="30004">480p</string>
+    <string id="30005">720p</string>
+    <string id="30006">1080p</string>
+    <string id="30010">- Sisällytä vain HD-esittelyt</string>
+    <string id="30020">Näytä kaikki elokuvan esittelyt</string>
+    <string id="30030">MPAA-luokituksen rajoitus esittelyille</string>
+    <string id="30040">Toistotapa</string>
+    <string id="30041">Katso</string>
+    <string id="30042">Lataa</string>
+    <string id="30043">Lataa &amp; tallenna</string>
+    <string id="30050">- Tallennuskansio</string>
+    <string id="30060">Sopivat sanat ainoastaan</string>
+    <string id="30070">Merkitse katsomisen jälkeen esittelyt katsotuksi</string> 
+    <string id="30080">Toistin</string>
+    <string id="30100">Fanitaide kuvat tyyleittäin</string>
+    <string id="30110">- Fanitaiteen polku</string>
+    <string id="30120">- Fanitaiteen kuvan polku</string>
+    <string id="30130">Fanitaiteen väri yksi(AARRGGBB)</string>
+    <string id="30140">Fanitaiteen väri kaksi(AARRGGBB)</string>
+    <string id="30150">Fanitaiteen väri kolme(AARRGGBB)</string>
+    <string id="30160">AMT tietokannan polku</string>
+
+    <string id="30500">Esittelyn lataus</string>
+    <string id="30501">Anna avainsanat: Erilliset sanat ja ehdot and/or/not</string>
+    <string id="30502">Merkitään video katsotuksi</string>
+    <string id="30503">Odota hetki...</string>
+    <string id="30504">Esittely</string>
+
+    <string id="30600">Tietokantaa ei löydy!</string>
+    <string id="30601">Sinun täytyy asentaa ja käynnistää pääskripti.</string>
+    <string id="30602">Haluatko käynnistää pääskriptin?</string>
+
+    <string id="30900">*Etsi videoita</string>
+
+</strings>
