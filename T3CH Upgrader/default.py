@@ -22,7 +22,7 @@ __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
 __date__ = '11-03-2009'
 __version__ = "1.8"
-xbmc.output( __scriptname__ + " Version: " + __version__  + " Date: " + __date__)
+xbmc.output( "[SCRIPT]: %s v%s Dated: %s started!" % (__scriptname__, __version__, __date__))
 
 # Shared resources
 DIR_HOME = os.getcwd().replace( ";", "" )
@@ -36,18 +36,7 @@ try:
     # 'resources' now auto appended onto path
     __language__ = xbmc.Language( DIR_HOME ).getLocalizedString
 except:
-	print str( sys.exc_info()[ 1 ] )
-	xbmcgui.Diaxbmc.output().ok("xbmc.Language Builtin Error", "Update XBMC manually to run this version.","Or use script v1.7.2 instead.")
-
-# check if build is special:// aware - set roots paths accordingly
-XBMC_HOME = 'special://home'
-XBMC_PROFILE = 'special://masterprofile'
-if not os.path.isdir(xbmc.translatePath(XBMC_HOME)):	# if fails to convert to Q:, old builds
-	xbmc.output("XBMC not 'special://' aware, fallback to old paths")
-	XBMC_HOME = 'Q:'
-	XBMC_PROFILE = 'T:'
-xbmc.output("XBMC_HOME=%s" % XBMC_HOME)
-xbmc.output("XBMC_PROFILE=%s" % XBMC_PROFILE)
+	xbmcgui.Dialog.ok("XBMC Builtin Error", "Please update your XBMC build.", str(sys.exc_info()[ 1 ]))
 
 from sgmllib import SGMLParser
 import urllib
@@ -68,7 +57,18 @@ CANCEL_DIALOG = EXIT_SCRIPT + ( 216, 257, 61448, )
 TEXTBOX_XML_FILENAME = "DialogScriptInfo.xml"       # xbmc skin supplied textbox viewer
 
 def log(msg):
-	xbmc.output("[%s]: %s" % (__scriptname__, msg))
+	try:
+		xbmc.output("[%s]: %s" % (__scriptname__, msg))
+	except: pass
+
+# check if build is special:// aware - set roots paths accordingly
+XBMC_HOME = 'special://home'
+XBMC_PROFILE = 'special://masterprofile'
+if not os.path.isdir(xbmc.translatePath(XBMC_HOME)):	# if fails to convert to Q:, old builds
+	XBMC_HOME = 'Q:'
+	XBMC_PROFILE = 'T:'
+log("XBMC_HOME=%s" % XBMC_HOME)
+log("XBMC_PROFILE=%s" % XBMC_PROFILE)
 
 #############################################################################################################
 class Parser( SGMLParser ):
