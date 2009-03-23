@@ -4,6 +4,7 @@ v1.8   23/03/2009
  Change: Change to cope with new xbmc paths "special://" otherwise fallback to old style.
  Change: Menu options Maintain Additional Deletes and Copies selection/editing behaviour.
  Change: Changelog.txt moved to script home dir.
+ Change: Improved new build UserData removal/checking (prompts for retry if failed)
  Change: Some code tidyup (code logging etc)
  New: Menu option to Select from multiple Local Archives (rar | zip)
 v1.7.5 07/12/2008

@@ -694,27 +694,31 @@ class Main:
 							dialogProgress.create( __language__( 0 ) )
 
 						if self.settings[self.SETTING_XFER_USERDATA]:
-							self._copy_user_data(extract_path)
+							success = self._copy_user_data(extract_path)
+						else:
+							success = True
 
-						# do Custom Copies
-						self._copy_includes()
+						if success:
+							# do Custom Copies
+							self._copy_includes()
 
-						# do Custom Deletes
-						self._delete_excludes()
+							# do Custom Deletes
+							self._delete_excludes()
 
 						if not self.isSilent:
 							dialogProgress.close()
 
 					# update shortcuts ?
-					success = self._update_shortcut(extract_path)		# create shortcut
+					if success:
+						success = self._update_shortcut(extract_path)		# create shortcut
 
-					# del rar according to del setting
-					if fileExist(archive_file):
-						# always del if no prompt reqd or isSilent
-						if self.isSilent or not self.settings[self.SETTING_PROMPT_DEL_RAR] or \
-							dialogYesNo( __language__( 0 ), __language__( 528 ), archive_file, \
-										yesButton=__language__( 412 ), noButton=__language__( 413 )):
-							deleteFile(archive_file)					# remove RAR
+						# del rar according to del setting
+						if fileExist(archive_file):
+							# always del if no prompt reqd or isSilent
+							if self.isSilent or not self.settings[self.SETTING_PROMPT_DEL_RAR] or \
+								dialogYesNo( __language__( 0 ), __language__( 528 ), archive_file, \
+											yesButton=__language__( 412 ), noButton=__language__( 413 )):
+								deleteFile(archive_file)					# remove RAR
 		except:
 			handleException("process()")
 		log("< _process() success=%s" % success)
@@ -1027,32 +1031,41 @@ class Main:
 
 	######################################################################################
 	def _copy_user_data(self, extract_path):
-		log( "> _copy_user_data() " + extract_path )
+		log( "> _copy_user_data() to " + extract_path )
 		success = False
 
 		try:
-			curr_build_userdata_path = xbmc.translatePath(XBMC_PROFILE)
+			curr_build_userdata_path = xbmc.translatePath(XBMC_PROFILE + '/')
+			log("curr_build_userdata_path=" + curr_build_userdata_path)
 			new_build_userdata_path = os.path.join( extract_path, "XBMC", "userdata")
+			log("new_build_userdata_path=" + new_build_userdata_path)
 
 			# remove new build UserData
-			checkMAX = 5
-			for checkCount in range(checkMAX):
+			checkMAX = 15
+			checkCount = 0
+			while os.path.isdir(new_build_userdata_path):
 				log("rmtree UserData checkCount=%i" % checkCount)
+				checkCount += 1
 				percent = int( checkCount * 100.0 / checkMAX )
 				self._dialog_update( __language__(0), __language__( 510 ), pct=percent, time=2)
 				rmtree( new_build_userdata_path, ignore_errors=True )
 				time.sleep(2)	# give os chance to complete rmdir
-				if not os.path.isdir(new_build_userdata_path):
-					break
+
+				if (checkCount > checkMAX) and os.path.isdir(new_build_userdata_path):
+					checkCount = 0
+					if not dialogYesNo( __language__(0), "Failed to remove new XBMC User Data, Retry?"):
+						break
 
 			# Copytree current UserData to new build
-			try:
-				log("copytree UserData %s -> %s" % (curr_build_userdata_path,new_build_userdata_path) )
-				self._dialog_update( __language__(0), __language__( 511 ), time=2) 
-				copytree( curr_build_userdata_path, new_build_userdata_path )
-				success = True
-			except:
-				dialogOK("Copy UserData Error","Failed to copytree:", curr_build_userdata_path, new_build_userdata_path)
+			if not os.path.isdir(new_build_userdata_path):
+				try:
+					log("copytree UserData %s -> %s" % (curr_build_userdata_path,new_build_userdata_path) )
+					self._dialog_update( __language__(0), __language__( 511 ), time=2) 
+					copytree( curr_build_userdata_path, new_build_userdata_path )
+					success = True
+				except:
+					traceback.print_exc()
+					dialogOK("CopyTree on UserData Error",curr_build_userdata_path, new_build_userdata_path,str(sys.exc_info()[ 1 ]))
 		except:
 			handleException("_copy_user_data()", __language__( 306 ))
 		log( "< _copy_user_data() success=%s" % success )
@@ -1325,7 +1338,7 @@ class Main:
 
 		try:
 			if not path:
-				path = XBMC_HOME # just incase
+				path = XBMC_HOME +'/' # just incase
 
 			if type == FILE:
 				msg = __language__(203)
