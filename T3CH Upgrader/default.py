@@ -20,7 +20,7 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '11-03-2009'
+__date__ = '26-03-2009'
 __version__ = "1.8"
 xbmc.output( "[SCRIPT]: %s v%s Dated: %s started!" % (__scriptname__, __version__, __date__))
 
@@ -553,7 +553,7 @@ class Main:
 					# assume local rars under 40meg are partial downloads and delete them
 					rar_filepath = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], f)
 					fsize = os.path.getsize(rar_filepath)
-					if fsize < 40000000:
+					if fsize < 30000000:
 						log("deleting suspected incompleted rar, fsize=%s %s" % (fsize, f))
 						deleteFile(rar_filepath)
 					else:
