@@ -324,7 +324,10 @@ class myTV(xbmcgui.WindowXML):
 		except: pass
 		colour = mytvGlobals.config.getDisplay(MYTVConfig.KEY_DISPLAY_COLOUR_NOWTIME)
 		ypos = self.epgY+1
-		self.nowTimeCI = xbmcgui.ControlImage(-5, ypos, 0, self.epgH, ICON_NOW_TIME,colour)	# off screen
+		try:
+			self.nowTimeCI = xbmcgui.ControlImage(-5, ypos, 0, self.epgH, ICON_NOW_TIME, colour)	# off screen
+		except:
+			self.nowTimeCI = xbmcgui.ControlImage(-5, ypos, 0, self.epgH, ICON_NOW_TIME)	# off screen
 		self.nowTimeCI.setVisible(False)
 		self.addControl(self.nowTimeCI)
 		self.nowTimeCI.setAnimations(self.defaultAnims)
@@ -1457,7 +1460,10 @@ class myTV(xbmcgui.WindowXML):
 				xpos = int(self.epgProgsX + (minsFromFirstInterval * self.epgPixelsPerMin))
 
 				y = (ypos + self.epgRowH -3)
-				ctrl = xbmcgui.ControlImage(xpos, y, w, 0, ICON_TIMERBAR, colour)
+				try:
+					ctrl = xbmcgui.ControlImage(xpos, y, w, 0, ICON_TIMERBAR, colour)
+				except:
+					ctrl = xbmcgui.ControlImage(xpos, y, w, 0, ICON_TIMERBAR)
 				self.addControl(ctrl)
 				ctrl.setAnimations(self.defaultAnims)
 				ctrl.setColorDiffuse(colour)

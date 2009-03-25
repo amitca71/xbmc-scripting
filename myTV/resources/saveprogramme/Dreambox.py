@@ -18,6 +18,7 @@
 # 11/05/06 - Updated. Config now done throu GUI.
 # 22/08/06 - Updated: Uses new Config.
 # 09/09/08 - Updated for myTV v1.18
+# 22/03/09 - Updated for myTV v1.19 - new config and settings
 ############################################################################################################
 
 import xbmc, urllib, time
