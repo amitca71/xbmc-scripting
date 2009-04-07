@@ -9,6 +9,7 @@
                 Fix: datasource: ie_entertainment
                 Fix: (maybe) us_SchedulesDirect (needs a/c verification)
                 Fix: datasource: nl_omroep
+                Fix: datasource: se_TVnu
                 Updated: Language Strings
                 Updated: Skin tweaks
                 Updated: Library code

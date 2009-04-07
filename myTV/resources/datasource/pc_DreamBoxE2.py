@@ -63,6 +63,7 @@ class ListingData:
 				if data:
 					matches = parseDocList(data, CHANNELS_REGEX, "[channel_list]")
 					if matches:
+						matches.sort()
 						channelList = writeChannelsList(self.CHANNELS_FILENAME, matches)
 				deleteFile(localFN)
 			else:
@@ -205,44 +206,4 @@ class ListingData:
 
 		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
 		return self.isConfigured
-
-
-	############################################################################################################
-	def configOLD(self, reset=False):
-		debug("> ListingData.config() reset=%s" % reset)
-
-		title = "%s - %s" % (self.name, __language__(976))
-		configSMB = ConfigSMB(title)
-		if reset:
-			configSMB.ask()
-
-		# CONFIG KEYS
-		KEY_CHANNELS_FN = 'dm_channels_fn'
-		KEY_DM_FN = 'dm_channel_fn'
-
-		# Uncomment the ONE that works for your web server interface
-		configData = [
-			[KEY_CHANNELS_FN,"DM Channels Filename:", "australiasat-channel_list.conf", KBTYPE_ALPHA],
-			[KEY_DM_FN,"DM Channel Day Filename:", "australiasat###(\d+).*?###(\d+)", KBTYPE_ALPHA],
-			[mytvGlobals.config.KEY_SMB_PATH,"SMB Path:", '', KBTYPE_SMB]
-			]
-
-		def _check():
-			self.DM_CONF_FILENAME = mytvGlobals.config.action(CONFIG_SECTION, KEY_CHANNELS_FN)
-			self.DM_FILENAME_REGEX = mytvGlobals.config.action(CONFIG_SECTION, KEY_DM_FN)
-			self.smbPath = mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH)
-			
-			success = bool( self.smbPath and self.DM_CONF_FILENAME and self.DM_FILENAME_REGEX )
-			debug("_check() success=%s" % success)
-			return success
-
-		if reset:
-			title = "%s - %s" % (self.name, __language__(976)) # __language__(534)
-			configOptionsMenu(CONFIG_SECTION, configData, title)
-		self.isConfigured = _check()
-
-		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
-		return self.isConfigured
-
-
 

@@ -144,9 +144,6 @@ class myTV(xbmcgui.WindowXML):
 			self.epgSetup()		
 			self.updateEPG(redrawBtns=True, updateLogo=True, updateChNames=True, forceLoadChannels=True)
 
-			# footer
-#			self.setupFooterNavLists()
-
 			# start clock
 			if self.timerthread:
 				self.timerthread.start()
@@ -574,7 +571,7 @@ class myTV(xbmcgui.WindowXML):
 			buttonID = action.getButtonCode()
 		except: return
 
-		if actionID in CANCEL_DIALOG + EXIT_SCRIPT or buttonID in CANCEL_DIALOG + EXIT_SCRIPT:
+		if actionID in EXIT_SCRIPT or buttonID in EXIT_SCRIPT:
 			debug("EXIT_SCRIPT")
 			self.ready = False
 			self.cleanup()
@@ -677,6 +674,8 @@ class myTV(xbmcgui.WindowXML):
 				debug("< ON NAVLISTS CONTROL")
 			self.setFocus(self.getControl(controlID))
 		else:
+			# clicked or <enter> on programme, update the focus
+			self.setFocus(self.getControl(controlID))
 			self.showDescription()
 
 		self.ready = True
@@ -1711,10 +1710,10 @@ class ProgDescDialog(xbmcgui.WindowXMLDialog):
 			buttonID = action.getButtonCode()
 		except: return
 
-		if actionID in CANCEL_DIALOG + EXIT_SCRIPT or buttonID in CANCEL_DIALOG + EXIT_SCRIPT:
+		if actionID in CANCEL_DIALOG or buttonID in CANCEL_DIALOG:
 			debug("ProgDescDialog() EXIT_SCRIPT")
 			self._close_dialog()
-		elif actionID in CLICK_B or actionID == ACTION_REMOTE_RECORD:		# RECORD / cancel record
+		elif actionID in CLICK_B or actionID == ACTION_REMOTE_RECORD or buttonID in CLICK_B: # RECORD / cancel record
 			debug("ProgDescDialog() CLICK_B")
 			self.actionB()
 		elif actionID in CLICK_X:											# FAV

@@ -22,10 +22,10 @@ class ListingData:
 
 		self.cache = cache
 		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
-		BASE_URL = "http://www.tv.nu/"
+		BASE_URL = "http://www.tv.nu"
 		self.CHANNELS_URL = BASE_URL
 		self.CHANNEL_URL = BASE_URL
-		self.DESC_URL = BASE_URL + 'p/$LINK.html'				# 13/08/08
+		self.DESC_URL = BASE_URL				# 13/08/08
 		self.CHANNELS_FILENAME = os.path.join(cache,"Channels_"+ self.name + ".dat")
 
 		# Idag = today, Imorgon = tomorrow,
@@ -74,7 +74,7 @@ class ListingData:
 			debug("lookupDayDelta=%s" % lookupDayDelta)
 
 			try:
-				url = self.CHANNEL_URL + self.DAYS[lookupDayDelta]
+				url = urlparse.urljoin(self.CHANNEL_URL,self.DAYS[lookupDayDelta])
 			except:
 				url = self.CHANNEL_URL
 
@@ -87,17 +87,17 @@ class ListingData:
 
 		doc = doc.decode('latin-1','replace')
 		# no desc from this site at present. its fetched as required from a link
-		# title, time, linkID
-		regex = "id=\"(.*?)\".*?(\d+:\d+).*?onclick=.*?'(.*?)'"		# 13/08/08
+		# time, linkID, title
+		regex = '>(\d+:\d+).*?<a href="(.*?)".*?rel=.*?>(.*?)<'		# 07/04/09
 		matches = parseDocList(doc, regex, 'href="/kanal/'+chID, '</a></li> </ul> </div>')
 		if matches:
 			for match in matches:
 				desc = ''
-				title = decodeEntities(cleanHTML(match[0]))
-				startTime = match[1]
-				link = match[2]
+				startTime = match[0]
+				link = match[1]
+				title = decodeEntities(cleanHTML(match[2]))
 				if title and startTime:
-					descLink = self.DESC_URL.replace('$LINK',link)
+					descLink = urlparse.urljoin(self.DESC_URL, link)
 
 					# convert starttime to secs since epoch
 					secsEpoch = startTimeToSecs(lastStartTime, startTime, fileDate)
@@ -114,6 +114,9 @@ class ListingData:
 
 			progList = setChannelEndTimes(progList)		# update endtimes
 
+		if not progList:
+			deleteFile(dataFilename)
+			deleteFile(filename)
 		return progList
 
 	#

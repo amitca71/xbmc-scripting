@@ -11,14 +11,10 @@
 
 import time, os, smb
 from mytvLib import *
-from smbLib import ConfigSMB, smbConnect, smbFetchFile, isNewSMBFile
+from smbLib import smbConnect, smbFetchFile, isNewSMBFile, parseSMBPath
 import mytvGlobals
 
 __language__ = sys.modules["__main__"].__language__
-
-CHANNELS_REGEX = 'channel id="(.*?)".*?display-name.*?>(.*?)<'
-CHANNEL_REGEX = 'start="($DATE\d\d\d\d\d\d).*?channel="$CHID".*?title.*?>(.*?)<'
-XMLTV_FILE = 'xmltv.xml'
 
 class ListingData:
 	def __init__(self, cache):
@@ -27,7 +23,7 @@ class ListingData:
 		self.cache = cache
 		self.name = os.path.splitext(os.path.basename( __file__))[0]	# get filename without path & ext
 		self.CHANNELS_FILENAME = os.path.join(cache,"Channels_"+ self.name + ".dat")
-		self.localSMBFile = os.path.join(cache, XMLTV_FILE)
+		self.localSMBFile = os.path.join(cache, 'xmltv.xml')
 		self.isConfigured = False
 		self.checkedRemoteFileToday = False
 		self.connectionError = False
@@ -36,6 +32,8 @@ class ListingData:
 		self.remote = None
 		self.remoteInfo = None
 		self.smbIP = None
+		self.CHANNELS_RE = ''
+		self.PROGS_RE = ''
 		self.smbPath = None
 		self.smbRemoteFile = None
 
@@ -59,7 +57,7 @@ class ListingData:
 				# extract data from file using regex - this is specific to this file format
 				data = readFile(self.localSMBFile)
 				if data:
-					matches = findAllRegEx(data, CHANNELS_REGEX)
+					matches = findAllRegEx(data, self.CHANNELS_RE)
 					channelList = writeChannelsList(self.CHANNELS_FILENAME, matches)
 			else:
 				# read in [channel id, channel name]
@@ -140,7 +138,7 @@ class ListingData:
 		dialogProgress.update(0, __language__(312))
 		data = readFile(self.localSMBFile)
 		if data:
-			regex = CHANNEL_REGEX.replace('$DATE',searchDate).replace('$CHID',chID)
+			regex = self.PROGS_RE.replace('$DATE',searchDate).replace('$CHID',chID)
 			matches = findAllRegEx(data, regex)
 			for prog in matches:
 				startDateTime = prog[0]
@@ -164,20 +162,39 @@ class ListingData:
 	############################################################################################################
 	def config(self, reset=False):
 		debug("> ListingData.config() reset=%s" % reset)
-		success = False
 
-		title = "%s - %s" % (self.name, __language__(976))
-		configSMB = ConfigSMB(title, fnTitle=__language__(977), fnDefaultValue=XMLTV_FILE)
+		CONFIG_SECTION = 'DATASOURCE_' + self.getName()
+
+		# CONFIG KEYS
+		KEY_CHANNELS_RE = 'channels_re'
+		KEY_PROGS_RE = 'progs_re'
+
+		# Uncomment the ONE that works for your web server interface
+		configData = [
+			[KEY_CHANNELS_RE,"Channels Regex:", 'channel id="(.*?)".*?display-name.*?>(.*?)<', KBTYPE_ALPHA],
+			[KEY_PROGS_RE,"Programme Regex:", 'start="($DATE\d\d\d\d\d\d).*?channel="$CHID".*?title.*?>(.*?)<', KBTYPE_ALPHA],
+			[mytvGlobals.config.KEY_SMB_PATH, __language__(969), 'smb://user:pass@pcname/share/folder/', KBTYPE_SMB],	# remote path
+			[mytvGlobals.config.KEY_SMB_FILE, __language__(977), 'xmltv.xml', KBTYPE_ALPHA]
+			]
+
+		def _check():
+			self.CHANNELS_RE = mytvGlobals.config.action(CONFIG_SECTION, KEY_CHANNELS_RE)
+			self.PROGS_RE = mytvGlobals.config.action(CONFIG_SECTION, KEY_PROGS_RE)
+			self.smbPath = mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_PATH)
+			self.smbIP = mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_IP)
+			self.smbRemoteFile = mytvGlobals.config.getSMB(mytvGlobals.config.KEY_SMB_FILE)
+			
+			if self.CHANNELS_RE and self.PROGS_RE and self.smbPath and self.smbIP and self.smbRemoteFile:
+				success = True
+			else:
+				success = False
+			debug("_check() success=%s" % success)
+			return success
+
 		if reset:
-			configSMB.ask()
-
-		smbDetails = configSMB.checkAll(silent=True)
-		if smbDetails:
-			self.smbIP, self.smbPath, self.smbRemoteFile = smbDetails
-			self.isConfigured = True
-		else:
-			self.isConfigured = False
-		self.connectionError = False	# will allow a retry after a config change
+			title = "%s - %s" % (self.name, __language__(976)) # __language__(534)
+			configOptionsMenu(CONFIG_SECTION, configData, title)
+		self.isConfigured = _check()
 
 		debug("< ListingData.config() isConfigured=%s" % self.isConfigured)
 		return self.isConfigured

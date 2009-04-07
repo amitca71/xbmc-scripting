@@ -234,4 +234,5 @@ bigbellybilly AT gmail DOT com     - bugs, comments, ideas, skin / language cont
 
 
         
-
+Find my scripts useful, why not Buy Me A Beer ? 
+https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bigbellybilly@gmail.com&item_name=Cheers!&no_shipping=1&tax=0&currency_code=GBP&lc=GB

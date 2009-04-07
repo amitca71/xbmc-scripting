@@ -182,14 +182,14 @@ class ListingData:
 		# IP
 		if not self.IP:
 			debug("get IP")
-			self.IP = doKeyboard(origIP, __language__(812), KBTYPE_IP)
+			self.IP = doKeyboard(origIP, self.name + ": "+ __language__(812), KBTYPE_IP)
 			if self.IP and self.IP != origIP:
 				mytvGlobals.config.action(CONFIG_SECTION, CONFIG_OPT_IP, self.IP, mode=ConfigHelper.MODE_WRITE)
 
 		# PORT
 		if not self.PORT:
 			debug("get PORT")
-			self.PORT = doKeyboard(origPORT, __language__(813), KBTYPE_NUMERIC)
+			self.PORT = doKeyboard(origPORT, self.name + ": "+ __language__(813), KBTYPE_NUMERIC)
 			if self.PORT and self.PORT != origPORT:
 				mytvGlobals.config.action(CONFIG_SECTION, CONFIG_OPT_PORT, self.PORT, mode=ConfigHelper.MODE_WRITE)
 

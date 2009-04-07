@@ -93,7 +93,7 @@ class SaveProgramme:
 		# get programme information
 		chName = channelInfo[TVChannels.CHAN_NAME]
 		title = programme[TVData.PROG_TITLE]
-		schedLink = programme[TVData.PROG_SCHEDLINK]
+		schedLink = programme.get(TVData.PROG_SCHEDLINK,'')
 		if not schedLink:
 			messageOK(self.NAME, "Programme Add Link missing!", title, chName)
 			debug("< SaveProgramme.run() failed")

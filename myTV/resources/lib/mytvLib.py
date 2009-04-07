@@ -1391,12 +1391,12 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 	REC_DEFAULT_VALUE = 2
 	REC_KB_TYPE = 3
 
-	def __enterValue(currValue, defaultValue, key, kbType, title):
+	def __enterValue(currValue, defaultValue, key, kbType, title, saveSection):
 		if currValue in (None,""):
 			currValue = defaultValue
 		value = doKeyboard(currValue, title, kbType)
 		if value != None:	# cancelled
-			mytvGlobals.config.action(section, key, value, mode=ConfigHelper.MODE_WRITE)
+			mytvGlobals.config.action(saveSection, key, value, mode=ConfigHelper.MODE_WRITE)
 		return value
 
 	def __enterSubMenu(currValue, options, key, title):
@@ -1433,14 +1433,16 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 					label2 = mytvGlobals.config.getSMB(configKey)
 					if label2 == None:
 						label2 = ''
-					menu.append(xbmcgui.ListItem(label, label2))
-					menu.append(xbmcgui.ListItem(__language__(971), ''))	# select from existing
 				else:
 					label2 = mytvGlobals.config.action(section, configKey)
 					label2 = mytvGlobals.config.configHelper.boolToYesNo(label2)
 					if label2 == None:
 						label2 = ''
-					menu.append(xbmcgui.ListItem(label, label2))
+				menu.append(xbmcgui.ListItem(label, label2))
+
+				if configKey == MYTVConfig.KEY_SMB_PATH:
+					# add 'select from existing' option
+					menu.append(xbmcgui.ListItem(__language__(971), ''))
 
 		return menu
 
@@ -1449,21 +1451,30 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 	changed = False
 	while True:
 		menu = __makeMenu()
+		# check if extra opt inserted for SMB option
+		isExtraOpt = (len(menu) > len(configData))
+		print "isExtraOpt=%s" % isExtraOpt
+
 		selectDialog = DialogSelect()
 		selectDialog.setup(menuTitle, width=menuWidth, rows=len(menu), panel=mytvGlobals.DIALOG_PANEL)
 		selectedPos, action = selectDialog.ask(menu, selectedPos)
 		if selectedPos <= 0:
 			break # exit selected
 
-		if menu[selectedPos].getLabel() == __language__(971):		# select from existing
+		menuOpt = menu[selectedPos].getLabel()
+		if menuOpt == __language__(971):		# select from existing
 			kbType = KBTYPE_SMB
 			label = ""
 			currValue = selectSMB()
 			if not currValue: continue
 		else:
-			key, label, defaultValue, kbType = configData[selectedPos-1]    # defaultValue could be a list of options
+			# find the option name in the configData
+			for idx, data in enumerate(configData):
+				key, label, defaultValue, kbType = data
+				if label == menuOpt:
+					print "found option " , data
+					break
 			currValue = menu[selectedPos].getLabel2()
-			
 
 		# enter new value and save to config
 		if kbType == KBTYPE_SMB:
@@ -1479,7 +1490,12 @@ def configOptionsMenu(section, configData, menuTitle, menuWidth=560):
 				if __enterSubMenu(currValue, defaultValue, key, label):
 					changed = True
 			else:
-				if __enterValue(currValue, defaultValue, key, kbType, label):
+				# ensure we save any SMB keys to correct section
+				if key in (MYTVConfig.KEY_SMB_PATH, MYTVConfig.KEY_SMB_IP, MYTVConfig.KEY_SMB_FILE):
+					saveSection = MYTVConfig.SECTION_SMB
+				else:
+					saveSection = section
+				if __enterValue(currValue, defaultValue, key, kbType, label, saveSection):
 					changed = True
 		del selectDialog
 
