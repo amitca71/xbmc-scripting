@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 01/01/2009-->
+<!--Date of translation: 04/16/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">myTV</string>
@@ -42,6 +42,7 @@
   <string id="135">Inte vaken än, ompröva WOL ?</string>
   <string id="136">WOL kräver en SMB sökväg[CR]för att kunna kontrollera uppvakningsstatus.</string>
   <string id="137">Sparat programfel!</string>
+  <string id="138">Inga filer hittades!</string>
   <string id="200">Ta bort listningar?</string>
   <string id="201">Ta bort kanallista?</string>
   <string id="202">Lokaliserar videofiler</string>
@@ -56,14 +57,14 @@
   <string id="211">Datum: %s (Välj för info)</string>
   <string id="212">Laddar ner kanallista</string>
   <string id="213">Ingen favoritserie</string>
-  <string id="214">
-  </string>
+  <string id="214">Inga videofiler som stödjs hittades.</string>
   <string id="215">Tema valt: %s</string>
   <string id="216">Ofullständig installation, installera nu?</string>
-  <string id="300">Var vänlig vänta ...</string>
+  <string id="217">Tar bort filer...</string>
+  <string id="300">Var vänlig vänta...</string>
   <string id="301">Lyckades</string>
   <string id="302">Misslyckades</string>
-  <string id="303">Laddar ner ...</string>
+  <string id="303">Laddar ner...</string>
   <string id="304">Färdig</string>
   <string id="305">Bekräfta borttagning?</string>
   <string id="306">Försök igen?</string>

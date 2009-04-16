@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 01/01/2009-->
+<!--Date of translation: 04/16/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">T3CH Upgrader</string>
@@ -89,6 +89,7 @@
   <string id="533">Ladda endast ner eller ladda ner och installera ?</string>
   <string id="534">Kontrollera nu</string>
   <string id="535">Ange ett datum</string>
+  <string id="536">Välj arkiv</string>
   <string id="600">Huvudmeny</string>
   <string id="601">Inställningsmeny</string>
   <string id="610">Inställningar</string>
