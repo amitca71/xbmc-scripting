@@ -1,5 +1,8 @@
 T3CH Upgrader Changelog:
 ========================
+v1.8.1 24/04/2009
+ Fix: Destination path for Includes and Excludes.
+ Change: Ensure edited Includes or Excludes path / file exist.
 v1.8   23/03/2009
  Change: Change to cope with new xbmc paths "special://" otherwise fallback to old style.
  Change: Menu options Maintain Additional Deletes and Copies selection/editing behaviour.

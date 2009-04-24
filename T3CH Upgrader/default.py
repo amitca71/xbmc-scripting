@@ -20,9 +20,9 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '26-03-2009'
-__version__ = "1.8"
-xbmc.output( "[SCRIPT]: %s v%s Dated: %s started!" % (__scriptname__, __version__, __date__))
+__date__ = '24-04-2009'
+__version__ = "1.8.1"
+xbmc.log( "[SCRIPT]: %s v%s Dated: %s started!" % (__scriptname__, __version__, __date__), xbmc.LOGNOTICE)
 
 # Shared resources
 DIR_HOME = os.getcwd().replace( ";", "" )
@@ -58,7 +58,7 @@ TEXTBOX_XML_FILENAME = "DialogScriptInfo.xml"       # xbmc skin supplied textbox
 
 def log(msg):
 	try:
-		xbmc.output("[%s]: %s" % (__scriptname__, msg))
+		xbmc.log("[%s]: %s" % (__scriptname__, msg), xbmc.LOGDEBUG)
 	except: pass
 
 # check if build is special:// aware - set roots paths accordingly
@@ -544,17 +544,18 @@ class Main:
 		log("> _get_local_archive()")
 		archive_list = []
 		try:
+			log("SETTING_UNRAR_PATH=" + self.settings[self.SETTING_UNRAR_PATH])
 			files = os.listdir( self.settings[ self.SETTING_UNRAR_PATH ] )
 			for f in files:
-				log("checking f=" + f)
 				if searchRegEx(f, '(XBMC.*?\d+-\d+-\d+.*?(?:.rar|.zip))') or \
 					searchRegEx(f, '(XBMC.*?\d\d\d\d\d\d\d\d.*?(?:.rar|.zip))'):
+					log("file match:" + f)
 
-					# assume local rars under 40meg are partial downloads and delete them
+					# assume local rars under a certain size are partial downloads and delete them
 					rar_filepath = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], f)
 					fsize = os.path.getsize(rar_filepath)
 					if fsize < 30000000:
-						log("deleting suspected incompleted rar, fsize=%s %s" % (fsize, f))
+						log("deleting suspected incompleted rar, fsize=%s %s" % (fsize, rar_filepath))
 						deleteFile(rar_filepath)
 					else:
 						archive_list.append(f)
@@ -682,7 +683,7 @@ class Main:
 			else:
 				have_file = fileExist(archive_file)
 
-			log( "have_file=%s" % have_file)
+			log( "archive_file, have_file=%s" % have_file)
 			if downloadOnly:
 				success = True
 			elif have_file:
@@ -766,11 +767,7 @@ class Main:
 			if src not in self.includes:
 				self.includes.append(src)
 				changed = True
-		# change 'mispelt 'videos' to 'video'
-		try:
-			self.includes.remove("plugins\\videos")
-			log("includes 'plugins\\videos' removed")
-		except: pass
+
 		return changed
 
 	######################################################################################
@@ -1194,12 +1191,16 @@ class Main:
 					src_path = xbmc.translatePath( "/".join( [XBMC_HOME, path] ) )
 				else:
 					src_path = xbmc.translatePath( path )
-				
-				dest_path = xbmc.translatePath( os.path.join( extract_path, self.short_build_name, "XBMC", path ) )
+					path = path.replace(XBMC_HOME,'')
+					if path[0] in ('\\','/'):
+						path = path[1:]
+
+				dest_path = os.path.join( extract_path, self.short_build_name, "XBMC", path )
 				if not self.isSilent:
 					percent = int( count * 100.0 / TOTAL )
 					self._dialog_update( __language__(0), __language__( 515 ), src_path, dest_path, pct=percent )
 					if dialogProgress.iscanceled(): break
+
 				localCopy(src_path, dest_path, self.isSilent)
 			except:
 				handleException("_copy_includes() path="+path)
@@ -1207,7 +1208,7 @@ class Main:
 
 	######################################################################################
 	def _delete_excludes(self):
-		log( "_delete_excludes() ")
+		log( "> _delete_excludes() ")
 
 		TOTAL = len(self.excludes)
 		count = 0
@@ -1218,11 +1219,16 @@ class Main:
 					path = path.replace("..\\","").replace("../","")
 					dest_path = os.path.join( extract_path, self.short_build_name, path )
 				else:
+					path = path.replace(XBMC_HOME, "")
+					if path[0] in ('\\','/'):
+						path = path[1:]
 					dest_path = os.path.join( extract_path, self.short_build_name, "XBMC", path )
 
 				if not self.isSilent:
 					percent = int( count * 100.0 / TOTAL )
 					self._dialog_update( __language__(0), __language__( 516 ), dest_path, pct=percent )
+
+				dest_path = xbmc.translatePath(dest_path)
 				if path[-1] in ["\\","/"] or os.path.isdir(dest_path):
 					log( "rmtree " + dest_path )
 					rmtree(dest_path, ignore_errors=True)
@@ -1231,10 +1237,11 @@ class Main:
 				count += 1
 			except:
 				handleException("_delete_excludes() path="+path)
+		log( "< _delete_excludes() ")
 
 	######################################################################################
 	def _maintain_incl_excl(self, isIncludes):
-		log( "_maintain_incl_excl() isIncludes=%s" % isIncludes)
+		log( "> _maintain_incl_excl() isIncludes=%s" % isIncludes)
 		try:
 			# make menu
 			options = [__language__(650), __language__(651)]    # exit, add new
@@ -1246,9 +1253,9 @@ class Main:
 				title = __language__( 618 )
 				self.excludes.sort()
 				options.extend(self.excludes)
+
 			selectDialog = xbmcgui.Dialog()
 			while True:
-
 				# show menu
 				selected = selectDialog.select( title, options )
 				if selected <= 0:						# quit
@@ -1266,15 +1273,22 @@ class Main:
 					else:
 						addOption = True
 				else:									# remove or edit
-					deleteOption = True							# to del orig opt
+					deleteOption = True					# to del orig opt
 					path = options[selected]
 					# ask what action to take (remove, edit)
 					if not dialogYesNo( __language__( 0 ), path, yesButton=__language__(406), noButton=__language__(407)):
 						path = getKeyboard(path, __language__(207))		# edit - (if not cancelled or changed)
 						if path:
-							addOption = True							# to add amended as new
+							if not os.path.exists(xbmc.translatePath(path)):
+								log("path not exist: %s" % path)
+								xbmcgui.Dialog().ok(__language__( 0 ), __language__( 311 ), path)
+								path = ''
+							else:
+								addOption = True							# to add amended as new
+								path 
 
 				if path:
+					# remove home from beginning of path, so they're all stored as relative paths
 					if deleteOption:
 						del options[selected]
 
@@ -1294,6 +1308,7 @@ class Main:
 				self._save_file_obj(self.EXCLUDES_FILENAME, self.excludes)
 		except:
 			handleException("_maintain_incl_excl()")
+		log( "< _maintain_incl_excl()")
 
 	#####################################################################################
 	def _isRestrictedFolder(self, path):
@@ -1330,7 +1345,8 @@ class Main:
 				type = FILE
 		else:
 			# editing existing
-			path = "/".join( [XBMC_HOME, path] )
+			if not path.startswith(XBMC_HOME):
+				path = "/".join( [XBMC_HOME, path] )
 			if path[-1] in ["\\","/"]:
 				type = FOLDER
 			else:
@@ -1355,7 +1371,7 @@ class Main:
 				bare_dest_path = bare_dest_path[1:]
 			path = bare_dest_path			#.replace('/','\\')
 		except:
-			print str( sys.exc_info()[ 1 ] )
+			log("selection ignored.  %s" % sys.exc_info()[ 1 ])
 			path = ''
 
 		log("< _select_file_folder() final path=%s type=%s" % (path, type))
@@ -1788,9 +1804,9 @@ class TextBoxDialogXML( xbmcgui.WindowXML ):
 	def onInit( self ):
 		log( "TextBoxDialogXML.onInit()" )
 		try:
+			self.getControl( 5 ).setText( self.text )
 			self.getControl( 3 ).setLabel( self.title )		# may not have an ID assigned
 		except: pass
-		self.getControl( 5 ).setText( self.text )
 
 	def onClick( self, controlId ):
 		pass
@@ -1880,6 +1896,7 @@ def getLanguagePath():
 	log("getLanguagePath() path=%s lang=%s" % ( base_path, language ))
 	return base_path, language
 
+    
 #################################################################################################################
  # Script starts here
 #################################################################################################################
