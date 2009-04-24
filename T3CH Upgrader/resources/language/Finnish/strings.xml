@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>    <!--  Finnish 12.3.2009 -->
+<strings>    <!--  Finnish 24.4.2009 -->
     <string id="0">T3CH XBMC-päivitys</string>
 
     <!-- Browse dialog headings -->
     <string id="200">Asennuspolku (esim. E:\apps)</string>
-    <string id="201">Käynnistyvän dashin nimi:</string>
+    <string id="201">Käynnistys-dashin nimi:</string>
     <string id="202">Valitse käynnistyvä asema:</string>
     <string id="203">Valitse tiedosto:</string>
     <string id="204">Valitse polku:</string>
@@ -22,20 +22,20 @@
     <string id="306">Virhe UserData-tietojen siirrossa!</string>
     <string id="307">Virhe dash-käynnistyksen luonnissa!</string>
     <string id="308">Virhe skriptien siirrossa!</string>
-    <string id="309">Käynnistys dash-nimi tarvitaan.</string>
+    <string id="309">Käynnistys-dashin nimi tarvitaan.</string>
     <string id="310">Muutoshistoriaa ei ole saatavilla.</string>
-    <string id="311">Lähde tiedostoa/kansiota ei löydy!</string>
+    <string id="311">Lähdetiedostoa tai -kansiota ei löydy!</string>
     <string id="312">Purkupolkua ei löydy! Yritä uudelleen.</string>
     <string id="313">Rajoitettu tiedosto tai kansio!</string>
     <string id="314">Purku kansio on jo olemassa, kirjoitetaanko sen päälle ?</string>
-    <string id="315">RAR-paketin SFV tarkistuksessa on virhe![CR]Paketti on mahdollisesti vioittunut, yritä ladata se uudelleen.</string>
+    <string id="315">RAR-paketin SFV-tarkistussummassa on virhe![CR]Paketti on mahdollisesti vioittunut, yritä ladata se uudelleen.</string>
     <string id="316">Asennus asemassa ei ole tarpeeksi vapaata tilaa!</string>
     <string id="317">Vapaata muistia on liian vähän, paketin purku saattaa epäonnistua.</string>
     <string id="318">Yhtään FTP-palvelinta ei ole käytettävissä!</string>
     <string id="319">Verkosta ei löydy T3ch-pakettia!</string>
-    <string id="320">SFV tiedostonimeä ei löydy![CR]Jatketaanko joka tapauksessa?</string>
+    <string id="320">SFV tiedostonimeä ei löydy![CR]Jatketaanko joka apauksessa?</string>
     <string id="321">Paketin nimestä ei löydy päiväystä</string>
-    <string id="322">RAR-paketti on erittäin suuri eikä sitä välttättä pystytä purkamaan![CR](Vinkki: pakkaa uudelleen ilman ylimääräisiä skinejä. ~ 60Mb)[CR]Jatketaanko kuitenkin ?</string>
+    <string id="322">RAR-paketti on erittäin suuri,eikä sitä välttättä pystytä purkamaan![CR](Vinkki: pakkaa uudelleen ilman ylimääräisiä skinejä. ~ 60Mb)[CR]Jatketaanko kuitenkin ?</string>
 
     <!-- Yes/No buttons -->
     <string id="400">Lataa</string>
@@ -64,12 +64,12 @@
     <string id="504">Purku sijainti:</string>
     <string id="505">T3CH-paketti purettiin:</string>
     <string id="506">Selvitetään T3CH-paketin sisältöä ...</string>
-    <string id="507">Siirretäänkö nykyiset tiedostot T3CH-kansioon ?</string>
-    <string id="508">(UserData, skriptit, lisäkkeet, skini ...)</string>
+    <string id="507">Siirretäänkö nykyiset tiedostot</string>
+    <string id="508">(UserData, skriptit, lisäkkeet, skini ...) T3CH-kansioon ?</string>
     <string id="509">Keymap.xml on erilainen, kopioidaanko sinun käyttämä ?</string>
     <string id="510">Poistetaan T3Ch:n UserData ...</string>
     <string id="511">Siirretään sinun UserData T3CH-kansioon ...</string>
-    <string id="512">Asennus valmis. Haluatko uudelleenkäynnistää ?</string>
+    <string id="512">Asennus on valmis. Haluatko uudelleenkäynnistää ?</string>
     <string id="514">Päivitetään dash käynnistysnimeä ...</string>
     <string id="515">Kopioidaan:</string>
     <string id="516">Poistetaan:</string>
@@ -84,8 +84,8 @@
     <string id="525">Valitse tiedosto tai kansio ?</string>
     <string id="526">Uusi polku sisältyy ?</string>
     <string id="527">Uusi XBE sisältyy ?</string>
-    <string id="528">Poistetaanko T3CH:n asennuspaketti?</string>
-    <string id="529">Varmista ja päivitä XBMC käynnistys tiedot ?[CR](Vaaditaan uutta pakettia asennettaessa)</string>
+    <string id="528">Poistetaanko T3CH:n asennuspaketti ?</string>
+    <string id="529">Varmista ja päivitä XBMC käynnistystiedot ?[CR](Vaaditaan uutta pakettia asennettaessa)</string>
     <string id="530">Asemassa=%s  Tilaa=%sMB  Suositus=%sMB</string>
     <string id="531">Muistia vapaana=%sMB  Suositus=%sMB</string>
     <string id="532">Jatketaanko ?</string>
@@ -112,17 +112,17 @@
     <string id="622">Tarkista uusi T3CH-asennuspaketti</string>
 
    <!-- Settings Options -->
-    <string id="630">Dashin sijainti asema:</string>
+    <string id="630">Dashin sijaintiasema:</string>
     <string id="631">Dashin kynnistysnimi:</string>
     <string id="632">Asennuspolku:</string>
-    <string id="633">Ilmoita uudesta T3CH-paketista?</string>
+    <string id="633">Ilmoita uudesta T3CH-paketista ?</string>
     <string id="634">Tarkista skriptin päivitykset käynnistyessä</string>
-    <string id="635">Siirrä UserData T3CH-kansioon?</string>
-    <string id="636">Oletus asetukset</string>
+    <string id="635">Siirrä UserData T3CH-kansioon ?</string>
+    <string id="636">Oletusasetukset</string>
     <string id="637">Palauta oletus tiedostokopio ja -poisto luettelot</string>
-    <string id="638">Kysy ennen T3CH varmuuskopion poistoa?</string>
+    <string id="638">Kysy ennen T3CH varmuuskopion poistoa ?</string>
     <string id="639">Näytä skriptin ohje/muutoshistoria</string>
-    <string id="640">Tarkistaanko uuden T3ch-paketin saatavuus käynnistyessä?</string>
+    <string id="640">Tarkistetaanko uuden T3ch-paketin saatavuus käynnistyessä ?</string>
 
     <!-- Misc Menu Options Options -->
     <string id="650">Poistu</string>
@@ -133,7 +133,7 @@
   <string id="1000">Ohjelmasi on jo ajantasalla.</string>
   <string id="1001">Tarkistetaan uusinta versiota...</string>
   <string id="1002">on uudempi</string>
-  <string id="1003">Haluatko päivittää ohjelman?</string>
+  <string id="1003">Haluatko päivittää ohjelman ?</string>
   <string id="1004">Noudetaan tiedostoluetteloa...</string>
   <string id="1005">Odota hetki..</string>
   <string id="1006">Versio</string>
