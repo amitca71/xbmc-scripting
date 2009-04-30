@@ -54,7 +54,7 @@ __scriptname__ = 'Poker Timer II'
 __author__ = 'Nuka1195'
 __url__ = 'http://code.google.com/p/xbmc-scripting/'
 __credits__ = 'XBMC TEAM, freenode/#xbmc-scripting'
-__version__ = '2.0'
+__version__ = '2.1'
 
 
 debug = False     # True outputs debug info to debug screen
@@ -397,21 +397,21 @@ class windowOverlay(xbmcgui.WindowDialog):
 
     def addControls(self):
         #xbmcgui.lock()
-        self.pad = xbmcgui.ControlImage(self.offScreenX + self.padX, self.padY, self.padW, self.padH, os.path.join( GFXPath, self.PadImageName ), "", 0)
+        self.pad = xbmcgui.ControlImage(self.offScreenX + self.padX, self.padY, self.padW, self.padH, os.path.join( GFXPath, self.PadImageName ), 0)
         self.addControl(self.pad)
 
-        self.padArrows = xbmcgui.ControlImage(self.offScreenX + self.padX, self.padY, self.padW, self.padH, os.path.join( GFXPath, "PadPosArrows.png" ), "", 0)
+        self.padArrows = xbmcgui.ControlImage(self.offScreenX + self.padX, self.padY, self.padW, self.padH, os.path.join( GFXPath, "PadPosArrows.png" ), 0)
         self.addControl(self.padArrows)
         self.padArrows.setVisible(self.MOVE_PAD)
 
         self.padTitle = xbmcgui.ControlLabel(self.offScreenX + self.titleX, self.titleY, self.titleW, self.titleH, self.ScriptTitle, self.padFontTitle, "0xFFF1EA40", "", XBFONT_CENTER_Y|XBFONT_CENTER_X)
         self.addControl(self.padTitle)
 
-        self.highlight = xbmcgui.ControlImage(self.offScreenX + self.highlightX, self.highlightY, self.highlightW, self.highlightH, os.path.join( GFXPath, 'highlight.png' ), "", 0)
+        self.highlight = xbmcgui.ControlImage(self.offScreenX + self.highlightX, self.highlightY, self.highlightW, self.highlightH, os.path.join( GFXPath, 'highlight.png' ), 0)
         self.addControl(self.highlight)
         self.highlight.setVisible(False)
 
-        self.aHide = xbmcgui.ControlImage(self.offScreenX + self.aHideX, self.aHideY, self.aHideW, self.aHideH, os.path.join( GFXPath, 'lock.png' ), "", 2)
+        self.aHide = xbmcgui.ControlImage(self.offScreenX + self.aHideX, self.aHideY, self.aHideW, self.aHideH, os.path.join( GFXPath, 'lock.png' ), 2)
         self.addControl(self.aHide)
         #self.aHide.setVisible(False)
 
@@ -426,12 +426,12 @@ class windowOverlay(xbmcgui.WindowDialog):
         self.addControl(self.TimeHeading2)
         self.TimeHeading2.setVisible(False)
 
-        self.colon = xbmcgui.ControlImage(self.offScreenX + self.colonX, self.timeY, self.timeW, self.timeH, os.path.join( GFXPath, 'red_colon.png' ), "", 0)
+        self.colon = xbmcgui.ControlImage(self.offScreenX + self.colonX, self.timeY, self.timeW, self.timeH, os.path.join( GFXPath, 'red_colon.png' ), 0)
         self.addControl(self.colon)
 
         for x in range(4):
             for y in range(10):
-                self.TimeImage[x * 10 + y] = xbmcgui.ControlImage(self.offScreenX + self.timeX[x], self.timeY, self.timeW, self.timeH, os.path.join( GFXPath, 'red_%d.png' % ( y, ) ), "", 0)
+                self.TimeImage[x * 10 + y] = xbmcgui.ControlImage(self.offScreenX + self.timeX[x], self.timeY, self.timeW, self.timeH, os.path.join( GFXPath, 'red_%d.png' % ( y, ) ), 0)
                 self.addControl(self.TimeImage[x * 10 + y])
         self.resetTimer(self.LEVEL_TIME[self.LEVEL])
 
@@ -439,7 +439,7 @@ class windowOverlay(xbmcgui.WindowDialog):
         self.addControl(self.LevelHeading)
 
         for x in range(2):
-            self.LevelStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.timeY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), "", 0)
+            self.LevelStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.timeY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), 0)
             self.addControl(self.LevelStatus[x])
 
         self.statusMessageSuccess = xbmcgui.ControlFadeLabel(self.offScreenX + self.messageX, self.messageY, self.messageW, self.messageH, self.padFontMessage, "0xFF00CCFF", XBFONT_CENTER_Y|XBFONT_LEFT)
@@ -454,25 +454,25 @@ class windowOverlay(xbmcgui.WindowDialog):
         self.addControl(self.AnteHeading)
 
         for x in range(4):
-            self.AnteStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.amountY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), "", 0)
+            self.AnteStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.amountY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), 0)
             self.addControl(self.AnteStatus[x])
 
         self.SmBlindHeading = xbmcgui.ControlLabel(self.offScreenX + self.label2X, self.label2Y, self.label2W, self.labelH, "Small Blind", self.padFontLabel, "", "", XBFONT_CENTER_Y|XBFONT_CENTER_X)
         self.addControl(self.SmBlindHeading)
 
         for x in range(4):
-            self.SmBlindStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.amountY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), "", 0)
+            self.SmBlindStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.amountY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), 0)
             self.addControl(self.SmBlindStatus[x])
 
         self.BigBlindHeading = xbmcgui.ControlLabel(self.offScreenX + self.label3X, self.label2Y, self.label2W, self.labelH, "Big Blind", self.padFontLabel, "", "", XBFONT_CENTER_Y|XBFONT_CENTER_X)
         self.addControl(self.BigBlindHeading)
 
         for x in range(4):
-            self.BigBlindStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.amountY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), "", 0)
+            self.BigBlindStatus[x] = xbmcgui.ControlImage(self.offScreenX, self.amountY, int(self.amountH * .5), self.amountH, os.path.join( GFXPath, 'chip0.png' ), 0)
             self.addControl(self.BigBlindStatus[x])
 
         for x in range(1,6):
-            self.ChipImage[x] = xbmcgui.ControlImage(self.offScreenX + self.chipX[x], self.chipY, self.chipW, self.chipH, os.path.join( GFXPath, self.CHIP_IMAGE[x] ), "", 2)
+            self.ChipImage[x] = xbmcgui.ControlImage(self.offScreenX + self.chipX[x], self.chipY, self.chipW, self.chipH, os.path.join( GFXPath, self.CHIP_IMAGE[x] ), 2)
             self.addControl(self.ChipImage[x])
             if self.CHIP_AMT[x]:
                 s = str('%.2f' % self.CHIP_AMT[x])
