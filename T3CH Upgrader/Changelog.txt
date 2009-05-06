@@ -1,8 +1,13 @@
 T3CH Upgrader Changelog:
 ========================
-v1.8.1 24/04/2009
+v1.9 06/05/2009
  Fix: Destination path for Includes and Excludes.
+ Fix: Cope with T3CH archive's that contain additional root folder.
  Change: Ensure edited Includes or Excludes path / file exist.
+ Change: Menu option 'View Documentation' - Now a menu for Changelog/Readme for T3CH/SVN/Scripts
+ Updated: Language strings
+ New: Remote and Local Installs of SVN Nightly builds from www.sshcs.com/xbmc (see readme)
+ New: XBMC SVN Trac changelog (use View Documentation)
 v1.8   23/03/2009
  Change: Change to cope with new xbmc paths "special://" otherwise fallback to old style.
  Change: Menu options Maintain Additional Deletes and Copies selection/editing behaviour.

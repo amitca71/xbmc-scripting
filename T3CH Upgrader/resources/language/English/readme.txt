@@ -66,6 +66,24 @@ Local Installation:
 If you ftp a T3CH build archive (RAR or ZIP) to the designed rar download location (eg. E:\apps\) the Main Menu will show an option to install from that.
 
 
+SVN Nightly Builds
+------------------
+NB. These are nightly builds of the xbox branch with nothing extra added and no tweaks (skins addons etc)
+REMOTE INSTALL:
+
+  1) Start script, change Build Location to 'SVN Nightly'
+  2) Select Check now and install as normal
+
+LOCAL INSTALL:
+You can Local Install Nightly Builds from www.sshcs.com/xbmc
+
+  1) Goto website and download xbox build
+  2) Rename archive filename to format XBMC-YYYYMMDD_<whatever else here>.rar
+     eg XBMC_XBOX_r19801.rar -> XBMC-20090429-r19801.rar
+  3) ftp to xbox
+  4) Select archive using Local Install
+
+
 Switch To Another Build
 -----------------------
 The Menu option 'Switch to Another T3CH Build' will allow to either;

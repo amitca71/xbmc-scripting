@@ -9,13 +9,13 @@
     <string id="202">Select dash shortcut Drive:</string>
     <string id="203">Select File:</string>
     <string id="204">Select Path:</string>
-    <string id="205">Select T3CH:</string>
-    <string id="206">Delete T3CH Build:</string>
+    <string id="205">Select Build:</string>
+    <string id="206">Delete Build:</string>
     <string id="207">Enter filename:</string>
 
     <!-- Error messages -->
     <string id="300">There was an error saving your settings!</string>
-    <string id="301">No T3CH build could be found!</string>
+    <string id="301">No build could be found!</string>
     <string id="302">Error downloading document!</string>
     <string id="303">Download cancelled!</string>
     <string id="304">There was an error extracting build!</string>
@@ -56,36 +56,37 @@
     <string id="414">Readme</string>
     <string id="415">Changelog</string>
     <string id="416">Install</string>
+    <string id="417">SVN Nightly</string>
 
     <!-- Status messages -->
     <string id="500">The current T3CH build is:</string>
     <string id="501">Would you like to download this build?</string>
     <string id="502">Downloading document from:</string>
-    <string id="503">Downloading T3CH build to:</string>
-    <string id="504">Extracting T3CH build to:</string>
-    <string id="505">T3CH build successfully extracted to:</string>
+    <string id="503">Downloading build to:</string>
+    <string id="504">Extracting build to:</string>
+    <string id="505">Archive successfully extracted to:</string>
     <string id="506">Parsing T3CH build feed ...</string>
-    <string id="507">Start copying existing data to T3CH ?</string>
+    <string id="507">Start copying data to new build ?</string>
     <string id="508">UserData (if enabled),Scripts,Plugins,Skins ...</string>
     <string id="509">Keymap.xml different, Copy yours ?</string>
-    <string id="510">Removing T3CH UserData ...</string>
-    <string id="511">Transferring your UserData to T3CH ...</string>
+    <string id="510">Cleaning new build's UserData ...</string>
+    <string id="511">Transferring your UserData ...</string>
     <string id="512">Installation Complete.  Reboot Now ?</string>
     <string id="514">Updating dash boot Shortcuts ...</string>
     <string id="515">Copying:</string>
     <string id="516">Deleting:</string>
-    <string id="517">No new T3CH build!</string>
-    <string id="518">New T3CH build Found!</string>
+    <string id="517">No new build found!</string>
+    <string id="518">New build Found!</string>
     <string id="519">_NEW and _OLD Shortcuts Created.</string>
     <string id="520">Switch to NEW Now ?</string>
     <string id="521">(Manual rename required otherwise)</string>
     <string id="522">Extraction finished. Checking for path ...</string>
-    <string id="523">Delete T3CH Build ?</string>
+    <string id="523">Delete Build ?</string>
     <string id="524">Please wait ...</string>
     <string id="525">Select File or Folder ?</string>
     <string id="526">New Path Exists ?</string>
     <string id="527">New XBE Exists ?</string>
-    <string id="528">Delete T3CH Archive?</string>
+    <string id="528">Delete Archive?</string>
     <string id="529">Backup and Update XBMC boot shortcuts ?[CR](Required to boot to new build)</string>
     <string id="530">Drive=%s  Freespace=%sMB  Required=%sMB</string>
     <string id="531">Freemem=%sMB  Recommended=%sMB</string>
@@ -101,29 +102,30 @@
 
     <!-- Menu options -->
     <string id="610">Settings</string>
-    <string id="611">View Changelogs</string>
+    <string id="611">View Documentation</string>
     <string id="612">Download:</string>
     <string id="615">Maintain Copy Data List</string>
-    <string id="616">Switch To Another T3CH</string>
-    <string id="617">Delete A T3CH Build</string>
+    <string id="616">Switch To Another Installed Build</string>
+    <string id="617">Delete An Old Installation</string>
     <string id="618">Maintain Delete Data List</string>
     <string id="619">Check For Script Update</string>
     <string id="620">Install From Local:</string>
-    <string id="621">Install Old Build From Web</string>
-    <string id="622">Check For New T3CH Build</string>
+    <string id="621">Install Old T3CH Build From Web</string>
+    <string id="622">Check For New Build</string>
+    <string id="623">XBMC Builder:</string>
 
     <!-- Settings Options -->
     <string id="630">Dash Shortcut Drive:</string>
     <string id="631">Dash Shortcut Name:</string>
     <string id="632">Installation Path:</string>
-    <string id="633">Notify When Not New T3CH?</string>
+    <string id="633">Notify When No New Build?</string>
     <string id="634">Check For Script Update At Startup?</string>
-    <string id="635">Transfer UserData to T3CH?</string>
+    <string id="635">Always transfer UserData to new build?</string>
     <string id="636">Reset Settings</string>
     <string id="637">Reset Custom Copy and Delete Lists</string>
-    <string id="638">Prompt Before Deleting T3CH Archive file?</string>
+    <string id="638">Prompt Before Deleting Archive file?</string>
     <string id="639">View Script Readme/Changelog</string>
-    <string id="640">Check For New T3CH on Script Startup?</string>
+    <string id="640">Check For New build on Script Startup?</string>
 
     <!-- Misc Menu Options/Prompts -->
     <string id="650">Exit</string>
