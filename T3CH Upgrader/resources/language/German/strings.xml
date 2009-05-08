@@ -9,13 +9,13 @@
     <string id="202">Laufwerk der Dashverknüpfung:</string>
     <string id="203">Datei auswählen:</string>
     <string id="204">Pfad auswählen:</string>
-    <string id="205">T3CH auswählen:</string>
-    <string id="206">Altes T3CH löschen:</string>
+    <string id="205">Build auswählen:</string>
+    <string id="206">Altes Build löschen:</string>
     <string id="207">Dateiname eingeben:</string>
 
     <!-- Error messages -->
     <string id="300">Fehler beim Speichern der Einstellungen!</string>
-    <string id="301">Es konnte kein T3CH Build gefunden werden!</string>
+    <string id="301">Es konnte kein Build gefunden werden!</string>
     <string id="302">Fehler beim Downloaden des Dokuments!</string>
     <string id="303">Download abgebrochen!</string>
     <string id="304">Fehler beim Entpacken des Builds!</string>
@@ -32,7 +32,7 @@
     <string id="315">RAR SFV Checksum falsch![CR]Evtl. fehlerhaft, bitte erneut runterladen.</string>
     <string id="316">Nicht genug freier Speicher auf dem Installations-Laufwerk vorhanden!</string>
     <string id="317">Freier RAM weniger als empfohlen, das Entpacken könnte fehlschlagen.</string>
-    <string id="318">Alle FTP Server unerreichbar!</string>
+    <string id="318">Kein FTP Server erreichbar!</string>
     <string id="319">Keine Web Builds gefunden!</string>
     <string id="320">SFV Eingangs-Dateiname nicht gefunden![CR]Fortfahren?</string>
     <string id="321">Kein Datum im Archivnamen gefunden!</string>
@@ -56,31 +56,32 @@
     <string id="414">Readme</string>
     <string id="415">Changelog</string>
     <string id="416">Installieren</string>
+    <string id="417">SVN Nightly</string>
 
     <!-- Status messages -->
     <string id="500">Aktuelles T3CH Build:</string>
     <string id="501">Möchtest du das Build runterladen?</string>
     <string id="502">Downloade Dokument von:</string>
-    <string id="503">Downloade T3CH Build nach:</string>
-    <string id="504">Entpacke T3CH Build nach:</string>
-    <string id="505">T3CH Build erfolgreich entpackt nach:</string>
+    <string id="503">Downloade Build nach:</string>
+    <string id="504">Entpacke Build nach:</string>
+    <string id="505">Build erfolgreich entpackt nach:</string>
     <string id="506">Lese T3CH Build Feed...</string>
     <string id="507">Kopieren der vorhandenen Daten beginnen?</string>
     <string id="508">UserData (falls aktiviert),Scripts,Plugins,Skins...</string>
     <string id="509">Keymap.xml ist verändert! Aktuelle behalten?</string>
-    <string id="510">Entferne T3CH UserData...</string>
-    <string id="511">Übertrage deine UserData zum T3CH...</string>
+    <string id="510">Säubere UserData des neuen Builds...</string>
+    <string id="511">Übertrage deine UserData...</string>
     <string id="512">Installation vollständig.  Jetzt neustarten?</string>
     <string id="514">Aktualisiere Dash Boot Verknüpfungen...</string>
     <string id="515">Kopiere:</string>
     <string id="516">Lösche:</string>
-    <string id="517">Kein neues T3CH Build!</string>
-    <string id="518">Neues T3CH Build gefunden!</string>
+    <string id="517">Kein neues Build!</string>
+    <string id="518">Neues Build gefunden!</string>
     <string id="519">_NEW und _OLD Verknüpfungen erstellt.</string>
     <string id="520">Zum neuen wechseln?</string>
     <string id="521">(ansonsten muss manuell umbenannt werden)</string>
     <string id="522">Entpacken beendet. Suche nach Pfad...</string>
-    <string id="523">Altes T3CH Build löschen?</string>
+    <string id="523">Build löschen?</string>
     <string id="524">Bitte warten...</string>
     <string id="525">Datei oder Ordner auswählen?</string>
     <string id="526">Neuer Pfad vorhanden?</string>
@@ -101,29 +102,30 @@
 
     <!-- Menu options -->
     <string id="610">Einstellungen</string>
-    <string id="611">Zeige Changelog</string>
-    <string id="612">Download: </string>
+    <string id="611">Zeige Dokumentation</string>
+    <string id="612">Download:</string>
     <string id="615">Zu kopierende Daten verwalten</string>
-    <string id="616">Zu einem anderen T3CH wechseln</string>
-    <string id="617">Ein altes T3CH löschen</string>
+    <string id="616">Zu einem anderen installierten Build wechseln</string>
+    <string id="617">Ein altes Build löschen</string>
     <string id="618">Zu löschende Daten verwalten</string>
     <string id="619">Nach Script-Updates suchen</string>
-    <string id="620">Installiere lokale RAR:</string>
-    <string id="621">Installiere altes Build aus dem Web</string>
-    <string id="622">Nach neuem T3CH Build suchen</string>
+    <string id="620">Installiere lokales Archiv:</string>
+    <string id="621">Installiere altes T3CH Build aus dem Web</string>
+    <string id="622">Nach neuem Build suchen</string>
+    <string id="623">XBMC Builder:</string>
 
     <!-- Settings Options -->
     <string id="630">Laufwerk der Dashverknüpfung:</string>
     <string id="631">Name der Dashverknüpfung:</string>
     <string id="632">Installationspfad:</string>
-    <string id="633">Benachrichtigen bei keinem neuen T3CH?</string>
+    <string id="633">Benachrichtigen bei keinem neuen Build?</string>
     <string id="634">Beim Starten nach Updates suchen?</string>
-    <string id="635">Alte UserData zum T3CH hinzufügen?</string>
+    <string id="635">Alte UserData zum neuen Build hinzufügen?</string>
     <string id="636">Einstellungen zurücksetzen</string>
     <string id="637">Lösch- und Kopierlisten zurücksetzen</string>
-    <string id="638">Vor dem Löschen der RAR nachfragen?</string>
+    <string id="638">Vor dem Löschen des Archives nachfragen?</string>
     <string id="639">Script Readme/Changelog anzeigen</string>
-    <string id="640">Beim Script-Start nach neuem T3CH suchen?</string>
+    <string id="640">Beim Script-Start nach neuem Build suchen?</string>
 
     <!-- Misc Menu Options Options -->
     <string id="650">Beenden</string>
