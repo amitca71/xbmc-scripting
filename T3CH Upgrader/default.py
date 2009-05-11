@@ -421,10 +421,6 @@ class Main:
 			if not local_archive_name:
 				options.remove(self.opt_local)
 
-			# remove Update Script option if check enabled at startup
-			if self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]: # yes
-				options.remove(self.opt_update_script)
-
 			return options
 
 		quit = False
