@@ -1,5 +1,9 @@
 T3CH Upgrader Changelog:
 ========================
+v1.9.1 11/05/2009
+ Fix: Main Menu option 'Check For Script Update' moved to Settings Menu, but old reference left in.
+ Fix: Was always notifying for 'no new build'. (Thanks Bootsy)
+ Update: Finish, German, Swedish strings (still need Dutch, French and Polish updating)
 v1.9 06/05/2009
  Fix: Destination path for Includes and Excludes.
  Fix: Cope with T3CH archive's that contain additional root folder.

@@ -27,8 +27,8 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '06-05-2009'
-__version__ = "1.9"
+__date__ = '11-05-2009'
+__version__ = "1.9.1"
 xbmc.log( "[SCRIPT]: %s v%s Dated: %s module loaded!" % (__scriptname__, __version__, __date__), xbmc.LOGNOTICE)
 
 # Shared resources
@@ -309,7 +309,7 @@ class Main:
 	######################################################################################
 	## eg. http://.../ARCHIVE/XBMC-SVN_2009-03-04_rev1 8221-T3CH.rar
 	######################################################################################
-	def _check_build_date( self, url, forceNotify=False ):
+	def _check_build_date( self, url ):
 		log( "> _check_build_date() %s" % url )
 
 		archive_name = ''
@@ -326,7 +326,7 @@ class Main:
 				if curr_build_date_secs >= found_build_date_secs:							# No new build
 					archive_name = ''
 					short_build_name = ''
-					if forceNotify or self.settings[self.SETTING_NOTIFY_NOT_NEW]:			# YES, show notification
+					if self.settings[self.SETTING_NOTIFY_NOT_NEW]:			# YES, show notification
 						dialogOK( __language__( 0 ), __language__( 517 ), isSilent=True )	# always use xbmc.notification
 				elif self.runMode != RUNMODE_NORMAL:										# new build
 					dialogOK( __language__( 0 ), __language__( 518 ), short_build_name, isSilent=True )	# always use xbmc.notification
@@ -812,7 +812,7 @@ class Main:
 					break
 
 			if url:
-				remote_archive_name, remote_short_build_name = self._check_build_date( url, forceNotify=True )
+				remote_archive_name, remote_short_build_name = self._check_build_date( url )
 		else:
 			# SVN Nightly
 			url, remote_archive_name, rev, buildDate = self._get_nightly_archive_info()
