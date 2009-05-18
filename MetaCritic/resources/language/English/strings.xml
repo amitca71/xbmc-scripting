@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- Settings -->
+    <string id="30000">View Readme</string>
+    <string id="30001">View Changelog</string>
+
+    <!-- Errors -->
+    <string id="30900">Error!</string>
+    <string id="30901">Webpage missing!</string>
+    <string id="30902">RSS parsing failed!</string>
+
+    <!-- Plugin -->
+    <string id="30920">Processing ...</string>
+    <string id="30921">Downloading ...</string>
+
+    <!-- Category -->
+    <string id="30950">Film</string>
+    <string id="30951">DVD/Video</string>
+    <string id="30952">Music</string>
+    <string id="30953">TV</string>
+    <string id="30954">Books</string>
+    <string id="30955">Games: Microsoft Xbox360</string>
+    <string id="30956">Games: Microsoft Xbox</string>
+    <string id="30957">Games: Nintendo Wii</string>
+    <string id="30958">Games: Nintendo GameCube</string>
+    <string id="30959">Games: Nintendo DS</string>
+    <string id="30960">Games: Nintendo GBA</string>
+    <string id="30961">Games: Sony PS3</string>
+    <string id="30962">Games: Sony PS2</string>
+    <string id="30963">Games: Sony PSP</string>
+    <string id="30964">Games: PC</string>
+
+    <!-- compatible messages -->
+    <string id="30700">version</string>
+    <string id="30701">This version of %s requires an</string>
+    <string id="30702">XBMC revision of %s or greater to run.</string>
+    <string id="30703">Please update your XBMC.</string>
+
+</strings>
