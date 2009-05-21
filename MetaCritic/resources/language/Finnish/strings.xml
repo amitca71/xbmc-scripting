@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>  <!-- Finnish 19.5.2009 -->
+Ôªø<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>   <!--  Finnish 21.5.2009 -->
     <!-- Settings -->
-    <string id="30000">N‰yt‰ ohje</string>
-    <string id="30001">N‰yt‰ muutokset</string>
+    <string id="30000">N√§yt√§ ohje</string>
+    <string id="30001">N√§yt√§ muutokset</string>
 
     <!-- Errors -->
     <string id="30900">Virhe!</string>
-    <string id="30901">Sivua ei lˆyty!</string>
-    <string id="30902">RSS:n k‰sittely ep‰onnistui!</string>
+    <string id="30901">Sivua ei l√∂yty!</string>
+    <string id="30902">RSS:n k√§sittely ep√§onnistui!</string>
 
     <!-- Plugin -->
     <string id="30920">Suoritetaan ...</string>
@@ -15,7 +15,7 @@
 
     <!-- Category -->
     <string id="30950">Elokuvat</string>
-    <string id="30951">DVD:t/Videot</string>
+    <string id="30951">DVD:t / Videot</string>
     <string id="30952">Musiikki</string>
     <string id="30953">TV-ohjelmat</string>
     <string id="30954">Kirjat</string>
@@ -28,12 +28,12 @@
     <string id="30961">Sony PS3-pelit</string>
     <string id="30962">Sony PS2-pelit</string>
     <string id="30963">Sony PSP-pelit</string>
-    <string id="30964">PC.pelit</string>
+    <string id="30964">PC-pelit</string>
 
     <!-- compatible messages -->
     <string id="30700">versio</string>
-    <string id="30701">T‰m‰ %s:n versio vaatii toimiakseen</string>
+    <string id="30701">T√§m√§ %s:n versio vaatii toimiakseen</string>
     <string id="30702">XBMC revision %s tai uudemman.</string>
-    <string id="30703">P‰ivit‰ XBMC uudempaan versioon.</string>
+    <string id="30703">P√§ivit√§ XBMC uudempaan versioon.</string>
 
 </strings>
