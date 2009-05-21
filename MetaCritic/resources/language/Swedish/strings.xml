@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ï»¿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <!-- Settings -->
-    <string id="30000">Visa LäsMig</string>
-    <string id="30001">Visa ändringslogg</string>
+    <string id="30000">Visa LÃ¤sMig</string>
+    <string id="30001">Visa Ã¤ndringslogg</string>
 
     <!-- Errors -->
     <string id="30900">Fel!</string>
@@ -18,7 +18,7 @@
     <string id="30951">DVD/Video</string>
     <string id="30952">Musik</string>
     <string id="30953">TV</string>
-    <string id="30954">Böcker</string>
+    <string id="30954">BÃ¶cker</string>
     <string id="30955">Spel: Microsoft Xbox360</string>
     <string id="30956">Spel: Microsoft Xbox</string>
     <string id="30957">Spel: Nintendo Wii</string>
@@ -32,8 +32,8 @@
 
     <!-- compatible messages -->
     <string id="30700">version</string>
-    <string id="30701">Denna version av %s kräver en</string>
-    <string id="30702">XBMC revision %s eller högre för att köras.</string>
-    <string id="30703">Vänligen uppdatera ditt XBMC.</string>
+    <string id="30701">Denna version av %s krÃ¤ver en</string>
+    <string id="30702">XBMC revision %s eller hÃ¶gre fÃ¶r att kÃ¶ras.</string>
+    <string id="30703">VÃ¤nligen uppdatera ditt XBMC.</string>
 
 </strings>
