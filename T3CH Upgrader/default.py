@@ -27,8 +27,8 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '11-05-2009'
-__version__ = "1.9.1"
+__date__ = '07-06-2009'
+__version__ = "1.9.2"
 xbmc.log( "[SCRIPT]: %s v%s Dated: %s module loaded!" % (__scriptname__, __version__, __date__), xbmc.LOGNOTICE)
 
 # Shared resources
@@ -112,7 +112,8 @@ class Main:
 
 		# SVN Nightly builds
 		URL_NIGHTLY_ROOT = "http://www.sshcs.com/xbmc/inc/EVA.asp?mode="
-		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_ROOT + "DownloadCounter&FN="
+#		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_ROOT + "DownloadCounter&FN="
+		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_ROOT + "NDLC&FN=XBOX&BN="
 		self.URL_NIGHTLY_BUILD_INFO = URL_NIGHTLY_ROOT + "Build"
 		self.URL_NIGHTLY_README = URL_NIGHTLY_ROOT + "BNRaw"
 
@@ -834,10 +835,11 @@ class Main:
 		if matches:
 			rev = matches.group(1)
 			buildDate = matches.group(2)
-			fn = "XBMC_XBOX_%s.rar" % rev
+#			fn = "XBMC_XBOX_%s.rar" % rev
+			fn = "%s" % rev
 			url = self.URL_NIGHTLY_ARCHIVE + fn
 		else:
-			log("no archive information found!")
+			dialogOK(__language__( 0 ), "Archive build information not found!", url)
 			url = ""
 			fn = ""
 			buildDate = ""
@@ -1185,7 +1187,7 @@ class Main:
 				doc = readURL( url, __language__( 502 ), self.isSilent )
 			if doc:
 				tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
-				tbd.ask(options[selectedIdx], doc)
+				tbd.ask(options[selectedIdx], doc.replace("<BR>","\n").replace("<P>","").replace("&nbsp;"," "))
 				del tbd
 			else:
 				dialogOK( __language__( 0 ), __language__( 310 ))
@@ -1948,6 +1950,8 @@ def readURL( url, msg='', isSilent=False):
 		sock = urllib.urlopen( url )
 		doc = sock.read()
 		sock.close()
+	except IOError, errobj:
+		dialogOK(__language__(0),"IOError", sys.exc_info()[ 1 ])
 	except:
 		traceback.print_exc()
 
