@@ -27,8 +27,8 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '07-06-2009'
-__version__ = "1.9.2"
+__date__ = '19-06-2009'
+__version__ = "1.9.3"
 xbmc.log( "[SCRIPT]: %s v%s Dated: %s module loaded!" % (__scriptname__, __version__, __date__), xbmc.LOGNOTICE)
 
 # Shared resources
@@ -111,11 +111,12 @@ class Main:
 		self.FTP_REPOSITORY_ARCHIVE_URL = self.FTP_REPOSITORY_URL + "ARCHIVE/"
 
 		# SVN Nightly builds
-		URL_NIGHTLY_ROOT = "http://www.sshcs.com/xbmc/inc/EVA.asp?mode="
-#		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_ROOT + "DownloadCounter&FN="
-		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_ROOT + "NDLC&FN=XBOX&BN="
-		self.URL_NIGHTLY_BUILD_INFO = URL_NIGHTLY_ROOT + "Build"
-		self.URL_NIGHTLY_README = URL_NIGHTLY_ROOT + "BNRaw"
+		URL_NIGHTLY_ROOT = "http://www.sshcs.com/xbmc/"
+		URL_NIGHTLY_MODE = URL_NIGHTLY_ROOT + "inc/EVA.asp?mode="
+		self.URL_NIGHTLY_BUILD_INFO = URL_NIGHTLY_MODE + "Build"
+		self.URL_NIGHTLY_README = URL_NIGHTLY_MODE + "BNRaw"
+#		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_MODE + "NDLC&FN=XBOX&BN="
+		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_ROOT + "binaries/Builds/"
 
 		# init settings folder
 		SCRIPT_DATA_DIR = xbmc.translatePath("/".join( [XBMC_PROFILE, "script_data", __scriptname__] ))
@@ -142,8 +143,6 @@ class Main:
 		self._check_settings()
 		scriptUpdated = False
 		if self.settings[self.SETTING_CHECK_SCRIPT_UPDATE_STARTUP]:	# check for update ?
-#			if self.isSilent:
-#				showNotification(__language__(0), __language__(619), 3)
 			scriptUpdated = self._update_script(True)
 
 		if not scriptUpdated:
@@ -152,7 +151,7 @@ class Main:
 			url = ""
 			# only check for online new build if settings allow OR autoexec launched
 			if (self.runMode != RUNMODE_NORMAL) or self.settings[self.SETTING_CHECK_NEW_BUILD]:
-				url, remote_archive_name, remote_short_build_name = self._get_latest_version()										# discover latest build
+				url, remote_archive_name, remote_short_build_name = self._get_latest_version()		# discover latest build
 
 			# Main Menu
 			if (self.runMode == RUNMODE_NORMAL) or (remote_short_build_name and self.runMode == RUNMODE_SILENT):
@@ -325,9 +324,10 @@ class Main:
 				archive_name, found_build_date, found_build_date_secs, short_build_name = filenameInfo
 
 				if curr_build_date_secs >= found_build_date_secs:							# No new build
+					log("Build is older than current. Found: %s Current: %s" % (found_build_date, curr_build_date))
 					archive_name = ''
 					short_build_name = ''
-					if self.settings[self.SETTING_NOTIFY_NOT_NEW]:			# YES, show notification
+					if self.settings[self.SETTING_NOTIFY_NOT_NEW]:							# notify of Not New
 						dialogOK( __language__( 0 ), __language__( 517 ), isSilent=True )	# always use xbmc.notification
 				elif self.runMode != RUNMODE_NORMAL:										# new build
 					dialogOK( __language__( 0 ), __language__( 518 ), short_build_name, isSilent=True )	# always use xbmc.notification
@@ -352,12 +352,14 @@ class Main:
 			try:
 				# parse archive filename
 				log( "parsing source=%s" % source)
-				archive_name = self._parseArchiveName( os.path.basename( source ) )
+				archive_name = os.path.basename( source )
 				# extract date from filename, as YYYYMMDD
-				found_build_date = searchRegEx(archive_name.replace('-',''), '(\d\d\d\d\d\d\d\d)') 
-				found_build_date_secs = time.mktime( time.strptime(found_build_date,"%Y%m%d") )
-				short_build_name = "%s_%s" % (builder, found_build_date)		# used as installation folder name
-				filenameInfo = (orig_archive_name, found_build_date, found_build_date_secs, short_build_name)
+				found_build_date = self._parseArchiveName( archive_name )
+				if found_build_date:
+					# convert date to secs
+					found_build_date_secs = time.mktime( time.strptime(found_build_date,"%Y%m%d") )
+					short_build_name = "%s_%s" % (builder, found_build_date)		# used as installation folder name
+					filenameInfo = (orig_archive_name, found_build_date, found_build_date_secs, short_build_name)
 			except:
 				print str( sys.exc_info()[ 1 ] )
 
@@ -365,7 +367,8 @@ class Main:
 				# unable to parse, ask for save name with a date
 				if dialogYesNo( __language__(0), __language__(321), archive_name, __language__(535) + " ?"):
 					title = "%s. (YYYYMMDD)" % __language__(535)
-					source = "%s-%s.rar" % (builder, getKeyboard(archive_name, title) )
+					fname, fext = os.path.splitext(archive_name)
+					source = "%s_%s.%s" % (builder, getKeyboard("", title), fext )
 				else:
 					filenameInfo = ()
 					break
@@ -379,6 +382,7 @@ class Main:
 		log( "remote_archive_name=" + remote_archive_name)
 		log( "remote_short_build_name=" + remote_short_build_name)
 
+		recheckOnline = False
 		selectDialog = xbmcgui.Dialog()
 		heading = "%s v%s (XBMC:%s): %s" % (__language__( 0 ), __version__, \
 												xbmc.getInfoLabel('System.BuildDate'), \
@@ -438,8 +442,9 @@ class Main:
 					local_archive_name = __language__(536)		# choose multiple
 
 			# fetch remote archive name (if not got it & settings allow)
-			if not remote_archive_name and self.settings[self.SETTING_CHECK_NEW_BUILD]:
+			if recheckOnline:
 				url, remote_archive_name, remote_short_build_name = self._get_latest_version()
+				recheckOnline = False
 
 			# build menu
 			options = _make_menu(local_archive_name)
@@ -456,14 +461,15 @@ class Main:
 
 			if selectedOpt == self.opt_exit:
 				break
-			elif selectedOpt == self.opt_builder:										# XBMC Builder
+			elif selectedOpt == self.opt_builder:										# switch XBMC Builder
 				self.isT3CHbuilder = not self.isT3CHbuilder
 				# reset archiv info so causes to re-fetch
 				remote_archive_name = ""
 				remote_short_build_name = ""
+				recheckOnline = True
 			elif selectedOpt == self.opt_view_logs:										# view logs
 				self._doc_menu()
-			elif selectedOpt == self.opt_download:										# remote install
+			elif selectedOpt == self.opt_download:										# Download
 				if remote_archive_name:
 					self.archive_name = remote_archive_name
 					self.short_build_name = remote_short_build_name
@@ -481,7 +487,7 @@ class Main:
 					if self.isSilent:
 						break
 				elif selectedOpt == __language__(622):									# Check for build
-					url, remote_archive_name, remote_short_build_name = self._get_latest_version()
+					recheckOnline = True
 			elif selectedOpt == self.opt_local:											# local archive install
 				if len(archive_list) == 1:
 					local_rar_file = archive_list[0]
@@ -551,12 +557,11 @@ class Main:
 	def _parseArchiveName(self, name):
 		# restrict archives to the selected builder
 		if self.isT3CHbuilder:
-			builderRE = "XBMC|T3CH"
+			date = searchRegEx(name.replace('-',''), '(?:XBMC|T3CH).*(\d\d\d\d\d\d\d\d).*?(?:.rar|.zip)')
 		else:
-			builderRE = "SVN"
-		match = searchRegEx(name.replace("-",""), '((?:%s).*?\d\d\d\d\d\d\d\d.*?(?:.rar|.zip))' % builderRE)
-		log("_parseArchiveName() from=%s  to=%s" % (name, match))
-		return match
+			date = searchRegEx(name, '(?:SVN|XBMC_XBOX).*(\d\d\d\d\d\d\d\d).*?(?:.rar|.zip)')
+		log("_parseArchiveName() from=%s  date=%s" % (name, date))
+		return date
 
 	######################################################################################
 	def _get_local_archive(self):
@@ -564,16 +569,17 @@ class Main:
 		log("> _get_local_archive()")
 		archive_list = []
 		try:
-			log("SETTING_UNRAR_PATH=" + self.settings[self.SETTING_UNRAR_PATH])
-			for f in os.listdir( self.settings[ self.SETTING_UNRAR_PATH ] ):
+			unrar_path = self.settings[self.SETTING_UNRAR_PATH]
+			log("SETTING_UNRAR_PATH=" + unrar_path)
+			for f in os.listdir( unrar_path ):
 				if f in ('.','..'): continue
-				if self._parseArchiveName(f):
+				filepath = os.path.join(unrar_path, f)
+				if os.path.isfile(filepath) and self._parseArchiveName(f):
 					# assume local build rars under a certain size are partial downloads and delete them
-					rar_filepath = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], f)
-					fsize = os.path.getsize(rar_filepath)
+					fsize = os.path.getsize(filepath)
 					if fsize < 30000000:
-						log("deleting suspected incompleted rar, fsize=%s %s" % (fsize, rar_filepath))
-						deleteFile(rar_filepath)
+						log("deleting suspected incompleted rar, fsize=%s %s" % (fsize, filepath))
+						deleteFile(filepath)
 					else:
 						archive_list.append(f)
 
@@ -664,10 +670,13 @@ class Main:
 		success = False
 		try:
 			# ensure remote filename doesnt exceed xbox filesystem local filename length limit
-			if url and ( not self.isT3CHbuilder or len(self.archive_name) > 42 ):
-				archive_name = "%s.rar" % self.short_build_name
+			if url and ( not self.isT3CHbuilder or len(self.archive_name) > 42):
+				# use shortened save filename
+				name, ext = os.path.splitext(self.archive_name)				# T3CH and Nigthly both are rars, find just to be safe
+				archive_name = "%s%s" % (self.short_build_name, ext)		# eg SVN_20090617.rar or T3CH_20090617.rar
+				log("renamed saving archive_name from %s to %s" % (self.archive_name, archive_name))
 			else:
-				archive_name = self.archive_name
+				archive_name = self.archive_name							# use existing local archive filename
 
 			# create work paths
 			extract_path = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], self.short_build_name)
@@ -699,7 +708,7 @@ class Main:
 			else:
 				have_file = fileExist(archive_file)
 
-			log( "archive_file, have_file=%s" % have_file)
+			log( "OK to continue using archive file? %s" % have_file)
 			if downloadOnly:
 				success = True
 			elif have_file:
@@ -814,14 +823,17 @@ class Main:
 
 			if url:
 				remote_archive_name, remote_short_build_name = self._check_build_date( url )
+				# not a new build, cancel url
+				if not remote_archive_name:
+					url = ""
 		else:
 			# SVN Nightly
 			url, remote_archive_name, rev, buildDate = self._get_nightly_archive_info()
 			if url and remote_archive_name and rev and buildDate:
-				remote_short_build_name = "SVN_%s_r%s" % (buildDate, rev)
+				remote_short_build_name = "SVN_%s" % buildDate
 
-		if not url:
-			dialogOK( __language__( 0 ), self._getBuilderName(), __language__( 301 ), isSilent=self.isSilent)
+#		if not url:
+#			dialogOK( __language__( 0 ), self._getBuilderName(), __language__( 301 ), isSilent=self.isSilent)
 		log( "< _get_latest_version() url=%s  remote_archive_name=%s  remote_short_build_name=%s" % (url, remote_archive_name, remote_short_build_name))
 		return (url, remote_archive_name, remote_short_build_name)
 
@@ -831,12 +843,11 @@ class Main:
 		# get page that has revision and date (XXXXX YYYYMMDD)
 		url = self.URL_NIGHTLY_BUILD_INFO
 		doc = readURL( url, __language__( 502 ), self.isSilent )
-		matches = re.search("^(\d+) (\d+)$", doc)
+		matches = re.search("^(\d+) (\d+)$", doc)		# rev, date
 		if matches:
 			rev = matches.group(1)
 			buildDate = matches.group(2)
-#			fn = "XBMC_XBOX_%s.rar" % rev
-			fn = "%s" % rev
+			fn = "XBMC_XBOX_%s.rar" % rev
 			url = self.URL_NIGHTLY_ARCHIVE + fn
 		else:
 			dialogOK(__language__( 0 ), "Archive build information not found!", url)
@@ -844,16 +855,16 @@ class Main:
 			fn = ""
 			buildDate = ""
 			rev = ""
-		log( "< _get_nightly_build_info() %s %s %s %s"  % (url, fn, rev, buildDate))
+		log( "< _get_nightly_archive_info() url=%s fn=%s rev=%s builddate=%s"  % (url, fn, rev, buildDate))
 		return (url, fn, rev, buildDate)
 
 	######################################################################################
 	def _parse_html_source( self, htmlsource ):
-		log( "_parse_html_source()" )
 		try:
 			parser = T3CHParser()
 			parser.feed( htmlsource )
 			parser.close()
+			log("_parse_html_source() url=%s" % parser.url)
 			return parser.url
 		except:
 			handleException("_parse_html_source()", __language__( 305 ))
@@ -975,7 +986,7 @@ class Main:
 				exists = True
 				break
 			else:
-				percent = int( count * 100.0 / max_retrys )
+				percent = int( (count * 100.0) / max_retrys )
 				msg1 = "%s (%d/%d)" % (__language__( 522 ), count, max_retrys)
 				dialogProgress.update( percent, msg1, dir)
 				if ( dialogProgress.iscanceled() ): break
@@ -1007,28 +1018,29 @@ class Main:
 
 				# loop to find other mandatory dirs
 				MAX = 30
+				isFile = False
+				isPath = False
 				for count in range(MAX):
-					isFile = fileExist(check_file)
-					isPath = True
+					if not isFile:
+						isFile = fileExist(check_file)
 					for p in check_path_list:
 						isPath = os.path.isdir(p)
 						log("%s %s" % (p, isPath))
 						if not isPath:
 							break
-					log("checkCount=" + str(count) + " isPath="+str(isPath) + " isFile="+str(isFile))
+					log("checkCount=%d isPath=%s isFile=%s" % (count,isPath,isFile))
 
 					if isFile and isPath:
 						success = True
 						break
 					elif not self.isSilent:
-						percent = int( count * 100.0 / MAX )
+						percent = int( (count * 100.0) / MAX )
 						msg1 = "%s (%d/%d)" % (__language__( 522 ), count, MAX)
 						msg2 = "%s  %s" % (__language__(526), str(isPath))
 						msg3 = "%s  %s" % (__language__(527), str(isFile))
 						dialogProgress.update( percent, msg1, msg2, msg3)
 						if ( dialogProgress.iscanceled() ): break
 					time.sleep(2)
-
 
 				# all paths exist, rename out of a subdir if necessary
 				expectedPath = os.path.join(extract_path, 'XBMC')
@@ -1059,7 +1071,7 @@ class Main:
 					break
 				except:
 					print str(sys.exc_info()[ 1 ])
-					percent = int( count * 100.0 / max_retrys )
+					percent = int( (count * 100.0) / max_retrys )
 					msg1 = "%s (%d/%d)" % ("Renaming folder ... :", count, max_retrys)
 					dialogProgress.update( percent, msg1, currPath, expectedPath)
 
@@ -1209,7 +1221,7 @@ class Main:
 			while os.path.isdir(new_build_userdata_path):
 				log("rmtree UserData checkCount=%i" % checkCount)
 				checkCount += 1
-				percent = int( checkCount * 100.0 / checkMAX )
+				percent = int( (checkCount * 100.0) / checkMAX )
 				self._dialog_update( __language__(0), __language__( 510 ), pct=percent, time=2)
 				rmtree( new_build_userdata_path, ignore_errors=True )
 				time.sleep(2)	# give os chance to complete
@@ -1332,7 +1344,7 @@ class Main:
 
 				if not fileExist( dest_file ):
 					if not self.isSilent:
-						percent = int( count * 100.0 / TOTAL )
+						percent = int( (count * 100.0) / TOTAL )
 						dialogProgress.update( percent, __language__( 515 ), src_file)
 						if dialogProgress.iscanceled(): break
 					if os.path.isdir( src_file ):
@@ -1366,7 +1378,7 @@ class Main:
 
 				dest_path = os.path.join( extract_path, self.short_build_name, "XBMC", path )
 				if not self.isSilent:
-					percent = int( count * 100.0 / TOTAL )
+					percent = int( (count * 100.0) / TOTAL )
 					self._dialog_update( __language__(0), __language__( 515 ), src_path, dest_path, pct=percent )
 					if dialogProgress.iscanceled(): break
 
@@ -1394,7 +1406,7 @@ class Main:
 					dest_path = os.path.join( extract_path, self.short_build_name, "XBMC", path )
 
 				if not self.isSilent:
-					percent = int( count * 100.0 / TOTAL )
+					percent = int( (count * 100.0) / TOTAL )
 					self._dialog_update( __language__(0), __language__( 516 ), dest_path, pct=percent )
 
 				dest_path = xbmc.translatePath(dest_path)
@@ -1575,8 +1587,8 @@ class Main:
 			path = os.path.join( self.settings[ self.SETTING_UNRAR_PATH ], selectedBuildName)
 			if dialogYesNo(__language__( 0 ), __language__( 523 ), selectedBuildName,yesButton=__language__(412), noButton=__language__(413), ):
 				try:
-					dialogProgress.create(__language__( 0 ), __language__( 524 ))
-					rmtree(path, ignore_errors=True)
+					dialogProgress.create(__language__( 0 ), __language__( 516 ), path)
+					removeTree(path)
 					del oldBuilds[selected]
 					dialogProgress.close()
 				except:
@@ -1593,11 +1605,10 @@ class Main:
 		# make list of folders, excluding curr build folder
 		for f in os.listdir(self.settings[ self.SETTING_UNRAR_PATH ] ):
 			# ensure its a dir
-			if not os.path.isdir(os.path.join(self.settings[ self.SETTING_UNRAR_PATH ], f)):
-				continue
-			fileBuildDate = searchRegEx(f.replace("-",""), "^(?:XBMC|T3CH|SVN).*?(\d\d\d\d\d\d\d\d)")
-			if fileBuildDate and fileBuildDate != curr_build_date:
-				dirList.append(f)
+			if os.path.isdir(os.path.join(self.settings[ self.SETTING_UNRAR_PATH ], f)):
+				fileBuildDate = searchRegEx(f.replace("-",""), "^(?:XBMC|T3CH|SVN).*?(\d\d\d\d\d\d\d\d)")
+				if fileBuildDate and fileBuildDate != curr_build_date:
+					dirList.append(f)
 
 		log( "< _find_build_dirs() dir count=%s" % len(dirList))
 		return dirList
@@ -1930,7 +1941,6 @@ def deleteFile( file_name ):
 def searchRegEx(data, regex, flags=re.IGNORECASE):
 	try:
 		value = re.search(regex, data, flags).group(1)
-		log("searchRegEx() value: " + value)
 	except:
 		value = ""
 	return value
@@ -2013,7 +2023,7 @@ def unzip(extract_path, filename, silent=False, msg=""):
 		info = infos[file_count]
 
 		if not silent:
-			percent = int( file_count * 100.0 / max_files )
+			percent = int( (file_count * 100.0) / max_files )
 			root, name = os.path.split(entry)
 			dialogProgress.update( percent, msg, root, name)
 			if ( dialogProgress.iscanceled() ):
@@ -2079,7 +2089,6 @@ def removeTree(top):
 			rmtree(os.path.join(root, name), ignore_errors=True)
 
 		rmtree(root, ignore_errors=True)
-
 
 #################################################################################################################
  # Script starts here

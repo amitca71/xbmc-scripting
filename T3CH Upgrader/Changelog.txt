@@ -1,5 +1,10 @@
 T3CH Upgrader Changelog:
 ========================
+v1.9.3 19/06/2009
+ change: Improved "Remove Old Builds"
+ change: Use of shortened archive filenames.
+ change: Menu could parse archive filename twice in some cases.
+ change: Nightly download url.
 v1.9.2 07/06/2009
  Fix: Nightly builds download url and filename.
  Fix: Nightly readme text cleaned up.

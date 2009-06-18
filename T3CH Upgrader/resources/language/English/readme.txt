@@ -64,6 +64,11 @@ If all is well after reboot, you will be now running the latest T3CH build!
 Local Installation:
 -------------------
 If you ftp a T3CH build archive (RAR or ZIP) to the designed rar download location (eg. E:\apps\) the Main Menu will show an option to install from that.
+Valid local install archive filenames:
+
+  T3CH:    T3CH_YYYYMMDD.rar|.zip  or  XBMC_YYYYMMDD.rar|.zip
+  Nightly: SVN_YYYYMMDD.rar|.zip   or  XBMC_XBOX_YYYYMMDD.rar|.zip
+    
 
 
 SVN Nightly Builds
@@ -80,6 +85,8 @@ You can Local Install Nightly Builds from www.sshcs.com/xbmc
   1) Goto website and download xbox build
   2) Rename archive filename to format XBMC-YYYYMMDD_<whatever else here>.rar
      eg XBMC_XBOX_r19801.rar -> XBMC-20090429-r19801.rar
+     or
+     eg XBMC_XBOX_r19801.rar -> SVN_20090429.rar
   3) ftp to xbox
   4) Select archive using Local Install
 
