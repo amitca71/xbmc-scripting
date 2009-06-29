@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>    <!--  Finnish 8.5.2009 -->
-    <string id="0">T3CH XBMC-päivitys</string>
+    <string id="0">XBMC-päivitys</string>
 
 
     <!-- Browse dialog headings -->
@@ -36,7 +36,7 @@
     <string id="319">Verkosta ei löydy asennuspakettia!</string>
     <string id="320">SFV-tiedostonimeä ei löydy![CR]Jatketaanko joka tapauksessa?</string>
     <string id="321">Paketin nimestä ei löydy päiväystä</string>
-    <string id="322">RAR-paketti on erittäin suuri, eikä sitä välttättä pystytä purkamaan![CR](Vinkki: pakkaa uudelleen ilman ylimääräisiä skinejä. ~ 60Mb)[CR]Jatketaanko kuitenkin?</string>
+    <string id="322">RAR-paketti on erittäin suuri, eikä sitä välttättä pysty avaamaan![CR](Vinkki: pakkaa uudelleen ilman ylimääräisiä skinejä. ~ 60Mb)[CR]Jatketaanko kuitenkin?</string>
 
     <!-- Yes/No buttons -->
     <string id="400">Lataa</string>
@@ -50,7 +50,7 @@
     <string id="408">Kansio</string>
     <string id="409">Tiedosto</string>
     <string id="410">XBMC-ohjelma</string>
-    <string id="411">T3CH-paketti</string>
+    <string id="411">T3CH</string>
     <string id="412">Poista</string>
     <string id="413">Ei</string>
     <string id="414">Ohje</string>
@@ -71,7 +71,7 @@
     <string id="509">Keymap.xml on erilainen, kopioidaanko sinun käyttämä?</string>
     <string id="510">Poistetaan asennuspaketin userdata ...</string>
     <string id="511">Siirretään sinun userdata asennuskansioon ...</string>
-    <string id="512">Asennus on valmis. Haluatko uudelleenkäynnistää nyt?</string>
+    <string id="512">Asennus on valmis.[CR]Haluatko uudelleenkäynnistää nyt?</string>
     <string id="514">Päivitetään dash-käynnistysnimeä ...</string>
     <string id="515">Kopioidaan:</string>
     <string id="516">Poistetaan:</string>
@@ -81,7 +81,7 @@
     <string id="520">Vaihdetaanko uuteen versioon nyt?</string>
     <string id="521">(Muutoin tarvitaan manuaalinen nimeäminen)</string>
     <string id="522">Paketin purku on valmis. Tarkistetaan polkua ...</string>
-    <string id="523">Poistetaanko asennuspaketti?</string>
+    <string id="523">Poistetaanko asennus?</string>
     <string id="524">Odota hetki ...</string>
     <string id="525">Valitse tiedosto tai kansio?</string>
     <string id="526">Uusi polku löytyy?</string>
@@ -112,7 +112,7 @@
     <string id="620">Asenna paikallisesta sijainnista:</string>
     <string id="621">Asenna vanha versio internetistä</string>
     <string id="622">Tarkista uuden asennuspaketin saatavuus</string>
-    <string id="623">XBMC kasaaja:</string>
+    <string id="623">XBMC asennuspaketti:</string>
 
    <!-- Settings Options -->
     <string id="630">Dashin sijaintiasema:</string>
