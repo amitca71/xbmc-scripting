@@ -10,11 +10,8 @@
     <string id="101">Start fehlgeschlagen!</string>
     <string id="102">Sammlung unverändert oder[CR]XML Exportdatei leer?</string>
     <string id="103">Datei der lokalen Sammlung nicht gefunden</string>
-    <string id="104">SMB Setup unvollständig!</string>
+    <string id="104">-</string>
     <string id="105">Bitte SMB konfigurieren oder deaktivieren</string>
-    <string id="106">SMB Verbindung fehlgeschlagen</string>
-    <string id="107">SMB Abruf der Sammlung fehlgeschlagen</string>
-    <string id="108">Falsches IP Format</string>
     <string id="109">Unbekannter Online Alias: </string>
     <string id="110">Leere Online Sammlung: </string>
     <string id="111">Doppelter Alias!</string>
@@ -71,6 +68,8 @@
     <string id="352">Ordner</string>
     <string id="353">Datei</string>
     <string id="354">Download</string>
+    <string id="355">Intervocative</string>
+    <string id="356">Invelos</string>
 
     <!-- Headings -->
     <string id="400">Übersicht</string>
@@ -108,6 +107,8 @@
     <string id="432">IMDb</string>
     <string id="433">Alias</string>
     <string id="434">Filter</string>
+    <string id="435">Video</string>
+    <string id="436">Slot</string>
 
     <!-- Main Menu options -->
     <string id="500">Beenden</string>
@@ -184,6 +185,7 @@
     <string id="973">Richtige IP zum PC Namen: %s ?</string>
     <string id="974">Falscher SMB Pfad!</string>
     <string id="975">Falsches IP Format!</string>
+    <string id="976">SMB Konfiguration</string>
 
     <!-- imdbWin lib -->
     <string id="980">IMDB Lookup</string>
@@ -195,6 +197,7 @@
     <string id="986">Downloading Bild ...</string>
     <string id="987">Downloading Foto Links ...</string>
     <string id="988">Downloading Slideshow ...</string>
+    <string id="989">DiaShow starten</string>
 
     <!-- Update messages -->
     <string id="1000">Deine Version ist aktuell.</string>
