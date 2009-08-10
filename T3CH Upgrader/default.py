@@ -27,8 +27,10 @@ __scriptname__ = "T3CH Upgrader"
 __author__ = 'BigBellyBilly [BigBellyBilly@gmail.com]'
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/T3CH%20Upgrader"
-__date__ = '19-06-2009'
-__version__ = "1.9.3"
+__date__ = '08-08-2009'
+__version__ = "1.9.4"
+__svn_revision__ = "$Revision$"
+__XBMC_Revision__ = "19001"
 xbmc.log( "[SCRIPT]: %s v%s Dated: %s module loaded!" % (__scriptname__, __version__, __date__), xbmc.LOGNOTICE)
 
 # Shared resources
@@ -117,10 +119,13 @@ class Main:
 		self.URL_NIGHTLY_README = URL_NIGHTLY_MODE + "BNRaw"
 #		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_MODE + "NDLC&FN=XBOX&BN="
 		self.URL_NIGHTLY_ARCHIVE = URL_NIGHTLY_ROOT + "binaries/Builds/"
+		self.URL_NIGHTLY_PSA = URL_NIGHTLY_MODE + "PSARaw"
 
 		# init settings folder
 		SCRIPT_DATA_DIR = xbmc.translatePath("/".join( [XBMC_PROFILE, "script_data", __scriptname__] ))
 		makeDir(SCRIPT_DATA_DIR)
+
+		self.PSA_FILENAME = os.path.join(SCRIPT_DATA_DIR, "psa.txt")
 
 		# SETTINGS
 		self.SETTINGS_FILENAME = os.path.join( SCRIPT_DATA_DIR, "settings.txt" )
@@ -409,6 +414,7 @@ class Main:
 			self.opt_del_build = __language__(617)
 			self.opt_settings = __language__(610)
 			self.opt_local = "%s  %s" % (__language__(620), local_archive_name)
+			self.opt_psa = __language__(624)
 
 			options = [self.opt_exit,
 					   self.opt_builder,
@@ -421,6 +427,10 @@ class Main:
 					   self.opt_del_build,
 					   self.opt_settings
 					   ]
+
+			# add psa if nightly
+			if not self.isT3CHbuilder and fileExist(self.PSA_FILENAME):
+				options.insert(3, self.opt_psa)
 
 			# remove local install opt if no archive found
 			if not local_archive_name:
@@ -444,6 +454,9 @@ class Main:
 			# fetch remote archive name (if not got it & settings allow)
 			if recheckOnline:
 				url, remote_archive_name, remote_short_build_name = self._get_latest_version()
+				if not self.isT3CHbuilder:
+					if self._update_psa():
+						self._show_psa()
 				recheckOnline = False
 
 			# build menu
@@ -514,6 +527,8 @@ class Main:
 				quit = self._switch_builds_menu()
 			elif selectedOpt == self.opt_del_build:										# delete old t3ch
 				self._delete_old_build()
+			elif selectedOpt == self.opt_psa:
+				self._show_psa()
 			elif selectedOpt == self.opt_settings:										# settings
 				quit = self._check_settings(forceSetup=True)
 
@@ -1796,6 +1811,55 @@ class Main:
 		self._save_file_obj( self.SETTINGS_FILENAME, self.settings )
 		log( "< _settings_menu() quit=%s" % quit)
 		return quit
+
+	#####################################################################################
+	def _show_psa(self):
+		log( "> _show_psa() ")
+
+		text = self._load_psa()
+		if text:
+			text = "[B]*** Public Service Announcement ***[/B]\n\n" + text + "\n\n[B]*** END - Press BACK to continue ***[/B]"
+			tbd = TextBoxDialogXML(TEXTBOX_XML_FILENAME, DIR_HOME, "Default")
+			tbd.ask(__language__(624), text)
+			del tbd
+		
+		log( "< _show_psa() ")
+
+	#####################################################################################
+	def _load_psa(self):
+		log( "> _load_psa() ")
+
+		text = ""
+		if fileExist(self.PSA_FILENAME):
+			text = file(self.PSA_FILENAME).read()
+			if not text:
+				deleteFile(self.PSA_FILENAME)
+		
+		log( "< _load_psa() ")
+		return text
+
+	#####################################################################################
+	def _update_psa(self):
+		log( "> _update_psa() ")
+		updated = False
+
+		try:
+			new_psa = readURL( self.URL_NIGHTLY_PSA, __language__( 502 ), self.isSilent )
+			print "new='%s'" % new_psa
+			if not new_psa:
+				# no new psa, delete existing
+				deleteFile(self.PSA_FILENAME)
+			else:
+				curr_psa = self._load_psa()
+				if new_psa != curr_psa:
+					file(self.PSA_FILENAME,"w").write(new_psa)
+					updated = True
+		except:
+			handleException()
+		
+		log( "< _update_psa() updated=%s" % updated)
+		return updated
+
 
 
 ######################################################################################
