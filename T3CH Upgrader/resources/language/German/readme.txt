@@ -8,6 +8,7 @@ Gebrauch:
  default.py ausführen
 
 Beim Starten wird erkannt ob ein neues T3CH Build verfügbar ist.
+Auswählen der Download Option: <build_name> wird den Vorgang starten.
 
 Vor-Installation-Einstellungen:
 -----------------------------
@@ -61,10 +62,37 @@ Wenn nach dem Neustart alles in Ordnung ist, sollte nun das aktuellste T3CH Buil
 
 Lokale Installation:
 ------------------
-Wenn man ein T3CH Build .rar per FTP in den angegebenen .rar Downloadpfad (z.B. E:\apps\) kopiert, wird im Hauptmenü eine Option zum installieren der .rar angezeigt.
+Wenn man ein T3CH Build (RAR oder ZIP) per FTP in den angegebenen Downloadpfad (z.B. E:\apps\) kopiert, wird im Hauptmenü eine Option zum installieren des Builds angezeigt.
+Zulässige Archivnamen für lokale Installation:
+
+  T3CH:    T3CH_YYYYMMDD.rar|.zip  or  XBMC_YYYYMMDD.rar|.zip
+  Nightly: SVN_YYYYMMDD.rar|.zip   or  XBMC_XBOX_YYYYMMDD.rar|.zip
+    
 
 
-Zu einem anderen T3CH wechseln
+SVN Nightly Builds
+------------------
+Anmerkung: Es handelt sich hierbei um Xbox builds, welche keine Extras wie Skins, Addons etc.
+WEB INSTALLATION:
+
+  1) Script starten, ändere den 'XBMC BUILDER' zu 'SVN Nightly'
+  2) Nun wie bei einem T3CH Build vorgehen
+
+LOKALE INSTALLATION:
+Nightly Builds bekommt man unter www.sshcs.com/xbmc
+
+  1) Browse zur Website und downloade ein Xbox Build
+  2) Benenne den Archivnamen um, zu XBMC-YYYYMMDD_<was auch immer hier>.rar
+     z.B. XBMC_XBOX_r19801.rar -> XBMC-20090429-r19801.rar
+     oder
+     z.B. XBMC_XBOX_r19801.rar -> SVN_20090429.rar
+  3) Ftp zur Xbox
+  4) Archiv bei der Lokalen Installation auswählen.
+
+
+
+
+Zu einem anderen Build wechseln
 ------------------------------
 Die Option 'Zu einem anderen T3CH wechseln' ermöglichst folgendes:
 1) Zu einen bereits lokal installierten T3CH Build wechseln.
@@ -85,11 +113,12 @@ Das Skript kann in 3 Modi gestartet werden:
 # NORMAL = mit GUI und Aufforderungen usw.
 
 Der gewünschte Mode muss in der autoexec.py angegeben werden.  Das Skript hat standardmäßig den 'NOTIFY' Mode angegeben.
-
+Beispiel:
+xbmc.executebuiltin("XBMC.RunScript(Q:\\scripts\\T3CH Upgrader\\default.py, NOTIFY)")
 
 Bekannte Probleme:
 -------------------
-Wenn das XBMC weniger als 30MB freien Speicher hat, *kann* es zu unrar-Problemen kommen. Falls dies passiert, probiere es mit einer geringeren Bildschirmauflösung (480p).
+Wenn das XBMC weniger als ~ 31MB freien Speicher hat, *kann* es zu unrar-Problemen kommen. Falls dies passiert, probiere es mit einer geringeren Bildschirmauflösung (NTSC 4:3).
 
 Wenn du nicht mehr weiterkommst, melde dich im dafür vorgesehenen Forum: http://www.xboxmediacenter.com/forum/
 
