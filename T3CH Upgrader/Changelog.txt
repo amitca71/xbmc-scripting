@@ -1,5 +1,7 @@
 T3CH Upgrader Changelog:
 ========================
+v1.9.4a 25/08/2009
+ Fix: IOError exception log message on url timeout.
 v1.9.4: 08/08/2009
  New: Public Service Announcements from SVN Nightly builds site.
 v1.9.3 19/06/2009
