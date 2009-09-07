@@ -20,7 +20,7 @@
     <string id="303">Download abgebrochen!</string>
     <string id="304">Fehler beim Entpacken des Builds!</string>
     <string id="305">Fehler beim Lesen des Build Feeds!</string>
-    <string id="306">Fehler beim Übertragen deiner UserData!</string>
+    <string id="306">Fehler bei der Übertragung der UserData!</string>
     <string id="307">Fehler beim Erstellen der Dash Boot Verknüpfung!</string>
     <string id="308">Fehler beim Übertragen deiner Scripts!</string>
     <string id="309">Verknüpfungs Dashname erforderlich.</string>
@@ -70,7 +70,7 @@
     <string id="508">UserData (falls aktiviert),Scripts,Plugins,Skins...</string>
     <string id="509">Keymap.xml ist verändert! Aktuelle behalten?</string>
     <string id="510">Säubere UserData des neuen Builds...</string>
-    <string id="511">Übertrage deine UserData...</string>
+    <string id="511">Übertragung der UserData...</string>
     <string id="512">Installation vollständig.  Jetzt neustarten?</string>
     <string id="514">Aktualisiere Dash Boot Verknüpfungen...</string>
     <string id="515">Kopiere:</string>
