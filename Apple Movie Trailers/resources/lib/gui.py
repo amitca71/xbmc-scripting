@@ -22,7 +22,7 @@ __svn_revision__ = sys.modules[ "__main__" ].__svn_revision__
 
 try:
     _progress_dialog( None )
-    modules = ( "os", "xbmc", "utilities", "trailers", "database", "context_menu", "cacheurl", "datetime", )
+    modules = ( "os", "xbmc", "utilities", "trailers", "database", "context_menu", "cacheurl", "datetime", "urllib", )
     for count, module in enumerate( modules ):
         _progress_dialog( count + 1, "%s %s" % ( _( 52 ), module, ) )
         if ( module == "utilities" ):
@@ -462,11 +462,11 @@ class GUI( xbmcgui.WindowXML ):
                 if ( trailer == len( urls ) ):
                     for c, url in enumerate( urls ):
                         t = self.get_filepath( "%s%s" % ( title, os.path.splitext( url )[ 1 ], ), c + 1, len( urls ) > 1 )
-                        items += ( ( t, url, c + 1 ), )
+                        items += ( ( t, url, c + 1, ), )
                 else:
                     # we only want the trailer selected
                     t = self.get_filepath( "%s%s" % ( title, os.path.splitext( urls[ trailer ] )[ 1 ], ), trailer + 1, len( urls ) > 1 )
-                    items = ( ( t, urls[ trailer ], trailer + 1 ), )
+                    items = ( ( t, urls[ trailer ], trailer + 1, ), )
         return items
 
     def get_filepath( self, title, count, multiple ):
@@ -513,7 +513,7 @@ class GUI( xbmcgui.WindowXML ):
                             #    self.core = xbmc.PLAYER_CORE_MPLAYER
                             self.url = url
                             if ( self.settings[ "mode" ] == 0 ):
-                                filename = url
+                                filename = url + "?|User-Agent=%s" % ( urllib.quote_plus( cacheurl.__useragent__ ), )
                             else:
                                 if ( self.settings[ "mode" ] == 1 ):
                                     if ( not self.check_cache( self.trailers.movies[ self.trailer ].title ) ):

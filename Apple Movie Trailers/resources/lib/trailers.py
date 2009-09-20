@@ -579,6 +579,8 @@ class Trailers:
                 if temp_url:
                     if "/mpaa" in temp_url:
                         if ( not temp_url.startswith( "http://" ) ):
+                            if ( not temp_url.startswith( "/" ) ):
+                                tmp_url = "/" + tmp_url
                             temp_url = "http://images.apple.com" + temp_url
                         rating_url = fetcher.urlretrieve( temp_url )
                         if rating_url:

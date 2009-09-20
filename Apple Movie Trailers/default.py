@@ -8,8 +8,36 @@ __author__ = "Apple Movie Trailers (AMT) Team"
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/Apple%20Movie%20Trailers"
 __credits__ = "XBMC TEAM, freenode/#xbmc-scripting"
-__version__ = "pre-0.99.7.2"
-__svn_revision__ = 0
+__version__ = "pre-0.99.7.3"
+__svn_revision__ = "$Revision$"
+__XBMC_Revision__ = "22965"
+
+def _check_compatible():
+    try:
+        # spam plugin statistics to log
+        xbmc.log( "[SCRIPT] '%s: Version - %s-r%s' initialized!" % ( __scriptname__, __version__, __svn_revision__.replace( "$", "" ).replace( "Revision", "" ).replace( ":", "" ).strip() ), xbmc.LOGNOTICE )
+        # get xbmc revision
+        xbmc_rev = int( xbmc.getInfoLabel( "System.BuildVersion" ).split( " r" )[ -1 ] )
+        # compatible?
+        ok = xbmc_rev >= int( __XBMC_Revision__ )
+    except:
+        # error, so unknown, allow to run
+        xbmc_rev = 0
+        ok = 2
+    # spam revision info
+    xbmc.log( "     ** Required XBMC Revision: r%s **" % ( __XBMC_Revision__, ), xbmc.LOGNOTICE )
+    xbmc.log( "     ** Found XBMC Revision: r%d [%s] **" % ( xbmc_rev, ( "Not Compatible", "Compatible", "Unknown", )[ ok ], ), xbmc.LOGNOTICE )
+    # if not compatible, inform user
+    if ( not ok ):
+        import xbmcgui
+        import os
+        # get localized strings
+        _ = xbmc.Language( os.getcwd() ).getLocalizedString
+        # inform user
+        xbmcgui.Dialog().ok( "%s - %s: %s" % ( __script__, _( 32700 ), __version__, ), _( 32701 ) % ( __script__, ), _( 32702 ) % ( __XBMC_Revision__, ), _( 32703 ) )
+    #return result
+    return ok
+
 
 # Shared resources
 BASE_RESOURCE_PATH = os.path.join( os.getcwd(), "resources" )
@@ -39,7 +67,7 @@ __add_credits_r3__ = __language__( 2 )#"Translators name"
 
 # Start the main gui
 if __name__ == "__main__":
-    # main window
-    import gui
-    # clear all modules
-    sys.modules.clear()
+    # only run if compatible
+    if ( _check_compatible() ):
+        # main window
+        import gui
