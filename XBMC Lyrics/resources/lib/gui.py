@@ -49,7 +49,7 @@ class GUI( xbmcgui.WindowXMLDialog ):
         self.settings = Settings().get_settings()
         
     def get_scraper( self ):
-        exec "import resources.scrapers.%s.lyricsScraper as lyricsScraper" % ( self.settings[ "scraper" ], )
+        import resources.scrapers.lyricwikiapi.lyricsScraper as lyricsScraper
         self.LyricsScraper = lyricsScraper.LyricsFetcher()
         self.scraper_title = lyricsScraper.__title__
         self.scraper_exceptions = lyricsScraper.__allow_exceptions__
@@ -72,6 +72,7 @@ class GUI( xbmcgui.WindowXMLDialog ):
         self.getControl( 110 ).setVisible( controlId == 110 )
         self.getControl( 120 ).setVisible( controlId == 120 )
         page_control = ( controlId == 100 )
+
         xbmcgui.unlock()
         xbmc.sleep( 5 )
         try:
@@ -84,9 +85,13 @@ class GUI( xbmcgui.WindowXMLDialog ):
         self.getControl( 200 ).setLabel( "" )
         self.menu_items = []
         self.allow_exception = False
+        lyrics = ""
         current_song = self.song
+#        print "Song "+ current_song
         lyrics, kind = self.get_lyrics_from_file( artist, song )
-        if ( lyrics is not None ):
+#       print "Lyrics " + str(lyrics)
+#        lyrics = None       
+        if ( lyrics != "" ):
             if ( current_song == self.song ):
                 self.show_lyrics( lyrics )
                 self.getControl( 200 ).setEnabled( False )
@@ -94,16 +99,18 @@ class GUI( xbmcgui.WindowXMLDialog ):
         else:
             self.getControl( 200 ).setEnabled( True )
             self.getControl( 200 ).setLabel( self.scraper_title )
-            lyrics = self.LyricsScraper.get_lyrics( artist, song )
+            lyrics = self.LyricsScraper.get_lyrics_thread( artist, song )
+
             if ( current_song == self.song ):
-                if ( isinstance( lyrics, basestring ) ):
-                    self.show_lyrics( lyrics, True )
-                elif ( isinstance( lyrics, list ) and lyrics ):
-                    self.show_choices( lyrics )
-                else:
-                    self.getControl( 200 ).setEnabled( False )
-                    self.show_lyrics( _( 631 ) )
-                    self.allow_exception = True
+#                if ( isinstance( lyrics, basestring ) ):
+                self.show_lyrics( lyrics, True )
+                print str(lyrics)
+#                elif ( isinstance( lyrics, list ) and lyrics ):
+#                    self.show_choices( lyrics )
+#                else:
+#                    self.getControl( 200 ).setEnabled( False )
+#                    self.show_lyrics( _( 631 ) )
+#                    self.allow_exception = True
 
     def get_lyrics_from_list( self, item ):
         lyrics = self.LyricsScraper.get_lyrics_from_list( self.menu_items[ item ] )
@@ -120,7 +127,8 @@ class GUI( xbmcgui.WindowXMLDialog ):
             lyrics_file.close()
             return unicode( lyrics, "utf-8" ), False
         except IOError:
-            return None, False
+            lyr = ""
+            return lyr, False
 
     def save_lyrics_to_file( self, lyrics ):
         try:
@@ -140,18 +148,20 @@ class GUI( xbmcgui.WindowXMLDialog ):
             self.getControl( 100 ).setText( _( 632 ) )
             self.getControl( 110 ).addItem( _( 632 ) )
         else:
-            if ( "\r\n" in lyrics ):
-                sep = "\r\n"
-            else:
+#            if ( "\r\n" in lyrics ):
+#                sep = "\r\n"
+#            else:
                 # XBMC textbox does not handle "\r", so replace it with "\n"
-                sep = "\n"
-                lyrics = lyrics.replace( "\r" , "\n" )
+#                sep = "\n"
+#                lyrics = lyrics.replace( "\r" , "\n" )
             self.getControl( 100 ).setText( lyrics )
-            for x in lyrics.split( sep ):
-                self.getControl( 110 ).addItem( x )
-            self.getControl( 110 ).selectItem( 0 )
+#            for x in lyrics:
+#                print "Line " + str(x)
+#                self.getControl( 110 ).addItem( x )
+#            self.getControl( 110 ).selectItem( 0 )
+            
             if ( self.settings[ "save_lyrics" ] and save ): success = self.save_lyrics_to_file( lyrics )
-        self.show_control( 100 + ( self.settings[ "smooth_scrolling" ] * 10 ) )
+        self.show_control( 100 + ( 0 * 10 ) )
         
     def show_choices( self, choices ):
         xbmcgui.lock()
@@ -206,8 +216,8 @@ class GUI( xbmcgui.WindowXMLDialog ):
             self.get_lyrics_from_list( self.getControl( 120 ).getSelectedPosition() )
 
     def onFocus( self, controlId ):
-        #xbmc.sleep( 5 )
-        #self.controlId = self.getFocusId()
+#        xbmc.sleep( 5 )
+#        self.controlId = self.getFocusId()
         self.controlId = controlId
 
     def onAction( self, action ):
@@ -255,7 +265,10 @@ class GUI( xbmcgui.WindowXMLDialog ):
         else:
             for cnt in range( 5 ):
                 song = xbmc.getInfoLabel( "MusicPlayer.Title" )
+                print "Song" + song
+
                 artist = xbmc.getInfoLabel( "MusicPlayer.Artist" )
+                print "Artist" + artist                
                 if ( song and ( not artist or self.settings[ "use_filename" ] ) ):
                     artist, song = self.get_artist_from_filename( xbmc.Player().getPlayingFile() )
                 if ( song and ( self.song != song or self.artist != artist or force_update ) ):
