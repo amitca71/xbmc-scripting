@@ -104,7 +104,7 @@ class GUI( xbmcgui.WindowXMLDialog ):
             if ( current_song == self.song ):
 #                if ( isinstance( lyrics, basestring ) ):
                 self.show_lyrics( lyrics, True )
-                print str(lyrics)
+#                print str(lyrics)
 #                elif ( isinstance( lyrics, list ) and lyrics ):
 #                    self.show_choices( lyrics )
 #                else:
