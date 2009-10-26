@@ -154,7 +154,12 @@ class GUI( xbmcgui.WindowXMLDialog ):
                 # XBMC textbox does not handle "\r", so replace it with "\n"
 #                sep = "\n"
 #                lyrics = lyrics.replace( "\r" , "\n" )
-            self.getControl( 100 ).setText( lyrics )
+
+            if lyrics.find("PUT LYRICS HERE"):
+            	self.getControl( 100 ).setText( "No lyrics have been found for ' %s '" % (self.song)  )
+            	save = False
+            else:	
+            	self.getControl( 100 ).setText( lyrics )
 #            for x in lyrics:
 #                print "Line " + str(x)
 #                self.getControl( 110 ).addItem( x )
