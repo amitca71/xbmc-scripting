@@ -135,7 +135,7 @@ class GUI( xbmcgui.WindowXMLDialog ):
             if ( not os.path.isdir( os.path.dirname( self.song_path ) ) ):
                 os.makedirs( os.path.dirname( self.song_path ) )
             lyrics_file = open( self.song_path, "w" )
-            lyrics_file.write( lyrics.encode( "utf-8", "ignore" ) )
+            lyrics_file.write( lyrics )
             lyrics_file.close()
             return True
         except IOError:
@@ -155,7 +155,7 @@ class GUI( xbmcgui.WindowXMLDialog ):
 #                sep = "\n"
 #                lyrics = lyrics.replace( "\r" , "\n" )
 
-            if lyrics.find("PUT LYRICS HERE"):
+            if (len(lyrics) < 100):
             	self.getControl( 100 ).setText( "No lyrics have been found for ' %s '" % (self.song)  )
             	save = False
             else:	
