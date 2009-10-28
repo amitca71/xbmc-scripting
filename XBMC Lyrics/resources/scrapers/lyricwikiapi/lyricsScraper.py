@@ -66,8 +66,7 @@ class LyricsFetcher:
 #				lyrics = misc.unescape_html(lyrics)
 #				lyrics = misc.wiki_to_html(lyrics)
 #				lyrics = lyrics.decode("utf-8")
-			lyrics1 = lyrics.splitlines()
-			return lyrics
+			return lyrics 
 				#self.call_back(callback, lyrics=lyrics)
 #			else:
 #				error = "Lyrics not found"

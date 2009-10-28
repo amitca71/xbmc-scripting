@@ -160,13 +160,13 @@ class GUI( xbmcgui.WindowXMLDialog ):
             	save = False
             else:	
             	self.getControl( 100 ).setText( lyrics )
-#            for x in lyrics:
-#                print "Line " + str(x)
-#                self.getControl( 110 ).addItem( x )
-#            self.getControl( 110 ).selectItem( 0 )
+            	lyrics1 = lyrics.splitlines()
+             	for x in lyrics1:
+ 	                self.getControl( 110 ).addItem( x )
+            self.getControl( 110 ).selectItem( 0 )
             
             if ( self.settings[ "save_lyrics" ] and save ): success = self.save_lyrics_to_file( lyrics )
-        self.show_control( 100 + ( 0 * 10 ) )
+        self.show_control( 100 + ( self.settings[ "smooth_scrolling" ] * 10 ) )
         
     def show_choices( self, choices ):
         xbmcgui.lock()
