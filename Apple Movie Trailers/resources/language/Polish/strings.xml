@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: smuto-->
-<!--Email: smuto.promyk@gmail.com-->
-<!--Date of translation: 12/14/2007-->
+<!--Date of translation: 11/06/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">Apple Movie Trailers</string>
-  <string id="1">XBMC Media Center</string>
+  <string id="1">xbmc media center</string>
   <string id="2">Smuto</string>
+  <string id="36">Usuwanie starych plików xml...</string>
+  <string id="37">Odświeżanie listy gatunków...</string>
+  <string id="38">Odświeżanie listy gatunków i zwiastunów...</string>
   <string id="39">Odtwarzaj wszystkie</string>
   <string id="40">Opisy filmów, dostępne szukanie. (10 - 60 minut)</string>
   <string id="41">Opisy w zakresie gatunku. (1 - 5 minut)</string>
-  <string id="42">Odświeżanie listy gatunków...</string>
   <string id="43">uzupełnianie bazy danych o brakujące pozycje...</string>
   <string id="44">Tworzenie bazy danych...</string>
   <string id="45">Konwertowanie istniejących pozycji</string>
@@ -36,7 +36,7 @@
   <string id="64">Błąd</string>
   <string id="65">Analizowanie plików xml dla adresów wszystkich zwiastunów</string>
   <string id="66">Wczytywanie listy gatunków ...</string>
-  <string id="67">Proszę czekać.</string>
+  <string id="67">Proszę czekać...</string>
   <string id="68">Odświeżanie informacji o zwiastunie</string>
   <string id="69">Błąd - pobrana lista gatunków nie jest kompletna..</string>
   <string id="70">Wczytywanie informacji o filmie...</string>
@@ -98,6 +98,9 @@
   <string id="163">Oglądane</string>
   <string id="164">Ostatnio dodane</string>
   <string id="165">Kilka zwiastunów</string>
+  <string id="166">Info o filmie</string>
+  <string id="167">W kinach</string>
+  <string id="168">Data dodania</string>
   <string id="200">Wybierz:</string>
   <string id="201">Skóra</string>
   <string id="202">Jakość obrazu</string>
@@ -116,7 +119,7 @@
   <string id="215">Rozdzielczość odtwarzacza</string>
   <string id="216">Seanse filmowe dla miasta:</string>
   <string id="217">Repertuar kinowy - scraper</string>
-  <string id="220">Zainstaluj wtyczki...</string>
+  <string id="218">Odśwież listę zwiastunów wg gatunków</string>
   <string id="230">Wystąpił błąd podczas zapisywania ustawień!</string>
   <string id="231">* zależna od skóry</string>
   <string id="240">Wprowadzone zmiany wymagają ponownego uruchomienia.</string>
@@ -126,6 +129,7 @@
   <string id="252">Aktualizuj</string>
   <string id="253">Credits</string>
   <string id="254">Wtyczki</string>
+  <string id="255">Domyślne</string>
   <string id="257">SQL - Zapisz</string>
   <string id="258">SQL - Wyczyść</string>
   <string id="259">SQL - Wczytaj</string>
@@ -156,12 +160,6 @@
   <string id="603">Miejsce</string>
   <string id="700">Apple Movie Trailers Plugin</string>
   <string id="701">Dzieki tej wtyczce możesz oglądać zwiastuny</string>
-  <string id="702">bezpośrednio z zakładki "Filmy"</string>
-  <string id="703">Chcesz zainstalować wtyczkę?</string>
-  <string id="704">Movie Theater Plugin</string>
-  <string id="705">Dzieki tej wtyczce możesz zobaczyć kilka</string>
-  <string id="706">zwiastunów przed projekcją wybranego filmu.</string>
-  <string id="707">Chcesz zainstalować wtyczkę?</string>
   <string id="710">Przeglądaj w poszukiwaniu ikonki</string>
   <string id="711">Zainstaluj</string>
   <string id="712">Pomiń</string>
@@ -170,6 +168,8 @@
   <string id="720">Pamiętaj, aby dodawać nowe wtyczki gdy jesteś</string>
   <string id="721">w widoku plików. Biblioteka jest automatyczna</string>
   <string id="722">nie wymaga żadnego działania aktualizacyjnego.</string>
+  <string id="723">Chcesz dodać zakładkę dla tej wtyczki</string>
+  <string id="724">do swojego pliku sources.xml ?</string>
   <string id="725">Instaluję wtyczkę...</string>
   <string id="730">Błąd podczas instalowania wtyczki!</string>
   <string id="900">Wersja</string>

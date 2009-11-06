@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: smuto-->
-<!--Email: smuto.promyk@gmail.com-->
-<!--Date of translation: 05/05/2008-->
+<!--Date of translation: 11/06/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">T3CH Upgrader</string>
@@ -15,7 +13,7 @@
   <string id="206">Usuń starą wersję T3CH:</string>
   <string id="207">Wprowadź nazwę pliku:</string>
   <string id="300">Błąd podczas zapisywania ustawień.</string>
-  <string id="301">Nie ma dostępnej nowszej wersji T3CH!</string>
+  <string id="301">Nie ma dostępnej nowszej wersji!</string>
   <string id="302">Błąd podczas pobierania info danych o wersji!</string>
   <string id="303">Pobieranie anulowane!</string>
   <string id="304">Wystąpił błąd podczas wypakowywania!</string>
@@ -26,7 +24,7 @@
   <string id="309">Wymagana jest nazwa pliku startowego dasha</string>
   <string id="310">Lista zmian niedostępna</string>
   <string id="311">Źródłowy plik/katalog nie istnieje!</string>
-  <string id="312">Przynajmniej jeden plik lub katalog nie został wypakowany![CR][CR]Niestety jest to błąd w XBMC, rozpocznij wszystko od nowa.</string>
+  <string id="312">Nie wszystko zostało wypakowane![CR][CR]Niestety jest to błąd w XBMC, rozpocznij wszystko od nowa.</string>
   <string id="313">Plik lub katalog zastrzeżony!</string>
   <string id="314">Docelowy katalog wypakowywania już istnieje![CR][CR]Czy napewno chcesz nadpisać?</string>
   <string id="315">Nieprawidłowość sum kontrolnych SFV[CR]Plik rar uszkodzony, konieczne ponowne ściąganie </string>
@@ -35,6 +33,8 @@
   <string id="318">Problem z dostępem do serwerów FTP!</string>
   <string id="319">Nie odnaleziono serwera!</string>
   <string id="320">Nie odnaleziono pliku sum kontrolnych SFV[CR]Mimo wszystko chcesz wypakować archiwum?</string>
+  <string id="321">Nie znalazłem daty wydania w nazwie paczki!</string>
+  <string id="322">RAR jest za duży i napewno się nie wypakuje!(Tip: Przepakuj usuwając jakiegąś skórę. ~ 60mb)[CR]Mimo to kontynuawać ?</string>
   <string id="400">Pobierz</string>
   <string id="401">Pomiń</string>
   <string id="402">Tak</string>
@@ -51,7 +51,8 @@
   <string id="413">Anuluj</string>
   <string id="414">Readme</string>
   <string id="415">Changelog</string>
-  <string id="416">Rata</string>
+  <string id="416">Instaluj</string>
+  <string id="417">SVN Nightly</string>
   <string id="500">Najnowsza dostępna wersja to:</string>
   <string id="501">Chcesz pobrać tą wersję?</string>
   <string id="502">Pobieram info dane z:</string>
@@ -62,28 +63,32 @@
   <string id="507">Rozpocząć kopiowanie istniejących danych do T3CH?</string>
   <string id="508">UserData (opcjonalnie), Skrypty, Wtyczki, Skóry ...</string>
   <string id="509">Keymap.xml jest inny, skopiować twój?</string>
-  <string id="510">Usuwanie T3CH UserData ...</string>
-  <string id="511">Twój UserData kopiowany do T3CH ...</string>
+  <string id="510">Przygotowanie kopiowania UserData ...</string>
+  <string id="511">Twój UserData kopiowany  ...</string>
   <string id="512">Instalacja zakończona. Uruchomić ponownie?</string>
   <string id="514">Aktualizacja ustawień pliku startowego dasha ...</string>
   <string id="515">Kopiowanie:</string>
   <string id="516">Usuwanie:</string>
-  <string id="517">Nie ma nowszej wersji T3CH!</string>
-  <string id="518">Dostepna nowsza wersja T3CH!</string>
+  <string id="517">Nie ma nowszej wersji!</string>
+  <string id="518">Dostepna nowsza wersja!</string>
   <string id="519">_new (nowy) i _old (stary) skrót utworzony.</string>
   <string id="520">Chcesz teraz aktywować nową wersję XBMC jako dash?</string>
   <string id="521">(Później będziesz musiał ręczne zmienić nazwę )</string>
   <string id="522">Sprawdzanie poprawności wypakowania. Porównywanie ...</string>
-  <string id="523">Naprawdę usunąć tą wersję T3CH?</string>
+  <string id="523">Naprawdę usunąć ?</string>
   <string id="524">Proszę czekać ...</string>
   <string id="525">Wybierz plik lub katalog?</string>
   <string id="526">Sprawdzam czy istnieją ścieżki ..</string>
   <string id="527">Sprawdzam czy istnieje XBE..</string>
-  <string id="528">Usunąć archiwum T3CH z dysku ?</string>
+  <string id="528">Usunąć archiwum z dysku ?</string>
   <string id="529">Zaktualizować ustawienia pliku startowego dasha  ?[CR](wymagane jeżeli chcesz się przełączyć na nową wersję)</string>
   <string id="530">Dysk=%s  Wolne=%sMB  Potrzebne=%sMB</string>
   <string id="531">Wolnej pamięci=%sMB  Potrzebnej pamięci=%sMB</string>
   <string id="532">Chcesz kontynuawać ?</string>
+  <string id="533">Tylko pobrać czy pobrać i zainstalować?</string>
+  <string id="534">Sprawdź</string>
+  <string id="535">Podaj datę</string>
+  <string id="536">Wybierz wersję</string>
   <string id="600">Menu</string>
   <string id="601">Opcje ustawień</string>
   <string id="610">Ustawienia</string>
@@ -96,6 +101,9 @@
   <string id="619">Aktualizuj skrypt</string>
   <string id="620">Instaluj z dysku:</string>
   <string id="621">Instaluj archiwalną wersję z sieci</string>
+  <string id="622">Sprawdź dostępność nowej wersji</string>
+  <string id="623">XBMC w wersji:</string>
+  <string id="624">Przeczytaj informacje zapowiadające</string>
   <string id="630">Dysk z plikiem startowym dasha:</string>
   <string id="631">Nazwa pliku startowego dasha:</string>
   <string id="632">Ścieżka instalacji:</string>
@@ -106,6 +114,7 @@
   <string id="637">Wyczyść listy kopiowanych i kasowanych plików</string>
   <string id="638">Zawsze pytaj zanim usuniesz archiwum .rar</string>
   <string id="639">Przeczytaj zanim zaczniesz</string>
+  <string id="640">Sprawdzaj dostępność nowych wersji na starcie</string>
   <string id="650">Zastosuj i wyjdź</string>
   <string id="651">Dodaj nowe</string>
   <string id="652">Użyj klawiatury</string>
