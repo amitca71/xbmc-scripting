@@ -67,7 +67,7 @@
     <string id="505">Paketti purettiin kansioon:</string>
     <string id="506">Selvitetään T3CH-paketin sisältöä ...</string>
     <string id="507">Siirretäänkö nykyiset tiedostot</string>
-    <string id="508">(userdata, skriptit, lisäkkeet, skinit ...)?</string>
+    <string id="508">(userdata, skriptit, lisäosat, ulkoasut ...)?</string>
     <string id="509">Keymap.xml on erilainen, kopioidaanko sinun käyttämä?</string>
     <string id="510">Poistetaan asennuspaketin userdata ...</string>
     <string id="511">Siirretään sinun userdata asennuskansioon ...</string>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-   <!--  Finnish 13.3.2009 -->
+   <!--  Finnish 14.11.2009 -->
   <string id="0">Apple Movie Trailers</string>
   <string id="1">xbmc media center</string>
   <string id="2">Mika Pirinen</string>
@@ -152,7 +152,7 @@
   <string id="251">Peruuta</string>
   <string id="252">Päivitä</string>
   <string id="253">Tekijät</string>
-  <string id="254">Asenna lisäke</string>
+  <string id="254">Asenna lisäosa</string>
   <string id="255">Oletukset</string>
 
    <!-- Search buttons -->
@@ -199,8 +199,8 @@
   <string id="603">Sijainti</string> 
 
   <!-- Plugin -->
-  <string id="700">Tämä lisäke antaa sinun katsoa esittely videoita media ikkunasta. Se vaatii kuitenkin päivitetyn skriptin asennuksen. Sillä on kuitenkin omat asetukset lisäkkeen asetuksissa.</string>
-  <string id="701">Tämä lisäke antaa sinun pelata tietovisailua, tulevia esittelyvideoita, ominaisuuksien esittelyvideoita, arvioida videota ja katsoa 0-5 satunnaista videota ennen elokuvan toistoa. Lisäksi voit valita elokuvan loppuun esittely videoiden toiston. Se vaatii kuitenkin päivitetyn skriptin asennuksen. Sillä on kuitenkin omat asetukset lisäkkeen asetuksissa</string>
+  <string id="700">Tämä lisäosa antaa sinun katsoa esittely videoita media ikkunasta. Se vaatii kuitenkin päivitetyn skriptin asennuksen. Sillä on kuitenkin omat asetukset lisäkkeen asetuksissa.</string>
+  <string id="701">Tämä lisäosa antaa sinun pelata tietovisailua, tulevia esittelyvideoita, ominaisuuksien esittelyvideoita, arvioida videota ja katsoa 0-5 satunnaista videota ennen elokuvan toistoa. Lisäksi voit valita elokuvan loppuun esittely videoiden toiston. Se vaatii kuitenkin päivitetyn skriptin asennuksen. Sillä on kuitenkin omat asetukset lisäkkeen asetuksissa</string>
 
   <string id="710">Valitse pienoiskuvake</string>
   <string id="711">Asenna</string>
@@ -208,27 +208,27 @@
   <string id="713">Lisäke</string>
   <string id="714">lisää</string>
 
-  <string id="720">Muista lisätä uusi lisäke uutena sijaintina</string>
+  <string id="720">Muista lisätä uusi lisäosa uutena sijaintina</string>
   <string id="721">Video-tiedostoihin. Kirjastotila toimii</string>
   <string id="722">automaattisesti, sinne ei muutoksia tarvita.</string>
  
-  <string id="723">Lisätäänkö tälle lisäkkeelle</string>
+  <string id="723">Lisätäänkö tälle lisäosalle</string>
   <string id="724">sijainti merkintä sources.xml tiedostoon?</string>
 
-  <string id="725">Asennetaan lisäke...</string>
+  <string id="725">Asennetaan lisäosa...</string>
   
-  <string id="730">Lisäkkeen asennus epäonnistui!</string>
+  <string id="730">Lisäosan asennus epäonnistui!</string>
 
-  <string id="750">Haluatko asentaa tämän lisäkkeen?</string>
-  <string id="755">Tästä voidaan asentaa kaikki lisäkkeet.</string>
+  <string id="750">Haluatko asentaa tämän lisäosan?</string>
+  <string id="755">Tästä voidaan asentaa kaikki lisäosat.</string>
 
-  <string id="799">Kaikki lisäkkeet</string>
+  <string id="799">Kaikki lisäosat</string>
 
   <!-- Credits -->
   <string id="900">Versio</string>
   <string id="901">Tekijät:</string>
   <string id="902">Kiitokset:</string>
-  <string id="903">Skinin tekijät</string>
+  <string id="903">Ulkoasun tekijät</string>
 
   <!-- Credits headings-->
   <string id="910">Kehitys &amp; koodaus</string>
@@ -253,5 +253,11 @@
   <!-- Update error messages -->
   <string id="1030">Uutta versiota ei löytynyt!</string>
   <string id="1031">Päivitys ei onnistunut!</string>
+
+    <!-- compatible messages -->
+    <string id="30700">versio</string>
+    <string id="30701">Tämä %s:n versio vaatii toimiakseen</string>
+    <string id="30702">XBMC revision %s tai uudemman.</string>
+    <string id="30703">Päivitä XBMC uudempaan versioon.</string>
 
 </strings>
