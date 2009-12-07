@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 04/16/2009-->
+<!--Date of translation: 12/07/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">Apple Movie Trailers</string>
@@ -215,4 +215,8 @@
   <string id="2151">Sök endast i favoriter</string>
   <string id="2152">Sök endast i sparade</string>
   <string id="2153">Sök endast i sedda</string>
+  <string id="32700">Version</string>
+  <string id="32701">Denna version av %s kräver en</string>
+  <string id="32702">XBMC version lika med %s eller högre.</string>
+  <string id="32703">Var god uppdatera ditt XBMC.</string>
 </strings>

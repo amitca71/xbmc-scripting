@@ -1,216 +1,193 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 12/07/2009-->
+<!--$Revision$-->
 <strings>
-    <string id="0">DVDProfiler</string>
-
-    <!-- Browse dialog headings -->
-
-    <!-- Error messages -->
-    <string id="100">Ett fel uppstod när inställningarna skulle sparas!</string>
-    <string id="101">Uppstart misslyckades!</string>
-    <string id="102">Samlingen hämtades inte eller så är[CR]XML-exportfilen tom ?</string>
-    <string id="103">Den lokala samlingsfilen saknas!</string>
-    <string id="104">-</string>
-    <string id="105">Vänligen konfigurera eller inaktivera SMB</string>
-    <string id="109">Okänt onlinealias: </string>
-    <string id="110">Tom onlinesamling: </string>
-    <string id="111">Det finns redan ett alias med detta namn!</string>
-
-    <!-- Status messages -->
-    <string id="200">Var god vänta ...</string>
-    <string id="201">Lyckades</string>
-    <string id="202">Misslyckades</string>
-    <string id="203">Klar</string>
-    <string id="204"></string>
-    <string id="210">Filmuppspelning</string>
-    <string id="211">Mediasökvägen är inte lagrad i XML</string>
-    <string id="212">Uppspelning misslyckades från sökvägen:</string>
-    <string id="213">Uppstartsmeny</string>
-    <string id="214">Konfigurera om SMB ?</string>
-    <string id="215">SMB-hämta samlingen</string>
-    <string id="216">Hämtar onlineomslag</string>
-    <string id="217">Hämtar alla omslag</string>
-    <string id="218">Ange dator-IP:</string>
-    <string id="219">Ange fjärrdator-IP</string>
-    <string id="220">Ange DVDProfiler XML-exportfil</string>
-    <string id="221">Ange samlingens underkatalog:</string>
-    <string id="222">Ange bildernas underkatalog:</string>
-    <string id="223">Ta bort lokala omslagsbilder ?</string>
-    <string id="224">Ta bort lokala samlingsfiler ?</string>
-    <string id="225">XML-samling initieras</string>
-    <string id="226">Laddar fil, nycklar och filter</string>
-    <string id="227">Skapar platt fil från XML ...</string>
-    <string id="228">Sparar nycklar och filter</string>
-    <string id="229">Onlinesamling</string>
-    <string id="230">Söker alias: </string>
-    <string id="231">Hämtar onlinesamling: </string>
-    <string id="240">Media hittades inte!</string>
-    <string id="241">Ange samlingsALIAS</string>
-    <string id="242">Onlinesamlingsvärd ?</string>
-    <string id="243">Filter - (Välj för att slå av eller på)</string>
-    <string id="244">Taggar: </string>
-    <string id="245">Genrer: </string>
-    <string id="246">Välj alla</string>
-    <string id="247">Välj ingen</string>
-    <string id="248">Stäng AV BÅDA filtrena</string>
-    <string id="249">Sorterar ...</string>
-
-    <!-- script common messages -->
-    <string id="300">Var vänlig vänta ...</string>
-    <string id="301">Lyckades</string>
-    <string id="302">Misslyckades</string>
-    <string id="303">Laddar ner ...</string>
-    <string id="304">Bekräfta borttagning ?</string>
-
-    <!-- Yes/No buttons -->
-    <string id="350">Ja</string>
-    <string id="351">Nej</string>
-    <string id="352">Katalog</string>
-    <string id="353">Fil</string>
-    <string id="354">Ladda ner</string>
-
-    <!-- Headings -->
-    <string id="400">Översikt</string>
-    <string id="401">Ytterligare information</string>
-    <string id="402">Betyg</string>
-    <string id="403">Speltid</string>
-    <string id="404">Region</string>
-    <string id="405">Produktionsår</string>
-    <string id="406">Utgiven</string>
-    <string id="407">Genre</string>
-    <string id="408">Bildformat</string>
-    <string id="409">Standard</string>
-    <string id="410">16x9</string>
-    <string id="411">Språk</string>
-    <string id="412">Studios</string>
-    <string id="413">Recensioner (F/V/A/E)</string>
-    <string id="414">Extramaterial</string>
-    <string id="415">Påskägg</string>
-    <string id="416">Mediasökväg</string>
-    <string id="417">ROLLBESÄTTNING</string>
-    <string id="418">SKÅDESPELARE</string>
-    <string id="419">ROLL</string>
-    <string id="420">ARBETSLAG</string>
-    <string id="421">NAMN</string>
-    <string id="422">POSITION</string>
-    <string id="423">Sortera efter #</string>
-    <string id="424">Sortera efter titel</string>
-    <string id="425">Fallande</string>
-    <string id="426">Stigande</string>
-    <string id="427">Välj</string>
-    <string id="428">Spela</string>
-    <string id="429">Inga Filter</string>
-    <string id="430">Min Profil</string>
-    <string id="431">Meny</string>
-    <string id="432">IMDb</string>
-    <string id="433">Alias</string>
-    <string id="434">Filter</string>
-    <string id="435">Video</string>
-    <string id="436">Slot</string>
-
-    <!-- Main Menu options -->
-    <string id="500">Avsluta</string>
-    <string id="501">Huvudmeny</string>
-    <string id="502">Inställningar</string>
-    <string id="503">IMDb-uppslag</string>
-    <string id="504">Visa en Onlinesamling</string>
-    <string id="505">Visa Min Samling</string>
-    <string id="506">Filter</string>
-    <string id="507">Hämta samling från SMB</string>
-    <string id="508">Hämta alla bilder</string>
-
-    <!-- Settings Menu Options -->
-    <string id="520">Återställ inställningar</string>
-    <string id="521">Visa Skript-Readme</string>
-    <string id="522">Visa Skript-Ändringslogg</string>
-    <string id="523">Uppdatera Skript</string>
-    <string id="524">Leta efter skriptuppdatering vid uppstart?</string>
-    <string id="525">Rensa Cache</string>
-    <string id="526">Uppstartsläge:</string>
-    <string id="527">SMB-Inställningar</string>
-    <string id="528">Local Mode Media Location</string>
-
-    <!-- SMB Menu Options -->
-    <string id="540">Använd SMB-anslutning ?</string>
-    <string id="541">SMB huvudsökväg:</string>
-    <string id="542">PC IP (Översättning av datornamn):</string>
-    <string id="543">DVDProfiler Share Folder:</string>
-    <string id="544">Movies Playback Share:</string>
-    <string id="545">Samlingens filnamn:</string>
-    <string id="546">Samlingens katalog:</string>
-    <string id="547">Bildkatalog:</string>
-    <string id="548">Testa SMB-anslutning</string>
-
-    <!-- Start Mode Menu Options -->
-    <string id="550">SMB Aktiverad</string>
-    <string id="551">Lokal Samling</string>
-    <string id="552">Onlinealias</string>
-    <string id="553">Uppstartsmeny</string>
-
-    <!-- Misc Menu Options Options -->
-    <string id="560">Lägg till</string>
-    <string id="561">Använd tangentbord</string>
-    <string id="562">Manual</string>
-    <string id="563">Ta bort</string>
-    <string id="564">Ändra</string>
-    <string id="565">Välj</string>
-    <string id="566">(Ta bort: Markera och tryck A)</string>
-
-    <!-- smbLib -->
-    <string id="950">SMB Sökväg och/eller Värd-IP saknas!</string>
-    <string id="951">SMB Fel!</string>
-    <string id="952">SMB Anslutning misslyckades!</string>
-    <string id="953">Kolla att DATORNAMN och IP är korrekt</string>
-    <string id="954">SMB Inloggning misslyckades!</string>
-    <string id="955">Använd DATORNAMN inte IP i SMB-sökvägen!</string>
-    <string id="956">SMB Autosök IP misslyckades!</string>
-    <string id="957">SMB Hämtningsfel!</string>
-    <string id="958">SMB Sändningsfel!</string>
-    <string id="959">SMB Inställningar ofullständiga!</string>
-    <string id="960">SMB Ansluter ...</string>
-    <string id="961">SMB Anslutning lyckades</string>
-    <string id="962">SMB Hämtar fil ...</string>
-    <string id="963">SMB Skickar fil ...</string>
-    <string id="964">SMB Var god vänta ...</string>
-    <string id="965">Fjärrfilnamn saknas!</string>
-    <string id="966">Ingen fjärranslutning!</string>
-    <string id="967">Letar efter uppdaterad fil ...</string>
-    <string id="968">Konfigurera SMB nu?</string>
-    <string id="969">SMB Sökväg:</string>
-    <string id="970">SMB IP:</string>
-    <string id="971">Välj en befintlig XBMC SMB-sökväg</string>
-    <string id="972">Testa SMB-anslutning</string>
-    <string id="973">Rätt IP för Datornamn:</string>
-    <string id="974">Felaktig SMB-sökväg!</string>
-    <string id="975">Felaktigt IP-format!</string>
-    <string id="976">Konfigurera SMB</string>
-
-    <!-- imdbWin lib -->
-    <string id="980">IMDB-Sök</string>
-    <string id="981">IMDb Manuell sökning</string>
-    <string id="982">Söker IMDb ...</string>
-    <string id="983">IMDb sökning misslyckades</string>
-    <string id="984">Ändra titel?</string>
-    <string id="985">Välj titel</string>
-    <string id="986">Laddar ner bild ...</string>
-    <string id="987">Laddar ner bildlänkar ...</string>
-    <string id="988">Laddar ner bildspel ...</string>
-    <string id="989">Se bildspel</string>
-
-    <!-- Update messages -->
-    <string id="1000">Din version är den senaste.</string>
-    <string id="1001">Hämtar nuvarande taggade versioner...</string>
-    <string id="1002">är nyare</string>
-    <string id="1003">Vill du uppdatera?</string>
-    <string id="1004">Hämtar fillista...</string>
-    <string id="1005">Var god vänta...</string>
-    <string id="1006">Version</string>
-    <string id="1007">Hämtar:</string>
-    <string id="1008">Sökväg:</string>
-    <string id="1009">Fil:</string>
-    <string id="1010">Skript uppdaterat, kommer nu att starta om.</string>
-
-    <!-- Update error messages -->
-    <string id="1030">Inga taggade versioner hittades!</string>
-    <string id="1031">Ett fel uppstod när skriptet uppdaterades!</string>
-
+  <string id="0">DVDProfiler</string>
+  <string id="100">Ett fel uppstod när inställningarna skulle sparas!</string>
+  <string id="101">Uppstart misslyckades!</string>
+  <string id="102">Samlingen hämtades inte eller så är[CR]XML-exportfilen tom ?</string>
+  <string id="103">Den lokala samlingsfilen saknas!</string>
+  <string id="104">-</string>
+  <string id="105">Vänligen konfigurera eller inaktivera SMB</string>
+  <string id="109">Okänt onlinealias: </string>
+  <string id="110">Tom onlinesamling: </string>
+  <string id="111">Det finns redan ett alias med detta namn!</string>
+  <string id="200">Var god vänta ...</string>
+  <string id="201">Lyckades</string>
+  <string id="202">Misslyckades</string>
+  <string id="203">Klar</string>
+  <string id="204">
+  </string>
+  <string id="210">Filmuppspelning</string>
+  <string id="211">Mediasökvägen är inte lagrad i XML</string>
+  <string id="212">Uppspelning misslyckades från sökvägen:</string>
+  <string id="213">Uppstartsmeny</string>
+  <string id="214">Konfigurera om SMB ?</string>
+  <string id="215">SMB-hämta samlingen</string>
+  <string id="216">Hämtar onlineomslag</string>
+  <string id="217">Hämtar alla omslag</string>
+  <string id="218">Ange dator-IP:</string>
+  <string id="219">Ange fjärrdator-IP</string>
+  <string id="220">Ange DVDProfiler XML-exportfil</string>
+  <string id="221">Ange samlingens underkatalog:</string>
+  <string id="222">Ange bildernas underkatalog:</string>
+  <string id="223">Ta bort lokala omslagsbilder ?</string>
+  <string id="224">Ta bort lokala samlingsfiler ?</string>
+  <string id="225">XML-samling initieras</string>
+  <string id="226">Laddar fil, nycklar och filter</string>
+  <string id="227">Skapar platt fil från XML ...</string>
+  <string id="228">Sparar nycklar och filter</string>
+  <string id="229">Onlinesamling</string>
+  <string id="230">Söker alias: </string>
+  <string id="231">Hämtar onlinesamling: </string>
+  <string id="240">Media hittades inte!</string>
+  <string id="241">Ange samlingsALIAS</string>
+  <string id="242">Onlinesamlingsvärd ?</string>
+  <string id="243">Filter - (Välj för att slå av eller på)</string>
+  <string id="244">Taggar: </string>
+  <string id="245">Genrer: </string>
+  <string id="246">Välj alla</string>
+  <string id="247">Välj ingen</string>
+  <string id="248">Stäng AV BÅDA filtrena</string>
+  <string id="249">Sorterar ...</string>
+  <string id="300">Var vänlig vänta ...</string>
+  <string id="301">Lyckades</string>
+  <string id="302">Misslyckades</string>
+  <string id="303">Laddar ner ...</string>
+  <string id="304">Bekräfta borttagning ?</string>
+  <string id="350">Ja</string>
+  <string id="351">Nej</string>
+  <string id="352">Katalog</string>
+  <string id="353">Fil</string>
+  <string id="354">Ladda ner</string>
+  <string id="355">Intervocative</string>
+  <string id="356">Invelos</string>
+  <string id="400">Översikt</string>
+  <string id="401">Ytterligare information</string>
+  <string id="402">Betyg</string>
+  <string id="403">Speltid</string>
+  <string id="404">Region</string>
+  <string id="405">Produktionsår</string>
+  <string id="406">Utgiven</string>
+  <string id="407">Genre</string>
+  <string id="408">Bildformat</string>
+  <string id="409">Standard</string>
+  <string id="410">16x9</string>
+  <string id="411">Språk</string>
+  <string id="412">Studios</string>
+  <string id="413">Recensioner (F/V/A/E)</string>
+  <string id="414">Extramaterial</string>
+  <string id="415">Påskägg</string>
+  <string id="416">Mediasökväg</string>
+  <string id="417">ROLLBESÄTTNING</string>
+  <string id="418">SKÅDESPELARE</string>
+  <string id="419">ROLL</string>
+  <string id="420">ARBETSLAG</string>
+  <string id="421">NAMN</string>
+  <string id="422">POSITION</string>
+  <string id="423">Sortera efter #</string>
+  <string id="424">Sortera efter titel</string>
+  <string id="425">Fallande</string>
+  <string id="426">Stigande</string>
+  <string id="427">Välj</string>
+  <string id="428">Spela</string>
+  <string id="429">Inga Filter</string>
+  <string id="430">Min Profil</string>
+  <string id="431">Meny</string>
+  <string id="432">IMDb</string>
+  <string id="433">Alias</string>
+  <string id="434">Filter</string>
+  <string id="435">Video</string>
+  <string id="436">Slot</string>
+  <string id="500">Avsluta</string>
+  <string id="501">Huvudmeny</string>
+  <string id="502">Inställningar</string>
+  <string id="503">IMDb-uppslag</string>
+  <string id="504">Visa en Onlinesamling</string>
+  <string id="505">Visa Min Samling</string>
+  <string id="506">Filter</string>
+  <string id="507">Hämta samling från SMB</string>
+  <string id="508">Hämta alla bilder</string>
+  <string id="520">Återställ inställningar</string>
+  <string id="521">Visa Skript-Readme</string>
+  <string id="522">Visa Skript-Ändringslogg</string>
+  <string id="523">Uppdatera Skript</string>
+  <string id="524">Leta efter skriptuppdatering vid uppstart?</string>
+  <string id="525">Rensa Cache</string>
+  <string id="526">Uppstartsläge:</string>
+  <string id="527">SMB-Inställningar</string>
+  <string id="528">Local Mode Media Location</string>
+  <string id="540">Använd SMB-anslutning ?</string>
+  <string id="541">SMB huvudsökväg:</string>
+  <string id="542">PC IP (Översättning av datornamn):</string>
+  <string id="543">DVDProfiler Share Folder:</string>
+  <string id="544">Movies Playback Share:</string>
+  <string id="545">Samlingens filnamn:</string>
+  <string id="546">Samlingens katalog:</string>
+  <string id="547">Bildkatalog:</string>
+  <string id="548">Testa SMB-anslutning</string>
+  <string id="550">SMB Aktiverad</string>
+  <string id="551">Lokal Samling</string>
+  <string id="552">Onlinealias</string>
+  <string id="553">Uppstartsmeny</string>
+  <string id="560">Lägg till</string>
+  <string id="561">Använd tangentbord</string>
+  <string id="562">Manual</string>
+  <string id="563">Ta bort</string>
+  <string id="564">Ändra</string>
+  <string id="565">Välj</string>
+  <string id="566">(Ta bort: Markera och tryck A)</string>
+  <string id="950">SMB Sökväg och/eller Värd-IP saknas!</string>
+  <string id="951">SMB Fel!</string>
+  <string id="952">SMB Anslutning misslyckades!</string>
+  <string id="953">Kolla att DATORNAMN och IP är korrekt</string>
+  <string id="954">SMB Inloggning misslyckades!</string>
+  <string id="955">Använd DATORNAMN inte IP i SMB-sökvägen!</string>
+  <string id="956">SMB Autosök IP misslyckades!</string>
+  <string id="957">SMB Hämtningsfel!</string>
+  <string id="958">SMB Sändningsfel!</string>
+  <string id="959">SMB Inställningar ofullständiga!</string>
+  <string id="960">SMB Ansluter ...</string>
+  <string id="961">SMB Anslutning lyckades</string>
+  <string id="962">SMB Hämtar fil ...</string>
+  <string id="963">SMB Skickar fil ...</string>
+  <string id="964">SMB Var god vänta ...</string>
+  <string id="965">Fjärrfilnamn saknas!</string>
+  <string id="966">Ingen fjärranslutning!</string>
+  <string id="967">Letar efter uppdaterad fil ...</string>
+  <string id="968">Konfigurera SMB nu?</string>
+  <string id="969">SMB Sökväg:</string>
+  <string id="970">SMB IP:</string>
+  <string id="971">Välj en befintlig XBMC SMB-sökväg</string>
+  <string id="972">Testa SMB-anslutning</string>
+  <string id="973">Rätt IP för Datornamn:</string>
+  <string id="974">Felaktig SMB-sökväg!</string>
+  <string id="975">Felaktigt IP-format!</string>
+  <string id="976">Konfigurera SMB</string>
+  <string id="980">IMDB-Sök</string>
+  <string id="981">IMDb Manuell sökning</string>
+  <string id="982">Söker IMDb ...</string>
+  <string id="983">IMDb sökning misslyckades</string>
+  <string id="984">Ändra titel?</string>
+  <string id="985">Välj titel</string>
+  <string id="986">Laddar ner bild ...</string>
+  <string id="987">Laddar ner bildlänkar ...</string>
+  <string id="988">Laddar ner bildspel ...</string>
+  <string id="989">Se bildspel</string>
+  <string id="1000">Din version är den senaste.</string>
+  <string id="1001">Hämtar nuvarande taggade versioner...</string>
+  <string id="1002">är nyare</string>
+  <string id="1003">Vill du uppdatera?</string>
+  <string id="1004">Hämtar fillista...</string>
+  <string id="1005">Var god vänta...</string>
+  <string id="1006">Version</string>
+  <string id="1007">Hämtar:</string>
+  <string id="1008">Sökväg:</string>
+  <string id="1009">Fil:</string>
+  <string id="1010">Skript uppdaterat, kommer nu att starta om.</string>
+  <string id="1030">Inga taggade versioner hittades!</string>
+  <string id="1031">Ett fel uppstod när skriptet uppdaterades!</string>
 </strings>

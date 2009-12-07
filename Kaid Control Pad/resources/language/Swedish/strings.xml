@@ -1,107 +1,84 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 12/07/2009-->
+<!--$Revision$-->
 <strings>
-    <string id="0">Kaid Control Pad</string>
-
-    <!-- Buttons -->
-    <string id="10">Starta om Kai Daemon</string>
-    <string id="11">Starta Kai Daemon</string>
-    <string id="12">Stoppa Kai Daemon</string>
-    <string id="13">Ladda upp/Starta Kai Daemon</string>
-    <string id="14">Starta om router</string>
-    <string id="15">Inställningar...</string>
-
-    <!-- Status label headings -->
-    <string id="100">Kaid-status:</string>
-    <string id="110">Routerstatus:</string>
-    <string id="120">Xboxstatus:</string>
-
-    <!-- Status label messages -->
-    <string id="101">Körs INTE</string>
-    <string id="102">Körs</string>
-    <string id="103">Kontrollera inställningar</string>
-    <string id="111">Kai INTE installerad</string>
-    <string id="112">Okänd</string>
-    <string id="113">Kontrollera inställningar</string>
-    <string id="121">Kai INTE installerad</string>
-    <string id="122">Kai installerad</string>
-    <string id="123">Kontrollera inställningar</string>
-
-    <!-- Settings labels -->
-    <string id="201">Firmware</string>
-    <string id="202">Router IP</string>
-    <string id="203">Router användarnamn</string>
-    <string id="204">Router lösenord</string>
-    <string id="205">Kaid sökväg</string>
-    <string id="206">Kaid.conf sökväg</string>
-    <string id="207">Uppladdningsmetod</string>
-    <string id="208">Xbox användarnamn</string>
-    <string id="209">Xbox lösenord</string>
-    <string id="210">Sniffa enhet</string>
-    <string id="211">Avsluta till kaifönster</string>
-    
-    <!-- Settings error messages -->
-    <string id="230">Ett fel uppstod när inställningarna sparades!</string>
-
-    <!-- Settings restart required message -->
-    <string id="240">Några inställningar kräver en omstart innan dom träder i kraft.</string>
-    <string id="241">Vil du starta om %s nu?</string>
-    
-    <!-- Settings buttons -->
-    <string id="250">Ok</string>
-    <string id="251">Avbryt</string>
-    <string id="252">Uppdatera</string>
-    <string id="253">Om</string>
-    <string id="254">Sida</string>
-    <string id="255">Starta om</string>
-    <string id="256">Senare</string>
-
-    <!-- Status check messages -->
-    <string id="500">Kontrollerar om kai är installerat på xboxen...</string>
-    <string id="501">Kontrollerar om kaid är installerat...</string>
-    <string id="502">Kontrollerar om kaid.conf är installerat...</string>
-    <string id="503">Kontrollerar om kai daemon körs...</string>
-    
-    <!-- Status check error messages -->
-    <string id="530">FEL: Kunde inte kontrollera xboxen!</string>
-    <string id="531">FEL: Inställningarna är ogiltiga för din router!</string>
-
-    <!-- Job messages -->
-    <string id="600">Startar om kai daemon...</string>
-    <string id="601">Startar kai daemon...</string>
-    <string id="602">Stoppar kai daemon...</string>
-    <string id="603">Laddar upp kai mjukvara till routern...</string>
-    <string id="604">Startar om routern...</string>
-    <string id="605">Sparar inställningar...</string>
-    <string id="606">Kör gunzip/chmod...</string>
-    <string id="607">Patchar kaid.conf filen...</string>
-    
-    <!-- Job error messages -->
-    <string id="630">FEL: Inställningarna är ogiltiga för din router!</string>
-    <string id="633">FEL: Laddar upp kai mjukvara till routern!</string>
-    <string id="636">FEL: Kör gunzip/chmod!</string>
-    <string id="637">FEL: Patchar kaid.conf filen!</string>
-
-    <!-- User info messages -->
-    <string id="700">Kai inte installerat på xboxen!</string>
-    <string id="701">Kaid inte installerat på routern!</string>
-    <string id="702">Kaid.conf inte installerat på routern!</string>
-    <string id="703">Kai daemon körs inte!</string>
-    <string id="750">Vänligen gör ditt val</string>
-    
-    <!-- Update messages -->
-    <string id="1000">Din version är aktuell.</string>
-    <string id="1001">Hämtar nuvarande taggade versioner...</string>
-    <string id="1002">är nyare</string>
-    <string id="1003">Vill du uppdatera?</string>
-    <string id="1004">Hämtar fillista...</string>
-    <string id="1005">Var god vänta...</string>
-    <string id="1006">Version</string>
-    <string id="1007">Hämtar:</string>
-    <string id="1008">Sökväg:</string>
-    <string id="1009">Fil:</string>
-    <string id="1010">Din nya version sparades till:</string>
-
-    <!-- Update error messages -->
-    <string id="1030">Inga taggade versioner hittades!</string>
-    <string id="1031">Ett fel uppstod under uppdatering av skriptet!</string>
+  <string id="0">Kaid Control Pad</string>
+  <string id="10">Starta om Kai Daemon</string>
+  <string id="11">Starta Kai Daemon</string>
+  <string id="12">Stoppa Kai Daemon</string>
+  <string id="13">Ladda upp/Starta Kai Daemon</string>
+  <string id="14">Starta om router</string>
+  <string id="15">Inställningar...</string>
+  <string id="100">Kaid-status:</string>
+  <string id="101">Körs INTE</string>
+  <string id="102">Körs</string>
+  <string id="103">Kontrollera inställningar</string>
+  <string id="110">Routerstatus:</string>
+  <string id="111">Kai INTE installerad</string>
+  <string id="112">Okänd</string>
+  <string id="113">Kontrollera inställningar</string>
+  <string id="120">Xboxstatus:</string>
+  <string id="121">Kai INTE installerad</string>
+  <string id="122">Kai installerad</string>
+  <string id="123">Kontrollera inställningar</string>
+  <string id="201">Firmware</string>
+  <string id="202">Router IP</string>
+  <string id="203">Router användarnamn</string>
+  <string id="204">Router lösenord</string>
+  <string id="205">Kaid sökväg</string>
+  <string id="206">Kaid.conf sökväg</string>
+  <string id="207">Uppladdningsmetod</string>
+  <string id="208">Xbox användarnamn</string>
+  <string id="209">Xbox lösenord</string>
+  <string id="210">Sniffa enhet</string>
+  <string id="211">Avsluta till kaifönster</string>
+  <string id="230">Ett fel uppstod när inställningarna sparades!</string>
+  <string id="240">Några inställningar kräver en omstart innan dom träder i kraft.</string>
+  <string id="241">Vil du starta om %s nu?</string>
+  <string id="250">Ok</string>
+  <string id="251">Avbryt</string>
+  <string id="252">Uppdatera</string>
+  <string id="253">Om</string>
+  <string id="254">Sida</string>
+  <string id="255">Starta om</string>
+  <string id="256">Senare</string>
+  <string id="500">Kontrollerar om kai är installerat på xboxen...</string>
+  <string id="501">Kontrollerar om kaid är installerat...</string>
+  <string id="502">Kontrollerar om kaid.conf är installerat...</string>
+  <string id="503">Kontrollerar om kai daemon körs...</string>
+  <string id="530">FEL: Kunde inte kontrollera xboxen!</string>
+  <string id="531">FEL: Inställningarna är ogiltiga för din router!</string>
+  <string id="600">Startar om kai daemon...</string>
+  <string id="601">Startar kai daemon...</string>
+  <string id="602">Stoppar kai daemon...</string>
+  <string id="603">Laddar upp kai mjukvara till routern...</string>
+  <string id="604">Startar om routern...</string>
+  <string id="605">Sparar inställningar...</string>
+  <string id="606">Kör gunzip/chmod...</string>
+  <string id="607">Patchar kaid.conf filen...</string>
+  <string id="630">FEL: Inställningarna är ogiltiga för din router!</string>
+  <string id="633">FEL: Laddar upp kai mjukvara till routern!</string>
+  <string id="636">FEL: Kör gunzip/chmod!</string>
+  <string id="637">FEL: Patchar kaid.conf filen!</string>
+  <string id="700">Kai inte installerat på xboxen!</string>
+  <string id="701">Kaid inte installerat på routern!</string>
+  <string id="702">Kaid.conf inte installerat på routern!</string>
+  <string id="703">Kai daemon körs inte!</string>
+  <string id="750">Vänligen gör ditt val</string>
+  <string id="1000">Din version är aktuell.</string>
+  <string id="1001">Hämtar nuvarande taggade versioner...</string>
+  <string id="1002">är nyare</string>
+  <string id="1003">Vill du uppdatera?</string>
+  <string id="1004">Hämtar fillista...</string>
+  <string id="1005">Var god vänta...</string>
+  <string id="1006">Version</string>
+  <string id="1007">Hämtar:</string>
+  <string id="1008">Sökväg:</string>
+  <string id="1009">Fil:</string>
+  <string id="1010">Din nya version sparades till:</string>
+  <string id="1030">Inga taggade versioner hittades!</string>
+  <string id="1031">Ett fel uppstod under uppdatering av skriptet!</string>
 </strings>

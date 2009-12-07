@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 05/07/2009-->
+<!--Date of translation: 12/07/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">T3CH Upgrader</string>
@@ -105,6 +105,7 @@
   <string id="621">Installera gammal version från Internet</string>
   <string id="622">Kontrollera efter ny T3CH version</string>
   <string id="623">XBMC Kompilerare:</string>
+  <string id="624">Visa publikt servicemeddelande</string>
   <string id="630">Menysystemsgenvägsdisk:</string>
   <string id="631">Menysystemsgenvägsnamn:</string>
   <string id="632">Installationssökväg:</string>
