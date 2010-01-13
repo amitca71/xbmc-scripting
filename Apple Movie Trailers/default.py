@@ -8,16 +8,16 @@ __author__ = "Apple Movie Trailers (AMT) Team"
 __url__ = "http://code.google.com/p/xbmc-scripting/"
 __svn_url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/Apple%20Movie%20Trailers"
 __credits__ = "XBMC TEAM, freenode/#xbmc-scripting"
-__version__ = "pre-0.99.7.3"
+__version__ = "pre-0.99.7.3a"
 __svn_revision__ = "$Revision$"
 __XBMC_Revision__ = "22965"
 
 def _check_compatible():
     try:
         # spam plugin statistics to log
-        xbmc.log( "[SCRIPT] '%s: Version - %s-r%s' initialized!" % ( __scriptname__, __version__, __svn_revision__.replace( "$", "" ).replace( "Revision", "" ).replace( ":", "" ).strip() ), xbmc.LOGNOTICE )
+        xbmc.log( "[SCRIPT] - '%s: Version - %s-r%s' initialized!" % ( __scriptname__, __version__, __svn_revision__.replace( "$", "" ).replace( "Revision", "" ).replace( ":", "" ).strip() ), xbmc.LOGNOTICE )
         # get xbmc revision
-        xbmc_rev = int( xbmc.getInfoLabel( "System.BuildVersion" ).split( " r" )[ -1 ] )
+        xbmc_rev = int( xbmc.getInfoLabel( "System.BuildVersion" ).split( " r" )[ -1 ][ : 5 ] )
         # compatible?
         ok = xbmc_rev >= int( __XBMC_Revision__ )
     except:
@@ -25,8 +25,8 @@ def _check_compatible():
         xbmc_rev = 0
         ok = 2
     # spam revision info
-    xbmc.log( "     ** Required XBMC Revision: r%s **" % ( __XBMC_Revision__, ), xbmc.LOGNOTICE )
-    xbmc.log( "     ** Found XBMC Revision: r%d [%s] **" % ( xbmc_rev, ( "Not Compatible", "Compatible", "Unknown", )[ ok ], ), xbmc.LOGNOTICE )
+    xbmc.log( "        ** Required XBMC Revision: r%s **" % ( __XBMC_Revision__, ), xbmc.LOGNOTICE )
+    xbmc.log( "        ** Found XBMC Revision: r%d [%s] **" % ( xbmc_rev, ( "Not Compatible", "Compatible", "Unknown", )[ ok ], ), xbmc.LOGNOTICE )
     # if not compatible, inform user
     if ( not ok ):
         import xbmcgui
