@@ -154,7 +154,7 @@ class Main:
     def playTrailer( self, url ):
         thumb_image = os.path.join(  xbmc.translatePath( "special://thumbnails/Video/" ), self.cache_name[0],  self.cache_name )
         listitem = xbmcgui.ListItem( self.movie_name, thumbnailImage = thumb_image )
-        listitem.setInfo( 'video', {'Title': '%s (Trailer)' % self.movie_name, 'Studio' : __scriptname__, 'Genre' : self.movie_genre } )
+        listitem.setInfo( 'video', {'Title': '%s %s' % ( self.movie_name, _lang( 2 ) ), 'Studio' : __scriptname__, 'Genre' : self.movie_genre } )
         self.player.play( url, listitem )
         return 0
 Main()
