@@ -6,7 +6,7 @@ import xbmc
 # Script constants
 __scriptname__ = "YouTrailer"
 __author__ = "stanley87"
-__url__ = "http://code.google.com/p/xbmc-addons/"
+__url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/YouTrailer/"
 
 __credits__ = "Team XBMC"
 __version__ = "0.0.1"
