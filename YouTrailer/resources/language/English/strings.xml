@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="10">Fetching XBMC Database Information</string>
+  <string id="11">Fetching TMDB ID</string>
+  <string id="12">Fetching Youtube Trailer URL</string>
+  <string id="13">Fetching Youtube Trailer Token</string>
+  <string id="14">Fetching Youtube Trailer Real URL</string>
+  <string id="15">Starting Playback Of Trailer</string>
+  
+  
+  <string id="30">ERROR</string>
+  <string id="31">No IMDB ID Found In XBMC Database</string>
+  <string id="32">Failed To Fetch XBMC Database Information</string>
+  <string id="33">No TMDB ID Found For This Movie</string>
+  <string id="34">Failed To Fetch TMDB ID</string>
+  <string id="35">No TMDB Trailer URL Found</string>
+  <string id="36">Failed To Fetch TMDB Trailer URL</string>
+  <string id="37">Failed To Fetch Trailer ID</string>
+  <string id="38">No Trailer Token Found</string>
+  <string id="39">Failed To Fetch Trailer Token</string>
+  
+</strings>
