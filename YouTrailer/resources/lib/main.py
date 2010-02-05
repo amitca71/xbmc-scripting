@@ -29,15 +29,15 @@ class Main:
             self.error( fail_code )
             return
         self.progress_dialog.create( "%s - %s" % ( __scriptname__, self.movie_name ), "" )
-        if( self.trailer_url == '' or self.trailer_url == None ):
-            fail_code = self.fetchTmdbId()
-            if( fail_code ):
-                self.error( fail_code )
-                return
-            fail_code = self.fetchUrl()
-            if( fail_code ):
-                self.error( fail_code )
-                return
+ #       if( self.trailer_url == '' or self.trailer_url == None ):
+        fail_code = self.fetchTmdbId()
+        if( fail_code ):
+            self.error( fail_code )
+            return
+        fail_code = self.fetchUrl()
+        if( fail_code ):
+            self.error( fail_code )
+            return
         fail_code = self.fetchTrailerId()
         if( fail_code ):
             self.error( fail_code )
