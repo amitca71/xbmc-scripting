@@ -24,6 +24,7 @@ class Main:
     def startScript( self ):
         file_name = sys.argv[1]
         file_path = sys.argv[2]
+        self.cache_name = xbmc.getCacheThumbName( os.path.join( file_path, file_name ) )
         fail_code = self.fetchXbmcData( file_name, file_path)
         if( fail_code ):
             self.error( fail_code )
@@ -67,11 +68,12 @@ class Main:
             idPath = cursor.fetchone()[0]
             cursor.execute( "SELECT idFile FROM files WHERE idPath = ? AND strFilename = ?;", ( idPath, file_name ) )
             idFile = cursor.fetchone()[0]
-            cursor.execute( "SELECT c00,c09,c19 FROM movie WHERE idFile = ?;", ( idFile, ) )
+            cursor.execute( "SELECT c00,c09,c14,c19 FROM movie WHERE idFile = ?;", ( idFile, ) )
             xbmc_data = cursor.fetchone()
             self.movie_name = xbmc_data[0].strip()
             self.imdb_id = xbmc_data[1].strip()
-            self.trailer_url = xbmc_data[2].strip()
+            self.movie_genre = xbmc_data[2].strip()
+            self.trailer_url = xbmc_data[3].strip()
             db.close()
             if( self.imdb_id == '' ):
                 return 31
@@ -150,6 +152,9 @@ class Main:
         return 'http://www.youtube.com/get_video?video_id=%s&t=%s%%3D' % ( self.trailer_id, self.trailer_token )
 
     def playTrailer( self, url ):
-        self.player.play( url )
+        thumb_image = os.path.join(  xbmc.translatePath( "special://thumbnails/Video/" ), self.cache_name[0],  self.cache_name )
+        listitem = xbmcgui.ListItem( self.movie_name, thumbnailImage = thumb_image )
+        listitem.setInfo( 'video', {'Title': '%s (Trailer)' % self.movie_name, 'Studio' : __scriptname__, 'Genre' : self.movie_genre } )
+        self.player.play( url, listitem )
         return 0
 Main()
