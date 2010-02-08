@@ -11,14 +11,10 @@
   
   
   <string id="30">ERROR</string>
-  <string id="31">No IMDB ID Found In XBMC Database</string>
-  <string id="32">Failed To Fetch XBMC Database Information</string>
-  <string id="33">No TMDB ID Found For This Movie</string>
-  <string id="34">Failed To Fetch TMDB ID</string>
-  <string id="35">No TMDB Trailer URL Found</string>
-  <string id="36">Failed To Fetch TMDB Trailer URL</string>
-  <string id="37">Failed To Fetch Trailer ID</string>
-  <string id="38">No Trailer Token Found</string>
-  <string id="39">Failed To Fetch Trailer Token</string>
+  <string id="31">Failed To Access XBMC Database</string>
+  <string id="32">No Trailer Found For This Movie</string>
+  <string id="33">Trailer Has Been Removed</string>
+  <string id="34">Failed To Play Trailer</string>
+  <string id="35">Unknown Error</string>
   
 </strings>
