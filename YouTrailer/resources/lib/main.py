@@ -16,6 +16,21 @@ BASE_DATABASE_PATH = os.path.join( xbmc.translatePath( "special://profile/" ), "
 
 SLEEP_TIME = 5
 
+_VALID_URL = r'^((?:http://)?(?:\w+\.)?youtube\.com/(?:(?:v/)|(?:(?:watch(?:\.php)?)?[\?#](?:.+&)?v=)))?([0-9A-Za-z_-]+)(?(1).+)?$'
+_available_formats = ['37', '22', '35', '18', '5', '17', '13', None] # listed in order of priority for -b flag
+_LANG_URL = r'http://uk.youtube.com/?hl=en&persist_hl=1&gl=US&persist_gl=1&opt_out_ackd=1'
+_AGE_URL = 'http://www.youtube.com/verify_age?next_url=/&gl=US&hl=en'
+
+
+std_headers = {
+	'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2',
+	'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+	'Accept': 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5',
+	'Accept-Language': 'en-us,en;q=0.5',
+}
+
+
+
 class Main:
     def __init__(self):
         starttime = time.time()
@@ -34,7 +49,7 @@ class Main:
             os.makedirs( os.path.dirname( BASE_DATABASE_PATH ) )
         db = sqlite.connect( BASE_DATABASE_PATH )
         cursor = db.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS trailers (id INTEGER PRIMARY KEY, name VARCHAR(100), imdb_id VARACHAR(25), tmdb_id VARACHAR(25), trailer_url VARACHAR(100) );')
+        cursor.execute('CREATE TABLE IF NOT EXISTS trailers (id INTEGER PRIMARY KEY, name VARCHAR(100), imdb_id VARACHAR(25), tmdb_id VARACHAR(25), trailer_url VARACHAR(100), format INTEGER(5));')
         db.commit()
         db.close()
         
@@ -48,6 +63,7 @@ class Main:
         self.tmdb_id = ''
         self.trailer_url = ''
         self.error_id = 35
+        self.error_message = ''
 
     def main( self ):
         try:
@@ -59,7 +75,7 @@ class Main:
             self.validChecker()
         except:
             self.progress_dialog.close()
-            self.dialog.ok( "%s - %s" % ( __scriptname__, _lang( 30 ) ), "", "", _lang( self.error_id ) )
+            self.dialog.ok( "%s - %s" % ( __scriptname__, _lang( 30 ) ), "", self.error_message, _lang( self.error_id ) )
 
 
     def fetchXbmcData( self ):
@@ -120,19 +136,61 @@ class Main:
 
     def fetchToken( self ):
         try:
-            trailer_id = self.trailer_url.split("watch?v=")[1]
-            trailer_token_url = 'http://www.youtube.com/get_video_info?&video_id=%s&el=detailpage&ps=default&eurl=&gl=US&hl=en' % trailer_id
             self.progress_dialog.update( 90, '%s %s' % ( self.movie_name, _lang( 2 ) ), "", _lang( 13 ) )
-            url_request = urllib2.Request( trailer_token_url )
+            quality_index = 0
+            self.format_param = _available_formats[quality_index]
+            trailer_id = self.trailer_url.split("watch?v=")[1]
+
+            request = urllib2.Request(_LANG_URL, None, std_headers)
+            urllib2.urlopen(request).read()
+            
+            age_form = {
+                            'next_url':		'/',
+                            'action_confirm':	'Confirm',
+                            }
+            request = urllib2.Request(_AGE_URL, urllib.urlencode(age_form), std_headers)
+            urllib2.urlopen(request).read()
+            trailer_token_url = 'http://www.youtube.com/get_video_info?&video_id=%s&el=detailpage&ps=default&eurl=&gl=US&hl=en' % trailer_id
+            url_request = urllib2.Request( trailer_token_url, None, std_headers )
             trailer_token_page = urllib2.urlopen( url_request ).read()
             trailer_token_info = parse_qs( trailer_token_page )
+            if 'token' not in trailer_token_info:
+                if 'reason' not in trailer_token_info:
+                    raise
+                else:
+                    self.error_message = urllib.unquote_plus(trailer_token_info['reason'][0])
+                    raise
             trailer_token = urllib.unquote_plus( trailer_token_info['token'][0] )
             if( trailer_token == '' ):
-                raise
-            self.full_url = 'http://www.youtube.com/get_video?video_id=%s&t=%s%%3D' % ( trailer_id, trailer_token )
+                raise            
+            while True:
+                self.full_url = 'http://www.youtube.com/get_video?video_id=%s&t=%s&eurl=&el=detailpage&ps=default&gl=US&hl=en' % ( trailer_id, trailer_token )
+                if self.format_param is not None:
+                    self.full_url = '%s&fmt=%s' % (self.full_url, self.format_param)
+                if 'conn' in trailer_token_info and trailer_token_info['conn'][0].startswith('rtmp'):
+                    self.full_url = video_info['conn'][0]
+                try:
+                    print "trying %s" % self.full_url.encode('utf-8')
+                    self.full_url = self.verify_url( self.full_url.encode('utf-8') ).decode('utf-8')
+                    #record quality setting and insert into db for fast getting next time :D
+                    break
+                except:
+                    print "invalid format %s" % self.format_param
+                    quality_index += 1
+                    self.format_param = _available_formats[quality_index]
         except:
+            traceback.print_exc()
             self.error_id = 33
             raise
+
+    def verify_url( self, url):
+            """Verify a URL is valid and data could be downloaded. Return real data URL."""
+            request = urllib2.Request(url, None, std_headers)
+            data = urllib2.urlopen(request)
+            data.read(1)
+            url = data.geturl()
+            data.close()
+            return url
         
     def playTrailer( self ):
         try:
@@ -160,9 +218,9 @@ class Main:
             cursor.execute( "SELECT id FROM trailers WHERE imdb_id = ?;" , ( self.imdb_id, ) )
             result = cursor.fetchone()
             if( result != None ):
-                cursor.execute( "UPDATE trailers SET name=?, tmdb_id=?, trailer_url=? WHERE id='%s'" % result[0], ( self.movie_name, self.tmdb_id, self.trailer_url ) )
+                cursor.execute( "UPDATE trailers SET name=?, tmdb_id=?, trailer_url=?, format=? WHERE id='%s'" % result[0], ( self.movie_name, self.tmdb_id, self.trailer_url, self.format_param ) )
             else:
-                cursor.execute('INSERT INTO trailers ( name, imdb_id, tmdb_id, trailer_url ) VALUES ( ?, ?, ?, ? );', ( self.movie_name, self.imdb_id, self.tmdb_id, self.trailer_url ) )
+                cursor.execute('INSERT INTO trailers ( name, imdb_id, tmdb_id, trailer_url , format ) VALUES ( ?, ?, ?, ?, ? );', ( self.movie_name, self.imdb_id, self.tmdb_id, self.trailer_url, self.format_param ) )
             db.commit()
             db.close()
         except:
