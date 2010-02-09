@@ -93,8 +93,10 @@ class Main:
         try:
             db = sqlite.connect( BASE_DATABASE_PATH )
             cursor = db.cursor()
-            cursor.execute( "SELECT trailer_url FROM trailers WHERE imdb_id = ?;" , ( self.imdb_id, ) )
-            self.trailer_url = cursor.fetchone()[0]
+            cursor.execute( "SELECT tmdb_id, trailer_url FROM trailers WHERE imdb_id = ?;" , ( self.imdb_id, ) )
+            data = cursor.fetchone()[0]
+            self.tmdb_id = data[0]
+            self.trailer_url = data[1]
             if( self.trailer_url == '' ):
                 raise
             self.fetchToken()
@@ -164,6 +166,6 @@ class Main:
             db.commit()
             db.close()
         except:
-            print "Failed to add to script Database"
+            print "Failed to add trailer to script Database"
             
 Main()
