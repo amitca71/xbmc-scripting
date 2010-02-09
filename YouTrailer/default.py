@@ -1,7 +1,7 @@
 import os, os.path, sys
 import xbmc
 
-#<onclick>RunScript(special://home/scripts/YouTrailer/default.py,"$INFO[listitem.filename]","$INFO[listitem.path]")</onclick>
+#<onclick>RunScript(special://home/scripts/YouTrailer/default.py,1)</onclick>
 
 # Script constants
 __scriptname__ = "YouTrailer"
@@ -23,12 +23,12 @@ try:
 except:
     count = 0
 
-if(count > 2):
+if(count >= 1):
     #Run from Movies
     import main
 else:
     pass
-    #Run from Scripts
+    #Run settings
 #    import settings
 ##    ui = gui.GUI( "script-youtrailer-settings.xml", os.getcwd(), "Default" )
 ##    ui.doModal()

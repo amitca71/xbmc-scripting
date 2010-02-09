@@ -21,8 +21,10 @@ class Main:
         starttime = time.time()
         self.setupVariables()
         self.buildDatabase()
-        self.file_name = sys.argv[1].strip()
-        self.file_path = sys.argv[2].strip()
+        self.movie_name = xbmc.getInfoLabel( 'listitem.title' )
+        self.movie_director = xbmc.getInfoLabel( 'listitem.director' )
+        self.movie_year = xbmc.getInfoLabel( 'listitem.year' )
+        self.movie_genre = xbmc.getInfoLabel( 'listitem.genre' )
         self.main()
         while time.time() - starttime < 5:
             pass
@@ -64,18 +66,13 @@ class Main:
         try:
             db = sqlite.connect( DBPATH )
             cursor = db.cursor()
-            cursor.execute( "SELECT idPath FROM path WHERE strPath = ?;" , ( self.file_path, ) )
-            idPath = cursor.fetchone()[0]
-            cursor.execute( "SELECT idFile FROM files WHERE idPath = ? AND strFilename = ?;", ( idPath, self.file_name ) )
-            idFile = cursor.fetchone()[0]
-            cursor.execute( "SELECT c00,c09,c14,c19 FROM movie WHERE idFile = ?;", ( idFile, ) )
+            cursor.execute( "SELECT c09,c19 FROM movie WHERE c00 = ? AND c07 = ? AND c15 = ?;", ( self.movie_name, self.movie_year, self.movie_director ) )
             xbmc_data = cursor.fetchone()
-            self.movie_name = xbmc_data[0].strip()
-            self.imdb_id = xbmc_data[1].strip()
-            self.movie_genre = xbmc_data[2].strip()
-            self.trailer_url = xbmc_data[3].strip()
+            self.imdb_id = xbmc_data[0].strip()
+            self.trailer_url = xbmc_data[1].strip()
             db.close()
         except:
+            traceback.print_exc()
             self.error_id = 31
             raise
 
@@ -137,9 +134,8 @@ class Main:
         
     def playTrailer( self ):
         try:
-            self.progress_dialog.update( 100, '%s %s' % ( self.movie_name, _lang( 2 ) ), "", _lang( 14 ) )
-            cache_name = xbmc.getCacheThumbName( os.path.join( self.file_path, self.file_name ) )
-            thumb_image = os.path.join(  xbmc.translatePath( "special://thumbnails/Video/" ), cache_name[0],  cache_name )
+            self.progress_dialog.update( 100, '%s %s' % ( self.movie_name, _lang( 2 ) ), "", _lang( 14 ) )            
+            thumb_image = xbmc.getInfoLabel( 'ListItem.Thumb' )
             listitem = xbmcgui.ListItem( self.movie_name, thumbnailImage = thumb_image )
             listitem.setInfo( 'video', {'Title': '%s %s' % ( self.movie_name, _lang( 2 ) ), 'Studio' : __scriptname__, 'Genre' : self.movie_genre } )
             self.player.play( self.full_url, listitem )
