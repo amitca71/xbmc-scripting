@@ -1,4 +1,4 @@
-import os, sys, time
+import os, sys, time, re
 import xbmc
 import xbmcgui
 from pysqlite2 import dbapi2 as sqlite
@@ -11,16 +11,13 @@ _lang = xbmc.Language(os.getcwd()).getLocalizedString
 
 DBPATH = xbmc.translatePath( "special://database/MyVideos34.db" )
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
+__version__ = sys.modules[ "__main__" ].__version__
 
 BASE_DATABASE_PATH = os.path.join( xbmc.translatePath( "special://profile/" ), "script_data", __scriptname__, "YouTrailer.db" )
 
-SLEEP_TIME = 5
+VALID_URL = r'^((?:http://)?(?:\w+\.)?youtube\.com/(?:(?:v/)|(?:(?:watch(?:\.php)?)?[\?#](?:.+&)?v=)))?([0-9A-Za-z_-]+)(?(1).+)?$'
 
-_VALID_URL = r'^((?:http://)?(?:\w+\.)?youtube\.com/(?:(?:v/)|(?:(?:watch(?:\.php)?)?[\?#](?:.+&)?v=)))?([0-9A-Za-z_-]+)(?(1).+)?$'
-_available_formats = ['37', '22', '35', '18', '5', '17', '13', None] # listed in order of priority for -b flag
-_LANG_URL = r'http://uk.youtube.com/?hl=en&persist_hl=1&gl=US&persist_gl=1&opt_out_ackd=1'
-_AGE_URL = 'http://www.youtube.com/verify_age?next_url=/&gl=US&hl=en'
-
+SLEEP_TIME = 5 #secs
 
 std_headers = {
 	'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2',
@@ -30,200 +27,260 @@ std_headers = {
 }
 
 
+DB_KEYS = {'Title' : 'name', 'Imdb' : 'imdb_id', 'Tmdb' : 'tmdb_id', 'Url' : 'trailer_url', 'Local' : 'local_trailer'}
 
 class Main:
     def __init__(self):
+        self.log( "Main Started" )
         starttime = time.time()
         self.setupVariables()
         self.buildDatabase()
-        self.movie_name = xbmc.getInfoLabel( 'listitem.title' )
-        self.movie_director = xbmc.getInfoLabel( 'listitem.director' )
-        self.movie_year = xbmc.getInfoLabel( 'listitem.year' )
-        self.movie_genre = xbmc.getInfoLabel( 'listitem.genre' )
+        self.movie_info['Title'] = xbmc.getInfoLabel( 'listitem.title' )
+        self.movie_info['Director'] = xbmc.getInfoLabel( 'listitem.director' )
+        self.movie_info['Year'] = xbmc.getInfoLabel( 'listitem.year' )
+        self.movie_info['Genre'] = xbmc.getInfoLabel( 'listitem.genre' )
+        self.movie_info['Thumb'] = xbmc.getInfoLabel( 'ListItem.Thumb' )
+        self.log( "Movie Name: %s" % self.movie_info['Title'] )
+        self.log( "Movie Director: %s" % self.movie_info['Director'] )
+        self.log( "Movie Year: %s" % self.movie_info['Year'] )
+        self.log( "Movie Genre: %s" % self.movie_info['Genre'] )
         self.main()
-        while time.time() - starttime < 5:
-            pass
+        while( time.time() - starttime < 5 ):
+            time.sleep( 0.5 )
 
-    def buildDatabase( self ):
-        if ( not os.path.isdir( os.path.dirname( BASE_DATABASE_PATH ) ) ):
-            os.makedirs( os.path.dirname( BASE_DATABASE_PATH ) )
-        db = sqlite.connect( BASE_DATABASE_PATH )
-        cursor = db.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS trailers (id INTEGER PRIMARY KEY, name VARCHAR(100), imdb_id VARACHAR(25), tmdb_id VARACHAR(25), trailer_url VARACHAR(100), format INTEGER(5));')
-        db.commit()
-        db.close()
-        
-    def setupVariables( self ):
-        self.tmdb_api = tmdb.MovieDb()
-        self.player = xbmc.Player()
-        self.progress_dialog = xbmcgui.DialogProgress()
-        self.dialog = xbmcgui.Dialog()
-        self.full_url = ''
-        self.imdb_id = ''
-        self.tmdb_id = ''
-        self.trailer_url = ''
-        self.error_id = 35
-        self.error_message = ''
+
+    def log( self, string ):
+        xbmc.log( "[SCRIPT] '%s: version %s' %s" % ( __scriptname__, __version__, string ), xbmc.LOGNOTICE )
+        return string
+
 
     def main( self ):
         try:
             self.progress_dialog.create( __scriptname__, '' )
             self.fetchXbmcData()
-            self.checkLocalTrailer()
+            self.getTrailer()
             self.playTrailer()
             self.progress_dialog.close()
             self.validChecker()
+            self.log( "Script Complete Success!" )
         except:
+            traceback.print_exc()
             self.progress_dialog.close()
-            self.dialog.ok( "%s - %s" % ( __scriptname__, _lang( 30 ) ), "", self.error_message, _lang( self.error_id ) )
+            self.log( "Script Error: %s" % _lang( self.error_id ) )
+            self.dialog.ok( "%s - %s" % ( __scriptname__, _lang( 30 ) ), "", "", _lang( self.error_id ) )
+            self.log( "Script Complete" )
+
+
+    def buildDatabase( self ):
+        self.log( "Building Trailer Database" )
+        if ( not os.path.isdir( os.path.dirname( BASE_DATABASE_PATH ) ) ):
+            os.makedirs( os.path.dirname( BASE_DATABASE_PATH ) )
+        db = sqlite.connect( BASE_DATABASE_PATH )
+        cursor = db.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS trailers (id INTEGER PRIMARY KEY, name VARCHAR(100), imdb_id VARACHAR(25), tmdb_id VARACHAR(25), trailer_url VARACHAR(100), local_trailer VARCHAR(200));')
+        db.commit()
+        db.close()
+
+        
+    def setupVariables( self ):
+        self.log( "Setting Up Variables" )
+        self.tmdb_api = tmdb.MovieDb()
+        self.player = xbmc.Player()
+        self.progress_dialog = xbmcgui.DialogProgress()
+        self.dialog = xbmcgui.Dialog()
+        self.movie_info = {'Title': '', 'Director' : '', 'Year' : '', 'Genre' : '', 'Thumb' : '', 'Imdb' : '', 'Tmdb' : '', 'Url' : '', 'Local' : '', 'Full' : '', 'Tid' : ''}
+        self.error_id = 35
 
 
     def fetchXbmcData( self ):
+        self.error_id = 31 #Failed To Retrieve XBMC DB Movie Info
         try:
+            self.log( "Fetching XBMC Data" )
             db = sqlite.connect( DBPATH )
             cursor = db.cursor()
-            cursor.execute( "SELECT c09,c19 FROM movie WHERE c00 = ? AND c07 = ? AND c15 = ?;", ( self.movie_name, self.movie_year, self.movie_director ) )
+            cursor.execute( "SELECT c09, c19 FROM movie WHERE c00 = ? AND c07 = ? AND c15 = ?;", ( self.movie_info['Title'], self.movie_info['Year'], self.movie_info['Director'] ) )
             xbmc_data = cursor.fetchone()
-            self.imdb_id = xbmc_data[0].strip()
-            self.trailer_url = xbmc_data[1].strip()
+            self.movie_info['Imdb'] = xbmc_data[0].strip()
+            self.movie_info['Url'] = xbmc_data[1].strip()
+            if( self.movie_info['Imdb'] == '' or self.movie_info['Imdb'] == None ):
+                raise
             db.close()
         except:
-            traceback.print_exc()
-            self.error_id = 31
+            self.log( "ERROR Fetching XBMC Data" )
             raise
 
 
-    def checkLocalTrailer( self ):
-        if( ( not "http" in self.trailer_url ) and ( xbmc.executehttpapi( 'FileExists(%s)' % self.trailer_url ) == '<li>True' ) ):
-            self.full_url = self.trailer_url
+    def getTrailer( self ):
+        self.log( "Checking XBMC DB For Local Trailer or Valid Trailer Url" )
+        if( self.checkLocalUrl( self.movie_info['Url'] ) ):
+            self.log( "Local Trailer Found: %s" % self.movie_info['Url'] )
+            self.movie_info['Local'] = self.movie_info['Full'] = self.movie_info['Url']
+            self.movie_info['Url'] = ''
         else:
-            self.checkTrailerUrl()
+            self.log( "No Local Trailer" )
+            if( self.checkValidUrl( self.movie_info['Url'] ) ):
+                self.log( "Valid Trailer URL Found In XBMC DB: %s" % self.movie_info['Url'] )
+                self.fetchToken()
+            else:
+                self.log( "No Vaild Trailer URL Found In XBMC DB" )
+                self.checkDb()
 
-    def checkTrailerUrl( self ):
-        try:
-            self.fetchToken()
-        except:
-            self.checkDb()
-             
+    def checkLocalUrl( self, url ):
+        if( url == None ):
+            return 0
+        if( ( not "http" in url ) and ( xbmc.executehttpapi( 'FileExists(%s)' % url ) == '<li>True' ) ):
+            return 1
+        else:
+            return 0
+
+    def checkValidUrl( self, url ):
+        if( url == None ):
+            return 0
+        match = re.match(VALID_URL, url)
+        if( match == None ):
+            return 0
+        else:
+            self.movie_info['Tid'] = match.group(2)
+            if( self.movie_info['Tid'] == url ):
+                return 0
+            else:
+                return 1
+            
     def checkDb( self ):
-        try:
-            db = sqlite.connect( BASE_DATABASE_PATH )
-            cursor = db.cursor()
-            cursor.execute( "SELECT tmdb_id, trailer_url FROM trailers WHERE imdb_id = ?;" , ( self.imdb_id, ) )
-            data = cursor.fetchone()[0]
-            self.tmdb_id = data[0]
-            self.trailer_url = data[1]
-            if( self.trailer_url == '' ):
-                raise
-            self.fetchToken()
-        except:
+        self.log( "Checking YouTrailer DB For Valid Trailer URL" )
+        db = sqlite.connect( BASE_DATABASE_PATH )
+        cursor = db.cursor()
+        cursor.execute( "SELECT tmdb_id, trailer_url, local_trailer FROM trailers WHERE imdb_id = ?;" , ( self.movie_info['Imdb'], ) )
+        result = cursor.fetchone()
+        if( result == None ):
+            self.log( "No Entry Found In YouTrailer DB" )
             self.fetchUrl()
-            self.fetchToken()
+        else:
+            self.movie_info['Tmdb'] = result[0]
+            self.movie_info['Url'] = result[1]
+            self.movie_info['Local'] = result[2]
+            if( not self.checkLocalUrl( self.movie_info['Local'] ) ):
+                if( self.checkValidUrl ( self.movie_info['Url'] ) ):
+                    self.log( "Valid Trailer URL Found In YouTrailer DB: %s" % self.movie_info['Url'] )
+                    self.fetchToken()
+                else:
+                    self.log( "No Valid Trailer URL Found In YouTrailer DB" )
+                    self.fetchUrl()
+                
 
     def fetchUrl( self ):
-        try:
-            self.progress_dialog.update( 0, '%s %s' % ( self.movie_name, _lang( 2 ) ), "", _lang( 10 ) )
-            api_results = self.tmdb_api.searchimdb( self.imdb_id )
-            self.tmdb_id = api_results[0]['id']
-            self.progress_dialog.update( 60, '%s %s' % ( self.movie_name, _lang( 2 ) ), "", _lang( 11 ) )
-            api_results = self.tmdb_api.getinfo( self.tmdb_id )
-            self.trailer_url = api_results[0]['trailer']
-            if( self.trailer_url == '' ):
+        self.error_id = 32
+        self.log( "Fetching Trailer URL From TMDB" )
+        if( self.movie_info['Tmdb'] == '' or self.movie_info['Tmdb'] == None ):
+            self.progress_dialog.update( 0, '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), "", _lang( 10 ) )
+            try:
+                api_results = self.tmdb_api.searchimdb( self.movie_info['Imdb'] )
+            except:
+                self.log( "TMDB API ERROR" )
                 raise
+            if( ( len( api_results ) < 1 ) or ( not 'id' in api_results[0] ) or ( api_results[0]['id'] == '' ) ):
+                self.log( "No TMDB ID Could Be Fetched From TMDB" )
+                raise
+            self.movie_info['Tmdb'] = api_results[0]['id']
+        self.progress_dialog.update( 60, '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), "", _lang( 11 ) )
+        try:
+            api_results = self.tmdb_api.getinfo( self.movie_info['Tmdb'] )
         except:
-            self.error_id = 32
+            self.log( "TMDB API ERROR" )
+            raise          
+        if( ( len( api_results ) < 1 ) or ( not 'trailer' in api_results[0] ) or ( api_results[0]['trailer'] == '' ) ):
+            self.log( "No Trailer Could Be Fetched From TMDB" )
+            raise
+        self.movie_info['Url'] = api_results[0]['trailer']
+        self.movie_info['Imdb'] = api_results[0]['imdb_id']
+        if( self.checkValidUrl ( self.movie_info['Url'] ) ):
+            self.log( "Valid Trailer URL Fetched From TMDB: %s" % self.movie_info['Url'] )
+            self.fetchToken()
+        else:
+            self.log( "No Valid Trailer URL Fetched From TMDB" )
             raise
 
     def fetchToken( self ):
+        self.error_id = 33 # Trailer Not Available
+        self.log( "Fetching Trailer Token. Trailer ID: %s" % self.movie_info['Tid'] )
+        self.progress_dialog.update( 90, '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), "", _lang( 13 ) )
+        trailer_info_url = 'http://www.youtube.com/get_video_info?&video_id=%s&el=detailpage&ps=default&eurl=&gl=US&hl=en' % self.movie_info['Tid']
+        self.log( "Trailer Info Url: %s" % trailer_info_url )
+        url_request = urllib2.Request( trailer_info_url, None, std_headers )
         try:
-            self.progress_dialog.update( 90, '%s %s' % ( self.movie_name, _lang( 2 ) ), "", _lang( 13 ) )
-            quality_index = 0
-            self.format_param = _available_formats[quality_index]
-            trailer_id = self.trailer_url.split("watch?v=")[1]
-
-            request = urllib2.Request(_LANG_URL, None, std_headers)
-            urllib2.urlopen(request).read()
-            
-            age_form = {
-                            'next_url':		'/',
-                            'action_confirm':	'Confirm',
-                            }
-            request = urllib2.Request(_AGE_URL, urllib.urlencode(age_form), std_headers)
-            urllib2.urlopen(request).read()
-            trailer_token_url = 'http://www.youtube.com/get_video_info?&video_id=%s&el=detailpage&ps=default&eurl=&gl=US&hl=en' % trailer_id
-            url_request = urllib2.Request( trailer_token_url, None, std_headers )
-            trailer_token_page = urllib2.urlopen( url_request ).read()
-            trailer_token_info = parse_qs( trailer_token_page )
-            if 'token' not in trailer_token_info:
-                if 'reason' not in trailer_token_info:
-                    raise
-                else:
-                    self.error_message = urllib.unquote_plus(trailer_token_info['reason'][0])
-                    raise
-            trailer_token = urllib.unquote_plus( trailer_token_info['token'][0] )
-            if( trailer_token == '' ):
-                raise            
-            while True:
-                self.full_url = 'http://www.youtube.com/get_video?video_id=%s&t=%s&eurl=&el=detailpage&ps=default&gl=US&hl=en' % ( trailer_id, trailer_token )
-                if self.format_param is not None:
-                    self.full_url = '%s&fmt=%s' % (self.full_url, self.format_param)
-                if 'conn' in trailer_token_info and trailer_token_info['conn'][0].startswith('rtmp'):
-                    self.full_url = video_info['conn'][0]
-                try:
-                    print "trying %s" % self.full_url.encode('utf-8')
-                    self.full_url = self.verify_url( self.full_url.encode('utf-8') ).decode('utf-8')
-                    #record quality setting and insert into db for fast getting next time :D
-                    break
-                except:
-                    print "invalid format %s" % self.format_param
-                    quality_index += 1
-                    self.format_param = _available_formats[quality_index]
+            trailer_info_page = urllib2.urlopen( url_request ).read()
+            trailer_info = parse_qs( trailer_info_page )
         except:
-            traceback.print_exc()
-            self.error_id = 33
+            self.log( "Failed opening trailer info page" )
             raise
+        if 'token' not in trailer_info:
+            if 'reason' not in trailer_info:
+                self.log( "Failed Fetching Token: Unknown Reason" )
+            else:
+                reason = urllib.unquote_plus( trailer_info['reason'][0] )
+                self.log( "Failed Fetching Token: %s" % reason.decode( 'utf-8' ) )
+            raise
+        trailer_token = urllib.unquote_plus( trailer_info['token'][0] )
+        if( trailer_token == '' ):
+            raise
+        self.movie_info['Full'] = 'http://www.youtube.com/get_video?video_id=%s&t=%s&eurl=&el=detailpage&ps=default&gl=US&hl=en' % ( self.movie_info['Tid'], trailer_token )
+##        if format_param is not None:
+##            self.real_url = '%s&fmt=%s' % ( self.real_url, format_param)   # to do quality
+        if 'conn' in trailer_info and trailer_info['conn'][0].startswith('rtmp'):
+            self.movie_info['Full'] = trailer_info['conn'][0]
+        self.log( "Trailer Real URL Obtained: %s" % self.movie_info['Full'] )
 
-    def verify_url( self, url):
-            """Verify a URL is valid and data could be downloaded. Return real data URL."""
-            request = urllib2.Request(url, None, std_headers)
-            data = urllib2.urlopen(request)
-            data.read(1)
-            url = data.geturl()
-            data.close()
-            return url
         
     def playTrailer( self ):
+        self.log( "Playing Trailer: %s" % self.movie_info['Full'] )
+        self.error_id = 34
         try:
-            self.progress_dialog.update( 100, '%s %s' % ( self.movie_name, _lang( 2 ) ), "", _lang( 14 ) )            
-            thumb_image = xbmc.getInfoLabel( 'ListItem.Thumb' )
-            listitem = xbmcgui.ListItem( self.movie_name, thumbnailImage = thumb_image )
-            listitem.setInfo( 'video', {'Title': '%s %s' % ( self.movie_name, _lang( 2 ) ), 'Studio' : __scriptname__, 'Genre' : self.movie_genre } )
-            self.player.play( self.full_url, listitem )
+            self.progress_dialog.update( 100, '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), "", _lang( 14 ) )            
+            listitem = xbmcgui.ListItem( self.movie_info['Title'], thumbnailImage = self.movie_info['Thumb'] )
+            listitem.setInfo( 'video', {'Title': '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), 'Studio' : __scriptname__, 'Genre' : self.movie_info['Genre'] } )
+            self.player.play( self.movie_info['Full'], listitem )
         except:
-            self.error_id = 34
+            self.log( "ERROR Playing Trailer: %s" % self.movie_info['Full'] )
             raise
 
+
     def validChecker( self ):
-        for i in range(0, SLEEP_TIME):
+        self.log( "Valid Trailer Playing Loop Started For %s Seconds" % SLEEP_TIME )
+        for i in range(0, ( SLEEP_TIME * 2 ) ):
             if( self.player.isPlayingVideo() ):
-                if ( self.player.getPlayingFile() == self.full_url ):
+                if ( self.player.getPlayingFile() == self.movie_info['Full'] ):
+                    self.log( "Playing File = Trailer Url: VALID TRAILER!" )
                     self.addDb()
                     break
-            time.sleep( 1 )
+            time.sleep( 0.5 )
+            
 
     def addDb( self ):
         try:
             db = sqlite.connect( BASE_DATABASE_PATH )
             cursor = db.cursor()
-            cursor.execute( "SELECT id FROM trailers WHERE imdb_id = ?;" , ( self.imdb_id, ) )
+            cursor.execute( "SELECT id FROM trailers WHERE imdb_id = ?;" , ( self.movie_info['Imdb'], ) )
             result = cursor.fetchone()
             if( result != None ):
-                cursor.execute( "UPDATE trailers SET name=?, tmdb_id=?, trailer_url=?, format=? WHERE id='%s'" % result[0], ( self.movie_name, self.tmdb_id, self.trailer_url, self.format_param ) )
+                self.log( "Updating Entry In YouTrailer DB" )
+                params = []
+                sql = "UPDATE trailers SET "
+                for key in self.movie_info:
+                    if( key in DB_KEYS ):
+                        dbkey = DB_KEYS[key]
+                        value = self.movie_info[key]
+                        if( value != '' ):
+                            sql += "%s=?, " % dbkey
+                            params.append(value)
+                sql = sql[:-2] + " WHERE id=%s;" % result[0]
+                cursor.execute( sql, params )
             else:
-                cursor.execute('INSERT INTO trailers ( name, imdb_id, tmdb_id, trailer_url , format ) VALUES ( ?, ?, ?, ?, ? );', ( self.movie_name, self.imdb_id, self.tmdb_id, self.trailer_url, self.format_param ) )
+                self.log( "Adding Entry Into YouTrailer DB" )
+                cursor.execute('INSERT INTO trailers ( name, imdb_id, tmdb_id, trailer_url, local_trailer ) VALUES ( ?, ?, ?, ?, ? );', ( self.movie_info['Title'], self.movie_info['Imdb'], self.movie_info['Tmdb'], self.movie_info['Url'], self.movie_info['Local'] ) )
             db.commit()
             db.close()
         except:
-            print "Failed to add trailer to script Database"
+            traceback.print_exc()
+            self.log( "ERROR Playing Trailer: %s" % self.movie_info['Full'] )
             
 Main()
