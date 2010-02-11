@@ -14,6 +14,7 @@ __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __version__ = sys.modules[ "__main__" ].__version__
 
 BASE_DATABASE_PATH = os.path.join( xbmc.translatePath( "special://profile/" ), "script_data", __scriptname__, "YouTrailer.db" )
+AVAILABLE_FORMATS = ['37', '22', '35', '18', '5', '17', '13']
 
 VALID_URL = r'^((?:http://)?(?:\w+\.)?youtube\.com/(?:(?:v/)|(?:(?:watch(?:\.php)?)?[\?#](?:.+&)?v=)))?([0-9A-Za-z_-]+)(?(1).+)?$'
 
@@ -25,6 +26,8 @@ std_headers = {
 	'Accept': 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5',
 	'Accept-Language': 'en-us,en;q=0.5',
 }
+
+QUALITY = 0  #0 = 1080p, 1 = 720p, 2 = 1227kbs, 3 = 480p, 4 = flv 295kb/s, 5 = mpeg4 176x144, 6 = h263 176x144
 
 
 DB_KEYS = {'Title' : 'name', 'Imdb' : 'imdb_id', 'Tmdb' : 'tmdb_id', 'Url' : 'trailer_url', 'Local' : 'local_trailer'}
@@ -224,8 +227,7 @@ class Main:
         if( trailer_token == '' ):
             raise
         self.movie_info['Full'] = 'http://www.youtube.com/get_video?video_id=%s&t=%s&eurl=&el=detailpage&ps=default&gl=US&hl=en' % ( self.movie_info['Tid'], trailer_token )
-##        if format_param is not None:
-##            self.real_url = '%s&fmt=%s' % ( self.real_url, format_param)   # to do quality
+        self.getFormat()
         if 'conn' in trailer_info and trailer_info['conn'][0].startswith('rtmp'):
             self.movie_info['Full'] = trailer_info['conn'][0]
         self.log( "Trailer Real URL Obtained: %s" % self.movie_info['Full'] )
@@ -254,6 +256,26 @@ class Main:
                     break
             time.sleep( 0.5 )
             
+    def getFormat( self ):
+        self.log( "Fetching Valid Format" )
+        try_quality = QUALITY
+        while True:
+            try_url = '%s&fmt=%s' % ( self.movie_info['Full'], AVAILABLE_FORMATS[try_quality] )   # to do quality
+            self.log( "Trying Quality: %s" % AVAILABLE_FORMATS[try_quality] )
+            try:
+                    self.movie_info['Full'] = self.verify_url( try_url.encode( 'utf-8' ) ).decode( 'utf-8' )
+                    break
+            except:
+                    try_quality += 1
+        self.log( "Quality Found: %s" % AVAILABLE_FORMATS[try_quality] )
+
+    def verify_url( self, url ):
+        request = urllib2.Request(url, None, std_headers)
+        data = urllib2.urlopen(request)
+        data.read(1)
+        url = data.geturl()
+        data.close()
+        return url
 
     def addDb( self ):
         try:
