@@ -64,6 +64,7 @@ class Main:
             self.getTrailer()
             self.playTrailer()
             self.progress_dialog.close()
+            xbmc.executebuiltin('Dialog.Close(MovieInformation)')
             self.validChecker()
             self.log( "Script Complete Success!" )
         except:
