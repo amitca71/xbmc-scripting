@@ -27,7 +27,11 @@ std_headers = {
 	'Accept-Language': 'en-us,en;q=0.5',
 }
 
-QUALITY = 0  #0 = 1080p, 1 = 720p, 2 = 1227kbs, 3 = 480p, 4 = flv 295kb/s, 5 = mpeg4 176x144, 6 = h263 176x144
+HIGHEST_QUALITY = 0  #0 = 1080p, 1 = 720p, 2 = 1227kbs, 3 = 480p, 4 = flv 295kb/s, 5 = mpeg4 176x144, 6 = h263 176x144
+LATEST_TRAILER = 0  #1 to always get latest tmdb trailer, 0 use last trailer url found
+LOCAL_TRAILERS = 1  #1 to use local trailers if found, 0 to ignore local trailers and fectch tmdb trailer 
+XBMC_TRAILERS = 1   #1 to use valid xbmc db trailer urls, 0 to ignore xbmc db trailer urls and fetch tmdb trailer
+DOWNLOAD_TRAILERS = 0  #0 to stream trailers, 1 to download trailers - maybe have pop up when complete to watch, option to add to xbmc db
 
 
 DB_KEYS = {'Title' : 'name', 'Imdb' : 'imdb_id', 'Tmdb' : 'tmdb_id', 'Url' : 'trailer_url', 'Local' : 'local_trailer'}
@@ -258,8 +262,8 @@ class Main:
             time.sleep( 0.5 )
             
     def getFormat( self ):
-        self.log( "Fetching Valid Format" )
-        try_quality = QUALITY
+        self.log( "Fetching Valid Trailer Quality" )
+        try_quality = HIGHEST_QUALITY
         while True:
             try_url = '%s&fmt=%s' % ( self.movie_info['Full'], AVAILABLE_FORMATS[try_quality] )   # to do quality
             self.log( "Trying Quality: %s" % AVAILABLE_FORMATS[try_quality] )
