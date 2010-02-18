@@ -8,10 +8,10 @@ __scriptname__ = "YouTrailer"
 __author__ = "stanley87"
 __url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/YouTrailer/"
 
-__credits__ = "Team XBMC, dbr/Ben(TMDB API Interface), TMDB"
-__version__ = "0.5"
+__credits__ = "Chris Tait, Team XBMC, dbr/Ben(TMDB API Interface), TMDB, Nuka1195, Ricardo Garcia Gonzalez, Danny Colligan, Benjamin Johnson"
+__version__ = "0.6"
 
-xbmc.log( "[SCRIPT] '%s: version %s' initialized!" % ( __scriptname__, __version__, ), xbmc.LOGNOTICE )
+xbmc.log( "[SCRIPT] '%s: version %s By: %s' initialized!" % ( __scriptname__, __version__, __author__, ), xbmc.LOGNOTICE )
 
 BASE_RESOURCE_PATH = os.path.join( os.getcwd(), "resources" )
 sys.path.append( os.path.join( BASE_RESOURCE_PATH, "lib" ) )

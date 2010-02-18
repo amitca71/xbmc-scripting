@@ -6,19 +6,25 @@ import tmdb, traceback
 import urllib, urllib2
 from cgi import parse_qs
 
-#enable language localization
 _lang = xbmc.Language(os.getcwd()).getLocalizedString
 
 DBPATH = xbmc.translatePath( "special://database/MyVideos34.db" )
 __scriptname__ = sys.modules[ "__main__" ].__scriptname__
 __version__ = sys.modules[ "__main__" ].__version__
+__credits__ = sys.modules[ "__main__" ].__credits__
 
 BASE_DATABASE_PATH = os.path.join( xbmc.translatePath( "special://profile/" ), "script_data", __scriptname__, "YouTrailer.db" )
 AVAILABLE_FORMATS = ['37', '22', '35', '18', '5', '17', '13']
 
-VALID_URL = r'^((?:http://)?(?:\w+\.)?youtube\.com/(?:(?:v/)|(?:(?:watch(?:\.php)?)?[\?#](?:.+&)?v=)))?([0-9A-Za-z_-]+)(?(1).+)?$'
+DB_KEYS = {
+    'Title' : 'name',
+    'Imdb' : 'imdb_id',
+    'Tmdb' : 'tmdb_id',
+    'Url' : 'trailer_url',
+    'Local' : 'local_trailer'
+    }
 
-SLEEP_TIME = 5 #secs
+VALID_URL = r'^((?:http://)?(?:\w+\.)?youtube\.com/(?:(?:v/)|(?:(?:watch(?:\.php)?)?[\?#](?:.+&)?v=)))?([0-9A-Za-z_-]+)(?(1).+)?$'
 
 std_headers = {
 	'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2',
@@ -27,14 +33,18 @@ std_headers = {
 	'Accept-Language': 'en-us,en;q=0.5',
 }
 
+
+
+
+#User Settings
+
+SLEEP_TIME = 5 #in seconds to check if trailer playing after play command sent
 HIGHEST_QUALITY = 0  #0 = 1080p, 1 = 720p, 2 = 1227kbs, 3 = 480p, 4 = flv 295kb/s, 5 = mpeg4 176x144, 6 = h263 176x144
-LATEST_TRAILER = 0  #1 to always get latest tmdb trailer, 0 use last trailer url found
-LOCAL_TRAILERS = 1  #1 to use local trailers if found, 0 to ignore local trailers and fectch tmdb trailer 
-XBMC_TRAILERS = 1   #1 to use valid xbmc db trailer urls, 0 to ignore xbmc db trailer urls and fetch tmdb trailer
-DOWNLOAD_TRAILERS = 0  #0 to stream trailers, 1 to download trailers - maybe have pop up when complete to watch, option to add to xbmc db
-
-
-DB_KEYS = {'Title' : 'name', 'Imdb' : 'imdb_id', 'Tmdb' : 'tmdb_id', 'Url' : 'trailer_url', 'Local' : 'local_trailer'}
+LATEST_TRAILER = 0  #1 to always get latest tmdb trailer, 0 use last tmdb trailer url found
+LOCAL_TRAILER = 1  #1 to use local trailer if found, 0 to ignore local trailer and use tmdb trailer 
+XBMC_TRAILER = 1   #1 to use valid xbmc db trailer url, 0 to ignore xbmc db trailer url and fetch tmdb trailer
+DOWNLOAD_TRAILER = 0  #0 to stream trailers, 1 to download trailers - maybe have pop up when complete to watch, option to add to xbmc db
+#Download Trailer not implemented YET
 
 class Main:
     def __init__(self):
@@ -42,15 +52,7 @@ class Main:
         starttime = time.time()
         self.setupVariables()
         self.buildDatabase()
-        self.movie_info['Title'] = xbmc.getInfoLabel( 'listitem.title' )
-        self.movie_info['Director'] = xbmc.getInfoLabel( 'listitem.director' )
-        self.movie_info['Year'] = xbmc.getInfoLabel( 'listitem.year' )
-        self.movie_info['Genre'] = xbmc.getInfoLabel( 'listitem.genre' )
-        self.movie_info['Thumb'] = xbmc.getInfoLabel( 'ListItem.Thumb' )
-        self.log( "Movie Name: %s" % self.movie_info['Title'] )
-        self.log( "Movie Director: %s" % self.movie_info['Director'] )
-        self.log( "Movie Year: %s" % self.movie_info['Year'] )
-        self.log( "Movie Genre: %s" % self.movie_info['Genre'] )
+        self.fetchInfoLabels()
         self.main()
         while( time.time() - starttime < 5 ):
             time.sleep( 0.5 )
@@ -70,13 +72,13 @@ class Main:
             self.progress_dialog.close()
             xbmc.executebuiltin('Dialog.Close(MovieInformation)')
             self.validChecker()
-            self.log( "Script Complete Success!" )
         except:
             traceback.print_exc()
             self.progress_dialog.close()
             self.log( "Script Error: %s" % _lang( self.error_id ) )
             self.dialog.ok( "%s - %s" % ( __scriptname__, _lang( 30 ) ), "", "", _lang( self.error_id ) )
-            self.log( "Script Complete" )
+        self.log( "Credits: %s" % __credits__)
+        self.log( "Script Complete" )
 
 
     def buildDatabase( self ):
@@ -89,15 +91,42 @@ class Main:
         db.commit()
         db.close()
 
-        
     def setupVariables( self ):
         self.log( "Setting Up Variables" )
         self.tmdb_api = tmdb.MovieDb()
         self.player = xbmc.Player()
         self.progress_dialog = xbmcgui.DialogProgress()
         self.dialog = xbmcgui.Dialog()
-        self.movie_info = {'Title': '', 'Director' : '', 'Year' : '', 'Genre' : '', 'Thumb' : '', 'Imdb' : '', 'Tmdb' : '', 'Url' : '', 'Local' : '', 'Full' : '', 'Tid' : ''}
         self.error_id = 35
+        self.settings = {
+                        'STime' : SLEEP_TIME,
+                        'MaxQuality': HIGHEST_QUALITY,
+                        'LatTrailer' : LATEST_TRAILER,
+                        'LocTrailer' : LOCAL_TRAILER,
+                        'XbmcTrailer' :  XBMC_TRAILER,
+                        'DTrailer' :  DOWNLOAD_TRAILER
+                        }
+        self.movie_info = {
+                           'Title': '',
+                           'Director' : '',
+                           'Year' : '',
+                           'Genre' : '',
+                           'Thumb' : '',
+                           'Imdb' : '',
+                           'Tmdb' : '',
+                           'Url' : '',
+                           'Local' : '',
+                           'Full' : '',
+                           'Tid' : ''
+                            }
+
+
+    def fetchInfoLabels( self ):
+        self.movie_info['Title'] = xbmc.getInfoLabel( 'listitem.title' )
+        self.movie_info['Director'] = xbmc.getInfoLabel( 'listitem.director' )
+        self.movie_info['Year'] = xbmc.getInfoLabel( 'listitem.year' )
+        self.movie_info['Genre'] = xbmc.getInfoLabel( 'listitem.genre' )
+        self.movie_info['Thumb'] = xbmc.getInfoLabel( 'ListItem.Thumb' )        
 
 
     def fetchXbmcData( self ):
@@ -120,39 +149,50 @@ class Main:
 
     def getTrailer( self ):
         self.log( "Checking XBMC DB For Local Trailer or Valid Trailer Url" )
-        if( self.checkLocalUrl( self.movie_info['Url'] ) ):
-            self.log( "Local Trailer Found: %s" % self.movie_info['Url'] )
-            self.movie_info['Local'] = self.movie_info['Full'] = self.movie_info['Url']
-            self.movie_info['Url'] = ''
+        if( ( self.fetchLocalUrl() ) and ( self.settings['LocTrailer'] ) ):
+            self.log( "Local Trailer Found In XBMC DB: %s" % self.movie_info['Url'] )
         else:
             self.log( "No Local Trailer" )
-            if( self.checkValidUrl( self.movie_info['Url'] ) ):
+            if( ( self.fetchTrailerId() ) and ( self.settings['XbmcTrailer'] ) ):
                 self.log( "Valid Trailer URL Found In XBMC DB: %s" % self.movie_info['Url'] )
                 self.fetchToken()
             else:
                 self.log( "No Vaild Trailer URL Found In XBMC DB" )
                 self.checkDb()
 
-    def checkLocalUrl( self, url ):
+
+    def fetchLocalUrl( self ):
+        url = self.movie_info['Url']
         if( url == None ):
+            self.movie_info['Local'] = ''
             return 0
         if( ( not "http" in url ) and ( xbmc.executehttpapi( 'FileExists(%s)' % url ) == '<li>True' ) ):
+            self.movie_info['Local'] = self.movie_info['Full'] = self.movie_info['Url']
+            self.movie_info['Url'] = ''
             return 1
         else:
+            self.movie_info['Local'] = ''
             return 0
 
-    def checkValidUrl( self, url ):
+
+    def fetchTrailerId( self ):
+        url = self.movie_info['Url']
         if( url == None ):
+            self.movie_info['Tid'] = ''
             return 0
         match = re.match(VALID_URL, url)
         if( match == None ):
+            self.movie_info['Tid'] = ''
             return 0
         else:
-            self.movie_info['Tid'] = match.group(2)
-            if( self.movie_info['Tid'] == url ):
+            result = match.group(2)
+            if( result == url ):
+                self.movie_info['Tid'] = ''
                 return 0
             else:
+                self.movie_info['Tid'] = result
                 return 1
+
             
     def checkDb( self ):
         self.log( "Checking YouTrailer DB For Valid Trailer URL" )
@@ -167,8 +207,10 @@ class Main:
             self.movie_info['Tmdb'] = result[0]
             self.movie_info['Url'] = result[1]
             self.movie_info['Local'] = result[2]
-            if( not self.checkLocalUrl( self.movie_info['Local'] ) ):
-                if( self.checkValidUrl ( self.movie_info['Url'] ) ):
+            if( ( self.fetchLocalUrl() ) and ( self.settings['LocTrailer'] ) ):
+                self.log( "Local Trailer Found In YouTrailer DB: %s" % self.movie_info['Url'] )
+            else:
+                if( ( self.fetchTrailerId () ) and ( not self.settings['LatTrailer'] ) ):
                     self.log( "Valid Trailer URL Found In YouTrailer DB: %s" % self.movie_info['Url'] )
                     self.fetchToken()
                 else:
@@ -201,7 +243,7 @@ class Main:
             raise
         self.movie_info['Url'] = api_results[0]['trailer']
         self.movie_info['Imdb'] = api_results[0]['imdb_id']
-        if( self.checkValidUrl ( self.movie_info['Url'] ) ):
+        if( self.fetchTrailerId () ):
             self.log( "Valid Trailer URL Fetched From TMDB: %s" % self.movie_info['Url'] )
             self.fetchToken()
         else:
@@ -253,17 +295,17 @@ class Main:
 
     def validChecker( self ):
         self.log( "Valid Trailer Playing Loop Started For %s Seconds" % SLEEP_TIME )
-        for i in range(0, ( SLEEP_TIME * 2 ) ):
+        for i in range(0, (  self.settings['STime'] * 2 ) ):
             if( self.player.isPlayingVideo() ):
                 if ( self.player.getPlayingFile() == self.movie_info['Full'] ):
-                    self.log( "Playing File = Trailer Url: VALID TRAILER!" )
+                    self.log( "Playing File is same as Trailer Url AKA VALID TRAILER!" )
                     self.addDb()
                     break
             time.sleep( 0.5 )
             
     def getFormat( self ):
         self.log( "Fetching Valid Trailer Quality" )
-        try_quality = HIGHEST_QUALITY
+        try_quality = self.settings['MaxQuality']
         while True:
             try_url = '%s&fmt=%s' % ( self.movie_info['Full'], AVAILABLE_FORMATS[try_quality] )   # to do quality
             self.log( "Trying Quality: %s" % AVAILABLE_FORMATS[try_quality] )
