@@ -1,5 +1,5 @@
 import os, os.path, sys
-import xbmc
+import xbmc, traceback
 
 #<onclick>RunScript(special://home/scripts/YouTrailer/default.py,1)</onclick>
 
@@ -24,13 +24,11 @@ except:
     count = 0
 
 if(count >= 1):
-    #Run from Movies
     import main
 else:
-    pass
-    #Run settings
-#    import settings
-##    ui = gui.GUI( "script-youtrailer-settings.xml", os.getcwd(), "Default" )
-##    ui.doModal()
-##    del ui    
+    import settings
+    ui = settings.GUI("script-YouTrailer-settings.xml", os.getcwd(), "default" )
+    ui.doModal()
+    del ui
+
 sys.modules.clear()
