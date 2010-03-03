@@ -9,7 +9,7 @@ __author__ = "stanley87"
 __url__ = "http://xbmc-scripting.googlecode.com/svn/trunk/YouTrailer/"
 
 __credits__ = "Chris Tait, Team XBMC, dbr/Ben(TMDB API Interface), TMDB, Nuka1195, Ricardo Garcia Gonzalez, Danny Colligan, Benjamin Johnson"
-__version__ = "0.6"
+__version__ = "0.7"
 
 xbmc.log( "[SCRIPT] '%s: version %s By: %s' initialized!" % ( __scriptname__, __version__, __author__, ), xbmc.LOGNOTICE )
 
