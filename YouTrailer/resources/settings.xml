@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+   <setting id="quality" type="enum" values="Low|Medium|High|480p|1227KBS|720p|1080p" label="60" default="2" />
+   <setting id="latest" type="bool" label="61" default="false"/>
+   <setting id="local" type="bool" label="62" default="true"/>
+   <setting id="xbmct" type="bool" label="63" default="true"/>
+</settings>
+ 

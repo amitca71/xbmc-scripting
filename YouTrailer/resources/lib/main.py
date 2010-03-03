@@ -14,7 +14,7 @@ __version__ = sys.modules[ "__main__" ].__version__
 __credits__ = sys.modules[ "__main__" ].__credits__
 
 BASE_DATABASE_PATH = os.path.join( xbmc.translatePath( "special://profile/" ), "script_data", __scriptname__, "YouTrailer.db" )
-AVAILABLE_FORMATS = ['37', '22', '35', '18', '5', '17', '13']
+AVAILABLE_FORMATS = ['13','17','5','18','35','22','37']
 
 DB_KEYS = {
     'Title' : 'name',
@@ -35,14 +35,12 @@ std_headers = {
 
 
 
+SETTINGS = sys.modules[ "__main__" ].XBMC_SETTINGS
+
 
 #User Settings
 
 SLEEP_TIME = 5 #in seconds to check if trailer playing after play command sent
-HIGHEST_QUALITY = 0  #0 = 1080p, 1 = 720p, 2 = 1227kbs, 3 = 480p, 4 = flv 295kb/s, 5 = mpeg4 176x144, 6 = h263 176x144
-LATEST_TRAILER = 0  #1 to always get latest tmdb trailer, 0 use last tmdb trailer url found
-LOCAL_TRAILER = 1  #1 to use local trailer if found, 0 to ignore local trailer and use tmdb trailer 
-XBMC_TRAILER = 1   #1 to use valid xbmc db trailer url, 0 to ignore xbmc db trailer url and fetch tmdb trailer
 DOWNLOAD_TRAILER = 0  #0 to stream trailers, 1 to download trailers - maybe have pop up when complete to watch, option to add to xbmc db
 #Download Trailer not implemented YET
 
@@ -98,12 +96,24 @@ class Main:
         self.progress_dialog = xbmcgui.DialogProgress()
         self.dialog = xbmcgui.Dialog()
         self.error_id = 35
+        if(SETTINGS.getSetting( "latest" ) == 'true'):
+            LatTrailer = 1
+        else:
+            LatTrailer = 0
+        if(SETTINGS.getSetting( "local" ) == 'true'):
+            LocTrailer = 1
+        else:
+            LocTrailer = 0
+        if(SETTINGS.getSetting( "xbmct" ) == 'true'):
+            XbmcTrailer = 1
+        else:
+            XbmcTrailer = 0
         self.settings = {
                         'STime' : SLEEP_TIME,
-                        'MaxQuality': HIGHEST_QUALITY,
-                        'LatTrailer' : LATEST_TRAILER,
-                        'LocTrailer' : LOCAL_TRAILER,
-                        'XbmcTrailer' :  XBMC_TRAILER,
+                        'MaxQuality': int(SETTINGS.getSetting( "quality" )),
+                        'LatTrailer' : LatTrailer,
+                        'LocTrailer' : LocTrailer,
+                        'XbmcTrailer' :  XbmcTrailer,
                         'DTrailer' :  DOWNLOAD_TRAILER
                         }
         self.movie_info = {
@@ -119,6 +129,7 @@ class Main:
                            'Full' : '',
                            'Tid' : ''
                             }
+        print self.settings['LatTrailer']
 
 
     def fetchInfoLabels( self ):
@@ -307,13 +318,13 @@ class Main:
         self.log( "Fetching Valid Trailer Quality" )
         try_quality = self.settings['MaxQuality']
         while True:
-            try_url = '%s&fmt=%s' % ( self.movie_info['Full'], AVAILABLE_FORMATS[try_quality] )   # to do quality
+            try_url = '%s&fmt=%s' % ( self.movie_info['Full'], AVAILABLE_FORMATS[try_quality] )
             self.log( "Trying Quality: %s" % AVAILABLE_FORMATS[try_quality] )
             try:
                     self.movie_info['Full'] = self.verify_url( try_url.encode( 'utf-8' ) ).decode( 'utf-8' )
                     break
             except:
-                    try_quality += 1
+                    try_quality -= 1
         self.log( "Quality Found: %s" % AVAILABLE_FORMATS[try_quality] )
 
     def verify_url( self, url ):

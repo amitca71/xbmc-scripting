@@ -18,17 +18,20 @@ sys.path.append( os.path.join( BASE_RESOURCE_PATH, "lib" ) )
 env = ( os.environ.get( "OS", "win32" ), "win32", )[ os.environ.get( "OS", "win32" ) == "xbox" ]
 sys.path.append( os.path.join( BASE_RESOURCE_PATH, "platform_libraries", env ) )
 
+XBMC_SETTINGS = xbmc.Settings( os.getcwd() )
+
+
 try:
     count = len(sys.argv)
 except:
     count = 0
 
 if(count >= 1):
-    import main
+    try:
+        import main
+    except:
+        traceback.print_exc()
 else:
-    import settings
-    ui = settings.GUI("script-YouTrailer-settings.xml", os.getcwd(), "default" )
-    ui.doModal()
-    del ui
-
+    XBMC_SETTINGS.openSettings()
+     
 sys.modules.clear()
