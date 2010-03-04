@@ -211,6 +211,7 @@ class Main:
         cursor = db.cursor()
         cursor.execute( "SELECT tmdb_id, trailer_url, local_trailer FROM trailers WHERE imdb_id = ?;" , ( self.movie_info['Imdb'], ) )
         result = cursor.fetchone()
+        db.close()
         if( result == None ):
             self.log( "No Entry Found In YouTrailer DB" )
             self.fetchUrl()
