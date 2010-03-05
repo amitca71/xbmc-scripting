@@ -27,11 +27,6 @@ except:
     count = 0
 
 if(count >= 1):
-    try:
-        import main
-    except:
-        traceback.print_exc()
+    import main
 else:
     XBMC_SETTINGS.openSettings()
-     
-sys.modules.clear()
