@@ -68,7 +68,8 @@ class Main:
             self.getTrailer()
             self.playTrailer()
             self.progress_dialog.close()
-            xbmc.executebuiltin('Dialog.Close(MovieInformation)')
+            if( not self.settings['Window'] ):
+                xbmc.executebuiltin('Dialog.Close(MovieInformation)')
             self.validChecker()
         except:
             traceback.print_exc()
@@ -108,12 +109,17 @@ class Main:
             XbmcTrailer = 1
         else:
             XbmcTrailer = 0
+        if(SETTINGS.getSetting( "window" ) == 'true'):
+            window = 1
+        else:
+            window = 0            
         self.settings = {
                         'STime' : SLEEP_TIME,
                         'MaxQuality': int(SETTINGS.getSetting( "quality" )),
                         'LatTrailer' : LatTrailer,
                         'LocTrailer' : LocTrailer,
                         'XbmcTrailer' :  XbmcTrailer,
+                        'Window' :  window,
                         'DTrailer' :  DOWNLOAD_TRAILER
                         }
         self.movie_info = {
@@ -299,7 +305,7 @@ class Main:
             self.progress_dialog.update( 100, '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), "", _lang( 14 ) )            
             listitem = xbmcgui.ListItem( self.movie_info['Title'], thumbnailImage = self.movie_info['Thumb'] )
             listitem.setInfo( 'video', {'Title': '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), 'Studio' : __scriptname__, 'Genre' : self.movie_info['Genre'] } )
-            self.player.play( self.movie_info['Full'], listitem )
+            self.player.play( self.movie_info['Full'], listitem, self.settings['Window'] )
         except:
             self.log( "ERROR Playing Trailer: %s" % self.movie_info['Full'] )
             raise

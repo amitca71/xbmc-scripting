@@ -4,5 +4,6 @@
    <setting id="latest" type="bool" label="61" default="false"/>
    <setting id="local" type="bool" label="62" default="true"/>
    <setting id="xbmct" type="bool" label="63" default="true"/>
+   <setting id="window" type="bool" label="64" default="false"/>
 </settings>
  
