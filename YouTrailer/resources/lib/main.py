@@ -42,8 +42,6 @@ SETTINGS = sys.modules[ "__main__" ].XBMC_SETTINGS
 #User Settings
 
 SLEEP_TIME = 5 #in seconds to check if trailer playing after play command sent
-DOWNLOAD_TRAILER = 0  #0 to stream trailers, 1 to download trailers - maybe have pop up when complete to watch, option to add to xbmc db
-#Download Trailer not implemented YET
 
 class Main:
     def __init__(self):
@@ -67,12 +65,11 @@ class Main:
             self.progress_dialog.create( __scriptname__, '' )
             self.fetchXbmcData()
             self.getTrailer()
-           # self.playTrailer()
+            self.playTrailer()
             self.progress_dialog.close()
-            self.downloadTrailer()
-##            if( not self.settings['Window'] ):
-##                xbmc.executebuiltin('Dialog.Close(MovieInformation)')
-##            self.validChecker()
+            if( not self.settings['Window'] ):
+                xbmc.executebuiltin('Dialog.Close(MovieInformation)')
+            self.validChecker()
         except:
             traceback.print_exc()
             self.progress_dialog.close()
@@ -299,127 +296,6 @@ class Main:
             self.movie_info['Full'] = trailer_info['conn'][0]
         self.log( "Trailer Real URL Obtained: %s" % self.movie_info['Full'] )
 
-    def downloadTrailer( self ):
-        try:
-            self.log( "Downloading Trailer: %s" % self.movie_info['Full'] )
-            self.progress_dialog.create( __scriptname__, '' )
-            print "downloading %s" % self.movie_info['Full']
-            stream = None
-            open_mode = 'wb'
-            basic_request = urllib2.Request( self.movie_info['Full'], None, std_headers)
-            request = urllib2.Request( self.movie_info['Full'], None, std_headers)
-            filename = os.path.join( os.getcwd(), "trailer.flv" )
-            print filename
-    ##	if os.path.isfile(filename):
-    ##            resume_len = os.path.getsize(filename)
-    ##	else:
-    ##	    resume_len = 0	
-            data = urllib2.urlopen(request)
-            data_len = data.info().get('Content-length', None)
-            data_len_str = self.format_bytes(data_len)
-            byte_counter = 0
-            block_size = 1024
-            start = time.time()
-            while True:
-                    # Download and write
-                    before = time.time()
-                    data_block = data.read(block_size)
-                    after = time.time()
-                    data_block_len = len(data_block)
-                    if data_block_len == 0:
-                            break
-                    byte_counter += data_block_len
-
-                    # Open file just in time
-                    if stream is None:
-                            try:
-                                    stream = open(filename, open_mode)
-                                #    self.report_destination(filename)
-                            except (OSError, IOError), err:
-                                 #   self.trouble('ERROR: unable to open for writing: %s' % str(err))
-                                    return False
-                    stream.write(data_block)
-                    block_size = self.best_block_size(after - before, data_block_len)
-
-                    # Progress message
-                 #   percent_str = self.calc_percent(byte_counter, data_len)
-                    eta_str = self.calc_eta(start, time.time(), data_len, byte_counter)
-                    speed_str = self.calc_speed(start, time.time(), byte_counter)
-                    self.progress_dialog.update( (float(byte_counter) / float(data_len) * 100.0), '%s %s' % ( self.movie_info['Title'], _lang( 2 ) ), "Speed:%s Eta:%s" % (speed_str, eta_str), _lang( 16 ) )
-    
-    ##                self.report_progress(percent_str, data_len_str, speed_str, eta_str)
-
-                    # Apply rate limit
-                #    self.slow_down(start, byte_counter)
-        except:
-            traceback.print_exc()
-
-
-    def calc_eta( self, start, now, total, current):
-            if total is None:
-                    return '--:--'
-            dif = now - start
-            if current == 0 or dif < 0.001: # One millisecond
-                    return '--:--'
-            rate = float(current) / dif
-            eta = long((float(total) - float(current)) / rate)
-            (eta_mins, eta_secs) = divmod(eta, 60)
-            if eta_mins > 99:
-                    return '--:--'
-            return '%02d:%02d' % (eta_mins, eta_secs)
-
-    def calc_speed(self, start, now, bytes):
-            dif = now - start
-            if bytes == 0 or dif < 0.001: # One millisecond
-                    return '%10s' % '---b/s'
-            return '%10s' % ('%s/s' % self.format_bytes(float(bytes) / dif))
-
-
-##    def calc_percent(self, byte_counter, data_len):
-##            if data_len is None:
-##                    return 0
-##            return '%6s' % ('%3.1f' % (float(byte_counter) / float(data_len) * 100.0))
-
-    def slow_down(self, start_time, byte_counter):
-            """Sleep if the download speed is over the rate limit."""
-            rate_limit = self.params.get('ratelimit', None)
-            if rate_limit is None or byte_counter == 0:
-                    return
-            now = time.time()
-            elapsed = now - start_time
-            if elapsed <= 0.0:
-                    return
-            speed = float(byte_counter) / elapsed
-            if speed > rate_limit:
-                    time.sleep((byte_counter - rate_limit * (now - start_time)) / rate_limit)
-
-
-    def format_bytes(self, bytes):
-            if bytes is None:
-                    return 'N/A'
-            if type(bytes) is str:
-                    bytes = float(bytes)
-            if bytes == 0.0:
-                    exponent = 0
-            else:
-                    exponent = long(math.log(bytes, 1024.0))
-            suffix = 'bkMGTPEZY'[exponent]
-            converted = float(bytes) / float(1024**exponent)
-            return '%.2f%s' % (converted, suffix)
-
-    def best_block_size(self, elapsed_time, bytes):
-            new_min = max(bytes / 2.0, 1.0)
-            new_max = min(max(bytes * 2.0, 1.0), 4194304) # Do not surpass 4 MB
-            if elapsed_time < 0.001:
-                    return long(new_max)
-            rate = bytes / elapsed_time
-            if rate > new_max:
-                    return long(new_max)
-            if rate < new_min:
-                    return long(new_min)
-            return long(rate)
-
-        
     def playTrailer( self ):
         self.log( "Playing Trailer: %s" % self.movie_info['Full'] )
         self.error_id = 34
@@ -431,7 +307,6 @@ class Main:
         except:
             self.log( "ERROR Playing Trailer: %s" % self.movie_info['Full'] )
             raise
-
 
     def validChecker( self ):
         self.log( "Valid Trailer Playing Loop Started For %s Seconds" % SLEEP_TIME )
